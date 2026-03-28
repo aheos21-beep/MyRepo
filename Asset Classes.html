@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Asset Class Projections</title>
+  <style>
+    :root {
+      --bg0: #0d1117; --bg1: #161b22; --bg2: #21262d;
+      --bd: #30363d; --t1: #e6edf3; --t2: #8b949e; --ac: #58a6ff;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg0); color: var(--t1); display: flex; flex-direction: column; overflow: hidden; }
+    .hdr { background: var(--bg1); border-bottom: 1px solid var(--bd); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+    .hdr-brand { display: flex; align-items: center; gap: 10px; }
+    .hdr-icon { width: 34px; height: 34px; background: linear-gradient(135deg, #58a6ff, #a371f7); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 17px; }
+    .hdr h1 { font-size: 17px; font-weight: 650; }
+    .hdr-sub { font-size: 11.5px; color: var(--t2); margin-top: 1px; }
+    .hdr-badge { font-size: 11px; color: var(--t2); background: var(--bg2); border: 1px solid var(--bd); border-radius: 20px; padding: 4px 12px; white-space: nowrap; }
+    .main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 18px 24px; gap: 16px; }
+    .main::-webkit-scrollbar { width: 5px; }
+    .main::-webkit-scrollbar-thumb { background: var(--bd); border-radius: 3px; }
+    .cards { display: flex; gap: 12px; flex-shrink: 0; }
+    .card { flex: 1; background: var(--bg2); border: 1px solid var(--bd); border-radius: 10px; padding: 14px 18px; }
+    .card-l { font-size: 10px; color: var(--t2); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 5px; }
+    .card-v { font-size: 24px; font-weight: 730; letter-spacing: -.4px; }
+    .card-s { font-size: 11px; color: var(--t2); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .rates-box { background: var(--bg2); border: 1px solid var(--bd); border-radius: 10px; padding: 16px 18px; flex-shrink: 0; overflow-x: auto; }
+    .rates-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .rates-ttl { font-size: 15px; font-weight: 600; }
+    .rates-ttl small { font-size: 11px; font-weight: 400; color: var(--t2); margin-left: 6px; }
+    .btn-s { font-size: 11px; padding: 5px 13px; border: 1px solid var(--bd); border-radius: 6px; background: transparent; color: var(--t2); cursor: pointer; transition: all .15s; }
+    .btn-s:hover { border-color: var(--ac); color: var(--ac); }
+    .rtable { width: 100%; border-collapse: collapse; }
+    .rtable th { font-size: 10.5px; font-weight: 700; color: var(--t2); text-transform: uppercase; letter-spacing: .6px; padding: 8px 8px; text-align: center; border-bottom: 2px solid var(--bd); }
+    .rtable th:first-child { text-align: center; min-width: 90px; }
+    .rtable th:nth-child(2) { text-align: left; min-width: 185px; }
+    .rtable td:nth-child(2) { text-align: left; }
+    .rtable th.cum { color: #58a6ff; }
+    .rtable th.sortable { cursor: pointer; user-select: none; transition: color .15s; }
+    .rtable th.sortable:hover { color: var(--ac); }
+    .rtable th.sortable.active { color: var(--ac); }
+    .rtable th.sortable::after { content: ' ↕'; font-size: 9px; opacity: .5; }
+    .rtable th.sortable.active::after { content: ' ▼'; opacity: 1; }
+    .rtable td { padding: 7px 6px; text-align: center; vertical-align: middle; }
+    .rtable td:first-child { text-align: center; padding-left: 0; }
+    .rtable td:nth-child(2) { padding-left: 0; }
+    .rtable tbody tr { border-bottom: 1px solid rgba(48,54,61,.4); transition: background .1s; }
+    .rtable tbody tr:last-child { border-bottom: none; }
+    .rtable tbody tr:hover { background: rgba(88,166,255,.04); }
+    .tdname { display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 520; }
+    .tddot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .tdcat { font-size: 9.5px; color: var(--t2); margin-left: auto; background: var(--bg0); border: 1px solid var(--bd); border-radius: 10px; padding: 1px 7px; white-space: nowrap; }
+    .yr-val { font-size: 13px; color: var(--t2); font-variant-numeric: tabular-nums; }
+    .cum-val { font-size: 13.5px; font-weight: 680; letter-spacing: -.2px; padding: 5px 12px; border-radius: 6px; display: inline-block; min-width: 70px; }
+    .disc { font-size: 10.5px; color: var(--t2); text-align: center; flex-shrink: 0; line-height: 1.55; padding-bottom: 6px; }
+    @media (max-width: 700px) { body { overflow: auto; } .main { padding: 14px 12px; overflow: visible; } .cards { flex-wrap: wrap; } .card { min-width: 140px; } }
+  </style>
+</head>
+<body>
+<header class="hdr">
+  <div class="hdr-brand">
+    <div class="hdr-icon">📈</div>
+    <div>
+      <h1>Asset Class Projections</h1>
+      <div class="hdr-sub">Per-year analyst projections · 3-year near-term horizon</div>
+    </div>
+  </div>
+  <div class="hdr-badge">All rates editable · % basis</div>
+</header>
+<main class="main">
+  <div class="cards" id="cards"></div>
+  <div class="rates-box">
+    <div class="rates-hdr">
+      <div class="rates-ttl">Annual Return Rates<small>hover a year for source rationale</small></div>
+      <button class="btn-s" onclick="resetRates()">↺ Reset Defaults</button>
+    </div>
+    <table class="rtable" id="rtable"></table>
+  </div>
+  <div class="disc">
+    ⚠️ Year-by-year rates sourced from analyst forecasts (Goldman Sachs, RBC, CREA, JPMorgan, CBRE, Bitwise, Bitcoin Suisse, Bank of Canada).
+    Crypto projections are highly speculative. Past performance ≠ future results. <strong>Not financial advice.</strong>
+  </div>
+</main>
+<script>
+const A = [
+  {
+    id:'cad-div', name:'CAD Dividend Stocks', cat:'Equity',
+    color:'#58a6ff',
+    r:[3.5, 3.5, 4.0], d:[3.5, 3.5, 4.0],
+    why:['RBC: share-price performance more muted than 2025; return leans on dividends + modest EPS; USMCA renewal risk and tariff overhang; bank P/E fully valued at 23% above 10-yr avg; elevated PCL risk if conditions worsen','Trade headwinds from USMCA renegotiation suppress multiple expansion; RBC warns "deal worse than today but better than others"; domestic consumption drag persists; dividend growth modest at 3-5%','Gradual normalization as trade clarity improves; dividend yield provides floor; structural underperformance vs US equities continues but narrows']
+  },
+  {
+    id:'us-div', name:'US Dividend Stocks', cat:'Equity',
+    color:'#3fb950',
+    r:[3.0, 3.5, 4.0], d:[3.0, 3.5, 4.0],
+    why:['Goldman bear case: S&P 5,400 oil-shock scenario; JPMorgan cut 2026 target to 7,200; valuations at 21x forward earnings historically elevated; dividend yield (~2%) partially offsets limited capital appreciation','BofA pessimistic: earnings growth slows as AI capex ROI questioned; 19x valuation floor in bear case; dividend income becomes primary return driver as multiples compress','Mean reversion from elevated valuations; rate environment stable; slower earnings normalisation; dividend income sustains returns as growth moderates']
+  },
+  {
+    id:'gold', name:'Gold', cat:'Commodity',
+    color:'#f0c040',
+    r:[18.0, -5.0, 3.0], d:[18.0, -5.0, 3.0],
+    why:['WGC: gold peaked ~$5,589/oz in Jan 2026, now ~$4,430; full-year 2026 return from Jan 1 start still strongly positive; WGC pessimistic "Reflation Return" scenario warns of 5-20% crash risk from current levels if USD strengthens','WGC most bearish scenario: Trump fiscal success accelerates growth + higher rates + stronger USD = gold corrects 5-20% from ~$4,400+ peak; JPMorgan $5,055 Q4 2026 target gives limited upside in pessimistic view; profit-taking post-record high','Bull-run consolidation phase; central bank buying moderates post-peak; equilibrium settles near $4,000-$4,500 as macro uncertainty fades and USD stabilises']
+  },
+  {
+    id:'btc', name:'Bitcoin (BTC)', cat:'Crypto',
+    color:'#f97316',
+    r:[3.0, 25.0, 10.0], d:[3.0, 25.0, 10.0],
+    why:['CoinCodex bearish short-term as of March 2026 (~$75K); BTC down from ~$97-100K at Jan 1 start; full-year 2026 from Jan 1 = modest net gain as year-end partial recovery offsets Q1 drawdown; conservative end of $88K-$100K year-end consensus','Post-halving mid-cycle bull leg; CoinCodex/Bitwise/Bitcoin Suisse consensus targets $120K-$175K range for 2027 peak; ETF inflows + institutional adoption driving next leg; using median $150K from ~$90K 2026 year-end = +25-28% forward','Maturing asset class; volatility compressing; returns normalising toward equities; $200K+ bull cases exist but consensus median more modest; long-term accumulation continues']
+  },
+  {
+    id:'eth', name:'Ethereum (ETH)', cat:'Crypto',
+    color:'#a371f7',
+    r:[5.0, 15.0, 10.0], d:[5.0, 15.0, 10.0],
+    why:['ETH underperformed BTC in Q1 2026; analyst consensus for 2026 year-end $3,000-$5,000 range; staking yield supports floor; DeFi TVL stable; ETH/BTC ratio compressed but partial recovery expected','L2 ecosystem growth accelerating; post-ETF-approval institutional adoption; staking yield makes ETH attractive vs bonds; 2027 consensus $5,600-$7,000 range = +15% from $3,500-$4,000 2026 year-end','Returns normalising; L2 competition + broader crypto maturity compress upside; staking yield ~4% provides income floor; ecosystem expansion sustains structural bid']
+  },
+  {
+    id:'cad-reit', name:'Canadian REITs', cat:'Real Estate',
+    color:'#06b6d4',
+    r:[7.5, 7.0, 6.5], d:[7.5, 7.0, 6.5],
+    why:['RBC base case: FFOPU growth 4-6%; seniors housing FFOPU +15% leads; dividend yield ~5%; BoC confirmed hold at 2.25% removes refinancing uncertainty; industrials + multi-family solid; total return high single digits','BoC hold through 2026 confirmed by near-75% of economists; rate stability improves REIT valuation multiples; office drag diminishing as return-to-work firms; near-record occupancy in seniors housing','Income-driven returns stabilize; NAV recovery continues as cap rates normalize; higher-quality REITs benefit most; office headwinds fully priced; distribution growth resumes across most sub-sectors']
+  },
+  {
+    id:'cad-re', name:'Canadian Real Estate', cat:'Real Estate',
+    color:'#ec4899',
+    r:[-0.7, 1.5, 2.0], d:[-0.7, 1.5, 2.0],
+    why:['RBC: national average home price -0.7% in 2026 — fragile labour market, reduced immigration targets, large mortgage renewals at higher rates pressure buyers; tariff uncertainty suppresses demand; Ontario -1.4% leading the drag','CREA downgraded 2026 forecast; RBC sees gradual recovery in 2027 as BoC stability improves affordability; labour market softening limits buyer demand; CREA +2.3% for 2027 — using middle estimate','Modest recovery as BoC rate stability gradually improves affordability; supply-demand rebalancing aids BC/Prairie markets; Ontario/Vancouver condos remain overhang; population growth eventually underpins prices']
+  },
+  {
+    id:'us-re', name:'US Real Estate', cat:'Real Estate',
+    color:'#e05c5c',
+    r:[3.5, 4.0, 4.5], d:[3.5, 4.0, 4.5],
+    why:['CBRE: investment activity +16% to $562B in 2026; "best vintage year since 2012" for distressed deals; Fed holds 3.0-3.25%; cap rate compression 5-15bps; income-driven returns; data centre + industrial + multifamily lead','CBRE: 10-yr Treasury settles ~3.5% over next 5 years; cap rate compression benefits quality assets; office challenges fully priced; healthcare + living sectors drive outperformance','Continued recovery as rates normalise; cap rate compression broadens across sectors; data centre + senior housing structural demand; office select recovery in gateway cities']
+  },
+  {
+    id:'cad-bond', name:'Canadian Bonds', cat:'Fixed Income',
+    color:'#84cc16',
+    r:[2.5, 1.5, 2.5], d:[2.5, 1.5, 2.5],
+    why:['BoC confirmed hold at 2.25% through 2026; TD/CIBC/BMO/National Bank all expect no 2026 change; coupon return only (~2.5%); minimal price appreciation; only BMO and TD expect hold all the way to 2027','RBC: BoC rises toward 3.25% neutral in 2027; National Bank: +50bps to 2.75% by Q2 2027; Oxford Economics: +25bps to 2.75% in early 2027 — bond price drag materialises against still-positive coupon income','Rates stabilise at higher neutral level; coupon income resumes dominance as price drag fades; 5-yr bond yields settle ~3.25-3.5%; duration risk fades into 2028']
+  },
+  {
+    id:'cad-hy', name:'Canadian HY Bonds', cat:'Fixed Income',
+    color:'#a78bfa',
+    r:[4.0, 3.5, 3.5], d:[4.0, 3.5, 3.5],
+    why:['Janus Henderson: HY spreads near historic lows (~2.7% OAS); "increasing selectivity needed in 2026"; tariff-driven slowdown creates credit stress in leveraged resource and energy sectors; carry attractive but spread widening risk rising','Defaults rise modestly as BoC gradual hike cycle bites in 2027; Cambridge Associates: widening spreads likely; leveraged issuers with weak cashflows face refinancing pressure; spread compression stalls','Stabilisation; elevated carry vs IG provides income floor; no meaningful tightening as credit cycle matures; selective high-quality HY outperforms']
+  },
+  {
+    id:'us-tech', name:'US Tech Stocks', cat:'Equity',
+    color:'#0ea5e9',
+    r:[13.0, 10.0, 8.0], d:[13.0, 10.0, 8.0],
+    why:['Goldman: S&P 7,600 year-end (+12%); EPS $309/share in 2026 (+12% growth); Morgan Stanley 7,800; Citi 7,700; consensus ~7,600; NASDAQ and tech outperform S&P by 1-3% on AI productivity thesis; median Wall Street target $7,500','Goldman: EPS $342 in 2027 (+10% growth); AI monetisation ROI improving as enterprise adoption deepens; earnings multiples ~21x supported; tech earnings contribution rising $70 → $92 per S&P share','Growth normalising but AI structural tailwind persists; rate environment stable; infrastructure spend matures from buildout to monetisation; multiple compression possible but EPS growth sustains returns']
+  },
+  {
+    id:'hisa', name:'HISA (Canada)', cat:'Cash',
+    color:'#94a3b8',
+    r:[2.25, 2.5, 2.75], d:[2.25, 2.5, 2.75],
+    why:['BoC confirmed 2.25% at Jan 2026 meeting; TD and BMO forecast hold through 2027; C.D. Howe MPC: hold for next 12 months; HISA rates track overnight rate — no change expected in 2026','National Bank: +25bps to 2.50% in Q1 2027; Oxford Economics: +25bps to 2.75% in early 2027; RBC: gradual rise toward 3.25% neutral over 2027-28; cash rates rise modestly with BoC','RBC/Oxford: path to ~2.75% by 2028 as growth firms and trade clarity improves; HISA remains low-risk income anchor in portfolio']
+  },
+  {
+    id:'intl-div', name:'Intl Dividend Stocks', cat:'Equity',
+    color:'#fbbf24',
+    r:[3.0, 2.5, 3.0], d:[3.0, 2.5, 3.0],
+    why:['MSCI EAFE pessimistic: EFA price target avg $84.77 for 2026 (vs $95.50 current = -11%); USD strength weighs on non-US returns; Europe manufacturing PMI still contractionary; EAFE up 3% YTD limits worst-case','Japan BoJ tightening uncertainty dampens Nikkei outlook; Europe structural growth weakness; USD likely to remain elevated with resilient US economy; dividend yield offsets some capital risk','Structural underperformance vs North America; geopolitical risk premium elevated; dividend income primary return; EAFE valuation discount to S&P provides long-term buffer but catalyst unclear']
+  },
+  {
+    id:'em', name:'Emerging Markets', cat:'Equity',
+    color:'#fb7185',
+    r:[8.0, 8.0, 7.0], d:[8.0, 8.0, 7.0],
+    why:['JPMorgan LTCMA: 7.8% USD returns for EM equities; JPMorgan positive and constructive on EM for 2026; LatAm outsized upside from ongoing monetary stimulus; India/SEA domestic consumption rising; Korea governance reforms attract capital','Asia ex-Japan earnings growth 12-13% in 2026, 10-11% in 2027; India tech + financial sector driving; EM GDP outpaces DM by 2-3%; EM discount to DM narrows on earnings re-rating; Indonesia + Mexico benefit from supply-chain shifts','Returns moderating as EM valuation gap vs DM gradually closes; China policy uncertainty remains key risk; geopolitical tensions cap upside; EM dividend yield provides partial income floor']
+  },
+  {
+    id:'silver', name:'Silver', cat:'Commodity',
+    color:'#cbd5e1',
+    r:[15.0, 10.0, 6.0], d:[15.0, 10.0, 6.0],
+    why:['Citi: $110/oz H2 2026 target; Goldman: $85-100/oz avg 2026; JPMorgan: $81 avg 2026 (Q4 $85); silver following gold\'s partial pullback from $5,589 peak; solar panel + EV industrial demand structural floor; consensus mid-point ~+15%','JPMorgan: $85.50/oz avg 2027; gold/silver ratio normalising; UBS $85 long-term; ETF inflows continue; solar demand structural tailwind; Citi acute physical shortage narrative supports industrial bid','Gold bull moderates; silver follows with lag; industrial demand floor from solar + EV + electronics; base-metal component of silver demand sustains price support above $70/oz long-run']
+  },
+  {
+    id:'palladium', name:'Palladium', cat:'Commodity',
+    color:'#c084fc',
+    r:[3.0, 2.0, -2.0], d:[3.0, 2.0, -2.0],
+    why:['Reuters poll: analyst median $1,262.50/oz avg 2026; structural deficit persists through 2027 on Russia supply tightness; EV penetration 18-20% by 2027 gradually pressures ICE demand; new emissions standards require higher loadings per vehicle','Heraeus forecast range $950-$1,500; WPIC: deficit through 2027 transitions to surplus from 2028; EV transition accelerates into 2027-28; ICE vehicle production plateau weighs on catalytic converter demand','Market shifts from structural deficit toward potential surplus 2028+; EV transition pressure materialises as EV share of new sales surpasses 25%; Russia supply risk premium gradually fades']
+  },
+  {
+    id:'oil', name:'WTI Crude Oil', cat:'Commodity',
+    color:'#78350f',
+    r:[-8.0, -5.0, 3.0], d:[-8.0, -5.0, 3.0],
+    why:['Goldman: WTI $53/bbl base-case avg 2026 (OPEC+ 2mb/d surplus); geopolitical spike raised Q4 estimate to $67 (Iran/Hormuz risk); EIA March 2026: Brent >$95 near-term then ~$70 by year-end; Goldman/EIA midpoint net ~-8% full year from ~$70 start','EIA March 2026: Brent avg $64/bbl in 2027; Goldman $61 WTI in 2027; OPEC+ production adjustments +206kb/d from April 2026 continuing into 2027; JPMorgan: $54 WTI avg 2026 — demand growth insufficient to absorb supply wave','Modest recovery as demand growth gradually absorbs glut; OPEC discipline key; energy transition pace moderates long-run upside; geopolitical risk premium recalibrated lower as supply alternatives developed']
+  },
+  {
+    id:'natgas', name:'Natural Gas', cat:'Commodity',
+    color:'#60a5fa',
+    r:[4.0, 3.0, 3.0], d:[4.0, 3.0, 3.0],
+    why:['EIA March 2026: Henry Hub $3.80/MMBtu avg 2026; mild March weather weighs; LNG export surge (Sabine Pass + Plaquemines expansion) supports price floor; US production 118 Bcf/d in 2026; from ~$3.50 start = ~+4% full year','EIA: $3.90/MMBtu avg 2027; production grows to 121 Bcf/d; LNG capacity expansion limits further price upside; storage normalising toward 5-yr average; oil-associated gas growth moderates price gains','Post-LNG-boom normalisation; prices settle near $3.90-$4.10 with balanced supply/demand; power-sector demand from data centres provides structural floor; production growth tempers further rally']
+  },
+  {
+    id:'uranium', name:'Uranium', cat:'Commodity',
+    color:'#4ade80',
+    r:[12.0, 12.0, 10.0], d:[12.0, 12.0, 10.0],
+    why:['Sprott: spot surged to $85/lb in January 2026 (17-month high); $100-$120/lb target; AI data centre energy demand accelerating nuclear builds; policy clarity improving long-term utility contracting; catch-up trade underway in uranium equities','IAEA reference case: nuclear demand more than doubles to 150,000 MT by 2040; new reactor builds accelerating globally; long-term supply contracts tightening; Sprott: fundamentals improving significantly in 2026; Citi nuclear demand constructive','Sustained demand from AI energy infrastructure + climate mandates; supply under-delivery persists — 2022-2025 supply shortfalls not corrected; structural bull market; supply response remains slow due to decade-long lead times']
+  },
+  {
+    id:'copper', name:'Copper', cat:'Commodity',
+    color:'#b45309',
+    r:[8.0, 10.0, 8.0], d:[8.0, 10.0, 8.0],
+    why:['Goldman raised 2026 avg forecast to $11,400/t; Q4 2026 "fair price" $11,500; Citi base case $12,000 (+20% upside); JPMorgan $12,075 full-year avg 2026; BofA raised to $11,313; consensus $11,400-$12,000; electrification + AI grid demand strong','Goldman $10,750/t long-term (modest pullback from 2026 peak); Citi: 400kt deficit in 2026 deepening; tariff uncertainty weighs near-term but structural demand from EV + data centre + grid infrastructure continues into 2027','Structural deficit deepens as mines underinvest; energy transition + AI data centre infrastructure sustains long-term supply-demand imbalance; mining supply pipeline constrained for decade; strong floor around $10,000']
+  },
+  {
+    id:'lithium', name:'Lithium', cat:'Commodity',
+    color:'#38bdf8',
+    r:[-15.0, 3.0, 8.0], d:[-15.0, 3.0, 8.0],
+    why:['Goldman REVISED DOWN: lithium to average $8,900/t in 2026 (from prior bullish $13,250/t forecast); persistent oversupply as new capacity outpaces demand; EV demand growth below prior projections; energy storage insufficient to absorb surplus; -15% from elevated early-2026 levels','Goldman: $9,100/t in 2027 (modest recovery); S&P Global: surplus narrowing but not eliminated; supply discipline improving as low prices force project deferrals; energy storage demand growing steadily; EV adoption accelerating in China','Goldman: $9,500/t by 2028; solid-state battery commercialisation + grid storage creates accelerating demand; supply discipline firms as uneconomic projects cancelled; deficit risk building by 2028-29']
+  },
+  {
+    id:'wheat', name:'Wheat', cat:'Commodity',
+    color:'#d97706',
+    r:[2.0, 2.0, 2.0], d:[2.0, 2.0, 2.0],
+    why:['World Bank: "global agricultural markets in 2026 — stabilising prices, persisting risks"; USDA Feb 2026 2026/27 season-average farm price $5.00/bu; Ukraine/Russia supply uncertainty maintains floor; no major price swings expected','World Bank: moderate price stability through 2027; geopolitical supply risks persist; climate-driven yield variability adds premium; USDA sees reduced total use but steady global demand from population growth','Stable demand from population growth + biofuel mandates; supply-demand broadly in balance; World Bank CMO: commodity prices stabilising; upside capped by improving Black Sea supply access']
+  },
+  {
+    id:'potash', name:'Potash / Fertilizers', cat:'Commodity',
+    color:'#a3e635',
+    r:[1.0, 2.0, 2.0], d:[1.0, 2.0, 2.0],
+    why:['World Bank: MOP prices rose 19% in 2025, then "moderate declines in 2026 and 2027" as new capacity online; fertilizer price index projected to fall ~5% in 2026 as China relaxes export limits; global potash supply well-supplied; prices stable to slightly lower','New capacity from Canada, Russia, and Laos coming online 2026-28; Argus: prices stabilising; food security demand grows steadily but insufficient to fully offset supply growth; DTN: potash outlook "positive but muted" for 2026-27','Demand floor from global agriculture needs; World Bank forecasts moderate price improvement as supply growth rate slows relative to demand recovery; fertilizer affordability improves for farmers; trade policy risks remain']
+  },
+  {
+    id:'lumber', name:'Lumber', cat:'Commodity',
+    color:'#65a30d',
+    r:[-5.0, 8.0, 12.0], d:[-5.0, 8.0, 12.0],
+    why:['ERA Forest Products: "first half of 2026 will look a lot like 2025"; US housing starts forecast 1.33M units in 2026 (down modestly); Canadian lumber faces 45.6% combined US duties; 22+ Canadian sawmills permanently closed; S-P-F 2x4s avg $510/MBF in 2026','Forest Economic Advisors: housing starts rise to 1.50M in 2027 as rate normalization unlocks pent-up demand; S-P-F 2x4s rebound to $540+/MBF; Canadian mill closures (-1.2Bbf capacity) tighten supply; Fastmarkets: 6-8% price increase annually','Housing construction rebound drives lumber prices toward mid-$500 to low-$600 range; Canadian sawmill supply tightness from closures + duties creates structural supply constraint; US production increases partially offset; prices recover toward $600+/MBF']
+  }
+];
+
+const YR_LABELS = ['2026', '2027', '2028'];
+let sortCol = null;
+
+function cumR(rates, toYr) { let c = 1; for (let i = 0; i < toYr; i++) c *= (1 + rates[i] / 100); return +((c - 1) * 100).toFixed(2); }
+function f(n) { return (n >= 0 ? '+' : '') + n.toFixed(1) + '%'; }
+function avgR(rates) { return +(rates.reduce((s, r) => s + r, 0) / rates.length).toFixed(2); }
+function heatColor(value, min, max) {
+  if (max === min) return 'hsl(60,75%,48%)';
+  const t = Math.max(0, Math.min(1, (value - min) / (max - min)));
+  return `hsl(${Math.round(t * 120)},78%,${38 + t * 10}%)`;
+}
+function resetRates() { A.forEach(a => a.r = [...a.d]); refresh(); }
+function sortBy(col) { sortCol = (sortCol === col) ? null : col; buildTable(); }
+function getSorted() {
+  let items = A.map((a, i) => ({ a, i }));
+  if (sortCol !== null) {
+    items.sort((x, y) => {
+      const valA = sortCol === 'cum' ? cumR(x.a.r, 3) : sortCol === 'avg' ? avgR(x.a.r) : x.a.r[sortCol];
+      const valB = sortCol === 'cum' ? cumR(y.a.r, 3) : sortCol === 'avg' ? avgR(y.a.r) : y.a.r[sortCol];
+      return valB - valA;
+    });
+  }
+  return items;
+}
+function buildTable() {
+  const sc = sortCol;
+  const avgs = A.map(a => avgR(a.r));
+  const minAvg = Math.min(...avgs), maxAvg = Math.max(...avgs);
+  let h = `<thead><tr>
+    <th class="sortable ${sc==='avg'?'active':''}" onclick="sortBy('avg')">3-Yr Avg / Yr</th>
+    <th>Asset Class</th>
+    <th class="sortable ${sc===0?'active':''}" onclick="sortBy(0)">${YR_LABELS[0]}</th>
+    <th class="sortable ${sc===1?'active':''}" onclick="sortBy(1)">${YR_LABELS[1]}</th>
+    <th class="sortable ${sc===2?'active':''}" onclick="sortBy(2)">${YR_LABELS[2]}</th>
+    <th class="cum sortable ${sc==='cum'?'active':''}" onclick="sortBy('cum')">3-Yr Cumulative</th>
+  </tr></thead><tbody>`;
+  getSorted().forEach(({ a }) => {
+    const cum = cumR(a.r, 3), avg = avgR(a.r);
+    const heat = heatColor(avg, minAvg, maxAvg);
+    h += `<tr>
+      <td><span style="font-size:13px;font-weight:700;color:${heat}">${f(avg)}</span></td>
+      <td><div class="tdname"><div class="tddot" style="background:${heat}"></div>${a.name}<span class="tdcat">${a.cat}</span></div></td>
+      <td><span class="yr-val" title="${a.why[0]}">${f(a.r[0])}</span></td>
+      <td><span class="yr-val" title="${a.why[1]}">${f(a.r[1])}</span></td>
+      <td><span class="yr-val" title="${a.why[2]}">${f(a.r[2])}</span></td>
+      <td><span class="cum-val" style="color:${heat};background:${heat.replace('hsl','hsla').replace(')',',0.12)')}">${f(cum)}</span></td>
+    </tr>`;
+  });
+  h += '</tbody>';
+  document.getElementById('rtable').innerHTML = h;
+}
+function buildCards() {
+  const sorted = [...A].sort((a, b) => cumR(b.r, 3) - cumR(a.r, 3));
+  const top = sorted[0], bot = sorted[sorted.length - 1];
+  const avgs = A.map(a => avgR(a.r));
+  const minAvg = Math.min(...avgs), maxAvg = Math.max(...avgs);
+  const topHeat = heatColor(avgR(top.r), minAvg, maxAvg);
+  const botHeat = heatColor(avgR(bot.r), minAvg, maxAvg);
+  document.getElementById('cards').innerHTML = `
+    <div class="card"><div class="card-l">Best · 3 yr cumulative</div><div class="card-v" style="color:${topHeat}">${f(cumR(top.r,3))}</div><div class="card-s">${top.name}</div></div>
+    <div class="card"><div class="card-l">Most Conservative · 3 yr</div><div class="card-v" style="color:${botHeat}">${f(cumR(bot.r,3))}</div><div class="card-s">${bot.name}</div></div>`;
+}
+function refresh() { buildCards(); buildTable(); }
+buildCards(); buildTable();
+</script>
+</body>
+</html>
