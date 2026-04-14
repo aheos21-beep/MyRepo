@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FP Summary Tool</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#16213e;--gold:#c9a84c;--gold-lt:#e8d5a3;--cream:#faf8f3;--paper:#f3efe6;--muted:#7a7065;--border:#ddd5c4;--white:#fff;--green:#2d6a4f;--red:#c0392b;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;}
+.hdr{background:var(--ink);padding:15px 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid var(--gold);}
+.hdr-t{font-family:'Playfair Display',serif;font-size:19px;color:var(--gold-lt);font-weight:600;}
+.hdr-s{font-size:11px;color:#999;margin-top:1px;}
+.hdr-right{display:flex;gap:8px;align-items:center;}
+.badge{background:rgba(201,168,76,.12);border:1px solid var(--gold);color:var(--gold-lt);font-size:11px;padding:3px 10px;border-radius:10px;}
+.stepper{display:flex;align-items:center;justify-content:center;padding:13px 28px;background:var(--paper);border-bottom:1px solid var(--border);}
+.stp{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:500;color:var(--muted);padding:4px 12px;border-radius:14px;transition:all .3s;}
+.stp.active{background:var(--ink);color:var(--gold-lt);}
+.stp.done{color:var(--green);}
+.stp-n{width:19px;height:19px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;}
+.stp.active .stp-n{background:var(--gold);color:var(--ink);}
+.stp.done .stp-n{background:var(--green);color:#fff;}
+.stp-arr{color:var(--border);padding:0 5px;font-size:15px;}
+.main{max-width:860px;margin:0 auto;padding:28px 18px;}
+.card{background:var(--white);border:1px solid var(--border);border-radius:13px;padding:26px 28px;box-shadow:0 2px 14px rgba(0,0,0,.05);margin-bottom:18px;}
+.card h2{font-family:'Playfair Display',serif;font-size:18px;margin-bottom:5px;}
+.card .sub{font-size:12.5px;color:var(--muted);margin-bottom:20px;line-height:1.6;}
+.sec-hdr{font-size:10.5px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;color:var(--muted);margin:20px 0 8px;padding-left:2px;}
+.para-list{display:flex;flex-direction:column;gap:7px;}
+.pc{border:2px solid var(--border);border-radius:9px;padding:12px 14px;cursor:pointer;transition:all .2s;display:flex;gap:11px;align-items:flex-start;background:var(--cream);}
+.pc:hover{border-color:var(--gold);background:#fdf9ef;}
+.pc.sel{border-color:var(--green);background:#f6faf7;box-shadow:0 2px 7px rgba(45,106,79,.1);}
+.pc.editing{border-color:var(--gold);background:var(--white);box-shadow:0 2px 10px rgba(201,168,76,.15);border-radius:9px 9px 0 0;}
+.pc-chk{width:19px;height:19px;min-width:19px;border-radius:4px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .2s;margin-top:2px;flex-shrink:0;}
+.pc.sel .pc-chk{background:var(--green);border-color:var(--green);color:#fff;}
+.pc.editing .pc-chk{background:var(--gold);border-color:var(--gold);color:var(--ink);}
+.pc-title{font-weight:600;font-size:13px;margin-bottom:2px;}
+.pc-prev{font-size:11.5px;color:var(--muted);line-height:1.5;}
+.pc-vars{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;}
+.vtag{background:#fff4e0;border:1px solid var(--gold-lt);color:#8a6010;font-size:10px;padding:1px 6px;border-radius:3px;font-family:monospace;}
+.edit-panel{border:2px solid var(--gold);border-top:none;border-radius:0 0 9px 9px;background:var(--white);padding:16px;margin-top:-9px;margin-bottom:4px;animation:slideDown .2s ease-out;}
+@keyframes slideDown{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:translateY(0);}}
+.edit-textarea{width:100%;border:1.5px solid var(--border);border-radius:7px;padding:12px 14px;font-size:13px;font-family:'DM Sans',sans-serif;line-height:1.7;color:var(--ink);background:var(--cream);resize:vertical;min-height:90px;transition:border-color .2s;}
+.edit-textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.15);background:var(--white);}
+.edit-hint{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.5;}
+.edit-actions{display:flex;gap:7px;justify-content:flex-end;margin-top:12px;align-items:center;}
+.var-hl{color:var(--red);font-weight:600;}
+.toolbar{display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap;align-items:center;}
+.sel-count{margin-left:auto;font-size:12.5px;color:var(--muted);}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:7px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:all .2s;}
+.btn-primary{background:var(--ink);color:var(--gold-lt);}.btn-primary:hover{background:#1e2b50;}.btn-primary:disabled{background:var(--border);color:var(--muted);cursor:not-allowed;}
+.btn-gold{background:var(--gold);color:var(--ink);font-weight:600;}.btn-gold:hover{background:#b8932e;}
+.btn-ghost{background:transparent;color:var(--ink);border:1.5px solid var(--border);}.btn-ghost:hover{border-color:var(--ink);}
+.btn-green{background:var(--green);color:#fff;}.btn-green:hover{background:#245a40;}
+.btn-sm{padding:5px 12px;font-size:11.5px;}
+.btn-row{display:flex;gap:8px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap;}
+.btn-deselect{background:none;border:1.5px solid var(--red);color:var(--red);padding:5px 12px;border-radius:7px;font-size:11.5px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .2s;margin-right:auto;}.btn-deselect:hover{background:var(--red);color:#fff;}
+.doc-preview{background:var(--white);border:1.5px solid var(--border);border-radius:10px;padding:36px 32px;max-height:65vh;overflow-y:auto;box-shadow:inset 0 2px 8px rgba(0,0,0,.04);}
+.dp-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--ink);text-align:center;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;}
+.dp-subtitle{text-align:center;font-size:13px;color:var(--muted);margin-bottom:4px;}
+.dp-date{text-align:center;font-size:12px;color:#aaa;margin-bottom:32px;}
+.dp-section{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.8px;margin-top:28px;margin-bottom:14px;padding-bottom:7px;border-bottom:2px solid var(--gold);}
+.dp-para-title{font-weight:600;font-size:14px;color:var(--ink);margin-top:18px;margin-bottom:6px;}
+.dp-para-text{font-size:13px;line-height:1.75;color:#333;white-space:pre-wrap;margin-bottom:10px;}
+.dp-var-warn{color:var(--red);font-weight:600;}
+.done{text-align:center;padding:24px;}.done-ico{font-size:50px;margin-bottom:13px;}
+.done h2{font-family:'Playfair Display',serif;font-size:22px;margin-bottom:8px;}
+.done p{color:var(--muted);font-size:13px;margin-bottom:20px;line-height:1.6;}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:center;justify-content:center;}
+.modal{background:var(--white);border-radius:13px;width:min(720px,95vw);max-height:88vh;overflow-y:auto;padding:28px;box-shadow:0 8px 40px rgba(0,0,0,.2);}
+.modal h2{font-family:'Playfair Display',serif;font-size:19px;margin-bottom:5px;}
+.modal-sub{font-size:12.5px;color:var(--muted);margin-bottom:16px;line-height:1.6;}
+.admin-notice{background:#f0f4ff;border:1px solid #c0ccee;border-radius:7px;padding:11px 14px;font-size:12px;color:#3a4a80;margin-bottom:14px;line-height:1.6;}
+.admin-para{border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px;background:var(--cream);}
+.admin-para input{width:100%;border:1px solid var(--border);border-radius:5px;padding:6px 9px;font-size:12.5px;font-family:'DM Sans',sans-serif;margin-bottom:6px;background:var(--white);color:var(--ink);}
+.admin-para textarea{width:100%;border:1px solid var(--border);border-radius:5px;padding:6px 9px;font-size:12px;font-family:'DM Sans',sans-serif;min-height:70px;resize:vertical;background:var(--white);color:var(--ink);}
+.admin-para select{border:1px solid var(--border);border-radius:5px;padding:5px 8px;font-size:12px;font-family:'DM Sans',sans-serif;background:var(--white);color:var(--ink);margin-bottom:6px;}
+.del-btn{background:none;border:none;color:var(--red);cursor:pointer;font-size:13px;float:right;padding:2px 4px;}
+.hidden{display:none!important;}
+</style>
+</head>
+<body>
+<div class="hdr"><div><div class="hdr-t">📋 FP Summary Tool</div><div class="hdr-s">Present your financial planning strategies</div></div><div class="hdr-right"><button class="btn btn-ghost btn-sm" onclick="openAdmin()">⚙ Manage Template</button><div class="badge">v3.0 · Inline Edit</div></div></div>
+<div class="stepper"><div class="stp active" id="stp1"><span class="stp-n">1</span> Select & Edit</div><div class="stp-arr">›</div><div class="stp" id="stp2"><span class="stp-n">2</span> Preview & Export</div></div>
+<div class="main">
+<div id="stage1"><div class="card">
+  <h2>Select & Edit Strategy Paragraphs</h2>
+  <p class="sub">Click a paragraph to select it — an editor will open so you can fill in <span style="color:var(--red);font-weight:600;">{variables}</span> and adjust wording. Accept to lock it in. Click any accepted paragraph again to re-edit.</p>
+  <div class="toolbar"><button class="btn btn-ghost btn-sm" onclick="selectAllAsIs()">✓ Select All</button><button class="btn btn-ghost btn-sm" onclick="deselectAll()">✕ Clear All</button><span class="sel-count" id="selCount">0 accepted</span></div>
+  <div id="paraList" class="para-list"></div>
+  <div class="btn-row"><button class="btn btn-primary" id="toPreviewBtn" onclick="goTo(2)" disabled>Continue to Preview →</button></div>
+</div></div>
+<div id="stage2" class="hidden"><div class="card" id="stage2Card">
+  <h2>Preview & Export</h2>
+  <p class="sub">Review the completed document. Any remaining <span style="color:var(--red);font-weight:600;">{variables}</span> are highlighted. Go back to fix them, or generate when ready.</p>
+  <div id="docPreview" class="doc-preview"></div>
+  <div class="btn-row" style="margin-top:22px;"><button class="btn btn-ghost" onclick="goTo(1)">← Back to Editing</button><button class="btn btn-gold" onclick="generateDoc().catch(e=>alert(e.message))">⬇ Generate Word Document</button></div>
+</div></div>
+</div>
+<div id="adminModal" class="modal-bg hidden"><div class="modal">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><h2>⚙ Template Manager</h2><button onclick="closeAdmin()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);">✕</button></div>
+  <p class="modal-sub">Add, edit, or remove paragraphs. Changes saved to your browser.</p>
+  <div class="admin-notice">💡 <strong>Variable format:</strong> Use <code style="background:#e8ecf8;padding:1px 5px;border-radius:3px;">{variable_name}</code> for client-specific values. They appear red during editing.</div>
+  <div id="adminList"></div>
+  <div class="btn-row" style="margin-top:16px;"><button class="btn btn-ghost btn-sm" onclick="addAdminPara()">+ Add Paragraph</button><button class="btn btn-primary" onclick="saveAdmin()">Save Template</button></div>
+</div></div>
+<script>
+const DEFAULT_TEMPLATE = [
+  // ─── Goals & Assumptions ───
+  {id:"partner_excluded", section:"Goals & Assumptions", title:"Partner Details Not Included",
+   text:"Although you have a spouse, you do not want to include them in your financial plan. Because of this exclusion, it is important to realize the plans' limitations. Any recommendations or findings presented would not be optimized to include income splitting strategies so would not be comprehensive. Despite this, the plan can still serve as a guide to provide you with insight."},
+
+  {id:"plan_update", section:"Goals & Assumptions", title:"Plan Update",
+   text:"This is an update to your previous financial plan completed in {Previous plan completion year}. Your current plan is starting with a net worth which is ${Dollar difference net worth} {greater/lesser} than what was originally predicted for the year {Current year}. Your original plan will be used for reference to make comparisons throughout this update."},
+
+  {id:"retirement_goal", section:"Goals & Assumptions", title:"Retirement Goal",
+   text:"{Client 1 first name} is currently employed earning ${Current Annual Income} annually and {Client 2 first name} is currently employed earning ${Client 2 annual income}. You both plan on retiring in {Retirement month} of {Year of retirement}."},
+
+  {id:"annual_expenses", section:"Goals & Assumptions", title:"Annual Expenses",
+   text:"You estimate that your current annual expenses are about ${Annual lifestyle expense} after tax and you want to maintain a similar level of lifestyle in retirement. This annual lifestyle expense will be increased annually with inflation in the plan."},
+
+  {id:"vacation_expense", section:"Goals & Assumptions", title:"Vacation Expense",
+   text:"Aside from your annual lifestyle expense, you want to also assume an annual vacation expense of ${Vacation Expense}, which would increase with inflation. You anticipate this expense will last until the first person turns age {Age the vacation expense ends} in the plan."},
+
+  {id:"salary_continuation", section:"Goals & Assumptions", title:"Salary Continuation",
+   text:"As part of your retirement package, you are receiving a salary continuation of ${Salary Continuation} in total, which will be paid to you {Frequency of Salary Continuation} up to and including {last month and year of salary continuance}."},
+
+  {id:"long_term_care", section:"Goals & Assumptions", title:"Long Term Care",
+   text:"For the purposes of this plan it is assumed that at {Client 1 First Name} age {age long term care starts} your expenses will increase by $50,000 annually to cover assumed long term care costs."},
+
+  {id:"private_school", section:"Goals & Assumptions", title:"Children's Private School",
+   text:"{Child(ren) name(s)} {are/is} attending private school at a cost of ${Private School cost} each, and will do so until they graduate from high school. An annual expense was added separate to your lifestyle expenses to account for this until their graduation."},
+
+  {id:"childrens_education", section:"Goals & Assumptions", title:"Children's Education",
+   text:"The children's education will be addressed firstly with RESP savings and then from your pre-retirement cashflow. The plan will factor in annual educational expenses assuming costs of ${Post Secondary Education Cost} per child for {number of years covered} years each when they turn age 18."},
+
+  {id:"dependent_child", section:"Goals & Assumptions", title:"Dependent Child",
+   text:"Your {son/daughter} {Dependent Child first name} is a dependent whom you are currently supporting financially. One of your focuses for the plan is to make sure you can continue this assistance into retirement and beyond. You want to make sure that there will be enough of a financial cushion when you pass away to make sure care is provided."},
+
+  {id:"primary_residence", section:"Goals & Assumptions", title:"Primary Residence",
+   text:"You own your primary residence which is free and clear of any mortgage and which you currently value at ${Primary Residence Market value}. For the purpose of this plan it was assumed that you will not sell or downsize this property, but will keep it until the end of the projection."},
+
+  {id:"downsize_residence", section:"Goals & Assumptions", title:"Downsize Residence",
+   text:"You are looking to downsize your primary residence in {Year you will downsize}. You are expecting to sell your home for ${Price home will be sold for} and anticipate purchasing a new home in the range of ${New Home Value} in today's dollars. The remaining proceeds after closing costs were directed to your investments in the plan."},
+
+  {id:"rental_property", section:"Goals & Assumptions", title:"Rental Property",
+   text:"You own a rental property that you currently value at ${Rental Property current value}. Your rental property earns you ${Net Rental Income} in net monthly income. You expect to keep your rental property until {When will you sell your rental property}."},
+
+  {id:"renovations", section:"Goals & Assumptions", title:"Renovations",
+   text:"You expect to incur renovation costs over the period of {period of renovation costs}, which you want to incorporate into your financial plan. In order to incorporate this, an expense of ${Annual renovation costs} was added to the years {Year Renovations start} and {Year renovations end} to account for these costs."},
+
+  {id:"mortgage_repayment", section:"Goals & Assumptions", title:"Mortgage Repayment",
+   text:"You currently have the following mortgages:\n\nMortgage (1) is ${Mortgage 1 balance} with payments of ${Mortgage 1 payment} {monthly/bi-weekly}. You plan on paying this out in {Mortgage 1 payoff date}.\n\nMortgage (2) is ${Mortgage 2 balance} with payments of ${Mortgage 2 payment} {monthly/bi-weekly}. You plan on paying this out in {Mortgage 2 payoff date}."},
+
+  {id:"inheritance", section:"Goals & Assumptions", title:"Inheritance",
+   text:"For the purposes of this plan it is assumed that {Client receiving inheritance} will receive an inheritance of ${Inheritance amount} in {inheritance in number of years} years' time. This sum will be brought into your cashflow in the corresponding year."},
+
+  {id:"assisting_children", section:"Goals & Assumptions", title:"Assisting Children",
+   text:"You want to be able to assist your children with their weddings. The plan assumes an expense of ${Cost of wedding} for each child at their age {age of child at wedding}."},
+
+  {id:"new_car", section:"Goals & Assumptions", title:"New Car Purchase",
+   text:"Every {Frequency of car purchase in years} years starting in {Year of first car purchase} we have added an expense of ${Car Purchase cost} which increases with inflation, to account for new car purchases in the future."},
+
+  {id:"return_of_premiums", section:"Goals & Assumptions", title:"Return of Premiums (Critical Illness)",
+   text:"In {Premium Return Year}, the plan will assume you receive a return of premiums on your insurance policy of ${Return of premium amount} to be injected into your cashflow in that year."},
+
+  {id:"assumptions", section:"Goals & Assumptions", title:"Plan Assumptions",
+   text:"Year 1 in the plan is {Current Year of plan}. The plan was projected to your ages {Final Age}. In the plan Inflation is assumed at 2.5% annually. In the plan your Real Estate assets are assumed to grow at a rate of 2.5% annually. Investment returns were assumed to grow at {Investment Return Rate}% net of fees, representing a balanced risk portfolio mix and calculated using historical rate of return data."},
+
+  {id:"cpp_will_receive_1", section:"Goals & Assumptions", title:"CPP — Will Receive (Client 1)",
+   text:"CPP (Canada Pension Plan) — {Client 1 first name} will receive payments of ${monthly CPP Client 1} monthly at age {age CPP client 1}."},
+
+  {id:"cpp_will_receive_2", section:"Goals & Assumptions", title:"CPP — Will Receive (Client 2)",
+   text:"CPP (Canada Pension Plan) — {Client 2 first name} will receive payments of ${monthly CPP Client 2} monthly at age {age CPP client 2}."},
+
+  {id:"cpp_currently_1", section:"Goals & Assumptions", title:"CPP — Currently Receiving (Client 1)",
+   text:"CPP (Canada Pension Plan) — {Client 1 first name} is currently receiving payments of ${monthly CPP Client 1} monthly."},
+
+  {id:"cpp_currently_2", section:"Goals & Assumptions", title:"CPP — Currently Receiving (Client 2)",
+   text:"CPP (Canada Pension Plan) — {Client 2 first name} is currently receiving payments of ${monthly CPP Client 2} monthly."},
+
+  {id:"oas_client1", section:"Goals & Assumptions", title:"OAS — Currently Receiving (Client 1)",
+   text:"OAS (Old Age Security) — {Client 1 first name} is currently receiving payments of ${monthly OAS client 1} monthly."},
+
+  {id:"oas_client2", section:"Goals & Assumptions", title:"OAS — Currently Receiving (Client 2)",
+   text:"OAS (Old Age Security) — {Client 2 first name} is currently receiving payments of ${monthly OAS client 2} monthly."},
+
+  {id:"oas_estimated", section:"Goals & Assumptions", title:"OAS — Estimated",
+   text:"OAS (Old Age Security) payments were estimated assuming 40 years of residency in Canada at retirement."},
+
+  {id:"cpp_survivor", section:"Goals & Assumptions", title:"CPP Survivor Benefit",
+   text:"CPP Survivor Benefit — {Client first name} is currently receiving CPP Survivor benefit payments of ${monthly Survivor Benefit} monthly."},
+
+  {id:"defined_benefit", section:"Goals & Assumptions", title:"Defined Benefit Pension",
+   text:"{First name of client receiving pension} is receiving pension payments of ${monthly pension} per month from their {Employer Name} pension. These payments are indexed by 2% annually to adjust for inflation."},
+
+  {id:"no_pension", section:"Goals & Assumptions", title:"No Company Pension",
+   text:"You do not have a company pension plan from any current or previous employer."},
+
+  {id:"no_insurance", section:"Goals & Assumptions", title:"No Life Insurance Disclosed",
+   text:"You did not disclose ownership of any life insurance policies."},
+
+  {id:"insurance_policies", section:"Goals & Assumptions", title:"Insurance Policies",
+   text:"You own the following insurance policies:\n\n{Life Insurance Policies}"},
+
+  {id:"savings_strategies", section:"Goals & Assumptions", title:"Pre-Retirement Savings Strategies",
+   text:"Your current pre-retirement savings strategies include:\n\n{Savings Strategies}"},
+
+  {id:"income_splitting_assumption", section:"Goals & Assumptions", title:"Income Splitting Assumption",
+   text:"It is assumed in the plan that in retirement you will be equalizing incomes by splitting claim of RSP withdrawals and/or pension income (up to 50%) in your income tax returns to increase tax efficiency."},
+
+  // ─── Tax Planning ───
+  {id:"rsp_contributions", section:"Tax Planning", title:"RSP Contributions",
+   text:"Although the plan reflects your current investment savings strategy, it is highly recommended if you have extra savings during your pre-retirement period that you direct this to maximizing your RSPs. At your level of income this is the best method to invest from a tax perspective."},
+
+  {id:"tfsa", section:"Tax Planning", title:"TFSA",
+   text:"We recommend you top up your tax free savings account(s) annually going forward. Contributions can be made primarily by transferring from non-registered assets in years of cashflow deficit. TFSAs are a great method for tax deferred investment growth, and should be the last source of income you tap into in retirement."},
+
+  {id:"resp", section:"Tax Planning", title:"RESP",
+   text:"We recommend you continue putting ${RESP contribution} annually toward the RESP until {your children/your child} reach the age of 17, where there will no longer be a matching grant amount. Provided {each/your} child will not require more than ${Max annual education coverage} annually as per the findings for their education costs, it is not required to save further for this."},
+
+  {id:"spousal_rsp", section:"Tax Planning", title:"Spousal RSP",
+   text:"A Spousal RSP can be a good strategy for income splitting. The lower income individual can use a spousal RSP that the higher income individual would contribute to accumulate wealth. The lower income individual could then withdraw funds from the Spousal RSP in later years (if lower income), provided there has not been a contribution made within 3 years, at lower tax rates."},
+
+  {id:"rif_conversion", section:"Tax Planning", title:"RIF Conversion",
+   text:"An analysis was done to determine the best time to convert your RSP to a RIF. Based on our analysis you would benefit from ${lower end of benefit} to ${higher end of benefit} if the last person dies before age {age of last death}, by {pushing back your RIF conversion to age 71 / Converting your RSPs to RIFs when you retire}, and then take minimum payments."},
+
+  {id:"rif_spouse_age", section:"Tax Planning", title:"RRIF Minimum — Spouse's Age",
+   text:"The annuitant of a RIF can elect (when setting up the minimum payment) to use the age of their spouse or common law partner (if the spouse or common law partner is younger than the annuitant) in calculating the minimum payout percentages for RRIFs. This can be quite advantageous as the annuitant can withdraw less based on a younger spouse's age. This strategy may be useful if there is a large difference in age."},
+
+  {id:"pension_income_credit", section:"Tax Planning", title:"Pension Income Tax Credit",
+   text:"If you do not receive a company pension in retirement, you can consider converting part of your RSP to a RIF at age 65 to capture the pension income tax credit. With withdrawals of $2,000 annually you can trigger the full pension income tax credit when you complete your income taxes."},
+
+  {id:"cpp_survivor_benefit", section:"Tax Planning", title:"CPP with Survivor Benefit",
+   text:"When receiving a survivor benefit, the best time to enrol in your CPP may be tricky as the two benefits would be combined and you cannot receive more than the annual maximum benefit of CPP. If the combined amount of your survivor and CPP benefit do not reach the maximum however, there is an increasing benefit by delaying enrolment. For every month CPP is delayed, a 0.7% per month increase to the benefit will occur to a maximum of 42%. The more confident you are in your life expectancy, the more attractive the deferral becomes."},
+
+  {id:"cpp_deferral", section:"Tax Planning", title:"CPP Deferral",
+   text:"Although we assumed a CPP starting date at age 65 in line with convention, it is worth considering taking CPP at a later date. We recommend not applying for CPP until age 70 to increase these payments. For every month CPP is delayed, a 0.7% per month increase to the benefit will occur to a maximum of 42%. The more confident you are in your life expectancy, the more attractive the deferral becomes."},
+
+  {id:"cpp_exception", section:"Tax Planning", title:"CPP Exception (Post-65 Work)",
+   text:"If you work past age 65 and are not yet receiving CPP pension benefits, you must still contribute to the CPP. However, if you were already eligible for maximum CPP pension benefits as of age 65, this would mean that any contributions made to CPP between ages 65 and 70 would not further increase CPP pension benefits. In this case, you would benefit by receiving CPP at age 65 as your contributions would give you post-retirement benefits in addition."},
+
+  {id:"oas_clawback", section:"Tax Planning", title:"OAS Clawback Analysis",
+   text:"Based on your level of projected income in retirement you will {not} be subject to a partial Old Age Security clawback. Currently the income level for OAS clawback begins at $93,454 and is fully clawed back at $157,490 (in 2025)."},
+
+  {id:"cpp_sharing", section:"Tax Planning", title:"Sharing of CPP Benefits Between Spouses",
+   text:"It is possible to equalize CPP benefits between spouses and to gain tax benefits as long as both are at least 60 and receive a CPP pension. Such benefit sharing can take place even when only one spouse is receiving CPP retirement benefits. In order to share CPP benefits, the spouses must file Form ISP1002 available on the Service Canada website. Using this rule, a spouse can receive a maximum of 50% of the other spouse's CPP retirement benefit."},
+
+  {id:"education_funding", section:"Tax Planning", title:"Education Funding",
+   text:"Based on your RESP savings to date and continued growth you should be able to fund your {child's/children's} education for {number of years you could fund education} years each with annual spending for each of about ${annual amount you can fund education}."},
+
+  {id:"excess_income", section:"Tax Planning", title:"Excess Income Years",
+   text:"According to our projections you will have several years where you will have excess cashflow. It is highly recommended that you top up your TFSAs first, then look to add to your non-registered investments in order to have your money continue to grow and keep up with inflation."},
+
+  {id:"insurance_review", section:"Tax Planning", title:"Insurance Review",
+   text:"You may want to review insurance coverage as you transition into retirement and your focus might turn from coverage of income due to disability and death, to retirement and estate planning. This change in focus might require a change in insurance policy strategy."},
+
+  {id:"whole_life_corp", section:"Tax Planning", title:"Corporate Whole Life Insurance",
+   text:"Whole life insurance can offer several benefits for a corporation in Canada, including tax-advantaged investment growth within the policy, asset protection from creditors, estate planning benefits for transferring wealth to future generations, and a tax-free death benefit for the corporation's beneficiaries. It's important to note that the benefits of whole life insurance can vary depending on the specific circumstances of the corporation and the policy itself."},
+
+  {id:"cottage_primary", section:"Tax Planning", title:"Cottage as Primary Residence",
+   text:"Your cottage can be designated as a principal residence (even if you don't use it as your primary residence) as long as it is \"ordinarily inhabited\" at some point during the year. The CRA doesn't consider incidental or occasional rental of a property sufficient to prevent it from qualifying as a principal residence. Generally, the surrounding land in excess of a half-hectare (approximately 1.24 acres) is deemed not to qualify as part of the principal residence, unless the taxpayer can prove that its use is necessary to the continued use and enjoyment of the residence."},
+
+  {id:"disability_programs", section:"Tax Planning", title:"Disability Programs",
+   text:"If you have not already done so, you may inquire about disability benefits programs through provincial and federal governments such as ODSP (Ontario Disability Support Program) and the federal disability tax credit to assist with current needs."},
+
+  {id:"henson_trust", section:"Tax Planning", title:"Henson Trust",
+   text:"You could consider a Henson Trust to flow through the portion of your estate to be administered by a third party upon your passing. A Henson trust is a type of trust used in Canada to provide financial support to a disabled individual while not affecting their eligibility for provincial and federal benefits. Key features include: Privacy of trust arrangements, protection from creditors, protection of government benefit eligibility, and reduced estate taxes on trust assets."},
+
+  // ─── Retirement Planning ───
+  {id:"ret_goal_achievable", section:"Retirement Planning", title:"Retirement Goal — Achievable",
+   text:"Your retirement lifestyle expense goal is {achievable / not achievable}. This is sustainable from your retirement income sources and allows for you to retain {Net worth retained}% of your current net worth at age {final age}."},
+
+  {id:"final_net_worth", section:"Retirement Planning", title:"Final Net Worth",
+   text:"By the end of the projection you will have an estimated net worth of ${final net worth}. That is ${Final net worth in today's dollars} in today's dollars and would consist of your primary residence and projected investment assets."},
+
+  {id:"increase_spending", section:"Retirement Planning", title:"Increase Retirement Spending",
+   text:"According to plan projections you can afford an increased lifestyle expense of up to ${increased lifestyle expense} annually and your investment assets would only be depleted at age {final age}. This would be an increase of ${increase in annual spending} in annual retirement spending, without needing to sell your properties."},
+
+  {id:"retire_earlier", section:"Retirement Planning", title:"Retire Earlier",
+   text:"According to plan projections you could afford to retire early at age {earlier retirement ages} respectively, while supporting your requested lifestyle expense of ${lifestyle expense} after tax annually and your assets would not be depleted before age {final age}."},
+
+  {id:"plan_comparison", section:"Retirement Planning", title:"Comparison to Previous Plan",
+   text:"You are starting with a higher projected balance for the year {current year}, and your new projected net worth at age {final age} is now approximately ${difference in final net worth} greater. Your new plan update reflects that you are only slightly {ahead of / behind} track compared to what was previously projected."},
+
+  // ─── Estate Planning ───
+  {id:"estate_taxes", section:"Estate Planning", title:"Estate Taxes",
+   text:"An integral part of financial planning includes how to plan for the eventuality of your estate once you pass away. Your estate consists of all the assets and liabilities under your name. Probate is a legal process that must be completed in order for a person's estate to be administered correctly. Your primary residence and tax free savings accounts would not create a tax liability to your estate, however your RSPs (if no surviving spouse), non-registered investments and any secondary properties would be subject to some form of tax."},
+
+  {id:"lifetime_gifts", section:"Estate Planning", title:"Lifetime Gifts / Charitable Donations",
+   text:"With a disproportionately large amount of non-registered investments, you may consider if you will be needing them during retirement. If you intend to gift to a lower earning beneficiary, you can do this early to reduce your taxable income. Alternatively, if you were considering gifting to a charity, there are favourable tax benefits if you gift company shares in kind."},
+
+  {id:"real_estate_holdings", section:"Estate Planning", title:"Considerable Real Estate Holdings",
+   text:"Your net worth will grow disproportionately, with your properties increasing their share over time. You may want to consider selling greater portions later in retirement to better diversify your assets, reduce deferred tax on capital gains, and lower your involvement as a landlord."},
+
+  {id:"gifting_rental", section:"Estate Planning", title:"Gifting of Rental Properties",
+   text:"When gifting property in kind you need to be aware that although Canada does not have a gift tax, you may be susceptible to pay taxes on capital gains accrued as this would be considered a deemed disposition. This would however benefit you in that future capital gains would no longer accrue to you, and it is assumed your children would be in lower tax brackets which would further benefit."},
+
+  {id:"joint_partner_trust", section:"Estate Planning", title:"Joint Partner Trust",
+   text:"If you are both over age 65 you could establish a joint partner trust, which would allow you to transfer the property tax deferred into a trust. However, only you and your partner could benefit from the trust income during your lives, so you — not your children — would be the initial beneficiaries. On your deaths, the property would pass to your children without probate fees applicable."},
+
+  {id:"charity_insurance", section:"Estate Planning", title:"Charitable Donation via Life Insurance",
+   text:"A taxpayer may be able to reap immediate tax benefits by naming a charity as the beneficiary of a life insurance policy and irrevocably assigning ownership of the policy to the charity. In addition to receiving a donation tax credit for the fair market value of the policy, the individual may be able to claim donation tax credits for any insurance premiums paid after the assignment. Clients donating life insurance policies should seek expert legal and tax advice on how to structure the donation to maximize its tax benefits."},
+
+  {id:"us_estate_cdn", section:"Estate Planning", title:"US Estate Taxes — Canadian Citizen",
+   text:"For a Canadian citizen who is not a U.S. citizen, U.S. estate tax can apply to U.S. situs assets such as U.S. stocks and U.S. real estate. If your worldwide estate is below the U.S. estate tax exemption (about USD 13.99 million for 2025), the Canada–U.S. tax treaty generally allows your estate to use a proportionate share of the U.S. unified credit so that no U.S. estate tax is payable, though a U.S. filing is still required once U.S. assets exceed USD 60,000."},
+
+  {id:"us_estate_us_citizen", section:"Estate Planning", title:"US Estate Taxes — US Citizen in Canada",
+   text:"For a U.S. citizen living in Canada, U.S. estate tax applies to your worldwide assets, regardless of where you reside. If your worldwide estate is below the U.S. exemption (about USD 13.99 million for 2025), no U.S. federal estate tax is generally payable; if it may exceed this amount, strategies such as lifetime gifting, trust planning, and life insurance should be reviewed with a qualified cross-border tax and estate specialist."},
+
+  {id:"secondary_will", section:"Estate Planning", title:"Secondary Will (Dual Will)",
+   text:"If not already in place, consider utilizing a secondary will strategy to deal with your corporate holdings. If drawn up properly, this document will allow your corporate assets to bypass probate (estate administration tax) which could result in significant savings for your estate. The current estate administration tax in Ontario is 1.5% on the value of assets above $50,000. An additional benefit of a secondary will is privacy, as the contents of a non-probated will are generally not subject to public disclosure."},
+
+  {id:"update_will", section:"Estate Planning", title:"Update Will and POA",
+   text:"Ensure that you take steps to draft and periodically update your Wills and Powers of Attorney. It is recommended that a proper estate plan is in place to ensure that wealth is directed in an efficient manner to the intended recipients and increase the after-tax flow of assets to the beneficiaries. You should review the beneficiaries named on your registered accounts and pension plans to ensure that they reflect the intentions of your Will."}
+];
+
+let template=[], acceptedIds=new Set(), editedTexts={}, currentlyEditing=null;
+
+function loadTemplate(){try{const s=localStorage.getItem('fp_template_v2');if(s)return JSON.parse(s);}catch(e){}return JSON.parse(JSON.stringify(DEFAULT_TEMPLATE));}
+function saveTemplate(t){localStorage.setItem('fp_template_v2',JSON.stringify(t));}
+function extractVars(t){return[...new Set((t.match(/\{[^}]+\}/g)||[]))];}
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function renderParaList(){
+  const c=document.getElementById('paraList');c.innerHTML='';
+  const secs=[...new Set(template.map(p=>p.section))];
+  secs.forEach(sec=>{
+    const lbl=document.createElement('div');lbl.className='sec-hdr';lbl.textContent=sec;c.appendChild(lbl);
+    template.filter(p=>p.section===sec).forEach(para=>{
+      const isAcc=acceptedIds.has(para.id), isEd=currentlyEditing===para.id;
+      const vars=extractVars(para.text), displayText=editedTexts[para.id]||para.text;
+      const div=document.createElement('div');
+      div.className='pc'+(isAcc?' sel':'')+(isEd?' editing':'');
+      if(!isEd) div.onclick=()=>openEditor(para.id);
+      let prev='';
+      if(isAcc&&!isEd){
+        prev=escHtml(displayText).replace(/\{[^}]+\}/g,'<span class="var-hl">$&</span>');
+        if(prev.length>250) prev=prev.substring(0,250)+'…';
+      }
+      div.innerHTML='<div class="pc-chk">'+(isAcc?'✓':(isEd?'✎':''))+'</div><div style="flex:1;min-width:0;"><div class="pc-title">'+escHtml(para.title)+(isAcc&&!isEd?' <span style="font-size:10px;color:var(--green);font-weight:500;margin-left:6px;">ACCEPTED</span>':'')+'</div>'+(prev?'<div class="pc-prev">'+prev+'</div>':'')+'</div>';
+      c.appendChild(div);
+      if(isEd){
+        const panel=document.createElement('div');panel.className='edit-panel';panel.id='ep-'+para.id;
+        const hasVars=extractVars(displayText).length>0;
+        panel.innerHTML='<textarea class="edit-textarea" id="ta-'+para.id+'" oninput="onEditInput(\''+para.id+'\',this)">'+escHtml(displayText)+'</textarea><div class="edit-hint">'+(hasVars?'💡 Replace <span style="color:var(--red);font-weight:600;">{variables}</span> with client values. Edit any wording too.':'✏️ Edit wording as needed, or accept as-is.')+'</div><div class="edit-actions"><button class="btn-deselect" onclick="event.stopPropagation();cancelEditor(\''+para.id+'\')">✕ Deselect</button><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();closeEditor()">Cancel</button><button class="btn btn-green btn-sm" onclick="event.stopPropagation();acceptPara(\''+para.id+'\')">✓ Accept</button></div>';
+        c.appendChild(panel);
+        requestAnimationFrame(()=>{const ta=document.getElementById('ta-'+para.id);if(ta){ta.style.height='auto';ta.style.height=Math.max(90,ta.scrollHeight+4)+'px';ta.focus();}});
+      }
+    });
+  });
+  const n=acceptedIds.size;
+  document.getElementById('selCount').textContent=n+' accepted';
+  document.getElementById('toPreviewBtn').disabled=n===0;
+}
+
+function openEditor(id){
+  if(currentlyEditing&&currentlyEditing!==id){const ta=document.getElementById('ta-'+currentlyEditing);if(ta)editedTexts[currentlyEditing]=ta.value;}
+  if(!(id in editedTexts)) editedTexts[id]=template.find(p=>p.id===id).text;
+  currentlyEditing=id; renderParaList();
+  requestAnimationFrame(()=>{const el=document.getElementById('ep-'+id);if(el)el.scrollIntoView({behavior:'smooth',block:'nearest'});});
+}
+function closeEditor(){if(currentlyEditing){const ta=document.getElementById('ta-'+currentlyEditing);if(ta)editedTexts[currentlyEditing]=ta.value;}currentlyEditing=null;renderParaList();}
+function onEditInput(id,ta){editedTexts[id]=ta.value;ta.style.height='auto';ta.style.height=Math.max(90,ta.scrollHeight+4)+'px';}
+function acceptPara(id){const ta=document.getElementById('ta-'+id);if(ta)editedTexts[id]=ta.value;acceptedIds.add(id);currentlyEditing=null;renderParaList();}
+function cancelEditor(id){acceptedIds.delete(id);delete editedTexts[id];currentlyEditing=null;renderParaList();}
+function selectAllAsIs(){template.forEach(p=>{if(!acceptedIds.has(p.id)){if(!(p.id in editedTexts))editedTexts[p.id]=p.text;acceptedIds.add(p.id);}});currentlyEditing=null;renderParaList();}
+function deselectAll(){acceptedIds.clear();editedTexts={};currentlyEditing=null;renderParaList();}
+
+function goTo(n){
+  if(currentlyEditing){const ta=document.getElementById('ta-'+currentlyEditing);if(ta)editedTexts[currentlyEditing]=ta.value;currentlyEditing=null;}
+  [1,2].forEach(i=>{document.getElementById('stage'+i).classList.toggle('hidden',i!==n);const s=document.getElementById('stp'+i);s.classList.remove('active','done');if(i===n)s.classList.add('active');else if(i<n)s.classList.add('done');});
+  if(n===1)renderParaList();
+  if(n===2)renderDocPreview();
+}
+
+function renderDocPreview(){
+  const p=document.getElementById('docPreview');
+  const sel=template.filter(p=>acceptedIds.has(p.id));
+  const secs=[...new Set(sel.map(p=>p.section))];
+  const d=new Date().toLocaleDateString('en-CA',{year:'numeric',month:'long',day:'numeric'});
+  let h='<div class="dp-title">Financial Plan Summary</div><div class="dp-subtitle">Prepared for: Client</div><div class="dp-date">'+d+'</div>';
+  secs.forEach(sec=>{
+    h+='<div class="dp-section">'+escHtml(sec)+'</div>';
+    sel.filter(x=>x.section===sec).forEach(x=>{
+      const t=editedTexts[x.id]||x.text;
+      h+='<div class="dp-para-title">'+escHtml(x.title)+'</div><div class="dp-para-text">'+escHtml(t).replace(/\{[^}]+\}/g,'<span class="dp-var-warn">$&</span>')+'</div>';
+    });
+  });
+  p.innerHTML=h;
+}
+
+function xmlEsc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;');}
+function mkP(text,o={}){
+  const{bold=false,size=22,color='333333',spaceAfter=120,spaceBefore=0,align='left',caps=false,bb=false}=o;
+  const jc=align==='center'?'<w:jc w:val="center"/>':'';
+  const bdr=bb?'<w:pBdr><w:bottom w:val="single" w:sz="6" w:space="1" w:color="C9A84C"/></w:pBdr>':'';
+  return '<w:p><w:pPr>'+jc+bdr+'<w:spacing w:before="'+spaceBefore+'" w:after="'+spaceAfter+'"/></w:pPr><w:r><w:rPr>'+(bold?'<w:b/>':'')+(caps?'<w:caps/>':'')+'<w:color w:val="'+color+'"/><w:sz w:val="'+size+'"/><w:szCs w:val="'+size+'"/><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/></w:rPr><w:t xml:space="preserve">'+xmlEsc(text)+'</w:t></w:r></w:p>';
+}
+
+async function generateDoc(){
+  const sel=template.filter(p=>acceptedIds.has(p.id));
+  const secs=[...new Set(sel.map(p=>p.section))];
+  const d=new Date().toLocaleDateString('en-CA',{year:'numeric',month:'long',day:'numeric'});
+  let b='';
+  b+=mkP('FINANCIAL PLAN SUMMARY',{bold:true,size:36,color:'16213E',spaceAfter:160,align:'center',caps:true});
+  b+=mkP('Prepared for: Client',{size:24,color:'444444',spaceAfter:80,align:'center'});
+  b+=mkP('Date: '+d,{size:20,color:'888888',spaceAfter:360,align:'center'});
+  secs.forEach(sec=>{
+    b+=mkP(sec,{bold:true,size:26,color:'16213E',spaceBefore:360,spaceAfter:160,bb:true,caps:true});
+    sel.filter(p=>p.section===sec).forEach(p=>{
+      b+=mkP(p.title,{bold:true,size:23,color:'16213E',spaceBefore:200,spaceAfter:80});
+      (editedTexts[p.id]||p.text).split('\n').forEach(ln=>{
+        if(ln.trim()==='')b+='<w:p><w:pPr><w:spacing w:after="60"/></w:pPr></w:p>';
+        else b+=mkP(ln,{size:21,color:'222222',spaceAfter:100});
+      });
+    });
+  });
+  const docXml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><w:body>'+b+'<w:sectPr><w:pgSz w:w="12240" w:h="15840"/><w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440"/></w:sectPr></w:body></w:document>';
+  const rels='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>';
+  const styles='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/><w:sz w:val="22"/><w:szCs w:val="22"/></w:rPr></w:rPrDefault></w:docDefaults></w:styles>';
+  const ct='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/></Types>';
+  const rr='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>';
+  const zip=new JSZip();zip.file('[Content_Types].xml',ct);zip.file('_rels/.rels',rr);zip.file('word/document.xml',docXml);zip.file('word/styles.xml',styles);zip.file('word/_rels/document.xml.rels',rels);
+  const blob=await zip.generateAsync({type:'blob',mimeType:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='Financial_Plan_'+new Date().getFullYear()+'.docx';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  document.getElementById('stage2Card').innerHTML='<div class="done"><div class="done-ico">✅</div><h2>Document Generated!</h2><p>Your financial plan has been downloaded as a <strong>.docx</strong> Word file with <strong>'+sel.length+' section'+(sel.length!==1?'s':'')+'</strong>.</p><div style="display:flex;gap:10px;justify-content:center;"><button class="btn btn-ghost" onclick="startNew()">← Start New Plan</button></div></div>';
+}
+function startNew(){
+  acceptedIds.clear();editedTexts={};currentlyEditing=null;renderParaList();goTo(1);
+  document.getElementById('stage2Card').innerHTML='<h2>Preview & Export</h2><p class="sub">Review the completed document. Any remaining <span style="color:var(--red);font-weight:600;">{variables}</span> are highlighted. Go back to fix them, or generate when ready.</p><div id="docPreview" class="doc-preview"></div><div class="btn-row" style="margin-top:22px;"><button class="btn btn-ghost" onclick="goTo(1)">← Back to Editing</button><button class="btn btn-gold" onclick="generateDoc().catch(e=>alert(e.message))">⬇ Generate Word Document</button></div>';
+}
+
+let adminBuffer=[];
+function openAdmin(){adminBuffer=JSON.parse(JSON.stringify(template));renderAdminList();document.getElementById('adminModal').classList.remove('hidden');}
+function closeAdmin(){document.getElementById('adminModal').classList.add('hidden');}
+function renderAdminList(){
+  const list=document.getElementById('adminList');list.innerHTML='';
+  const secs=[...new Set(adminBuffer.map(p=>p.section))];
+  secs.forEach(sec=>{
+    const lbl=document.createElement('div');lbl.className='sec-hdr';lbl.textContent=sec;list.appendChild(lbl);
+    adminBuffer.filter(p=>p.section===sec).forEach(p=>{
+      const idx=adminBuffer.indexOf(p);const div=document.createElement('div');div.className='admin-para';
+      div.innerHTML='<button class="del-btn" onclick="deleteAdminPara('+idx+')" title="Delete">✕</button><input value="'+p.title.replace(/"/g,'&quot;')+'" placeholder="Title" oninput="adminBuffer['+idx+'].title=this.value"><select onchange="adminBuffer['+idx+'].section=this.value">'+['Goals & Assumptions','Tax Planning','Retirement Planning','Estate Planning'].map(s=>'<option'+(s===p.section?' selected':'')+'>'+s+'</option>').join('')+'</select><textarea placeholder="Paragraph text" oninput="adminBuffer['+idx+'].text=this.value">'+p.text.replace(/</g,'&lt;')+'</textarea>';
+      list.appendChild(div);
+    });
+  });
+}
+function deleteAdminPara(idx){if(confirm('Delete this paragraph?')){adminBuffer.splice(idx,1);renderAdminList();}}
+function addAdminPara(){adminBuffer.push({id:'custom_'+Date.now(),section:'Goals & Assumptions',title:'New Paragraph',text:''});renderAdminList();}
+function saveAdmin(){template=JSON.parse(JSON.stringify(adminBuffer));saveTemplate(template);closeAdmin();renderParaList();alert('Template saved!');}
+
+window.onload=()=>{template=loadTemplate();renderParaList();};
+</script>
+</body>
+</html>
