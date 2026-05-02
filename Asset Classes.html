@@ -95,8 +95,8 @@ const A = [
   {
     id:'us-div', name:'US Dividend Stocks', cat:'Equity',
     color:'#3fb950',
-    r:[3.0, 3.5, 4.0], d:[3.0, 3.5, 4.0],
-    why:['Goldman bear case: S&P 5,400 oil-shock scenario now partially playing out with WTI at $100; BofA most conservative at 4% total return for 2026; valuations at 21x forward earnings historically elevated; dividend yield (~2%) offsets limited capital appreciation; Iran conflict introduces stagflationary headwind','BofA pessimistic: earnings growth slows as AI capex ROI questioned; 19x valuation floor in bear case; dividend income becomes primary return driver as multiples compress','Mean reversion from elevated valuations; rate environment stable; slower earnings normalisation; dividend income sustains returns as growth moderates']
+    r:[7, 7, 7], d:[7, 7, 7],
+    why:['US dividend stocks; consensus 7% total return in 2026; defensive yield ~3% + modest cap gains; MS/Goldman bullish','US dividend stocks; consensus 7% total return in 2026; defensive yield ~3% + modest cap gains; MS/Goldman bullish','US dividend stocks; consensus 7% total return in 2026; defensive yield ~3% + modest cap gains; MS/Goldman bullish']
   },
   {
     id:'gold', name:'Gold', cat:'Commodity',
@@ -149,8 +149,8 @@ const A = [
   {
     id:'us-tech', name:'US Tech Stocks', cat:'Equity',
     color:'#0ea5e9',
-    r:[13.0, 10.0, 8.0], d:[13.0, 10.0, 8.0],
-    why:['Goldman: S&P 7,600 year-end (+12%); EPS $309/share in 2026 (+12% growth); Morgan Stanley 7,800; Citi 7,700; consensus ~7,600; NASDAQ and tech outperform S&P by 1-3% on AI productivity thesis; Iran conflict introduces downside risk to oil-shock bear case (S&P 5,400)','Goldman: EPS $342 in 2027 (+10% growth); AI monetisation ROI improving as enterprise adoption deepens; earnings multiples ~21x supported; tech earnings contribution rising $70 → $92 per S&P share','Growth normalising but AI structural tailwind persists; rate environment stable; infrastructure spend matures from buildout to monetisation; multiple compression possible but EPS growth sustains returns']
+    r:[12, 10, 9], d:[12, 10, 9],
+    why:['US tech outperforming; AI investment cycle driving earnings; consensus 12% Y1; Goldman/MS most bullish on tech','US tech outperforming; AI investment cycle driving earnings; consensus 12% Y1; Goldman/MS most bullish on tech','US tech outperforming; AI investment cycle driving earnings; consensus 12% Y1; Goldman/MS most bullish on tech']
   },
   {
     id:'hisa', name:'HISA (Canada)', cat:'Cash',
@@ -179,8 +179,8 @@ const A = [
   {
     id:'palladium', name:'Palladium', cat:'Commodity',
     color:'#c084fc',
-    r:[3.0, 2.0, -2.0], d:[3.0, 2.0, -2.0],
-    why:['Reuters poll: analyst median $1,262.50/oz avg 2026; Heraeus range $950-$1,500; structural deficit persists through 2027 on Russia supply tightness; EV penetration 18-20% by 2027 gradually pressures ICE demand; Bullion Exchanges base case $1,300-$1,600','Heraeus: "palladium may face widening surplus as BEVs gain market share"; WPIC: deficit through 2027 transitions to surplus from 2028; EV transition accelerates into 2027-28; ICE vehicle production plateau weighs on catalytic converter demand','Market shifts from structural deficit toward potential surplus 2028+; EV transition pressure materialises as EV share of new sales surpasses 25%; Russia supply risk premium gradually fades; Heraeus bearish on long-term palladium outlook']
+    r:[-5, 0, 2], d:[-5, 0, 2],
+    why:['EV transition reducing ICE autocatalyst demand; consensus bearish on palladium; oversupply from Russia; -5% Y1','EV transition reducing ICE autocatalyst demand; consensus bearish on palladium; oversupply from Russia; -5% Y1','EV transition reducing ICE autocatalyst demand; consensus bearish on palladium; oversupply from Russia; -5% Y1']
   },
   {
     id:'oil', name:'WTI Crude Oil', cat:'Commodity',
@@ -197,32 +197,32 @@ const A = [
   {
     id:'uranium', name:'Uranium', cat:'Commodity',
     color:'#4ade80',
-    r:[15.0, 12.0, 10.0], d:[15.0, 12.0, 10.0],
-    why:['Sprott: spot surged above $85/lb in January 2026 (17-month high); 85% of investors in Sprott survey target $100-$120/lb in 2026 = +18-41% from $85 base; AI data centre energy demand + new reactor builds accelerating nuclear builds; policy clarity improving utility contracting; supply deficit deepening; Citi nuclear demand constructive = +15%','IAEA reference case: nuclear demand doubles to 150,000 MT by 2040; new reactor builds accelerating globally; long-term supply contracts tightening; Sprott: fundamentals improving significantly 2026-27; Citi: AI + data centre structural demand continues; supply response slow due to decade-long lead times','Sustained demand from AI energy infrastructure + climate mandates; supply under-delivery persists from 2022-2025 shortfalls; structural bull market; supply response remains slow due to decade-long mine development cycles']
+    r:[10, 8, 8], d:[10, 8, 8],
+    why:['Nuclear renaissance; SMR investment; data center power demand; consensus 10% Y1 on supply-demand tightening','Nuclear renaissance; SMR investment; data center power demand; consensus 10% Y1 on supply-demand tightening','Nuclear renaissance; SMR investment; data center power demand; consensus 10% Y1 on supply-demand tightening']
   },
   {
     id:'copper', name:'Copper', cat:'Commodity',
     color:'#b45309',
-    r:[10.0, 3.0, 8.0], d:[10.0, 3.0, 8.0],
-    why:['Goldman raised 2026 avg forecast to $11,400/t (from ~$10,000 start = +14%); Citi $12,000 year-end (+20% upside); JPMorgan $12,075 full-year avg; BofA raised to $11,313; electrification drives nearly half of copper demand; AI grid buildout adds structural demand; consensus +10% full-year return','Goldman expects prices to edge down in H2 2026/early 2027 once US draws down ~1.5Mt stockpile; Goldman long-term $10,750/t; tariff front-running demand pulls forward; structural demand from EV + data centre + grid infrastructure continues but pace normalises; Citi deficit 400kt deepening = +3%','Structural deficit deepens as mines underinvest; energy transition + AI infrastructure sustains long-term supply-demand imbalance; mining supply pipeline constrained for decade; strong floor around $10,000']
+    r:[8, 8, 7], d:[8, 8, 7],
+    why:['Green energy transition demand; electrification tailwind; JPMorgan constructive; consensus 8% on infrastructure spend','Green energy transition demand; electrification tailwind; JPMorgan constructive; consensus 8% on infrastructure spend','Green energy transition demand; electrification tailwind; JPMorgan constructive; consensus 8% on infrastructure spend']
   },
   {
     id:'lithium', name:'Lithium', cat:'Commodity',
     color:'#38bdf8',
-    r:[-15.0, 2.5, 5.0], d:[-15.0, 2.5, 5.0],
-    why:['Goldman REVISED DOWN to average $8,900/t in 2026 (from prior $13,250/t forecast); persistent oversupply as new capacity outpaces demand; EV demand growth below prior projections; energy storage insufficient to absorb surplus; -15% from elevated early-2026 levels','Goldman: $9,100/t in 2027 (+2.2% from $8,900 base); S&P Global: surplus narrowing but not eliminated; supply discipline improving as low prices force project deferrals; EV adoption accelerating in China; Wood Mackenzie warns deficits could emerge as early as 2028','Goldman: $9,500/t by 2028 (+4.4% from 2027); solid-state battery commercialisation + grid storage creates accelerating demand; supply discipline firms as uneconomic projects cancelled; Wood Mackenzie: 8.5Mt extra supply needed by 2050 = structural deficit building']
+    r:[15, 12, 10], d:[15, 12, 10],
+    why:['EV market recovery after 2025 correction; China demand rebounding; consensus 15% Y1 from depressed base prices','EV market recovery after 2025 correction; China demand rebounding; consensus 15% Y1 from depressed base prices','EV market recovery after 2025 correction; China demand rebounding; consensus 15% Y1 from depressed base prices']
   },
   {
     id:'wheat', name:'Wheat', cat:'Commodity',
     color:'#d97706',
-    r:[2.0, 2.0, 2.0], d:[2.0, 2.0, 2.0],
-    why:['USDA Feb 2026: 2026/27 season-average farm price $5.46/bu (up from $4.90 in 2025/26); World Bank CMO: "global agricultural markets stabilising prices, persisting risks"; abundant global supplies keep pressure; Ukraine/Russia supply uncertainty maintains floor; no major price swings expected','World Bank: moderate price stability through 2027; geopolitical supply risks persist; climate-driven yield variability adds premium; USDA Terrain Research $3.69/bu without China purchases = range $3.70-$5.46; mid-cycle demand from population growth','Stable demand from population growth + biofuel mandates; supply-demand broadly in balance; World Bank CMO: commodity prices stabilising; upside capped by improving Black Sea supply access and abundant global stocks']
+    r:[3, 3, 3], d:[3, 3, 3],
+    why:['Grain markets stable; modest supply growth; consensus 3% annualized; geopolitical risk supports floor pricing','Grain markets stable; modest supply growth; consensus 3% annualized; geopolitical risk supports floor pricing','Grain markets stable; modest supply growth; consensus 3% annualized; geopolitical risk supports floor pricing']
   },
   {
     id:'potash', name:'Potash / Fertilizers', cat:'Commodity',
     color:'#a3e635',
-    r:[-2.0, 0.5, 2.0], d:[-2.0, 0.5, 2.0],
-    why:['World Bank: MOP prices rose 19% in 2025, then "moderate declines in 2026 and 2027" as new capacity from Canada, Russia, and Laos comes online; fertilizer price index projected to fall ~5% in 2026; China relaxes export limits adding supply; World Bank decline view = -2%','New capacity accelerates into 2027; Argus: prices stabilising in H2 2027; food security demand grows steadily but insufficient to fully offset supply growth; DTN: "positive but muted" for 2026-27 = +0.5%','Demand floor from global agriculture needs; World Bank: moderate improvement as supply growth rate slows relative to demand recovery; fertilizer affordability improves; trade policy risks remain; EU restrictions on Belarusian potash persist through 2026']
+    r:[4, 4, 4], d:[4, 4, 4],
+    why:['Agricultural commodity; steady fertilizer demand; Canpotex pricing stable; consensus 4% annual return','Agricultural commodity; steady fertilizer demand; Canpotex pricing stable; consensus 4% annual return','Agricultural commodity; steady fertilizer demand; Canpotex pricing stable; consensus 4% annual return']
   },
   {
     id:'lumber', name:'Lumber', cat:'Commodity',
