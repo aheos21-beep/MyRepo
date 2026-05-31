@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daily Calorie Tracker</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@400;500;600&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background: #040a0f;
+      background-image:
+        linear-gradient(rgba(0,200,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,200,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      color: #c8e8f0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px 60px;
+    }
+
+    /* Outer frame */
+    .app-frame {
+      width: 100%;
+      max-width: 460px;
+      border: 1px solid rgba(0,200,255,0.25);
+      border-radius: 4px;
+      padding: 36px 28px;
+      position: relative;
+      background: rgba(4, 14, 22, 0.92);
+      box-shadow:
+        0 0 0 1px rgba(0,200,255,0.08),
+        0 0 30px rgba(0,200,255,0.07),
+        inset 0 0 40px rgba(0,200,255,0.03);
+    }
+
+    /* Corner accents */
+    .app-frame::before, .app-frame::after {
+      content: '';
+      position: absolute;
+      width: 18px; height: 18px;
+      border-color: #00c8ff;
+      border-style: solid;
+    }
+    .app-frame::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+    .app-frame::after  { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+
+    .corner-tr, .corner-bl {
+      position: absolute;
+      width: 18px; height: 18px;
+      border-color: #00c8ff;
+      border-style: solid;
+    }
+    .corner-tr { top: -1px; right: -1px; border-width: 2px 2px 0 0; }
+    .corner-bl { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; }
+
+    h1 {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #00c8ff;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 32px;
+      opacity: 0.6;
+    }
+
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,200,255,0.3), transparent);
+      margin: 24px 0;
+    }
+
+    /* Balance display */
+    #balance-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 8px;
+      position: relative;
+    }
+
+    #balance {
+      font-family: 'Orbitron', monospace;
+      font-size: 4.8rem;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: 0.04em;
+      transition: color 0.3s, text-shadow 0.3s, -webkit-text-stroke 0.3s;
+    }
+
+    /* Neon tube effect — hollow fill, bright stroke, layered glow */
+    #balance.surplus {
+      color: #021a0a;
+      -webkit-text-stroke: 2px #aaffcc;
+      text-shadow:
+        0 0 4px #ccffe0,
+        0 0 10px #44ff88,
+        0 0 22px #00dd66,
+        0 0 45px #00aa44,
+        0 0 80px #006628;
+    }
+    #balance.deficit {
+      color: #1a0204;
+      -webkit-text-stroke: 2px #ffaaaa;
+      text-shadow:
+        0 0 4px #ffe0e0,
+        0 0 10px #ff5566,
+        0 0 22px #ee1133,
+        0 0 45px #bb0022,
+        0 0 80px #660011;
+    }
+    #balance.zero {
+      color: #020d1a;
+      -webkit-text-stroke: 2px #aaddff;
+      text-shadow:
+        0 0 4px #ddf0ff,
+        0 0 10px #66ccff,
+        0 0 22px #00aaee,
+        0 0 45px #0080cc,
+        0 0 80px #004880;
+    }
+
+    /* Light streak under number */
+    .light-streak {
+      width: 80%;
+      height: 2px;
+      margin-top: 6px;
+      border-radius: 50%;
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+    .light-streak.surplus {
+      background: radial-gradient(ellipse at center, rgba(0,255,100,0.6) 0%, transparent 70%);
+      box-shadow: 0 0 20px 4px rgba(0,255,100,0.2);
+    }
+    .light-streak.deficit {
+      background: radial-gradient(ellipse at center, rgba(255,30,60,0.6) 0%, transparent 70%);
+      box-shadow: 0 0 20px 4px rgba(255,30,60,0.2);
+    }
+    .light-streak.zero {
+      background: radial-gradient(ellipse at center, rgba(0,180,255,0.6) 0%, transparent 70%);
+      box-shadow: 0 0 20px 4px rgba(0,180,255,0.2);
+    }
+
+    #balance-label {
+      margin-top: 10px;
+      font-family: 'Orbitron', monospace;
+      font-size: 0.6rem;
+      color: #3a6a7a;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    #pounds-wrap {
+      margin-top: 14px;
+      font-family: 'Orbitron', monospace;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      transition: text-shadow 0.3s;
+    }
+
+    #pounds-wrap span#pounds.surplus {
+      color: #021a0a;
+      -webkit-text-stroke: 1.5px #aaffcc;
+      text-shadow:
+        0 0 4px #ccffe0,
+        0 0 10px #44ff88,
+        0 0 22px #00dd66,
+        0 0 40px #00aa44;
+    }
+    #pounds-wrap span#pounds.deficit {
+      color: #1a0204;
+      -webkit-text-stroke: 1.5px #ffaaaa;
+      text-shadow:
+        0 0 4px #ffe0e0,
+        0 0 10px #ff5566,
+        0 0 22px #ee1133,
+        0 0 40px #bb0022;
+    }
+    #pounds-wrap span#pounds.zero {
+      color: #020d1a;
+      -webkit-text-stroke: 1.5px #aaddff;
+      text-shadow:
+        0 0 4px #ddf0ff,
+        0 0 10px #66ccff,
+        0 0 22px #00aaee,
+        0 0 40px #0080cc;
+    }
+
+    #pounds-wrap .lbs-unit {
+      font-size: 0.9rem;
+      color: #3a6a7a;
+      letter-spacing: 0.15em;
+      -webkit-text-stroke: 0;
+      text-shadow: none;
+    }
+
+    /* Sections */
+    .section { margin-bottom: 24px; }
+
+    .section-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.6rem;
+      font-weight: 600;
+      color: #00c8ff;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      opacity: 0.6;
+    }
+
+    .dropdown-row { display: flex; gap: 10px; }
+
+    .styled-select {
+      flex: 1;
+      padding: 13px 36px 13px 14px;
+      border-radius: 3px;
+      border: 1px solid rgba(0,200,255,0.15);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2300c8ff' stroke-width='1.5' fill='none' stroke-linecap='round' opacity='0.5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .styled-select:focus {
+      outline: none;
+      border-color: rgba(0,200,255,0.5);
+      box-shadow: 0 0 12px rgba(0,200,255,0.1);
+    }
+
+    .styled-select.meal-select { background-color: rgba(10,30,20,0.8); color: #4ade80; }
+    .styled-select.exp-select  { background-color: rgba(30,10,10,0.8); color: #f87171; }
+    .styled-select option { background: #050d14; color: #c8e8f0; }
+
+    .add-btn {
+      padding: 13px 18px;
+      border-radius: 3px;
+      font-family: 'Orbitron', monospace;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: box-shadow 0.2s, opacity 0.15s;
+      white-space: nowrap;
+    }
+    .add-btn:active { opacity: 0.7; }
+    .add-btn.meal {
+      background: rgba(10,30,20,0.9); color: #4ade80;
+      border: 1px solid rgba(74,222,128,0.3);
+    }
+    .add-btn.meal:hover { box-shadow: 0 0 14px rgba(74,222,128,0.25); border-color: rgba(74,222,128,0.6); }
+    .add-btn.exp {
+      background: rgba(30,10,10,0.9); color: #f87171;
+      border: 1px solid rgba(248,113,113,0.3);
+    }
+    .add-btn.exp:hover { box-shadow: 0 0 14px rgba(248,113,113,0.25); border-color: rgba(248,113,113,0.6); }
+
+    /* Log */
+    #log-wrap { margin-bottom: 24px; }
+
+    #log {
+      list-style: none;
+      display: flex; flex-direction: column; gap: 4px;
+      max-height: 180px; overflow-y: auto;
+    }
+    #log::-webkit-scrollbar { width: 3px; }
+    #log::-webkit-scrollbar-track { background: transparent; }
+    #log::-webkit-scrollbar-thumb { background: rgba(0,200,255,0.2); border-radius: 2px; }
+
+    #log li {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.95rem; color: #3a6070;
+      display: flex; justify-content: space-between;
+      padding: 6px 2px;
+      border-bottom: 1px solid rgba(0,200,255,0.06);
+      letter-spacing: 0.03em;
+    }
+    #log li span:last-child { font-weight: 600; }
+    #log li.pos span:last-child { color: rgba(74,222,128,0.7); }
+    #log li.neg span:last-child { color: rgba(248,113,113,0.7); }
+
+    /* Reset */
+    #reset-btn {
+      width: 100%; padding: 14px;
+      border: 1px solid rgba(0,200,255,0.15);
+      border-radius: 3px; background: transparent;
+      color: #2a5060;
+      font-family: 'Orbitron', monospace;
+      font-size: 0.65rem; font-weight: 600;
+      letter-spacing: 0.2em; cursor: pointer;
+      text-transform: uppercase;
+      transition: border-color 0.2s, color 0.2s, box-shadow 0.2s;
+    }
+    #reset-btn:hover {
+      border-color: rgba(0,200,255,0.4); color: #00c8ff;
+      box-shadow: 0 0 14px rgba(0,200,255,0.1);
+    }
+
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px);
+      pointer-events: none; z-index: 999;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-frame">
+    <div class="corner-tr"></div>
+    <div class="corner-bl"></div>
+
+    <h1>Daily Calorie Balance</h1>
+
+    <div id="balance-wrap">
+      <div id="balance" class="deficit">2,000</div>
+      <div class="light-streak deficit" id="streak"></div>
+      <div id="balance-label">kcal deficit</div>
+      <div id="pounds-wrap">≈ <span id="pounds" class="deficit">0.57</span><span class="lbs-unit">LBS</span></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-title">Meals</div>
+      <div class="dropdown-row">
+        <select id="meal-select" class="styled-select meal-select">
+          <option value="">Select a meal…</option>
+          <option value="500|500 cal meal">500 cal meal</option>
+          <option value="800|800 cal meal">800 cal meal</option>
+          <option value="1000|1,000 cal meal">1,000 cal meal</option>
+        </select>
+        <button class="add-btn meal" onclick="addFromDropdown('meal')">ADD</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Expenditures</div>
+      <div class="dropdown-row">
+        <select id="exp-select" class="styled-select exp-select">
+          <option value="">Select activity…</option>
+          <option value="-250|Light workout">Light workout  (−250)</option>
+          <option value="-500|8,000 steps">8,000 steps  (−500)</option>
+          <option value="-500|Exercise">Exercise  (−500)</option>
+        </select>
+        <button class="add-btn exp" onclick="addFromDropdown('exp')">ADD</button>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div id="log-wrap">
+      <div class="section-title" style="margin-bottom:10px;">Session Log</div>
+      <ul id="log"></ul>
+    </div>
+
+    <button id="reset-btn" onclick="resetDay()">⟳ &nbsp;Reset for new day</button>
+  </div>
+
+  <script>
+    const BMR = -2000;
+    const STORAGE_KEY = 'calorie_tracker_v1';
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) return JSON.parse(raw);
+      } catch(e) {}
+      return { entries: [] };
+    }
+
+    function saveState(state) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function getTotal(entries) {
+      return BMR + entries.reduce((sum, e) => sum + e.cal, 0);
+    }
+
+    function render(state) {
+      const total = getTotal(state.entries);
+      const cls = total > 0 ? 'surplus' : total < 0 ? 'deficit' : 'zero';
+
+      const balEl = document.getElementById('balance');
+      balEl.textContent = (total > 0 ? '+' : total < 0 ? '−' : '') + Math.abs(total).toLocaleString();
+      balEl.className = cls;
+
+      document.getElementById('streak').className = 'light-streak ' + cls;
+
+      document.getElementById('balance-label').textContent =
+        total > 0 ? 'kcal surplus' : total < 0 ? 'kcal deficit' : 'kcal';
+
+      const lbs = Math.abs(total / 3500).toFixed(2);
+      const poundsEl = document.getElementById('pounds');
+      poundsEl.textContent = lbs;
+      poundsEl.className = cls;
+
+      const log = document.getElementById('log');
+      log.innerHTML = '';
+      state.entries.forEach(e => {
+        const li = document.createElement('li');
+        li.className = e.cal > 0 ? 'pos' : 'neg';
+        const sign = e.cal > 0 ? '+' : '−';
+        li.innerHTML = `<span>${e.name}</span><span>${sign}${Math.abs(e.cal).toLocaleString()}</span>`;
+        log.appendChild(li);
+      });
+    }
+
+    function addFromDropdown(type) {
+      const sel = document.getElementById(type === 'meal' ? 'meal-select' : 'exp-select');
+      if (!sel.value) return;
+      const [calStr, name] = sel.value.split('|');
+      const cal = parseInt(calStr, 10);
+      const state = loadState();
+      state.entries.push({ name, cal });
+      saveState(state);
+      render(state);
+      sel.value = '';
+    }
+
+    function resetDay() {
+      saveState({ entries: [] });
+      render({ entries: [] });
+    }
+
+    render(loadState());
+  </script>
+</body>
+</html>
