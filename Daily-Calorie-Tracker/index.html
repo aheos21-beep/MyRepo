@@ -456,6 +456,7 @@
       const val = parseInt(input.value, 10);
       if (!val || val <= 0) return;
       const state = loadState();
+      state.entries = state.entries.filter(e => e.cal > 0);
       state.entries.push({ name: `${val.toLocaleString()} cal burn`, cal: -val });
       saveState(state);
       render(state);
