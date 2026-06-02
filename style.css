@@ -100,8 +100,8 @@ main {
   gap: 14px;
 }
 
-.col-left  { flex: 0 0 58%; display: flex; flex-direction: column; min-height: 0; }
-.col-right { flex: 1;        display: flex; flex-direction: column; min-height: 0; }
+.col-left  { flex: 0 0 33.333%; display: flex; flex-direction: column; min-height: 0; }
+.col-right { flex: 1;             display: flex; flex-direction: column; min-height: 0; }
 
 .col-title {
   font-size: 0.95rem;
@@ -113,12 +113,11 @@ main {
 
 /* ── Rankings Grid ────────────────────────────────────── */
 .rankings-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 10px;
   flex: 1;
   min-height: 0;
-  align-content: start;
 }
 
 /* ── Ranking Card ─────────────────────────────────────── */
@@ -394,7 +393,6 @@ main {
   }
 
   .col-left, .col-right { flex: none; }
-  .rankings-grid { grid-template-columns: 1fr; align-content: start; }
   .news-grid { flex-direction: column; }
   .news-card { flex: none; }
 }

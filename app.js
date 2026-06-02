@@ -26,7 +26,7 @@ function renderRankings(data) {
   const grid = document.getElementById('rankings-grid');
   grid.innerHTML = '';
 
-  data.tools.forEach((tool, idx) => {
+  data.tools.slice(0, 5).forEach((tool, idx) => {
     const card = buildRankCard(tool);
     card.style.animationDelay = `${idx * 60}ms`;
     card.style.animation = 'fadeUp 0.45s ease both';
