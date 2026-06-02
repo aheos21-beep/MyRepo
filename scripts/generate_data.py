@@ -14,7 +14,7 @@ from pathlib import Path
 
 import aiohttp
 
-DOCS_DIR = Path(__file__).parent.parent / "docs"
+DOCS_DIR = Path(__file__).parent.parent
 
 # ── Tool definitions ──────────────────────────────────────────────────────────
 
