@@ -1,146 +1,174 @@
 {
   "articles": [
     {
-      "title": "OpenAI Launches GPT-5 with Breakthrough Reasoning Capabilities",
-      "url": "https://techcrunch.com/category/artificial-intelligence/",
-      "summary": "OpenAI's latest model demonstrates significant leaps in multi-step reasoning, mathematics, and code generation \u2014 passing the bar exam in the 90th percentile.",
-      "published": "Mon, 02 Jun 2026 08:00:00 +0000",
+      "title": "Uber caps employee AI spending after blowing through budget in four months",
+      "url": "https://techcrunch.com/2026/06/02/uber-caps-employee-ai-spending-after-blowing-through-budget-in-four-months/",
+      "summary": "Uber's cutback has occurred after the company had reportedly encouraged staff to use AI as much as possible.",
+      "published": "Tue, 02 Jun 2026 19:11:48 +0000",
       "source": "TechCrunch AI"
     },
     {
-      "title": "Anthropic's Claude 4 Sets New Benchmark on Long-Context Understanding",
-      "url": "https://venturebeat.com/category/ai/",
-      "summary": "Claude 4 achieves state-of-the-art results on MMLU and HumanEval, with a 1M-token context window enabling entire codebases to be analyzed at once.",
-      "published": "Sun, 01 Jun 2026 10:30:00 +0000",
+      "title": "New Microsoft tool lets devs spin up AI behavior tests using text descriptions",
+      "url": "https://techcrunch.com/2026/06/02/new-microsoft-tool-lets-devs-spin-up-ai-behavior-tests-using-text-descriptions/",
+      "summary": "Microsoft on Tuesday took the wraps off Adaptive Spec-driven Scoring for Evaluation and Regression Testing, an open source framework for spinning up AI evaluations.",
+      "published": "Tue, 02 Jun 2026 19:02:21 +0000",
+      "source": "TechCrunch AI"
+    },
+    {
+      "title": "Martin Scorsese becomes the latest \u2014 and most unlikely \u2014 Hollywood voice for AI",
+      "url": "https://techcrunch.com/2026/06/02/martin-scorsese-becomes-the-latest-and-most-unlikely-hollywood-voice-for-ai/",
+      "summary": "The caveat is that one of the world's most famous living directors is using the tech solely for storyboarding.",
+      "published": "Tue, 02 Jun 2026 18:16:53 +0000",
+      "source": "TechCrunch AI"
+    },
+    {
+      "title": "Microsoft launches Scout, an OpenClaw-inspired personal assistant",
+      "url": "https://techcrunch.com/2026/06/02/microsoft-launches-scout-an-openclaw-inspired-personal-assistant/",
+      "summary": "Launched at Build, Microsoft Scout is a new AI assistant meant to bring the power and flexibility of OpenClaw into the Microsoft 365 system.",
+      "published": "Tue, 02 Jun 2026 18:02:44 +0000",
+      "source": "TechCrunch AI"
+    },
+    {
+      "title": "Google rolls out fake call detection to protect against AI deepfake impersonation scams",
+      "url": "https://techcrunch.com/2026/06/02/google-rolls-out-fake-call-detection-to-protect-against-ai-deepfake-impersonation-scams/",
+      "summary": "As people increasingly refuse to answer calls from unknown numbers, scammers are shifting their tactics by spoofing trusted phone numbers and using AI deepfake technology to sound like authority figures, family members, or employers.",
+      "published": "Tue, 02 Jun 2026 18:00:00 +0000",
+      "source": "TechCrunch AI"
+    },
+    {
+      "title": "Microsoft offers devs a better way to control AI agent behavior",
+      "url": "https://techcrunch.com/2026/06/02/microsoft-offers-devs-a-better-way-to-control-ai-agent-behavior/",
+      "summary": "The specification lets developer, compliance, and security teams define their own policies for agents to follow in portable policy files.",
+      "published": "Tue, 02 Jun 2026 18:00:00 +0000",
+      "source": "TechCrunch AI"
+    },
+    {
+      "title": "Google just redesigned the search box for the first time in 25 years \u2014 here\u2019s why it matters more than you think.",
+      "url": "https://venturebeat.com/technology/google-just-redesigned-the-search-box-for-the-first-time-in-25-years-heres-why-it-matters-more-than-you-think",
+      "summary": "For a quarter century, the Google search box has been one of the most recognizable interfaces in computing: a thin white rectangle, a blinking cursor, a few typed words, and a list of blue links. On Tuesday, Google will formally retire that paradigm.At its annual I/O developer co",
+      "published": "Tue, 19 May 2026 17:45:00 GMT",
       "source": "VentureBeat AI"
     },
     {
-      "title": "Google DeepMind Releases Gemini Ultra 2 for Enterprise Customers",
-      "url": "https://www.theverge.com/ai-artificial-intelligence",
-      "summary": "Gemini Ultra 2 brings native multimodal reasoning across text, images, video, and audio in a single unified model, now available via Google Cloud.",
-      "published": "Sat, 31 May 2026 14:00:00 +0000",
-      "source": "The Verge AI"
+      "title": "Railway secures $100 million to challenge AWS with AI-native cloud infrastructure",
+      "url": "https://venturebeat.com/infrastructure/railway-secures-usd100-million-to-challenge-aws-with-ai-native-cloud",
+      "summary": "Railway, a San Francisco-based cloud platform that has quietly amassed two million developers without spending a dollar on marketing, announced Thursday that it raised $100 million in a Series B funding round, as surging demand for artificial intelligence applications exposes the",
+      "published": "Thu, 22 Jan 2026 14:00:00 GMT",
+      "source": "VentureBeat AI"
     },
     {
-      "title": "GitHub Copilot Now Generates Full Pull Requests Autonomously",
-      "url": "https://www.technologyreview.com/topic/artificial-intelligence/",
-      "summary": "Microsoft's Copilot has evolved into a fully agentic coding assistant, capable of cloning repos, writing code, running tests, and submitting PRs.",
-      "published": "Fri, 30 May 2026 09:15:00 +0000",
+      "title": "Claude Code costs up to $200 a month. Goose does the same thing for free.",
+      "url": "https://venturebeat.com/infrastructure/claude-code-costs-up-to-usd200-a-month-goose-does-the-same-thing-for-free",
+      "summary": "The artificial intelligence coding revolution comes with a catch: it&#x27;s expensive.Claude Code, Anthropic&#x27;s terminal-based AI agent that can write, debug, and deploy code autonomously, has captured the imagination of software developers worldwide. But its pricing \u2014 rangin",
+      "published": "Mon, 19 Jan 2026 14:00:00 GMT",
+      "source": "VentureBeat AI"
+    },
+    {
+      "title": "Listen Labs raises $69M after viral billboard hiring stunt to scale AI customer interviews",
+      "url": "https://venturebeat.com/technology/listen-labs-raises-usd69m-after-viral-billboard-hiring-stunt-to-scale-ai",
+      "summary": "Alfred Wahlforss was running out of options. His startup, Listen Labs, needed to hire over 100 engineers, but competing against Mark Zuckerberg&#x27;s $100 million offers seemed impossible. So he spent $5,000 \u2014 a fifth of his marketing budget \u2014 on a billboard in San Francisco dis",
+      "published": "Fri, 16 Jan 2026 14:01:00 GMT",
+      "source": "VentureBeat AI"
+    },
+    {
+      "title": "Salesforce rolls out new Slackbot AI agent as it battles Microsoft and Google in workplace AI",
+      "url": "https://venturebeat.com/technology/salesforce-rolls-out-new-slackbot-ai-agent-as-it-battles-microsoft-and",
+      "summary": "Salesforce on Tuesday launched an entirely rebuilt version of Slackbot, the company&#x27;s workplace assistant, transforming it from a simple notification tool into what executives describe as a fully powered AI agent capable of searching enterprise data, drafting documents, and ",
+      "published": "Tue, 13 Jan 2026 13:00:00 GMT",
+      "source": "VentureBeat AI"
+    },
+    {
+      "title": "Anthropic launches Cowork, a Claude Desktop agent that works in your files \u2014 no coding required",
+      "url": "https://venturebeat.com/technology/anthropic-launches-cowork-a-claude-desktop-agent-that-works-in-your-files-no",
+      "summary": "Anthropic released Cowork on Monday, a new AI agent capability that extends the power of its wildly successful Claude Code tool to non-technical users \u2014 and according to company insiders, the team built the entire feature in approximately a week and a half, largely using Claude C",
+      "published": "Mon, 12 Jan 2026 11:30:00 GMT",
+      "source": "VentureBeat AI"
+    },
+    {
+      "title": "The Download: AI can run your admin department now",
+      "url": "https://www.technologyreview.com/2026/06/02/1138277/the-download-ai-tips-small-businesses-admin/",
+      "summary": "This is today&#8217;s edition of The Download, our weekday newsletter that provides a daily dose of what&#8217;s going on in the world of technology. How small businesses can leverage AI From accounting to design to market research and product development, there\u2019s a staggering br",
+      "published": "Tue, 02 Jun 2026 12:10:00 +0000",
       "source": "MIT Technology Review"
     },
     {
-      "title": "Midjourney v7 Introduces Consistent Characters Across Scenes",
-      "url": "https://www.wired.com/tag/artificial-intelligence/",
-      "summary": "Midjourney's new model maintains consistent character appearances across multiple generated images \u2014 a breakthrough for animation studios and game developers.",
-      "published": "Thu, 29 May 2026 11:45:00 +0000",
-      "source": "Wired AI"
-    },
-    {
-      "title": "Perplexity AI Hits 50 Million Monthly Active Users",
-      "url": "https://arstechnica.com/ai/",
-      "summary": "Perplexity's AI-native search engine has reached 50M MAU, driven by its ability to cite sources, answer follow-ups, and integrate with enterprise knowledge bases.",
-      "published": "Wed, 28 May 2026 16:00:00 +0000",
-      "source": "Ars Technica"
-    },
-    {
-      "title": "The EU AI Act Enters Full Enforcement \u2014 What It Means for Developers",
-      "url": "https://techcrunch.com/category/artificial-intelligence/",
-      "summary": "With the EU AI Act now in full force, developers of high-risk AI systems must document training data, implement human oversight, and register with national authorities.",
-      "published": "Tue, 27 May 2026 08:30:00 +0000",
-      "source": "TechCrunch AI"
-    },
-    {
-      "title": "Meta Releases Llama 4 Under Open License, Shaking the AI Market",
-      "url": "https://venturebeat.com/category/ai/",
-      "summary": "Meta's Llama 4 series includes models up to 400B parameters, released under a commercial-friendly license that lets companies fine-tune without royalties.",
-      "published": "Mon, 26 May 2026 12:00:00 +0000",
-      "source": "VentureBeat AI"
-    },
-    {
-      "title": "AI Agents Are Taking Over Software Development Workflows",
-      "url": "https://www.technologyreview.com/topic/artificial-intelligence/",
-      "summary": "A new wave of autonomous AI agents can handle entire development sprints \u2014 from requirements to deployment \u2014 with engineers shifting into reviewer roles.",
-      "published": "Sun, 25 May 2026 09:00:00 +0000",
+      "title": "Rehumanizing global health care with agentic AI",
+      "url": "https://www.technologyreview.com/2026/06/02/1137827/rehumanizing-global-health-care-with-agentic-ai/",
+      "summary": "The global health care sector is under increasing strain.&#160; Decades of chronic underinvestment and constraints in recruitment have coincided with a surge in demand for services for aging populations. Gaps in provision are already taking a toll, with fragmented access to care ",
+      "published": "Tue, 02 Jun 2026 11:23:34 +0000",
       "source": "MIT Technology Review"
     },
     {
-      "title": "Apple Intelligence Gains On-Device LLM With Private Cloud Compute",
-      "url": "https://www.theverge.com/ai-artificial-intelligence",
-      "summary": "Apple's latest AI update routes sensitive queries to on-device models and only escalates to Private Cloud Compute for complex tasks, without exposing data.",
-      "published": "Sat, 24 May 2026 15:30:00 +0000",
-      "source": "The Verge AI"
-    },
-    {
-      "title": "Researchers Achieve 1000x Speedup in AI Inference via New Architecture",
-      "url": "https://www.wired.com/tag/artificial-intelligence/",
-      "summary": "A Stanford and MIT collaboration introduces Sparse Mixture-of-Experts routing that activates only 0.1% of parameters per token, dramatically cutting inference cost.",
-      "published": "Fri, 23 May 2026 10:00:00 +0000",
-      "source": "Wired AI"
-    },
-    {
-      "title": "AI-Powered Drug Discovery Cuts Clinical Trial Time by 40%",
-      "url": "https://arstechnica.com/ai/",
-      "summary": "Pharmaceutical companies using AI-driven molecule screening have reduced average drug development timelines from 12 years to under 7.",
-      "published": "Thu, 22 May 2026 13:00:00 +0000",
-      "source": "Ars Technica"
-    },
-    {
-      "title": "OpenAI's Operator Agent Can Now Shop, Book Travel, and File Taxes",
-      "url": "https://techcrunch.com/category/artificial-intelligence/",
-      "summary": "OpenAI expanded its Operator agentic system: it can navigate websites, fill forms, verify identity, and complete multi-step transactions autonomously.",
-      "published": "Wed, 21 May 2026 11:00:00 +0000",
-      "source": "TechCrunch AI"
-    },
-    {
-      "title": "Video Generation AI Can Now Produce Feature-Length Films",
-      "url": "https://venturebeat.com/category/ai/",
-      "summary": "Sora and competing systems have crossed a new threshold: they can produce coherent, hour-long video narratives with consistent characters and plots.",
-      "published": "Tue, 20 May 2026 14:00:00 +0000",
-      "source": "VentureBeat AI"
-    },
-    {
-      "title": "Nvidia Announces Blackwell Ultra GPUs \u2014 10x AI Training Throughput",
-      "url": "https://www.technologyreview.com/topic/artificial-intelligence/",
-      "summary": "Nvidia's Blackwell Ultra chips deliver 10 petaflops of AI training compute per GPU, enabling trillion-parameter models to train in days instead of months.",
-      "published": "Mon, 19 May 2026 09:30:00 +0000",
+      "title": "How small businesses can leverage AI",
+      "url": "https://www.technologyreview.com/2026/06/02/1138227/how-small-businesses-can-leverage-ai/",
+      "summary": "This article is from Making AI Work, MIT Technology Review\u2019s limited-run newsletter examining how to apply LLMs across industries. To receive it in your inbox,sign up here. From accounting to design to market research and product development, there\u2019s a staggering breadth of skill",
+      "published": "Tue, 02 Jun 2026 09:00:00 +0000",
       "source": "MIT Technology Review"
     },
     {
-      "title": "Microsoft Copilot+ PCs Sell Out as AI PC Wave Hits Mainstream",
-      "url": "https://www.theverge.com/ai-artificial-intelligence",
-      "summary": "AI-native PCs with dedicated neural processing units have hit mainstream adoption, with Microsoft's Copilot+ lineup exceeding one million units in the first week.",
-      "published": "Sun, 18 May 2026 17:00:00 +0000",
-      "source": "The Verge AI"
+      "title": "The Download: China\u2019s brain implant ambitions",
+      "url": "https://www.technologyreview.com/2026/06/01/1138207/the-download-china-bci-brain-implant-nvidia-ai-chips-laptops/",
+      "summary": "This is today&#8217;s edition of The Download, our weekday newsletter that provides a daily dose of what&#8217;s going on in the world of technology. China has approved the world\u2019s first invasive brain-computer chip\u2014here\u2019s what\u2019s next Sitting in the courtyard of his house in Chin",
+      "published": "Mon, 01 Jun 2026 12:10:00 +0000",
+      "source": "MIT Technology Review"
     },
     {
-      "title": "AI Models Are Now Writing 40% of All New Code on GitHub",
-      "url": "https://www.wired.com/tag/artificial-intelligence/",
-      "summary": "GitHub's annual Octoverse report reveals AI-generated code now accounts for 40% of all committed code, jumping from 26% the year prior.",
-      "published": "Sat, 17 May 2026 12:00:00 +0000",
-      "source": "Wired AI"
+      "title": "China has approved the world\u2019s first invasive brain-computer chip\u2014here\u2019s what\u2019s next",
+      "url": "https://www.technologyreview.com/2026/06/01/1138133/china-world-first-brain-chip/",
+      "summary": "One day last October, sitting in the courtyard of his house in China\u2019s Henan province, Dong Hui decided to see if he could hold a pen to write.&#160; Dong, 39, had sustained spinal cord injuries in a car accident six years earlier that left him paralyzed from the neck down. Slowl",
+      "published": "Mon, 01 Jun 2026 09:09:00 +0000",
+      "source": "MIT Technology Review"
     },
     {
-      "title": "The Hidden Environmental Cost of Training Large Language Models",
-      "url": "https://arstechnica.com/ai/",
-      "summary": "A new study reveals training a frontier LLM emits as much CO2 as 300 transatlantic flights, prompting calls for greener compute infrastructure.",
-      "published": "Fri, 16 May 2026 10:30:00 +0000",
+      "title": "The Download: unlocking lithium and controlling Ebola",
+      "url": "https://www.technologyreview.com/2026/05/29/1138110/the-download-lithium-extraction-ebola-ai-pope/",
+      "summary": "This is today&#8217;s edition of The Download, our weekday newsletter that provides a daily dose of what&#8217;s going on in the world of technology. How a new extraction process could unlock the world\u2019s lithium A new method for extracting lithium could cut costs and emissions fr",
+      "published": "Fri, 29 May 2026 12:10:00 +0000",
+      "source": "MIT Technology Review"
+    },
+    {
+      "title": "Dozens of Red Hat packages backdoored through its official NPM channel",
+      "url": "https://arstechnica.com/security/2026/06/dozens-of-red-hat-packages-backdoored-through-its-offical-npm-channel/",
+      "summary": "Anyone who has downloaded affected Red Hat packages should investigate immediately.",
+      "published": "Mon, 01 Jun 2026 19:49:09 +0000",
       "source": "Ars Technica"
     },
     {
-      "title": "Gemini Live Can Now Hold Real-Time Voice Conversations in 50 Languages",
-      "url": "https://techcrunch.com/category/artificial-intelligence/",
-      "summary": "Google's Gemini Live now supports real-time, low-latency voice conversations in 50 languages with near-native fluency, integrating with Android and Google Home.",
-      "published": "Thu, 15 May 2026 08:00:00 +0000",
-      "source": "TechCrunch AI"
+      "title": "Botnet of more than 17 million devices dismantled",
+      "url": "https://arstechnica.com/security/2026/05/botnet-of-more-than-17-million-devices-dismantled/",
+      "summary": "The botnet was reportedly tied to a Russia-based residential proxy network.",
+      "published": "Fri, 29 May 2026 18:46:33 +0000",
+      "source": "Ars Technica"
     },
     {
-      "title": "Anthropic Publishes Safety Blueprint for Agentic AI Systems",
-      "url": "https://venturebeat.com/category/ai/",
-      "summary": "Anthropic's paper outlines principles for safe autonomous AI agents: minimal footprint, reversible actions, human escalation, and auditable decision trails.",
-      "published": "Wed, 14 May 2026 14:00:00 +0000",
-      "source": "VentureBeat AI"
+      "title": "Fed up with vibe coders, dev sneaks data-nuking prompt injection into their code",
+      "url": "https://arstechnica.com/security/2026/05/fed-up-with-vibe-coders-dev-sneaks-data-nuking-prompt-injection-into-their-code/",
+      "summary": "Undisclosed addition in jqwik instructed AI coding agents to delete app output.",
+      "published": "Thu, 28 May 2026 20:29:53 +0000",
+      "source": "Ars Technica"
+    },
+    {
+      "title": "Websites have a new way to spy on visitors: Analyzing their SSD activity",
+      "url": "https://arstechnica.com/security/2026/05/websites-have-a-new-way-to-spy-on-visitors-analyzing-their-ssd-activity/",
+      "summary": "Telltale SSD activity can be measured in the browser using simple JavaScript.",
+      "published": "Wed, 27 May 2026 20:56:03 +0000",
+      "source": "Ars Technica"
+    },
+    {
+      "title": "Millions of AI agents imperiled by critical vulnerability in open source package",
+      "url": "https://arstechnica.com/information-technology/2026/05/millions-of-ai-agents-imperiled-by-critical-vulnerability-in-open-source-package/",
+      "summary": "\"BadHost\" was found in Starlette, a package with 325 million weekly downloads.",
+      "published": "Tue, 26 May 2026 19:50:33 +0000",
+      "source": "Ars Technica"
+    },
+    {
+      "title": "US's big bet on quantum computing may not be entirely legal",
+      "url": "https://arstechnica.com/tech-policy/2026/05/uss-big-bet-on-quantum-computing-may-not-be-entirely-legal/",
+      "summary": "Deal also launched the first quantum foundry company, but is there a need for it?",
+      "published": "Mon, 25 May 2026 12:00:15 +0000",
+      "source": "Ars Technica"
     }
   ],
-  "last_updated": "2026-06-02T15:28:38.492955+00:00",
-  "source": "seed"
+  "last_updated": "2026-06-02T20:32:05.235819+00:00",
+  "source": "live"
 }

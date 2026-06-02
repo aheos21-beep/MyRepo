@@ -9,7 +9,7 @@
       "url": "https://claude.ai",
       "icon": "\u2728",
       "color": "#cc785c",
-      "score": 86.9,
+      "score": 85.9,
       "metrics": {
         "monthly_users": 60,
         "growth_rate": 38,
@@ -17,24 +17,6 @@
         "community_score": 86
       },
       "rank": 1
-    },
-    {
-      "id": "gemini",
-      "name": "Gemini",
-      "version": "Gemini Ultra 2",
-      "company": "Google DeepMind",
-      "description": "Google's flagship multimodal AI integrated across Search, Workspace, and Android.",
-      "url": "https://gemini.google.com",
-      "icon": "\ud83d\udc8e",
-      "color": "#4285f4",
-      "score": 82.1,
-      "metrics": {
-        "monthly_users": 150,
-        "growth_rate": 26,
-        "capability_score": 92,
-        "community_score": 88
-      },
-      "rank": 2
     },
     {
       "id": "perplexity",
@@ -45,12 +27,30 @@
       "url": "https://www.perplexity.ai",
       "icon": "\ud83d\udd0d",
       "color": "#20c997",
-      "score": 81.8,
+      "score": 83.0,
       "metrics": {
         "monthly_users": 15,
         "growth_rate": 48,
         "capability_score": 88,
         "community_score": 83
+      },
+      "rank": 2
+    },
+    {
+      "id": "gemini",
+      "name": "Gemini",
+      "version": "Gemini Ultra 2",
+      "company": "Google DeepMind",
+      "description": "Google's flagship multimodal AI integrated across Search, Workspace, and Android.",
+      "url": "https://gemini.google.com",
+      "icon": "\ud83d\udc8e",
+      "color": "#4285f4",
+      "score": 80.4,
+      "metrics": {
+        "monthly_users": 150,
+        "growth_rate": 26,
+        "capability_score": 92,
+        "community_score": 88
       },
       "rank": 3
     },
@@ -63,7 +63,7 @@
       "url": "https://chat.openai.com",
       "icon": "\ud83e\udd16",
       "color": "#10a37f",
-      "score": 76.3,
+      "score": 76.0,
       "metrics": {
         "monthly_users": 180,
         "growth_rate": 15,
@@ -81,7 +81,7 @@
       "url": "https://github.com/features/copilot",
       "icon": "\ud83d\ude80",
       "color": "#6e5494",
-      "score": 72.0,
+      "score": 71.1,
       "metrics": {
         "monthly_users": 50,
         "growth_rate": 22,
@@ -99,7 +99,7 @@
       "url": "https://www.midjourney.com",
       "icon": "\ud83c\udfa8",
       "color": "#f56565",
-      "score": 63.1,
+      "score": 65.2,
       "metrics": {
         "monthly_users": 20,
         "growth_rate": 11,
@@ -109,5 +109,5 @@
       "rank": 6
     }
   ],
-  "last_updated": "2026-06-02T15:28:38.185155+00:00"
+  "last_updated": "2026-06-02T20:32:04.581378+00:00"
 }
