@@ -1,7 +1,5 @@
 'use strict';
 
-let countdownTimer = null;
-
 document.addEventListener('DOMContentLoaded', () => {
   loadAll();
   startCountdown();
@@ -45,13 +43,16 @@ function renderRankings(data) {
 }
 
 function buildRankCard(tool) {
-  const card = document.createElement('div');
+  const card = document.createElement('a');
   card.className = `rank-card rank-${tool.rank}`;
+  card.href = tool.url;
+  card.target = '_blank';
+  card.rel = 'noopener noreferrer';
   card.style.setProperty('--tool-color', tool.color || '#667eea');
 
   const rankClass = tool.rank === 1 ? 'gold' : tool.rank === 2 ? 'silver' : tool.rank === 3 ? 'bronze' : 'plain';
   const rankEmoji = tool.rank === 1 ? '🥇' : tool.rank === 2 ? '🥈' : tool.rank === 3 ? '🥉' : `#${tool.rank}`;
-  const barPct = Math.min((tool.score / 100) * 100, 100).toFixed(1);
+  const barPct   = Math.min((tool.score / 100) * 100, 100).toFixed(1);
   const m = tool.metrics;
 
   card.innerHTML = `
@@ -65,7 +66,6 @@ function buildRankCard(tool) {
       </div>
       <div class="rank-badge ${rankClass}">${rankEmoji}</div>
     </div>
-    <p class="tool-desc">${esc(tool.description)}</p>
     <div class="score-section">
       <div class="score-row">
         <span class="score-label">Overall Score</span>
@@ -76,14 +76,10 @@ function buildRankCard(tool) {
       </div>
     </div>
     <div class="metrics-row">
-      <span class="metric-chip">👥 <span class="val">${m.monthly_users}M</span> users/mo</span>
-      <span class="metric-chip">📈 <span class="val">+${m.growth_rate}%</span> growth</span>
-      <span class="metric-chip">🧠 <span class="val">${m.capability_score}</span> capability</span>
-      <span class="metric-chip">🌐 <span class="val">${m.community_score}</span> community</span>
+      <span class="metric-chip">👥 <span class="val">${m.monthly_users}M</span>/mo</span>
+      <span class="metric-chip">📈 <span class="val">+${m.growth_rate}%</span></span>
+      <span class="metric-chip">🧠 <span class="val">${m.capability_score}</span></span>
     </div>
-    <a class="card-link" href="${esc(tool.url)}" target="_blank" rel="noopener">
-      Visit ${esc(tool.name)} ↗
-    </a>
   `;
 
   return card;
@@ -95,7 +91,7 @@ async function loadNews() {
   try {
     const res = await fetch('news.json');
     const data = await res.json();
-    renderNews(data.articles || [], data.source === 'seed');
+    renderNews((data.articles || []).slice(0, 5), data.source === 'seed');
   } catch (err) {
     console.error('News load failed:', err);
     document.getElementById('news-grid').innerHTML = '';
@@ -104,7 +100,7 @@ async function loadNews() {
 }
 
 function renderNews(articles, isSeed = false) {
-  const grid = document.getElementById('news-grid');
+  const grid  = document.getElementById('news-grid');
   const empty = document.getElementById('news-empty');
   grid.innerHTML = '';
 
@@ -118,13 +114,15 @@ function renderNews(articles, isSeed = false) {
   if (isSeed) {
     const notice = document.createElement('p');
     notice.className = 'seed-notice';
-    notice.textContent = '📡 Showing curated articles — live RSS will appear after the first GitHub Actions run';
+    notice.textContent = '📡 Curated articles — live RSS after first Actions run';
     grid.before(notice);
+  } else {
+    document.querySelector('.seed-notice')?.remove();
   }
 
   articles.forEach((article, idx) => {
     const card = buildNewsCard(article);
-    card.style.animationDelay = `${idx * 40}ms`;
+    card.style.animationDelay = `${idx * 50}ms`;
     card.style.animation = 'fadeUp 0.4s ease both';
     grid.appendChild(card);
   });
@@ -147,25 +145,22 @@ function buildNewsCard(article) {
   return card;
 }
 
-// ── Countdown to midnight UTC ─────────────────────────────────────────────────
+// ── Countdown ─────────────────────────────────────────────────────────────────
 
 function startCountdown() {
   const el = document.getElementById('countdown');
-
   const tick = () => {
-    const now = new Date();
     const midnight = new Date();
     midnight.setUTCHours(24, 0, 0, 0);
-    const diff = midnight - now;
+    const diff = midnight - Date.now();
     if (diff <= 0) { el.textContent = 'now'; return; }
     const h = Math.floor(diff / 3_600_000);
     const m = Math.floor((diff % 3_600_000) / 60_000);
     const s = Math.floor((diff % 60_000) / 1_000);
     el.textContent = `${pad(h)}h ${pad(m)}m ${pad(s)}s`;
   };
-
   tick();
-  countdownTimer = setInterval(tick, 1000);
+  setInterval(tick, 1000);
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -175,16 +170,13 @@ function setLastUpdated(iso) {
   try {
     const d = new Date(iso);
     el.textContent = `Updated: ${d.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}`;
-  } catch {
-    el.textContent = `Updated: ${iso}`;
-  }
+  } catch { el.textContent = `Updated: ${iso}`; }
 }
 
 function formatDate(str) {
   try {
     const d = new Date(str);
-    if (isNaN(d)) return str;
-    return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+    return isNaN(d) ? str : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
   } catch { return str; }
 }
 
@@ -196,11 +188,10 @@ function esc(str) {
 
 function pad(n) { return String(n).padStart(2, '0'); }
 
-// Inject animation keyframes
 const style = document.createElement('style');
 style.textContent = `
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(18px); }
+    from { opacity: 0; transform: translateY(14px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 `;
