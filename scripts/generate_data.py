@@ -121,9 +121,9 @@ def build_rankings() -> dict:
         m = tool["metrics"]
         jitter = random.uniform(-1.5, 1.5)
         score = round(
-            m["capability_score"] * 0.50          # max 50 pts
+            m["capability_score"] * 0.60          # max 60 pts
             + min(m["growth_rate"] * 0.60, 30)    # max 30 pts
-            + min(m["monthly_users"] * 0.10, 20)  # max 20 pts
+            + min(m["monthly_users"] * 0.10, 10)  # max 10 pts
             + jitter,
             1,
         )
