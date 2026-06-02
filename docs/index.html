@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Tools Ranking &amp; News</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">⚡</span>
+        <div>
+          <h1>AI Power Rankings</h1>
+          <p class="tagline">Live rankings &amp; news — refreshed daily via GitHub Actions</p>
+        </div>
+      </div>
+      <div class="header-meta">
+        <span id="last-updated" class="last-updated">Loading…</span>
+        <span class="next-refresh">Next refresh: <strong id="countdown">—</strong></span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">🏆 Top 6 AI Tools</h2>
+        <p class="section-sub">Ranked daily by adoption, growth rate, and capability</p>
+      </div>
+      <div id="rankings-grid" class="rankings-grid">
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+      </div>
+    </section>
+
+    <section class="section legend-section">
+      <div class="legend">
+        <span class="legend-title">Score breakdown:</span>
+        <span class="legend-item"><span class="dot" style="background:#667eea"></span>Monthly Users (50 pts max)</span>
+        <span class="legend-item"><span class="dot" style="background:#f093fb"></span>Growth Rate (25 pts max)</span>
+        <span class="legend-item"><span class="dot" style="background:#4facfe"></span>Capability (15 pts max)</span>
+        <span class="legend-item"><span class="dot" style="background:#43e97b"></span>Community (10 pts max)</span>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">📰 Latest AI News</h2>
+        <p class="section-sub">Aggregated from TechCrunch, VentureBeat, The Verge, MIT Tech Review &amp; more</p>
+      </div>
+      <div id="news-grid" class="news-grid">
+        <div class="skeleton-card news-skeleton"></div>
+        <div class="skeleton-card news-skeleton"></div>
+        <div class="skeleton-card news-skeleton"></div>
+        <div class="skeleton-card news-skeleton"></div>
+        <div class="skeleton-card news-skeleton"></div>
+        <div class="skeleton-card news-skeleton"></div>
+      </div>
+      <div id="news-empty" class="news-empty hidden">
+        <span>📡</span>
+        <p>No articles available yet.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>AI Power Rankings · Data refreshed automatically every day at midnight UTC via GitHub Actions</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

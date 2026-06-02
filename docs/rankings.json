@@ -1,0 +1,107 @@
+{
+  "tools": [
+    {
+      "id": "gemini",
+      "name": "Gemini",
+      "company": "Google DeepMind",
+      "description": "Google's flagship multimodal AI integrated across Search, Workspace, and Android.",
+      "url": "https://gemini.google.com",
+      "icon": "\ud83d\udc8e",
+      "color": "#4285f4",
+      "score": 85.3,
+      "metrics": {
+        "monthly_users": 150,
+        "growth_rate": 26,
+        "capability_score": 92,
+        "community_score": 88
+      },
+      "rank": 1
+    },
+    {
+      "id": "chatgpt",
+      "name": "ChatGPT",
+      "company": "OpenAI",
+      "description": "The world's most popular AI assistant with advanced reasoning and multimodal capabilities.",
+      "url": "https://chat.openai.com",
+      "icon": "\ud83e\udd16",
+      "color": "#10a37f",
+      "score": 80.8,
+      "metrics": {
+        "monthly_users": 180,
+        "growth_rate": 15,
+        "capability_score": 95,
+        "community_score": 98
+      },
+      "rank": 2
+    },
+    {
+      "id": "claude",
+      "name": "Claude",
+      "company": "Anthropic",
+      "description": "Advanced AI known for safety, nuanced reasoning, and exceptional long-context understanding.",
+      "url": "https://claude.ai",
+      "icon": "\u2728",
+      "color": "#cc785c",
+      "score": 72.9,
+      "metrics": {
+        "monthly_users": 60,
+        "growth_rate": 38,
+        "capability_score": 97,
+        "community_score": 86
+      },
+      "rank": 3
+    },
+    {
+      "id": "copilot",
+      "name": "GitHub Copilot",
+      "company": "Microsoft / GitHub",
+      "description": "AI-powered pair programmer that suggests code, tests, and docs directly in your IDE.",
+      "url": "https://github.com/features/copilot",
+      "icon": "\ud83d\ude80",
+      "color": "#6e5494",
+      "score": 59.7,
+      "metrics": {
+        "monthly_users": 50,
+        "growth_rate": 22,
+        "capability_score": 90,
+        "community_score": 93
+      },
+      "rank": 4
+    },
+    {
+      "id": "perplexity",
+      "name": "Perplexity AI",
+      "company": "Perplexity AI Inc.",
+      "description": "Real-time AI search engine that synthesizes live web sources into cited, accurate answers.",
+      "url": "https://www.perplexity.ai",
+      "icon": "\ud83d\udd0d",
+      "color": "#20c997",
+      "score": 53.8,
+      "metrics": {
+        "monthly_users": 15,
+        "growth_rate": 48,
+        "capability_score": 88,
+        "community_score": 83
+      },
+      "rank": 5
+    },
+    {
+      "id": "midjourney",
+      "name": "Midjourney",
+      "company": "Midjourney Inc.",
+      "description": "Leading AI image generation tool celebrated for its artistic quality and creative depth.",
+      "url": "https://www.midjourney.com",
+      "icon": "\ud83c\udfa8",
+      "color": "#f56565",
+      "score": 38.5,
+      "metrics": {
+        "monthly_users": 20,
+        "growth_rate": 11,
+        "capability_score": 93,
+        "community_score": 89
+      },
+      "rank": 6
+    }
+  ],
+  "last_updated": "2026-06-02T02:12:31.830916+00:00"
+}
