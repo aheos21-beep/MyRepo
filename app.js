@@ -60,8 +60,7 @@ function buildRankCard(tool) {
       <div class="card-identity">
         <div class="tool-icon">${tool.icon}</div>
         <div>
-          <div class="tool-name">${esc(tool.name)}</div>
-          <div class="tool-version">${esc(tool.version || '')}</div>
+          <div class="tool-name">${esc(tool.name)}${tool.version ? ` <span class="tool-version">(${esc(tool.version)})</span>` : ''}</div>
           <div class="tool-company">${esc(tool.company)}</div>
         </div>
       </div>
