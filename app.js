@@ -76,9 +76,9 @@ function buildRankCard(tool) {
       </div>
     </div>
     <div class="metrics-row">
+      <span class="metric-chip">🧠 <span class="val">${m.capability_score}</span> capability</span>
+      <span class="metric-chip">📈 <span class="val">+${m.growth_rate}%</span> growth</span>
       <span class="metric-chip">👥 <span class="val">${m.monthly_users}M</span>/mo</span>
-      <span class="metric-chip">📈 <span class="val">+${m.growth_rate}%</span></span>
-      <span class="metric-chip">🧠 <span class="val">${m.capability_score}</span></span>
     </div>
   `;
 
