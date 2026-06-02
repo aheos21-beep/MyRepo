@@ -22,6 +22,7 @@ AI_TOOLS = [
     {
         "id": "chatgpt",
         "name": "ChatGPT",
+        "version": "GPT-5",
         "company": "OpenAI",
         "description": "The world's most popular AI assistant with advanced reasoning and multimodal capabilities.",
         "url": "https://chat.openai.com",
@@ -32,6 +33,7 @@ AI_TOOLS = [
     {
         "id": "claude",
         "name": "Claude",
+        "version": "Claude 4",
         "company": "Anthropic",
         "description": "Advanced AI known for safety, nuanced reasoning, and exceptional long-context understanding.",
         "url": "https://claude.ai",
@@ -42,6 +44,7 @@ AI_TOOLS = [
     {
         "id": "gemini",
         "name": "Gemini",
+        "version": "Gemini Ultra 2",
         "company": "Google DeepMind",
         "description": "Google's flagship multimodal AI integrated across Search, Workspace, and Android.",
         "url": "https://gemini.google.com",
@@ -52,6 +55,7 @@ AI_TOOLS = [
     {
         "id": "copilot",
         "name": "GitHub Copilot",
+        "version": "Copilot Pro+",
         "company": "Microsoft / GitHub",
         "description": "AI-powered pair programmer that suggests code, tests, and docs directly in your IDE.",
         "url": "https://github.com/features/copilot",
@@ -62,6 +66,7 @@ AI_TOOLS = [
     {
         "id": "midjourney",
         "name": "Midjourney",
+        "version": "v7",
         "company": "Midjourney Inc.",
         "description": "Leading AI image generation tool celebrated for its artistic quality and creative depth.",
         "url": "https://www.midjourney.com",
@@ -72,6 +77,7 @@ AI_TOOLS = [
     {
         "id": "perplexity",
         "name": "Perplexity AI",
+        "version": "Perplexity Pro",
         "company": "Perplexity AI Inc.",
         "description": "Real-time AI search engine that synthesizes live web sources into cited, accurate answers.",
         "url": "https://www.perplexity.ai",

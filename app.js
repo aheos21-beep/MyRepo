@@ -61,6 +61,7 @@ function buildRankCard(tool) {
         <div class="tool-icon">${tool.icon}</div>
         <div>
           <div class="tool-name">${esc(tool.name)}</div>
+          <div class="tool-version">${esc(tool.version || '')}</div>
           <div class="tool-company">${esc(tool.company)}</div>
         </div>
       </div>
@@ -147,12 +148,20 @@ function buildNewsCard(article) {
 
 // ── Countdown ─────────────────────────────────────────────────────────────────
 
+function nextRefreshTime() {
+  const now = new Date();
+  return [6, 18].map(h => {
+    const t = new Date();
+    t.setUTCHours(h, 0, 0, 0);
+    if (t <= now) t.setUTCDate(t.getUTCDate() + 1);
+    return t;
+  }).reduce((a, b) => a < b ? a : b);
+}
+
 function startCountdown() {
   const el = document.getElementById('countdown');
   const tick = () => {
-    const midnight = new Date();
-    midnight.setUTCHours(24, 0, 0, 0);
-    const diff = midnight - Date.now();
+    const diff = nextRefreshTime() - Date.now();
     if (diff <= 0) { el.textContent = 'now'; return; }
     const h = Math.floor(diff / 3_600_000);
     const m = Math.floor((diff % 3_600_000) / 60_000);
