@@ -1,7 +1,14 @@
 {
   "articles": [
     {
-      "title": "Uber caps employee AI spending after blowing through budget in four months",
+      "title": "Cyera eyes $12B valuation at 80x ARR multiple despite operating losses",
+      "url": "https://techcrunch.com/2026/06/02/cyera-eyes-12b-valuation-at-80x-arr-multiple-despite-operating-losses/",
+      "summary": "The cybersecurity company is nearing a $300 million round led by Evolution Equity Partners.",
+      "published": "Tue, 02 Jun 2026 22:50:56 +0000",
+      "source": "TechCrunch AI"
+    },
+    {
+      "title": "Uber caps employee AI spending after blowing through budget in 4 months",
       "url": "https://techcrunch.com/2026/06/02/uber-caps-employee-ai-spending-after-blowing-through-budget-in-four-months/",
       "summary": "Uber's cutback has occurred after the company had reportedly encouraged staff to use AI as much as possible.",
       "published": "Tue, 02 Jun 2026 19:11:48 +0000",
@@ -32,13 +39,6 @@
       "title": "Google rolls out fake call detection to protect against AI deepfake impersonation scams",
       "url": "https://techcrunch.com/2026/06/02/google-rolls-out-fake-call-detection-to-protect-against-ai-deepfake-impersonation-scams/",
       "summary": "As people increasingly refuse to answer calls from unknown numbers, scammers are shifting their tactics by spoofing trusted phone numbers and using AI deepfake technology to sound like authority figures, family members, or employers.",
-      "published": "Tue, 02 Jun 2026 18:00:00 +0000",
-      "source": "TechCrunch AI"
-    },
-    {
-      "title": "Microsoft offers devs a better way to control AI agent behavior",
-      "url": "https://techcrunch.com/2026/06/02/microsoft-offers-devs-a-better-way-to-control-ai-agent-behavior/",
-      "summary": "The specification lets developer, compliance, and security teams define their own policies for agents to follow in portable policy files.",
       "published": "Tue, 02 Jun 2026 18:00:00 +0000",
       "source": "TechCrunch AI"
     },
@@ -169,6 +169,6 @@
       "source": "Ars Technica"
     }
   ],
-  "last_updated": "2026-06-02T20:57:36.352867+00:00",
+  "last_updated": "2026-06-03T11:08:11.028302+00:00",
   "source": "live"
 }
