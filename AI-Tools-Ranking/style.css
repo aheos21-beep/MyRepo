@@ -376,6 +376,48 @@ main {
 /* ── Utilities ────────────────────────────────────────── */
 .hidden { display: none !important; }
 
+/* ── iPad landscape / short-viewport (640px+ wide, ≤840px tall) ────────── */
+@media (min-width: 640px) and (max-height: 840px) {
+  :root {
+    --header-h: 44px;
+    --footer-h: 26px;
+  }
+
+  .two-col-layout {
+    padding: 10px 16px 8px;
+    gap: 12px;
+  }
+
+  .col-title {
+    font-size: 0.88rem;
+    margin-bottom: 7px;
+  }
+
+  .rankings-grid {
+    gap: 7px;
+    overflow-y: auto;
+  }
+
+  .rank-card {
+    padding: 9px 12px;
+    gap: 6px;
+  }
+
+  .tool-icon {
+    width: 30px;
+    height: 30px;
+    font-size: 1.1rem;
+  }
+
+  .score-section { gap: 3px; }
+
+  .score-bar-track { height: 3px; }
+
+  .score-value { font-size: 0.95rem; }
+
+  .metric-chip { font-size: 0.63rem; padding: 2px 5px; }
+}
+
 /* ── Mobile fallback (< 640px) ────────────────────────── */
 @media (max-width: 639px) {
   main {
