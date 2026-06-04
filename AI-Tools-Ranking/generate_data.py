@@ -14,7 +14,7 @@ from pathlib import Path
 
 import aiohttp
 
-DOCS_DIR = Path(__file__).parent.parent / "AI-Tools-Ranking"
+DOCS_DIR = Path(__file__).parent
 
 # ── Tool definitions ──────────────────────────────────────────────────────────
 
