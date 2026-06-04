@@ -1,6 +1,13 @@
 {
   "articles": [
     {
+      "title": "Lovable signs multiyear deal with Google Cloud to up usage 5x, source says",
+      "url": "https://techcrunch.com/2026/06/03/lovable-signs-multi-year-deal-with-google-cloud-to-up-usage-5x-source-says/",
+      "summary": "Lovable and Google signed an expanded multiyear deal that involves a 5x expansion of Lovable's footprint on Google Cloud, and expanded access to Anthropic Claude.",
+      "published": "Wed, 03 Jun 2026 22:56:51 +0000",
+      "source": "TechCrunch AI"
+    },
+    {
       "title": "Alphabet\u2019s record-breaking $85B raise for Google\u2019s AI business is a helluva good signal",
       "url": "https://techcrunch.com/2026/06/03/alphabets-record-breaking-85b-raise-for-googles-ai-business-is-a-helluva-good-signal/",
       "summary": "If Alphabet's record-breaking $85 billion stock sale signals investor appetite for AI-related offerings, we can see that investors are ready to chow.",
@@ -33,13 +40,6 @@
       "url": "https://techcrunch.com/2026/06/03/publishers-will-be-able-to-opt-out-of-ai-search-thanks-to-new-regulation/",
       "summary": "U.K. regulators are requiring Google offer a tool allowing website publishers to opt-out of generative AI search features. The option will be tested in the U.K. then rolled out globally.",
       "published": "Wed, 03 Jun 2026 14:58:33 +0000",
-      "source": "TechCrunch AI"
-    },
-    {
-      "title": "Meta\u2019s AI agent for WhatsApp Business is now available globally",
-      "url": "https://techcrunch.com/2026/06/03/metas-ai-agent-for-whatsapp-business-is-now-available-globally/",
-      "summary": "WhatsApp will charge businesses for using its AI agent based on token usage.",
-      "published": "Wed, 03 Jun 2026 13:40:00 +0000",
       "source": "TechCrunch AI"
     },
     {
@@ -127,6 +127,13 @@
       "source": "MIT Technology Review"
     },
     {
+      "title": "Can't make sense of Dashlane's vault theft notification? You're not alone.",
+      "url": "https://arstechnica.com/security/2026/06/dashlane-issues-opaque-advisory-warning-20-encrypted-vaults-were-stolen/",
+      "summary": "Security advisory leaves out key details. Dashlane maintains complete silence.",
+      "published": "Wed, 03 Jun 2026 19:53:14 +0000",
+      "source": "Ars Technica"
+    },
+    {
       "title": "Dozens of Red Hat packages backdoored through its official NPM channel",
       "url": "https://arstechnica.com/security/2026/06/dozens-of-red-hat-packages-backdoored-through-its-offical-npm-channel/",
       "summary": "Anyone who has downloaded affected Red Hat packages should investigate immediately.",
@@ -160,15 +167,8 @@
       "summary": "\"BadHost\" was found in Starlette, a package with 325 million weekly downloads.",
       "published": "Tue, 26 May 2026 19:50:33 +0000",
       "source": "Ars Technica"
-    },
-    {
-      "title": "US's big bet on quantum computing may not be entirely legal",
-      "url": "https://arstechnica.com/tech-policy/2026/05/uss-big-bet-on-quantum-computing-may-not-be-entirely-legal/",
-      "summary": "Deal also launched the first quantum foundry company, but is there a need for it?",
-      "published": "Mon, 25 May 2026 12:00:15 +0000",
-      "source": "Ars Technica"
     }
   ],
-  "last_updated": "2026-06-03T21:23:33.138277+00:00",
+  "last_updated": "2026-06-04T10:02:11.889186+00:00",
   "source": "live"
 }
