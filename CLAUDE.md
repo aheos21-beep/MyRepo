@@ -8,7 +8,7 @@ Every project must be **fully self-contained in its own folder**, named in `Titl
 
 Two shared folders exist at repo root and should stay there:
 - `.github/workflows/` — GitHub Actions automation. GitHub only executes workflows found here.
-- `scripts/` — repo-level utilities that are not specific to any single project (e.g. `push.sh`).
+- `.scripts/` — repo-level utilities that are not specific to any single project (e.g. `push.sh`).
 
 If a script is specific to one project, place it inside that project's folder (see `AI-Tools-Ranking/generate_data.py`).
 
@@ -28,7 +28,7 @@ The only project with automation. Architecture:
 Always ask the user how the project will be hosted or used before applying any conventions. Examples:
 - GitHub Pages → apply the folder and index.html conventions above
 - Scriptable widget → self-contained single file, no folder structure needed
-- GitHub Actions only → script goes in the project folder or `scripts/`, no index.html needed
+- GitHub Actions only → script goes in the project folder or `.scripts/`, no index.html needed
 
 Do not assume GitHub Pages hosting unless the user confirms it.
 
@@ -37,4 +37,4 @@ Do not assume GitHub Pages hosting unless the user confirms it.
 1. Create a `New-Project-Name/` folder (Title-Case-With-Hyphens).
 2. Add an `index.html` inside it — this is what GitHub Pages serves.
 3. If the project needs scheduled automation, add a workflow in `.github/workflows/` and put any project-specific scripts inside the project folder.
-4. If the script is reusable across projects, put it in `scripts/` instead.
+4. If the script is reusable across projects, put it in `.scripts/` instead.
