@@ -23,7 +23,16 @@ The only project with automation. Architecture:
 - `index.html` + `app.js` + `style.css` — static frontend that reads `rankings.json` and `news.json` directly via `fetch()`.
 - GitHub Actions (`.github/workflows/daily-refresh.yml`) runs `generate_data.py` at 6am and 6pm UTC and commits the updated JSON files. Can be triggered manually from the GitHub Actions tab.
 
-## Adding a new project
+## Before starting any new project
+
+Always ask the user how the project will be hosted or used before applying any conventions. Examples:
+- GitHub Pages → apply the folder and index.html conventions above
+- Scriptable widget → self-contained single file, no folder structure needed
+- GitHub Actions only → script goes in the project folder or `scripts/`, no index.html needed
+
+Do not assume GitHub Pages hosting unless the user confirms it.
+
+## Adding a new project (GitHub Pages)
 
 1. Create a `New-Project-Name/` folder (Title-Case-With-Hyphens).
 2. Add an `index.html` inside it — this is what GitHub Pages serves.
