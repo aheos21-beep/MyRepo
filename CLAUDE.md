@@ -38,3 +38,7 @@ Do not assume GitHub Pages hosting unless the user confirms it.
 2. Add an `index.html` inside it — this is what GitHub Pages serves.
 3. If the project needs scheduled automation, add a workflow in `.github/workflows/` and put any project-specific scripts inside the project folder.
 4. If the script is reusable across projects, put it in `.scripts/` instead.
+
+## Updating an existing project
+
+When asked to update or fix a project that already exists in the repo, **edit the files in place inside the existing project folder**. Do NOT create a new folder or duplicate files. Changes should be committed directly to `main` and pushed so GitHub Pages serves the updated version immediately. Only create a new folder if the user explicitly says it is a new, separate project.
