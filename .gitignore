@@ -1,1 +1,4 @@
 .claude/
+ai-tools-ranking/
+__pycache__/
+*.pyc
