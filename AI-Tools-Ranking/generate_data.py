@@ -203,18 +203,38 @@ async def build_news() -> dict:
     async with aiohttp.ClientSession() as session:
         results = await asyncio.gather(*[fetch_feed(session, n, u) for n, u in RSS_FEEDS])
 
+    # Interleave articles from each source so the top 5 come from different outlets
     seen: set = set()
-    articles: list = []
+    per_feed: list = []
     for batch in results:
+        feed = []
         for a in batch:
             if a["url"] not in seen:
                 seen.add(a["url"])
-                articles.append(a)
+                feed.append(a)
+        if feed:
+            per_feed.append(feed)
+
+    articles: list = []
+    max_per_feed = max((len(f) for f in per_feed), default=0)
+    for i in range(max_per_feed):
+        for feed in per_feed:
+            if i < len(feed):
+                articles.append(feed[i])
 
     using_seed = not articles
     if using_seed:
         print("[news] Live feeds unavailable — using seed articles.", file=sys.stderr)
-        articles = list(SEED_ARTICLES)
+        from collections import defaultdict
+        by_source: dict = defaultdict(list)
+        for a in SEED_ARTICLES:
+            by_source[a["source"]].append(a)
+        sources = list(by_source.values())
+        articles = []
+        for i in range(max(len(s) for s in sources)):
+            for s in sources:
+                if i < len(s):
+                    articles.append(s[i])
 
     return {
         "articles": articles[:24],
