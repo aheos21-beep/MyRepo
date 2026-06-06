@@ -3,7 +3,7 @@
     {
       "title": "Startup Battlefield 200 applications officially close in 3 days",
       "url": "https://techcrunch.com/2026/06/05/startup-battlefield-200-applications-officially-close-in-3-days/",
-      "summary": "Applications for Startup Battlefield 200 officially close on June 8, 11:59 p.m. PT. Now\u2019s not the time to wait any longer. Secure your shot at competing on the Disrupt Stage at TechCrunch Disrupt 2026 this October at San Francisco's Moscone West.",
+      "summary": "Applications for Startup Battlefield 200 officially close on June 8, 11:59 p.m. PT. Don't wait any longer. Secure your shot at competing on the Disrupt Stage at TechCrunch Disrupt 2026 this October at San Francisco's Moscone West.",
       "published": "Fri, 05 Jun 2026 20:00:00 +0000",
       "source": "TechCrunch AI"
     },
@@ -22,16 +22,16 @@
       "source": "MIT Technology Review"
     },
     {
-      "title": "Dashlane explains how attackers managed to download encrypted password vaults",
-      "url": "https://arstechnica.com/security/2026/06/dashlane-explains-how-attackers-managed-to-download-encrypted-password-vaults/",
-      "summary": "By targeting large numbers of users, attackers increased their chances of success.",
-      "published": "Thu, 04 Jun 2026 20:02:04 +0000",
+      "title": "How a USB-connected speaker can infect a PC without ever being touched",
+      "url": "https://arstechnica.com/security/2026/06/highly-reviewed-speaker-can-be-hacked-over-the-air-to-infect-connected-devices/",
+      "summary": "Seller of the Sound Blaster Katana V2X doesn't consider the behavior a vulnerability.",
+      "published": "Fri, 05 Jun 2026 21:00:29 +0000",
       "source": "Ars Technica"
     },
     {
       "title": "Google will pay SpaceX $920M per month for compute",
       "url": "https://techcrunch.com/2026/06/05/google-will-pay-spacex-920m-per-month-for-compute/",
-      "summary": "The companies announced the deal on Friday, just one week ahead of SpaceX's historic IPO.",
+      "summary": "In a statement, a Google representative described the deal as a result of unexpected demand for its recently launched AI products.",
       "published": "Fri, 05 Jun 2026 18:57:20 +0000",
       "source": "TechCrunch AI"
     },
@@ -50,10 +50,10 @@
       "source": "MIT Technology Review"
     },
     {
-      "title": "Can't make sense of Dashlane's vault theft notification? You're not alone.",
-      "url": "https://arstechnica.com/security/2026/06/dashlane-issues-opaque-advisory-warning-20-encrypted-vaults-were-stolen/",
-      "summary": "Security advisory leaves out key details. Dashlane maintains complete silence.",
-      "published": "Wed, 03 Jun 2026 19:53:14 +0000",
+      "title": "Dashlane explains how attackers managed to download encrypted password vaults",
+      "url": "https://arstechnica.com/security/2026/06/dashlane-explains-how-attackers-managed-to-download-encrypted-password-vaults/",
+      "summary": "By targeting large numbers of users, attackers increased their chances of success.",
+      "published": "Thu, 04 Jun 2026 20:02:04 +0000",
       "source": "Ars Technica"
     },
     {
@@ -78,10 +78,10 @@
       "source": "MIT Technology Review"
     },
     {
-      "title": "Dozens of Red Hat packages backdoored through its official NPM channel",
-      "url": "https://arstechnica.com/security/2026/06/dozens-of-red-hat-packages-backdoored-through-its-offical-npm-channel/",
-      "summary": "Anyone who has downloaded affected Red Hat packages should investigate immediately.",
-      "published": "Mon, 01 Jun 2026 19:49:09 +0000",
+      "title": "Can't make sense of Dashlane's vault theft notification? You're not alone.",
+      "url": "https://arstechnica.com/security/2026/06/dashlane-issues-opaque-advisory-warning-20-encrypted-vaults-were-stolen/",
+      "summary": "Security advisory leaves out key details. Dashlane maintains complete silence.",
+      "published": "Wed, 03 Jun 2026 19:53:14 +0000",
       "source": "Ars Technica"
     },
     {
@@ -106,10 +106,10 @@
       "source": "MIT Technology Review"
     },
     {
-      "title": "Botnet of more than 17 million devices dismantled",
-      "url": "https://arstechnica.com/security/2026/05/botnet-of-more-than-17-million-devices-dismantled/",
-      "summary": "The botnet was reportedly tied to a Russia-based residential proxy network.",
-      "published": "Fri, 29 May 2026 18:46:33 +0000",
+      "title": "Dozens of Red Hat packages backdoored through its official NPM channel",
+      "url": "https://arstechnica.com/security/2026/06/dozens-of-red-hat-packages-backdoored-through-its-offical-npm-channel/",
+      "summary": "Anyone who has downloaded affected Red Hat packages should investigate immediately.",
+      "published": "Mon, 01 Jun 2026 19:49:09 +0000",
       "source": "Ars Technica"
     },
     {
@@ -134,10 +134,10 @@
       "source": "MIT Technology Review"
     },
     {
-      "title": "Fed up with vibe coders, dev sneaks data-nuking prompt injection into their code",
-      "url": "https://arstechnica.com/security/2026/05/fed-up-with-vibe-coders-dev-sneaks-data-nuking-prompt-injection-into-their-code/",
-      "summary": "Undisclosed addition in jqwik instructed AI coding agents to delete app output.",
-      "published": "Thu, 28 May 2026 20:29:53 +0000",
+      "title": "Botnet of more than 17 million devices dismantled",
+      "url": "https://arstechnica.com/security/2026/05/botnet-of-more-than-17-million-devices-dismantled/",
+      "summary": "The botnet was reportedly tied to a Russia-based residential proxy network.",
+      "published": "Fri, 29 May 2026 18:46:33 +0000",
       "source": "Ars Technica"
     },
     {
@@ -162,13 +162,13 @@
       "source": "MIT Technology Review"
     },
     {
-      "title": "Websites have a new way to spy on visitors: Analyzing their SSD activity",
-      "url": "https://arstechnica.com/security/2026/05/websites-have-a-new-way-to-spy-on-visitors-analyzing-their-ssd-activity/",
-      "summary": "Telltale SSD activity can be measured in the browser using simple JavaScript.",
-      "published": "Wed, 27 May 2026 20:56:03 +0000",
+      "title": "Fed up with vibe coders, dev sneaks data-nuking prompt injection into their code",
+      "url": "https://arstechnica.com/security/2026/05/fed-up-with-vibe-coders-dev-sneaks-data-nuking-prompt-injection-into-their-code/",
+      "summary": "Undisclosed addition in jqwik instructed AI coding agents to delete app output.",
+      "published": "Thu, 28 May 2026 20:29:53 +0000",
       "source": "Ars Technica"
     }
   ],
-  "last_updated": "2026-06-05T20:02:45.141138+00:00",
+  "last_updated": "2026-06-06T08:39:07.147014+00:00",
   "source": "live"
 }
