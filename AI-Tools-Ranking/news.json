@@ -1,10 +1,10 @@
 {
   "articles": [
     {
-      "title": "Why Apple\u2019s slow-and-steady AI bet is starting to look pretty smart",
-      "url": "https://techcrunch.com/2026/06/08/why-apples-slow-and-steady-ai-bet-is-starting-to-look-pretty-smart/",
-      "summary": "Can Apple's new AI glow up put to bed accusations that it's losing an all-important industry race?",
-      "published": "Tue, 09 Jun 2026 01:56:48 +0000",
+      "title": "Can tech companies learn to love cheaper AI models?",
+      "url": "https://techcrunch.com/2026/06/09/can-tech-companies-learn-to-love-cheaper-models/",
+      "summary": "If those same AI workloads can be\u00a0handled by\u00a0cheaper models without affecting quality, it would mean a massive shift in the economics of\u00a0AI.",
+      "published": "Tue, 09 Jun 2026 18:56:09 +0000",
       "source": "TechCrunch AI"
     },
     {
@@ -15,24 +15,24 @@
       "source": "VentureBeat AI"
     },
     {
-      "title": "Five things you need to know about AI",
-      "url": "https://www.technologyreview.com/2026/06/09/1138582/five-things-you-need-to-know-about-ai/",
-      "summary": "At SXSW London last week I gave a talk called \u201cFive things you need to know about AI,\u201d in which I shared what I think are the biggest themes in AI right now. I pulled a few things from our first AI10 list, an annual guide to the most important trends in this buzzy world,&#8230;",
-      "published": "Tue, 09 Jun 2026 09:16:45 +0000",
+      "title": "The Download: whole-body rejuvenation drugs and five things to know about AI",
+      "url": "https://www.technologyreview.com/2026/06/09/1138604/the-download-anti-aging-drugs-ai-five-things-to-know/",
+      "summary": "This is today&#8217;s edition of The Download, our weekday newsletter that provides a daily dose of what&#8217;s going on in the world of technology. David Sinclair plans to test whole-body rejuvenation drugs in the XPrize competition The outspoken longevity scientist David Sincl",
+      "published": "Tue, 09 Jun 2026 12:10:00 +0000",
       "source": "MIT Technology Review"
     },
     {
-      "title": "For the 2nd time in weeks, Microsoft packages laced with credential stealer",
-      "url": "https://arstechnica.com/security/2026/06/for-the-2nd-time-in-weeks-microsoft-packages-laced-with-credential-stealer/",
-      "summary": "73 packages run self-replicating stealer as soon as they're opened by an AI agent.",
-      "published": "Mon, 08 Jun 2026 18:34:23 +0000",
+      "title": "High-severity vulnerability in Linux caused by a single faulty character",
+      "url": "https://arstechnica.com/security/2026/06/a-single-errant-character-in-the-linux-kernel-allows-attacker-to-gain-root/",
+      "summary": "Use-after-free bug can be exploited to evade sandbox defenses.",
+      "published": "Tue, 09 Jun 2026 15:12:43 +0000",
       "source": "Ars Technica"
     },
     {
-      "title": "Mercor\u2019s Brendan Foody calls out Sequoia, accusing it of \u2018dual-pricing\u2019 valuation tricks",
-      "url": "https://techcrunch.com/2026/06/08/mercors-brendan-foody-calls-out-sequoia-over-dual-pricing-valuation-tricks/",
-      "summary": "Sequoia is just one of the top firms that sells same equity at two different prices.",
-      "published": "Tue, 09 Jun 2026 00:45:56 +0000",
+      "title": "WWDC 2026: Everything announced on Siri AI, iOS 27, Apple Intelligence, and more",
+      "url": "https://techcrunch.com/2026/06/09/wwdc-2026-everything-announced-on-siri-ai-os-27-apple-intelligence-and-more/",
+      "summary": "Apple primarily made the case for an improved experience with its long-standing Siri assistant, which like most other announcements had a hefty helping of AI.",
+      "published": "Tue, 09 Jun 2026 18:04:24 +0000",
       "source": "TechCrunch AI"
     },
     {
@@ -43,24 +43,24 @@
       "source": "VentureBeat AI"
     },
     {
-      "title": "The Download: how the World Cup ball will fly and OpenAI\u2019s \u201csuper app\u201d",
-      "url": "https://www.technologyreview.com/2026/06/08/1138485/the-download-world-cup-ball-openai-super-app/",
-      "summary": "This is today&#8217;s edition of The Download, our weekday newsletter that provides a daily dose of what&#8217;s going on in the world of technology. Why this year\u2019s World Cup ball may not fly as far Much is new about this month\u2019s FIFA World Cup tournament. It hosts more teams th",
-      "published": "Mon, 08 Jun 2026 12:10:00 +0000",
+      "title": "Learning to lead in a hybrid human-AI enterprise",
+      "url": "https://www.technologyreview.com/2026/06/09/1137830/learning-to-lead-in-a-hybrid-human-ai-enterprise/",
+      "summary": "As adoption of AI agents looks set to surge by as much as 300% in the next two years,\u00a0leadership teams are carefully considering the implications of a hybrid human-AI workforce.\u00a0 Unlike existing enterprise-level automation that relies on manual input, AI agents are capable of aut",
+      "published": "Tue, 09 Jun 2026 10:20:06 +0000",
       "source": "MIT Technology Review"
     },
     {
-      "title": "How a USB-connected speaker can infect a PC without ever being touched",
-      "url": "https://arstechnica.com/security/2026/06/highly-reviewed-speaker-can-be-hacked-over-the-air-to-infect-connected-devices/",
-      "summary": "Seller of the Sound Blaster Katana V2X doesn't consider the behavior a vulnerability.",
-      "published": "Fri, 05 Jun 2026 21:00:29 +0000",
+      "title": "For the 2nd time in weeks, Microsoft packages laced with credential stealer",
+      "url": "https://arstechnica.com/security/2026/06/for-the-2nd-time-in-weeks-microsoft-packages-laced-with-credential-stealer/",
+      "summary": "73 packages run self-replicating stealer as soon as they're opened by an AI agent.",
+      "published": "Mon, 08 Jun 2026 18:34:23 +0000",
       "source": "Ars Technica"
     },
     {
-      "title": "As OpenAI files for IPO, Sam Altman\u2019s eye-scanning company is doing layoffs, report says",
-      "url": "https://techcrunch.com/2026/06/08/as-openai-files-for-ipo-sam-altmans-eye-scanning-company-is-doing-layoffs-report-says/",
-      "summary": "Tools for Humanity, Sam Altman's identity verification company, is reportedly struggling to generate revenue and will downsize its staff.",
-      "published": "Mon, 08 Jun 2026 22:41:45 +0000",
+      "title": "Anthropic\u2019s Claude Fable 5 is a version of Mythos the public can access today",
+      "url": "https://techcrunch.com/2026/06/09/anthropic-released-claude-fable-5-its-most-powerful-model-publicly-days-after-warning-ai-is-getting-too-dangerous/",
+      "summary": "Anthropic is releasing Claude Fable 5, its first Mythos-class model available to the public. The model comes with guardrails that block responses in high-risk areas like cybersecurity and biology.",
+      "published": "Tue, 09 Jun 2026 17:00:00 +0000",
       "source": "TechCrunch AI"
     },
     {
@@ -71,24 +71,24 @@
       "source": "VentureBeat AI"
     },
     {
-      "title": "Why this year\u2019s World Cup ball may not fly as far",
-      "url": "https://www.technologyreview.com/2026/06/08/1138470/why-this-years-world-cup-ball-may-not-fly-as-far/",
-      "summary": "Much is new about this month\u2019s upcoming FIFA World Cup tournament, which will be held in the US, Canada, and Mexico. It hosts more teams than ever before. It\u2019s the first to occur in three different host countries. And, like predecessor cups for over half a century, it will employ",
-      "published": "Mon, 08 Jun 2026 09:00:00 +0000",
+      "title": "David Sinclair plans to test whole-body rejuvenation drugs in the XPrize competition",
+      "url": "https://www.technologyreview.com/2026/06/09/1138545/david-sinclair-plans-to-test-whole-body-rejuvenation-drugs-in-the-xprize-competition/",
+      "summary": "The outspoken longevity scientist David Sinclair has been predicting that one day, you\u2019ll go to the doctor and get a prescription that will make you 10 years younger. Now MIT Technology Review has learned that he has plans to launch human tests of an oral &#8220;reprogramming&#82",
+      "published": "Tue, 09 Jun 2026 10:00:00 +0000",
       "source": "MIT Technology Review"
     },
     {
-      "title": "Dashlane explains how attackers managed to download encrypted password vaults",
-      "url": "https://arstechnica.com/security/2026/06/dashlane-explains-how-attackers-managed-to-download-encrypted-password-vaults/",
-      "summary": "By targeting large numbers of users, attackers increased their chances of success.",
-      "published": "Thu, 04 Jun 2026 20:02:04 +0000",
+      "title": "How a USB-connected speaker can infect a PC without ever being touched",
+      "url": "https://arstechnica.com/security/2026/06/highly-reviewed-speaker-can-be-hacked-over-the-air-to-infect-connected-devices/",
+      "summary": "Seller of the Sound Blaster Katana V2X doesn't consider the behavior a vulnerability.",
+      "published": "Fri, 05 Jun 2026 21:00:29 +0000",
       "source": "Ars Technica"
     },
     {
-      "title": "Apple\u2019s WWDC AI demos looked more real after $250M false ad settlement",
-      "url": "https://techcrunch.com/2026/06/08/apples-wwdc-ai-demos-looked-more-real-after-250m-false-ad-settlement/",
-      "summary": "The vibe of Apple's 2026 WWDC keynote felt like a spouse proudly listing all the honey-do-list items tackled. One subtle example: the many AI demos of someone standing, phone in hand.",
-      "published": "Mon, 08 Jun 2026 22:39:57 +0000",
+      "title": "It\u2019s not FAANG anymore. It\u2019s MANGOS.",
+      "url": "https://techcrunch.com/2026/06/09/its-not-faang-anymore-its-mangos/",
+      "summary": "With SpaceX, Anthropic, and OpenAI all eyeing massive public debuts, the tech industry may soon have a new class of corporate overlords \u2014 and a new acronym to match. Say goodbye to FAANG and hello to MANGOS.",
+      "published": "Tue, 09 Jun 2026 16:09:14 +0000",
       "source": "TechCrunch AI"
     },
     {
@@ -99,24 +99,24 @@
       "source": "VentureBeat AI"
     },
     {
-      "title": "The Download: AI hacking beyond Mythos, and chatbots\u2019 impact on our brains",
-      "url": "https://www.technologyreview.com/2026/06/05/1138452/the-download-ai-hacking-mythos-chatbots-brain-impacts/",
-      "summary": "This is today&#8217;s edition of The Download, our weekday newsletter that provides a daily dose of what&#8217;s going on in the world of technology. The Meta hack shows there\u2019s more to AI security than Mythos On Monday, reports emerged that attackers had used Meta\u2019s AI customer ",
-      "published": "Fri, 05 Jun 2026 12:10:00 +0000",
+      "title": "Five things you need to know about AI",
+      "url": "https://www.technologyreview.com/2026/06/09/1138582/five-things-you-need-to-know-about-ai/",
+      "summary": "At SXSW London last week I gave a talk called \u201cFive things you need to know about AI,\u201d in which I shared what I think are the biggest themes in AI right now. I pulled a few things from our first AI10 list, an annual guide to the most important trends in this buzzy world,&#8230;",
+      "published": "Tue, 09 Jun 2026 09:16:45 +0000",
       "source": "MIT Technology Review"
     },
     {
-      "title": "Can't make sense of Dashlane's vault theft notification? You're not alone.",
-      "url": "https://arstechnica.com/security/2026/06/dashlane-issues-opaque-advisory-warning-20-encrypted-vaults-were-stolen/",
-      "summary": "Security advisory leaves out key details. Dashlane maintains complete silence.",
-      "published": "Wed, 03 Jun 2026 19:53:14 +0000",
+      "title": "Dashlane explains how attackers managed to download encrypted password vaults",
+      "url": "https://arstechnica.com/security/2026/06/dashlane-explains-how-attackers-managed-to-download-encrypted-password-vaults/",
+      "summary": "By targeting large numbers of users, attackers increased their chances of success.",
+      "published": "Thu, 04 Jun 2026 20:02:04 +0000",
       "source": "Ars Technica"
     },
     {
-      "title": "OpenAI files confidentially for IPO, following Anthropic",
-      "url": "https://techcrunch.com/2026/06/08/following-anthropic-openai-files-confidentially-for-ipo/",
-      "summary": "The filing comes a little more than a week after its main rival, Anthropic, also filed to go public, ramping up the race between the two AI firms.",
-      "published": "Mon, 08 Jun 2026 21:29:57 +0000",
+      "title": "Sandstone raises $30M to bring AI to in-house legal teams",
+      "url": "https://techcrunch.com/2026/06/09/sandstone-raises-30m-to-bring-ai-to-in-house-legal-teams/",
+      "summary": "Sandstone's Series A comes just six months after a Sequoia-led seed round.",
+      "published": "Tue, 09 Jun 2026 13:47:25 +0000",
       "source": "TechCrunch AI"
     },
     {
@@ -127,24 +127,24 @@
       "source": "VentureBeat AI"
     },
     {
-      "title": "Are AI chatbots making us lose control of our brains?",
-      "url": "https://www.technologyreview.com/2026/06/05/1138427/are-ai-chatbots-making-us-lose-control-of-our-brains/",
-      "summary": "This week I\u2019ve been at SXSW London. There\u2019s been music, film, and a lot\u2014and I mean a lot\u2014of talk about AI. I also had the opportunity to sit down with Gloria Mark, a psychologist at the University of California, Irvine, who has spent the last 30 years studying how people interact",
-      "published": "Fri, 05 Jun 2026 09:00:00 +0000",
+      "title": "The Download: how the World Cup ball will fly and OpenAI\u2019s \u201csuper app\u201d",
+      "url": "https://www.technologyreview.com/2026/06/08/1138485/the-download-world-cup-ball-openai-super-app/",
+      "summary": "This is today&#8217;s edition of The Download, our weekday newsletter that provides a daily dose of what&#8217;s going on in the world of technology. Why this year\u2019s World Cup ball may not fly as far Much is new about this month\u2019s FIFA World Cup tournament. It hosts more teams th",
+      "published": "Mon, 08 Jun 2026 12:10:00 +0000",
       "source": "MIT Technology Review"
     },
     {
-      "title": "Dozens of Red Hat packages backdoored through its official NPM channel",
-      "url": "https://arstechnica.com/security/2026/06/dozens-of-red-hat-packages-backdoored-through-its-offical-npm-channel/",
-      "summary": "Anyone who has downloaded affected Red Hat packages should investigate immediately.",
-      "published": "Mon, 01 Jun 2026 19:49:09 +0000",
+      "title": "Can't make sense of Dashlane's vault theft notification? You're not alone.",
+      "url": "https://arstechnica.com/security/2026/06/dashlane-issues-opaque-advisory-warning-20-encrypted-vaults-were-stolen/",
+      "summary": "Security advisory leaves out key details. Dashlane maintains complete silence.",
+      "published": "Wed, 03 Jun 2026 19:53:14 +0000",
       "source": "Ars Technica"
     },
     {
-      "title": "Apple plays catch-up at WWDC",
-      "url": "https://techcrunch.com/2026/06/08/apple-plays-catch-up-at-wwdc/",
-      "summary": "Apple spent much of its WWDC keynote highlighting fixes, performance improvements, and long-requested features before unveiling its upgraded AI-powered Siri, signaling that the company wants users to see AI as just one part of a broader effort to improve its software.",
-      "published": "Mon, 08 Jun 2026 21:15:42 +0000",
+      "title": "Lovable says it has hit $500M in annualized revenue, with 1 million new projects a week",
+      "url": "https://techcrunch.com/2026/06/09/lovable-says-it-has-hit-500m-in-annualized-revenue-with-1-million-new-projects-a-week/",
+      "summary": "Lovable says it has now surpassed $500 million in annualized run-rate revenue and its users are building businesses and replacing internal software.",
+      "published": "Tue, 09 Jun 2026 13:00:00 +0000",
       "source": "TechCrunch AI"
     },
     {
@@ -155,20 +155,20 @@
       "source": "VentureBeat AI"
     },
     {
-      "title": "The Meta hack shows there\u2019s more to AI security than Mythos",
-      "url": "https://www.technologyreview.com/2026/06/05/1138437/the-meta-hack-shows-theres-more-to-ai-security-than-mythos/",
-      "summary": "On June 5, 404 Media reported that attackers had been using Meta\u2019s AI customer support agent to steal Instagram accounts. Their approach was simple: They asked the agent to link the accounts to email addresses that they controlled, and the agent complied. One attacker broke into ",
-      "published": "Fri, 05 Jun 2026 09:00:00 +0000",
+      "title": "Why this year\u2019s World Cup ball may not fly as far",
+      "url": "https://www.technologyreview.com/2026/06/08/1138470/why-this-years-world-cup-ball-may-not-fly-as-far/",
+      "summary": "Much is new about this month\u2019s upcoming FIFA World Cup tournament, which will be held in the US, Canada, and Mexico. It hosts more teams than ever before. It\u2019s the first to occur in three different host countries. And, like predecessor cups for over half a century, it will employ",
+      "published": "Mon, 08 Jun 2026 09:00:00 +0000",
       "source": "MIT Technology Review"
     },
     {
-      "title": "Botnet of more than 17 million devices dismantled",
-      "url": "https://arstechnica.com/security/2026/05/botnet-of-more-than-17-million-devices-dismantled/",
-      "summary": "The botnet was reportedly tied to a Russia-based residential proxy network.",
-      "published": "Fri, 29 May 2026 18:46:33 +0000",
+      "title": "Dozens of Red Hat packages backdoored through its official NPM channel",
+      "url": "https://arstechnica.com/security/2026/06/dozens-of-red-hat-packages-backdoored-through-its-offical-npm-channel/",
+      "summary": "Anyone who has downloaded affected Red Hat packages should investigate immediately.",
+      "published": "Mon, 01 Jun 2026 19:49:09 +0000",
       "source": "Ars Technica"
     }
   ],
-  "last_updated": "2026-06-09T09:53:22.390829+00:00",
+  "last_updated": "2026-06-09T20:13:50.547573+00:00",
   "source": "live"
 }
