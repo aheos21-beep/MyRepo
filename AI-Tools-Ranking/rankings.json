@@ -9,7 +9,7 @@
       "url": "https://claude.ai",
       "icon": "\u2728",
       "color": "#cc785c",
-      "score": 85.9,
+      "score": 88.5,
       "metrics": {
         "monthly_users": 60,
         "growth_rate": 38,
@@ -45,7 +45,7 @@
       "url": "https://gemini.google.com",
       "icon": "\ud83d\udc8e",
       "color": "#4285f4",
-      "score": 80.6,
+      "score": 80.1,
       "metrics": {
         "monthly_users": 150,
         "growth_rate": 26,
@@ -63,7 +63,7 @@
       "url": "https://chat.openai.com",
       "icon": "\ud83e\udd16",
       "color": "#10a37f",
-      "score": 76.6,
+      "score": 75.7,
       "metrics": {
         "monthly_users": 180,
         "growth_rate": 15,
@@ -81,7 +81,7 @@
       "url": "https://github.com/features/copilot",
       "icon": "\ud83d\ude80",
       "color": "#6e5494",
-      "score": 71.5,
+      "score": 71.9,
       "metrics": {
         "monthly_users": 50,
         "growth_rate": 22,
@@ -99,7 +99,7 @@
       "url": "https://www.midjourney.com",
       "icon": "\ud83c\udfa8",
       "color": "#f56565",
-      "score": 63.6,
+      "score": 63.5,
       "metrics": {
         "monthly_users": 20,
         "growth_rate": 11,
@@ -109,5 +109,5 @@
       "rank": 6
     }
   ],
-  "last_updated": "2026-06-10T20:39:07.376097+00:00"
+  "last_updated": "2026-06-11T10:44:11.352951+00:00"
 }
