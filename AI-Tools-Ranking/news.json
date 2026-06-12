@@ -1,10 +1,10 @@
 {
   "articles": [
     {
-      "title": "Cheaper, faster, and culturally aware, Avataar\u2019s video AI is built for India\u2019s scale",
-      "url": "https://techcrunch.com/2026/06/11/cheaper-faster-and-culturally-aware-avataars-video-ai-is-built-for-indias-scale/",
-      "summary": "Avataar AI's distilled video model is priced at $0.005 for every second of generation",
-      "published": "Fri, 12 Jun 2026 04:30:00 +0000",
+      "title": "SpaceX IPO: Live updates on everything you need to know",
+      "url": "https://techcrunch.com/2026/06/12/spacex-ipo-live-updates-on-everything-you-need-to-know/",
+      "summary": "TechCrunch has followed SpaceX's start, struggles, and successes from the early days. And we're here for what happens next too. This package of SpaceX IPO coverage includes who stands to win (and maybe some who won't), pre-IPO deals, and what's tucked inside its S-1 registration ",
+      "published": "Fri, 12 Jun 2026 20:04:38 +0000",
       "source": "TechCrunch AI"
     },
     {
@@ -12,6 +12,34 @@
       "url": "https://venturebeat.com/technology/google-just-redesigned-the-search-box-for-the-first-time-in-25-years-heres-why-it-matters-more-than-you-think",
       "summary": "For a quarter century, the Google search box has been one of the most recognizable interfaces in computing: a thin white rectangle, a blinking cursor, a few typed words, and a list of blue links. On Tuesday, Google will formally retire that paradigm.At its annual I/O developer co",
       "published": "Tue, 19 May 2026 17:45:00 GMT",
+      "source": "VentureBeat AI"
+    },
+    {
+      "title": "The Download: \u201creprogramming\u201d aging, and the hidden sense of interoception",
+      "url": "https://www.technologyreview.com/2026/06/12/1138899/the-download-reprogramming-reverse-aging-interoception/",
+      "summary": "This is today&#8217;s edition of The Download, our weekday newsletter that provides a daily dose of what&#8217;s going on in the world of technology. Why \u201creprogramming\u201d is the buzziest approach to reversing aging right now Earlier this week, Life Biosciences, a biotech company f",
+      "published": "Fri, 12 Jun 2026 12:10:00 +0000",
+      "source": "MIT Technology Review"
+    },
+    {
+      "title": "PeopleSoft 0-day affecting hundreds of organizations steals gigabytes of data",
+      "url": "https://arstechnica.com/security/2026/06/peoplesoft-0-day-affecting-hundreds-of-organizations-steals-gigabytes-of-data/",
+      "summary": "Vulnerability in the Oracle-owned PeopleSoft software is about as critical as they come.",
+      "published": "Fri, 12 Jun 2026 19:26:47 +0000",
+      "source": "Ars Technica"
+    },
+    {
+      "title": "Mistral is rumored to be raising \u20ac3B at \u20ac20B valuation",
+      "url": "https://techcrunch.com/2026/06/12/mistral-is-rumored-to-be-raising-e3b-at-e20-valuation/",
+      "summary": "The funding round would value the company at around \u20ac20 billion (about $23.15 billion), nearly double its Series C valuation of \u20ac11.7 billion.",
+      "published": "Fri, 12 Jun 2026 17:38:11 +0000",
+      "source": "TechCrunch AI"
+    },
+    {
+      "title": "Railway secures $100 million to challenge AWS with AI-native cloud infrastructure",
+      "url": "https://venturebeat.com/infrastructure/railway-secures-usd100-million-to-challenge-aws-with-ai-native-cloud",
+      "summary": "Railway, a San Francisco-based cloud platform that has quietly amassed two million developers without spending a dollar on marketing, announced Thursday that it raised $100 million in a Series B funding round, as surging demand for artificial intelligence applications exposes the",
+      "published": "Thu, 22 Jan 2026 14:00:00 GMT",
       "source": "VentureBeat AI"
     },
     {
@@ -29,17 +57,17 @@
       "source": "Ars Technica"
     },
     {
-      "title": "Theker just raised $85M to build the factory robot that doesn\u2019t specialize in anything",
-      "url": "https://techcrunch.com/2026/06/11/theker-just-raised-85m-to-build-the-factory-robot-that-doesnt-specialize-in-anything/",
-      "summary": "Unlike humanoid robots designed around a fixed form \u2014 think Boston Dynamics \u2014 Theker's machines are built to be reconfigured.",
-      "published": "Fri, 12 Jun 2026 01:48:07 +0000",
+      "title": "Google sues alleged Chinese cybercrime operation that used AI to send scam texts",
+      "url": "https://techcrunch.com/2026/06/12/google-sues-alleged-chinese-cybercrime-operation-that-used-ai-to-send-scam-texts/",
+      "summary": "The tech giant said a group called \"Outsider Enterprise\" used AI to scam hundreds of thousands of victims, sending 2.5 million text messages over a span of two weeks.",
+      "published": "Fri, 12 Jun 2026 17:26:08 +0000",
       "source": "TechCrunch AI"
     },
     {
-      "title": "Railway secures $100 million to challenge AWS with AI-native cloud infrastructure",
-      "url": "https://venturebeat.com/infrastructure/railway-secures-usd100-million-to-challenge-aws-with-ai-native-cloud",
-      "summary": "Railway, a San Francisco-based cloud platform that has quietly amassed two million developers without spending a dollar on marketing, announced Thursday that it raised $100 million in a Series B funding round, as surging demand for artificial intelligence applications exposes the",
-      "published": "Thu, 22 Jan 2026 14:00:00 GMT",
+      "title": "Claude Code costs up to $200 a month. Goose does the same thing for free.",
+      "url": "https://venturebeat.com/infrastructure/claude-code-costs-up-to-usd200-a-month-goose-does-the-same-thing-for-free",
+      "summary": "The artificial intelligence coding revolution comes with a catch: it&#x27;s expensive.Claude Code, Anthropic&#x27;s terminal-based AI agent that can write, debug, and deploy code autonomously, has captured the imagination of software developers worldwide. But its pricing \u2014 rangin",
+      "published": "Mon, 19 Jan 2026 14:00:00 GMT",
       "source": "VentureBeat AI"
     },
     {
@@ -57,21 +85,21 @@
       "source": "Ars Technica"
     },
     {
-      "title": "Jeff Bezos\u2019s Prometheus raises $12B to build an \u2018artificial general engineer\u2019 for the physical world",
-      "url": "https://techcrunch.com/2026/06/11/jeff-bezoss-prometheus-raises-12b-to-build-an-artificial-general-engineer-for-the-physical-world/",
-      "summary": "The new round values the physical AI startup that aims to automate heavy engineering and drug design at $41 billion.",
-      "published": "Fri, 12 Jun 2026 01:04:38 +0000",
+      "title": "SpaceX, Anthropic, and OpenAI\u2019s hot IPO summer",
+      "url": "https://techcrunch.com/video/spacex-anthropic-and-openais-hot-ipo-summer/",
+      "summary": "The IPO market is back, and&#160;it&#8217;s&#160;not the same&#160;companies&#160;leading the charge. FAANG had a good run, but a&#160;new acronym is taking over: MANGOS&#160;\u2014 Meta (or Microsoft, depending on who you ask), Anthropic, Nvidia, Google, OpenAI, and SpaceX. Half&#160",
+      "published": "Fri, 12 Jun 2026 16:23:25 +0000",
       "source": "TechCrunch AI"
     },
     {
-      "title": "Claude Code costs up to $200 a month. Goose does the same thing for free.",
-      "url": "https://venturebeat.com/infrastructure/claude-code-costs-up-to-usd200-a-month-goose-does-the-same-thing-for-free",
-      "summary": "The artificial intelligence coding revolution comes with a catch: it&#x27;s expensive.Claude Code, Anthropic&#x27;s terminal-based AI agent that can write, debug, and deploy code autonomously, has captured the imagination of software developers worldwide. But its pricing \u2014 rangin",
-      "published": "Mon, 19 Jan 2026 14:00:00 GMT",
+      "title": "Listen Labs raises $69M after viral billboard hiring stunt to scale AI customer interviews",
+      "url": "https://venturebeat.com/technology/listen-labs-raises-usd69m-after-viral-billboard-hiring-stunt-to-scale-ai",
+      "summary": "Alfred Wahlforss was running out of options. His startup, Listen Labs, needed to hire over 100 engineers, but competing against Mark Zuckerberg&#x27;s $100 million offers seemed impossible. So he spent $5,000 \u2014 a fifth of his marketing budget \u2014 on a billboard in San Francisco dis",
+      "published": "Fri, 16 Jan 2026 14:01:00 GMT",
       "source": "VentureBeat AI"
     },
     {
-      "title": "Inside Interoception: The hidden sense of how you feel inside",
+      "title": "Inside interoception: The hidden sense of how you feel inside",
       "url": "https://www.technologyreview.com/2026/06/12/1138833/inside-interoception-brain-body/",
       "summary": "MIT Technology Review&#160;Explains: Let our writers untangle the complex, messy world of science and technology to help you understand what\u2019s coming next.&#160;You can read more from the series here. Your brain lives in the dark space of your skull. Yet it knows when the wind li",
       "published": "Fri, 12 Jun 2026 09:00:00 +0000",
@@ -85,17 +113,17 @@
       "source": "Ars Technica"
     },
     {
-      "title": "SpaceX officially prices shares at $135 in the largest IPO ever",
-      "url": "https://techcrunch.com/2026/06/11/spacex-officially-prices-shares-at-135-in-the-largest-ipo-ever/",
-      "summary": "Wits its official share pricing announcement, SpaceX's IPO has begun.",
-      "published": "Thu, 11 Jun 2026 20:33:10 +0000",
+      "title": "It\u2019s\u00a0hot IPO summer, and the MANGOS are ripe",
+      "url": "https://techcrunch.com/podcast/its-hot-ipo-summer-and-the-mangos-are-ripe/",
+      "summary": "The IPO market is back, and&#160;it&#8217;s&#160;not the same&#160;companies&#160;leading the charge. FAANG had a good run, but a&#160;new acronym is taking over: MANGOS&#160;\u2014 Meta (or Microsoft, depending on who you ask), Anthropic, Nvidia, Google, OpenAI, and SpaceX. Half&#160",
+      "published": "Fri, 12 Jun 2026 15:50:52 +0000",
       "source": "TechCrunch AI"
     },
     {
-      "title": "Listen Labs raises $69M after viral billboard hiring stunt to scale AI customer interviews",
-      "url": "https://venturebeat.com/technology/listen-labs-raises-usd69m-after-viral-billboard-hiring-stunt-to-scale-ai",
-      "summary": "Alfred Wahlforss was running out of options. His startup, Listen Labs, needed to hire over 100 engineers, but competing against Mark Zuckerberg&#x27;s $100 million offers seemed impossible. So he spent $5,000 \u2014 a fifth of his marketing budget \u2014 on a billboard in San Francisco dis",
-      "published": "Fri, 16 Jan 2026 14:01:00 GMT",
+      "title": "Salesforce rolls out new Slackbot AI agent as it battles Microsoft and Google in workplace AI",
+      "url": "https://venturebeat.com/technology/salesforce-rolls-out-new-slackbot-ai-agent-as-it-battles-microsoft-and",
+      "summary": "Salesforce on Tuesday launched an entirely rebuilt version of Slackbot, the company&#x27;s workplace assistant, transforming it from a simple notification tool into what executives describe as a fully powered AI agent capable of searching enterprise data, drafting documents, and ",
+      "published": "Tue, 13 Jan 2026 13:00:00 GMT",
       "source": "VentureBeat AI"
     },
     {
@@ -113,17 +141,17 @@
       "source": "Ars Technica"
     },
     {
-      "title": "SpaceX SPV investors won\u2019t know their true holdings until post-IPO lock-ups lift",
-      "url": "https://techcrunch.com/2026/06/11/spacex-spv-investors-wont-know-their-true-holdings-until-post-ipo-lock-ups-lift/",
-      "summary": "After SpaceX makes its public debut, lower-tier SPV investors face hidden fees, lengthy payout delays, and the  risk of outright fraud.",
-      "published": "Thu, 11 Jun 2026 19:58:01 +0000",
+      "title": "Cheaper, faster, and culturally aware, Avataar\u2019s video AI is built for India\u2019s scale",
+      "url": "https://techcrunch.com/2026/06/11/cheaper-faster-and-culturally-aware-avataars-video-ai-is-built-for-indias-scale/",
+      "summary": "Avataar AI's distilled video model is priced at $0.005 for every second of generation.",
+      "published": "Fri, 12 Jun 2026 04:30:00 +0000",
       "source": "TechCrunch AI"
     },
     {
-      "title": "Salesforce rolls out new Slackbot AI agent as it battles Microsoft and Google in workplace AI",
-      "url": "https://venturebeat.com/technology/salesforce-rolls-out-new-slackbot-ai-agent-as-it-battles-microsoft-and",
-      "summary": "Salesforce on Tuesday launched an entirely rebuilt version of Slackbot, the company&#x27;s workplace assistant, transforming it from a simple notification tool into what executives describe as a fully powered AI agent capable of searching enterprise data, drafting documents, and ",
-      "published": "Tue, 13 Jan 2026 13:00:00 GMT",
+      "title": "Anthropic launches Cowork, a Claude Desktop agent that works in your files \u2014 no coding required",
+      "url": "https://venturebeat.com/technology/anthropic-launches-cowork-a-claude-desktop-agent-that-works-in-your-files-no",
+      "summary": "Anthropic released Cowork on Monday, a new AI agent capability that extends the power of its wildly successful Claude Code tool to non-technical users \u2014 and according to company insiders, the team built the entire feature in approximately a week and a half, largely using Claude C",
+      "published": "Mon, 12 Jan 2026 11:30:00 GMT",
       "source": "VentureBeat AI"
     },
     {
@@ -139,36 +167,8 @@
       "summary": "By targeting large numbers of users, attackers increased their chances of success.",
       "published": "Thu, 04 Jun 2026 20:02:04 +0000",
       "source": "Ars Technica"
-    },
-    {
-      "title": "Deezer\u2019s new tool can identify AI music from Spotify, Apple Music, and others",
-      "url": "https://techcrunch.com/2026/06/11/deezers-new-tool-can-identify-ai-music-from-spotify-apple-music-and-others/",
-      "summary": "Deezer introduced a tool that scans playlists from Spotify, Apple Music, and other platforms to identify AI music.",
-      "published": "Thu, 11 Jun 2026 16:36:20 +0000",
-      "source": "TechCrunch AI"
-    },
-    {
-      "title": "Anthropic launches Cowork, a Claude Desktop agent that works in your files \u2014 no coding required",
-      "url": "https://venturebeat.com/technology/anthropic-launches-cowork-a-claude-desktop-agent-that-works-in-your-files-no",
-      "summary": "Anthropic released Cowork on Monday, a new AI agent capability that extends the power of its wildly successful Claude Code tool to non-technical users \u2014 and according to company insiders, the team built the entire feature in approximately a week and a half, largely using Claude C",
-      "published": "Mon, 12 Jan 2026 11:30:00 GMT",
-      "source": "VentureBeat AI"
-    },
-    {
-      "title": "Job titles of the future: Nature\u2019s drug designer",
-      "url": "https://www.technologyreview.com/2026/06/11/1138502/job-titles-natures-drug-designer-tim-cernak/",
-      "summary": "In 2018, after nearly two decades working in Big Pharma, chemist Tim Cernak was ready to put his skills to a new use.&#160; For Merck, he\u2019d developed precision therapies for cancer, HIV, and diabetes that could target disease while minimizing harm to healthy cells. But as a lifel",
-      "published": "Thu, 11 Jun 2026 10:00:00 +0000",
-      "source": "MIT Technology Review"
-    },
-    {
-      "title": "Can't make sense of Dashlane's vault theft notification? You're not alone.",
-      "url": "https://arstechnica.com/security/2026/06/dashlane-issues-opaque-advisory-warning-20-encrypted-vaults-were-stolen/",
-      "summary": "Security advisory leaves out key details. Dashlane maintains complete silence.",
-      "published": "Wed, 03 Jun 2026 19:53:14 +0000",
-      "source": "Ars Technica"
     }
   ],
-  "last_updated": "2026-06-12T10:20:50.009056+00:00",
+  "last_updated": "2026-06-12T20:19:37.509701+00:00",
   "source": "live"
 }
