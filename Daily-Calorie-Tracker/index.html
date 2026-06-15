@@ -76,45 +76,45 @@
       margin: 24px 0;
     }
 
-    /* ── Goal roller ──────────────────────────────────────────── */
-    .goal-row {
+    /* ── Balance row: drum left, number right ─────────────────── */
+    .balance-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 16px;
+      gap: 20px;
     }
 
-    .goal-meta {
+    /* Drum column: shell + lbs label stacked */
+    .drum-col {
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
     }
 
-    .goal-val-row {
+    .goal-lbs-label {
       display: flex;
       align-items: baseline;
-      gap: 8px;
+      gap: 5px;
     }
 
     #goal-lbs-shown {
       font-family: 'Orbitron', monospace;
-      font-size: 1.7rem;
+      font-size: 1rem;
       font-weight: 700;
-      color: #00c8ff;
       letter-spacing: 0.04em;
-      text-shadow: 0 0 16px rgba(0,200,255,0.38);
       transition: color 0.2s, text-shadow 0.2s;
     }
 
     .goal-unit {
       font-family: 'Orbitron', monospace;
-      font-size: 0.52rem;
+      font-size: 0.45rem;
       color: #3a6a7a;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
     }
 
-    /* Clip shell — overflow:hidden on a non-3D element */
+    /* ── Drum shell ───────────────────────────────────────────── */
     .drum-shell {
       width: 62px;
       height: 92px;
@@ -124,7 +124,6 @@
       overflow: hidden;
       cursor: ns-resize;
       user-select: none;
-      /* border and shadow are set dynamically in JS via --drum-accent */
       border: 1px solid rgba(0,200,255,0.32);
       box-shadow:
         inset 6px 0 16px rgba(0,0,0,0.85),
@@ -171,14 +170,14 @@
       pointer-events: none;
     }
 
-    /* Center selection window — colour reacts to value */
+    /* Center selector bracket */
     .drum-bracket {
       position: absolute;
       top: 50%; left: 0; right: 0;
       height: 30px;
       transform: translateY(-50%);
-      border-top: 1px solid var(--drum-accent, rgba(0,200,255,0.6));
-      border-bottom: 1px solid var(--drum-accent, rgba(0,200,255,0.6));
+      border-top: 1px solid rgba(0,200,255,0.6);
+      border-bottom: 1px solid rgba(0,200,255,0.6);
       background: rgba(0,200,255,0.02);
       z-index: 4;
       pointer-events: none;
@@ -214,12 +213,10 @@
       transform-origin: 50% 50%;
     }
 
-    /* Tick mark inside each drum item */
     .drum-tick {
       width: 48%;
       height: 2px;
       border-radius: 1px;
-      transition: width 0.14s ease-out, height 0.14s ease-out, box-shadow 0.14s ease-out;
     }
 
     .drum-item.active .drum-tick {
@@ -227,17 +224,17 @@
       height: 2.5px;
     }
 
-    /* ── Balance display ──────────────────────────────────────── */
+    /* ── Balance number ───────────────────────────────────────── */
     #balance-wrap {
+      flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-bottom: 8px;
     }
 
     #balance {
       font-family: 'Orbitron', monospace;
-      font-size: 4.8rem;
+      font-size: 4rem;
       font-weight: 900;
       line-height: 1;
       letter-spacing: 0.04em;
@@ -430,31 +427,26 @@
 
     <h1>Daily Calorie Balance</h1>
 
-    <!-- Goal roller — label left, drum right -->
-    <div class="section">
-      <div class="section-title">Daily Goal</div>
-      <div class="goal-row">
-        <div class="goal-meta">
-          <div class="goal-val-row">
-            <span id="goal-lbs-shown">1.0</span>
-            <span class="goal-unit">lbs / day</span>
-          </div>
-        </div>
+    <!-- Drum on left, big number on right -->
+    <div class="balance-row">
+      <div class="drum-col">
         <div class="drum-shell" id="goal-drum">
           <div class="drum-stage">
             <div class="drum-inner" id="drum-inner"></div>
           </div>
           <div class="drum-bracket" id="drum-bracket"></div>
         </div>
+        <div class="goal-lbs-label">
+          <span id="goal-lbs-shown">1.0</span>
+          <span class="goal-unit">lbs/day</span>
+        </div>
       </div>
-    </div>
 
-    <div class="divider"></div>
-
-    <div id="balance-wrap">
-      <div id="balance" class="deficit">1,500</div>
-      <div class="light-streak deficit" id="streak"></div>
-      <div id="balance-label">kcal to goal</div>
+      <div id="balance-wrap">
+        <div id="balance" class="deficit">1,500</div>
+        <div class="light-streak deficit" id="streak"></div>
+        <div id="balance-label">kcal to goal</div>
+      </div>
     </div>
 
     <div class="divider"></div>
@@ -494,31 +486,24 @@
   <script>
     const BMR         = -2000;
     const STORAGE_KEY = 'calorie_tracker_v1';
-    const GOAL_VALUES = [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4,1.5];
+    const GOAL_VALUES = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0];
     const DRUM_RADIUS = 54;
-    const DRUM_STEP   = 22;   // degrees between adjacent items
-    const DRAG_PX     = 20;   // pixels per increment
+    const DRUM_STEP   = 22;
+    const DRAG_PX     = 20;
 
-    let goalIndex   = 10;
+    let goalIndex   = 10;   // default 1.0 lbs (max)
     let entries     = [];
-    let knurlOffset = 0;  // accumulated knurling scroll offset
+    let knurlOffset = 0;
 
-    // ── Tick colour per value: dark blue (0 lbs) → bright cyan (1.5 lbs) ──
+    // Tick colour: deep blue (0 lbs) → bright cyan (1.0 lbs)
     function tickColor(v) {
-      const t   = v / 1.5;
-      const h   = Math.round(220 - t * 28);   // 220° blue → 192° cyan
-      const s   = Math.round(65  + t * 35);   // 65% → 100%
-      const l   = Math.round(28  + t * 38);   // 28% → 66%
-      return `hsl(${h},${s}%,${l}%)`;
+      const t = v;   // already 0–1 since max is 1.0
+      return `hsl(${Math.round(220 - t*28)},${Math.round(65 + t*35)}%,${Math.round(28 + t*38)}%)`;
     }
 
-    // Accent colour for the selection bracket and shell glow
     function accentColor(v) {
-      const t = v / 1.5;
-      const h = Math.round(220 - t * 28);
-      const s = Math.round(70  + t * 30);
-      const l = Math.round(35  + t * 30);
-      return `hsl(${h},${s}%,${l}%)`;
+      const t = v;
+      return `hsl(${Math.round(220 - t*28)},${Math.round(70 + t*30)}%,${Math.round(35 + t*30)}%)`;
     }
 
     // ── Storage ────────────────────────────────────────────────────────────
@@ -537,33 +522,31 @@
 
     // ── Calculation ────────────────────────────────────────────────────────
     function goalCal()    { return Math.round(GOAL_VALUES[goalIndex] * 3500); }
-    function displayVal() {
-      return BMR + entries.reduce((s, e) => s + e.cal, 0) + goalCal();
-    }
+    function displayVal() { return BMR + entries.reduce((s, e) => s + e.cal, 0) + goalCal(); }
 
-    // ── Drum position + colour update ──────────────────────────────────────
+    // ── Drum ───────────────────────────────────────────────────────────────
     function drumPosition(animate, delta) {
-      // Shift knurling texture to simulate physical rotation
       if (delta !== undefined) knurlOffset += delta * 4.5;
+
       const shell   = document.getElementById('goal-drum');
       const bracket = document.getElementById('drum-bracket');
       shell.style.setProperty('--knurl-y', `${knurlOffset % 9}px`);
 
-      // Recolour bracket and shell glow based on active value
       const v      = GOAL_VALUES[goalIndex];
       const accent = accentColor(v);
       bracket.style.borderTopColor    = accent;
       bracket.style.borderBottomColor = accent;
-      shell.style.boxShadow = `inset 6px 0 16px rgba(0,0,0,0.85), inset -6px 0 16px rgba(0,0,0,0.85), 0 0 22px ${accent.replace('hsl', 'hsla').replace(')', ', 0.22)')}`;
+      shell.style.boxShadow =
+        `inset 6px 0 16px rgba(0,0,0,0.85), inset -6px 0 16px rgba(0,0,0,0.85), ` +
+        `0 0 22px ${accent.replace('hsl','hsla').replace(')',', 0.22)')}`;
 
-      // Update goal label colour to match
-      document.getElementById('goal-lbs-shown').style.color      = accent;
-      document.getElementById('goal-lbs-shown').style.textShadow = `0 0 18px ${accent.replace('hsl','hsla').replace(')',', 0.4)')}`;
+      const lbsEl = document.getElementById('goal-lbs-shown');
+      lbsEl.style.color      = accent;
+      lbsEl.style.textShadow = `0 0 18px ${accent.replace('hsl','hsla').replace(')',', 0.4)')}`;
 
-      // Rotate each cylinder item
       document.querySelectorAll('.drum-item').forEach((el, i) => {
-        const deg    = (i - goalIndex) * DRUM_STEP;
-        const absDeg = Math.abs(deg);
+        const deg     = (i - goalIndex) * DRUM_STEP;
+        const absDeg  = Math.abs(deg);
         const opacity = absDeg >= 90 ? 0 : Math.pow(Math.cos(deg * Math.PI / 180), 2);
 
         el.style.transition = animate ? 'transform 0.14s ease-out, opacity 0.14s ease-out' : 'none';
@@ -573,20 +556,16 @@
         const isActive = i === goalIndex;
         el.classList.toggle('active', isActive);
 
-        // Tick glow intensifies on active item
-        const tick  = el.querySelector('.drum-tick');
-        const tCol  = tickColor(GOAL_VALUES[i]);
-        const glow  = isActive ? `0 0 10px ${tCol}, 0 0 22px ${tCol}` : `0 0 4px ${tCol}`;
+        const tick = el.querySelector('.drum-tick');
+        const tCol = tickColor(GOAL_VALUES[i]);
         tick.style.background = tCol;
-        tick.style.boxShadow  = glow;
+        tick.style.boxShadow  = isActive ? `0 0 10px ${tCol}, 0 0 22px ${tCol}` : `0 0 4px ${tCol}`;
         tick.style.transition = animate ? 'width 0.14s ease-out, box-shadow 0.14s ease-out' : 'none';
       });
     }
 
-    // ── Drum init ──────────────────────────────────────────────────────────
     function initDrum() {
       const inner = document.getElementById('drum-inner');
-
       GOAL_VALUES.forEach(v => {
         const item = document.createElement('div');
         item.className = 'drum-item';
@@ -599,35 +578,32 @@
       drumPosition(false);
 
       const shell = document.getElementById('goal-drum');
-      let startY, startIdx, active = false;
+      let startY, startIdx, dragging = false;
 
       function applyDrag(clientY) {
         const delta = Math.round((startY - clientY) / DRAG_PX);
         const next  = Math.max(0, Math.min(GOAL_VALUES.length - 1, startIdx + delta));
         if (next !== goalIndex) {
-          const dir  = next > goalIndex ? 1 : -1;
-          goalIndex  = next;
+          const dir = next > goalIndex ? 1 : -1;
+          goalIndex = next;
           drumPosition(true, dir);
-          render();
-          save();
+          render(); save();
         }
       }
 
-      shell.addEventListener('mousedown',  e => { e.preventDefault(); startY = e.clientY; startIdx = goalIndex; active = true; });
-      document.addEventListener('mousemove', e => { if (active) applyDrag(e.clientY); });
-      document.addEventListener('mouseup',   () => { active = false; });
+      shell.addEventListener('mousedown',  e => { e.preventDefault(); startY = e.clientY; startIdx = goalIndex; dragging = true; });
+      document.addEventListener('mousemove', e => { if (dragging) applyDrag(e.clientY); });
+      document.addEventListener('mouseup',   () => { dragging = false; });
 
-      shell.addEventListener('touchstart', e => { e.preventDefault(); startY = e.touches[0].clientY; startIdx = goalIndex; active = true; }, { passive: false });
-      document.addEventListener('touchmove', e => { if (active) { e.preventDefault(); applyDrag(e.touches[0].clientY); } }, { passive: false });
-      document.addEventListener('touchend',  () => { active = false; });
+      shell.addEventListener('touchstart', e => { e.preventDefault(); startY = e.touches[0].clientY; startIdx = goalIndex; dragging = true; }, { passive: false });
+      document.addEventListener('touchmove', e => { if (dragging) { e.preventDefault(); applyDrag(e.touches[0].clientY); } }, { passive: false });
+      document.addEventListener('touchend',  () => { dragging = false; });
 
       shell.addEventListener('wheel', e => {
         e.preventDefault();
         const dir = e.deltaY > 0 ? -1 : 1;
         goalIndex  = Math.max(0, Math.min(GOAL_VALUES.length - 1, goalIndex + dir));
-        drumPosition(true, dir);
-        render();
-        save();
+        drumPosition(true, dir); render(); save();
       }, { passive: false });
     }
 
@@ -663,8 +639,7 @@
       if (!sel.value) return;
       const [calStr, name] = sel.value.split('|');
       entries.push({ name, cal: parseInt(calStr, 10) });
-      save(); render();
-      sel.value = '';
+      save(); render(); sel.value = '';
     }
 
     function deleteEntry(index) {
@@ -678,8 +653,7 @@
       if (!val || val <= 0) return;
       entries = entries.filter(e => e.cal > 0);
       entries.push({ name: `${val.toLocaleString()} cal burn`, cal: -val });
-      save(); render();
-      input.value = '';
+      save(); render(); input.value = '';
     }
 
     function resetDay() {
