@@ -57,6 +57,34 @@
     .corner-tr { top: -1px; right: -1px; border-width: 2px 2px 0 0; }
     .corner-bl { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; }
 
+    /* ── Settings icon — top right corner ─────────────────────── */
+    .settings-btn {
+      position: absolute;
+      top: 13px;
+      right: 13px;
+      width: 30px;
+      height: 30px;
+      border: 1px solid rgba(0,200,255,0.2);
+      border-radius: 3px;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(0,200,255,0.35);
+      transition: border-color 0.2s, color 0.2s, box-shadow 0.2s;
+      z-index: 10;
+    }
+
+    .settings-btn:hover {
+      border-color: rgba(0,200,255,0.55);
+      color: #00c8ff;
+      box-shadow: 0 0 10px rgba(0,200,255,0.12);
+    }
+
+    .settings-btn:active { opacity: 0.65; }
+    .settings-btn svg { width: 16px; height: 16px; }
+
     h1 {
       font-family: 'Orbitron', monospace;
       font-size: 0.7rem;
@@ -76,80 +104,17 @@
       margin: 24px 0;
     }
 
-    /* ── Balance row ──────────────────────────────────────────── */
-    .balance-row {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    /* Settings icon column */
-    .settings-col {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      flex-shrink: 0;
-    }
-
-    .settings-btn {
-      width: 54px;
-      height: 54px;
-      border-radius: 4px;
-      border: 1px solid rgba(0,200,255,0.25);
-      background: rgba(2,10,18,0.9);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: rgba(0,200,255,0.45);
-      transition: border-color 0.2s, color 0.2s, box-shadow 0.2s;
-    }
-
-    .settings-btn:hover {
-      border-color: rgba(0,200,255,0.6);
-      color: #00c8ff;
-      box-shadow: 0 0 14px rgba(0,200,255,0.15);
-    }
-
-    .settings-btn:active { opacity: 0.7; }
-
-    .settings-btn svg { width: 22px; height: 22px; }
-
-    .goal-lbs-label {
-      display: flex;
-      align-items: baseline;
-      gap: 4px;
-    }
-
-    #goal-lbs-shown {
-      font-family: 'Orbitron', monospace;
-      font-size: 1rem;
-      font-weight: 700;
-      color: #00c8ff;
-      letter-spacing: 0.04em;
-      text-shadow: 0 0 14px rgba(0,200,255,0.35);
-    }
-
-    .goal-unit {
-      font-family: 'Orbitron', monospace;
-      font-size: 0.45rem;
-      color: #3a6a7a;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-    }
-
-    /* ── Balance number ───────────────────────────────────────── */
+    /* ── Balance display — centred ────────────────────────────── */
     #balance-wrap {
-      flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
+      margin-bottom: 8px;
     }
 
     #balance {
       font-family: 'Orbitron', monospace;
-      font-size: 4rem;
+      font-size: 4.8rem;
       font-weight: 900;
       line-height: 1;
       letter-spacing: 0.04em;
@@ -207,7 +172,16 @@
       text-transform: uppercase;
     }
 
-    /* ── Goal modal ───────────────────────────────────────────── */
+    /* Subtle goal/BMR readout below the label */
+    #goal-info {
+      margin-top: 7px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.82rem;
+      color: #243a44;
+      letter-spacing: 0.06em;
+    }
+
+    /* ── Settings modal ───────────────────────────────────────── */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -225,19 +199,18 @@
       background: rgba(4,14,22,0.98);
       border: 1px solid rgba(0,200,255,0.3);
       border-radius: 5px;
-      padding: 36px 44px;
+      padding: 32px 40px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 28px;
+      gap: 24px;
       box-shadow:
         0 0 0 1px rgba(0,200,255,0.08),
         0 0 50px rgba(0,200,255,0.12);
       position: relative;
-      min-width: 220px;
+      min-width: 240px;
     }
 
-    /* Corner accents on modal */
     .modal-card::before, .modal-card::after {
       content: '';
       position: absolute;
@@ -248,7 +221,7 @@
     .modal-card::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
     .modal-card::after  { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
 
-    .modal-title {
+    .modal-heading {
       font-family: 'Orbitron', monospace;
       font-size: 0.6rem;
       color: #00c8ff;
@@ -257,21 +230,44 @@
       opacity: 0.55;
     }
 
-    .modal-stepper {
+    /* Thin divider inside modal */
+    .modal-sep {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,200,255,0.2), transparent);
+    }
+
+    /* Each setting row */
+    .modal-row {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 18px;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .modal-row-label {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.5rem;
+      color: #3a6a7a;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+    }
+
+    .modal-stepper {
+      display: flex;
+      align-items: center;
+      gap: 20px;
     }
 
     .step-btn {
-      width: 52px;
-      height: 38px;
+      width: 38px;
+      height: 34px;
       border: 1px solid rgba(0,200,255,0.2);
       border-radius: 3px;
       background: rgba(0,200,255,0.04);
       color: rgba(0,200,255,0.5);
-      font-size: 1rem;
+      font-size: 0.9rem;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -283,7 +279,7 @@
       border-color: rgba(0,200,255,0.55);
       color: #00c8ff;
       background: rgba(0,200,255,0.07);
-      box-shadow: 0 0 12px rgba(0,200,255,0.12);
+      box-shadow: 0 0 10px rgba(0,200,255,0.1);
     }
 
     .step-btn:active { opacity: 0.65; }
@@ -292,28 +288,28 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
+      min-width: 90px;
     }
 
-    #modal-lbs {
+    .modal-num {
       font-family: 'Orbitron', monospace;
-      font-size: 3.2rem;
+      font-size: 2.4rem;
       font-weight: 900;
       color: #020d1a;
-      -webkit-text-stroke: 2px #aaddff;
+      -webkit-text-stroke: 1.5px #aaddff;
       text-shadow:
         0 0 4px #ddf0ff, 0 0 10px #66ccff,
-        0 0 22px #00aaee, 0 0 45px #0080cc;
-      letter-spacing: 0.05em;
+        0 0 20px #00aaee, 0 0 38px #0080cc;
+      letter-spacing: 0.04em;
       line-height: 1;
-      transition: -webkit-text-stroke 0.2s, text-shadow 0.2s;
     }
 
     .modal-unit {
       font-family: 'Orbitron', monospace;
-      font-size: 0.52rem;
+      font-size: 0.48rem;
       color: #3a6a7a;
-      letter-spacing: 0.22em;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
     }
 
@@ -472,28 +468,21 @@
     <div class="corner-tr"></div>
     <div class="corner-bl"></div>
 
+    <!-- Settings icon — top right corner -->
+    <button class="settings-btn" onclick="openModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+      </svg>
+    </button>
+
     <h1>Daily Calorie Balance</h1>
 
-    <!-- Settings icon left, big number right -->
-    <div class="balance-row">
-      <div class="settings-col">
-        <button class="settings-btn" id="settings-btn" onclick="openModal()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="3"/>
-            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
-          </svg>
-        </button>
-        <div class="goal-lbs-label">
-          <span id="goal-lbs-shown">1.0</span>
-          <span class="goal-unit">lbs/day</span>
-        </div>
-      </div>
-
-      <div id="balance-wrap">
-        <div id="balance" class="deficit">1,500</div>
-        <div class="light-streak deficit" id="streak"></div>
-        <div id="balance-label">kcal to goal</div>
-      </div>
+    <div id="balance-wrap">
+      <div id="balance" class="deficit">1,500</div>
+      <div class="light-streak deficit" id="streak"></div>
+      <div id="balance-label">kcal to goal</div>
+      <div id="goal-info">1.0 lbs goal · 2,000 bmr</div>
     </div>
 
     <div class="divider"></div>
@@ -530,28 +519,50 @@
     <button id="reset-btn" onclick="resetDay()">⟳ &nbsp;Reset for new day</button>
   </div>
 
-  <!-- Goal modal -->
+  <!-- Settings modal -->
   <div class="modal-overlay" id="modal-overlay">
     <div class="modal-card">
-      <div class="modal-title">Daily Goal</div>
-      <div class="modal-stepper">
-        <button class="step-btn" onclick="stepGoal(1)">▲</button>
-        <div class="modal-value">
-          <span id="modal-lbs">1.0</span>
-          <span class="modal-unit">LBS / DAY</span>
+      <div class="modal-heading">Settings</div>
+
+      <!-- Weight loss goal -->
+      <div class="modal-row">
+        <div class="modal-row-label">Weight Loss Goal</div>
+        <div class="modal-stepper">
+          <button class="step-btn" onclick="stepGoal(1)">▲</button>
+          <div class="modal-value">
+            <span class="modal-num" id="modal-lbs">1.0</span>
+            <span class="modal-unit">LBS / DAY</span>
+          </div>
+          <button class="step-btn" onclick="stepGoal(-1)">▼</button>
         </div>
-        <button class="step-btn" onclick="stepGoal(-1)">▼</button>
       </div>
+
+      <div class="modal-sep"></div>
+
+      <!-- Basal metabolic rate -->
+      <div class="modal-row">
+        <div class="modal-row-label">Basal Metabolic Rate</div>
+        <div class="modal-stepper">
+          <button class="step-btn" onclick="stepBmr(1)">▲</button>
+          <div class="modal-value">
+            <span class="modal-num" id="modal-bmr">2,000</span>
+            <span class="modal-unit">KCAL / DAY</span>
+          </div>
+          <button class="step-btn" onclick="stepBmr(-1)">▼</button>
+        </div>
+      </div>
+
       <button class="modal-done" onclick="closeModal()">Done</button>
     </div>
   </div>
 
   <script>
-    const BMR         = -2000;
     const STORAGE_KEY = 'calorie_tracker_v1';
     const GOAL_VALUES = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0];
+    const BMR_VALUES  = [1200,1300,1400,1500,1600,1700,1800,1900,2000,2100,2200,2300,2400,2500,2600,2700,2800,2900,3000];
 
-    let goalIndex = 10;
+    let goalIndex = 10;  // default 1.0 lbs
+    let bmrIndex  = 8;   // default 2,000 kcal
     let entries   = [];
 
     // ── Storage ────────────────────────────────────────────────────────────
@@ -561,20 +572,24 @@
         entries = Array.isArray(s.entries) ? s.entries : [];
         if (typeof s.goalIndex === 'number' && s.goalIndex >= 0 && s.goalIndex < GOAL_VALUES.length)
           goalIndex = s.goalIndex;
+        if (typeof s.bmrIndex === 'number' && s.bmrIndex >= 0 && s.bmrIndex < BMR_VALUES.length)
+          bmrIndex = s.bmrIndex;
       } catch(e) {}
     }
 
     function save() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ entries, goalIndex }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ entries, goalIndex, bmrIndex }));
     }
 
     // ── Calculation ────────────────────────────────────────────────────────
     function goalCal()    { return Math.round(GOAL_VALUES[goalIndex] * 3500); }
-    function displayVal() { return BMR + entries.reduce((s, e) => s + e.cal, 0) + goalCal(); }
+    function bmr()        { return BMR_VALUES[bmrIndex]; }
+    function displayVal() { return -bmr() + entries.reduce((s, e) => s + e.cal, 0) + goalCal(); }
 
     // ── Modal ──────────────────────────────────────────────────────────────
     function openModal() {
       document.getElementById('modal-lbs').textContent = GOAL_VALUES[goalIndex].toFixed(1);
+      document.getElementById('modal-bmr').textContent = bmr().toLocaleString();
       document.getElementById('modal-overlay').classList.add('open');
     }
 
@@ -588,17 +603,19 @@
       render(); save();
     }
 
-    // Close on overlay click (not card click)
+    function stepBmr(dir) {
+      bmrIndex = Math.max(0, Math.min(BMR_VALUES.length - 1, bmrIndex + dir));
+      document.getElementById('modal-bmr').textContent = bmr().toLocaleString();
+      render(); save();
+    }
+
     document.getElementById('modal-overlay').addEventListener('click', function(e) {
       if (e.target === this) closeModal();
     });
 
-    // Keyboard: Esc closes, arrow keys step
     document.addEventListener('keydown', e => {
-      if (!document.getElementById('modal-overlay').classList.contains('open')) return;
-      if (e.key === 'Escape')    closeModal();
-      if (e.key === 'ArrowUp')   { e.preventDefault(); stepGoal(1); }
-      if (e.key === 'ArrowDown') { e.preventDefault(); stepGoal(-1); }
+      if (e.key === 'Escape' && document.getElementById('modal-overlay').classList.contains('open'))
+        closeModal();
     });
 
     // ── Render ─────────────────────────────────────────────────────────────
@@ -614,7 +631,8 @@
       document.getElementById('balance-label').textContent =
         d > 0 ? 'kcal to goal' : d < 0 ? 'kcal beyond goal' : 'goal reached';
 
-      document.getElementById('goal-lbs-shown').textContent = GOAL_VALUES[goalIndex].toFixed(1);
+      document.getElementById('goal-info').textContent =
+        `${GOAL_VALUES[goalIndex].toFixed(1)} lbs goal · ${bmr().toLocaleString()} bmr`;
 
       const log = document.getElementById('log');
       log.innerHTML = '';
