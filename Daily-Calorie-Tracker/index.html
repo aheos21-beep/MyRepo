@@ -76,91 +76,123 @@
       margin: 24px 0;
     }
 
-    /* Goal roller */
+    /* ── Goal roller ──────────────────────────────────────────── */
     .goal-row {
       display: flex;
       align-items: center;
-      gap: 20px;
-      margin-bottom: 4px;
+      gap: 22px;
     }
 
-    .drum {
-      width: 54px;
-      height: 75px;
+    /* Outer clip shell — clips overflow without touching the 3D scene */
+    .drum-shell {
+      width: 62px;
+      height: 92px;
       position: relative;
+      flex-shrink: 0;
+      border-radius: 5px;
+      border: 1px solid rgba(0,200,255,0.32);
       overflow: hidden;
-      border: 1px solid rgba(0,200,255,0.28);
-      border-radius: 4px;
+      box-shadow:
+        inset 6px 0 16px rgba(0,0,0,0.85),
+        inset -6px 0 16px rgba(0,0,0,0.85),
+        0 0 20px rgba(0,200,255,0.1);
       cursor: ns-resize;
       user-select: none;
-      flex-shrink: 0;
-      background: rgba(2,10,18,0.97);
-      background-image: repeating-linear-gradient(
-        to bottom,
-        rgba(0,200,255,0.055) 0px,
-        rgba(0,200,255,0.055) 2px,
-        transparent 2px,
-        transparent 7px
-      );
-      box-shadow:
-        inset 4px 0 12px rgba(0,0,0,0.7),
-        inset -4px 0 12px rgba(0,0,0,0.7),
-        0 0 16px rgba(0,200,255,0.09);
     }
 
-    /* depth fade */
-    .drum::before {
+    /* Knurling texture */
+    .drum-shell::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(
-        to bottom,
-        rgba(2,10,18,0.9) 0%,
-        rgba(2,10,18,0.05) 28%,
-        rgba(2,10,18,0.05) 72%,
-        rgba(2,10,18,0.9) 100%
-      );
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          rgba(0,200,255,0.07) 0px, rgba(0,200,255,0.07) 2px,
+          transparent 2px, transparent 9px
+        ),
+        linear-gradient(to right,
+          rgba(0,0,0,0.55) 0%, transparent 25%,
+          transparent 75%, rgba(0,0,0,0.55) 100%
+        );
       z-index: 2;
       pointer-events: none;
     }
 
-    /* center selector lines */
-    .drum::after {
+    /* Top/bottom fade + center window */
+    .drum-shell::after {
       content: '';
       position: absolute;
-      top: 50%;
-      left: 0; right: 0;
-      transform: translateY(-50%);
-      height: 25px;
-      border-top: 1px solid rgba(0,200,255,0.5);
-      border-bottom: 1px solid rgba(0,200,255,0.5);
+      inset: 0;
+      background:
+        linear-gradient(to bottom,
+          rgba(4,14,22,0.92) 0%,
+          rgba(4,14,22,0.35) 22%,
+          transparent 38%,
+          transparent 62%,
+          rgba(4,14,22,0.35) 78%,
+          rgba(4,14,22,0.92) 100%
+        );
       z-index: 3;
       pointer-events: none;
     }
 
-    .drum-inner {
+    /* Center selector bracket */
+    .drum-bracket {
       position: absolute;
+      top: 50%;
+      left: 0; right: 0;
+      height: 30px;
+      transform: translateY(-50%);
+      border-top: 1px solid rgba(0,200,255,0.6);
+      border-bottom: 1px solid rgba(0,200,255,0.6);
+      background: rgba(0,200,255,0.025);
+      z-index: 4;
+      pointer-events: none;
+    }
+
+    /* 3D scene container */
+    .drum-stage {
+      position: absolute;
+      inset: 0;
+      perspective: 260px;
+      z-index: 1;
+    }
+
+    .drum-inner {
+      position: relative;
       width: 100%;
-      will-change: transform;
+      height: 100%;
+      transform-style: preserve-3d;
     }
 
     .drum-item {
-      height: 25px;
+      position: absolute;
+      top: 50%; left: 0;
+      width: 100%;
+      height: 30px;
+      margin-top: -15px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-family: 'Orbitron', monospace;
-      font-size: 0.62rem;
-      color: rgba(0,200,255,0.18);
-      letter-spacing: 0.04em;
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      color: rgba(0,200,255,0.55);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      transform-origin: 50% 50%;
     }
 
     .drum-item.active {
       color: #00c8ff;
-      font-size: 0.76rem;
-      text-shadow: 0 0 10px rgba(0,200,255,0.75);
+      font-size: 0.84rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-shadow: 0 0 14px rgba(0,200,255,0.85);
     }
 
+    /* Goal value label beside drum */
     .goal-meta {
       display: flex;
       flex-direction: column;
@@ -175,11 +207,11 @@
 
     #goal-lbs-shown {
       font-family: 'Orbitron', monospace;
-      font-size: 1.65rem;
+      font-size: 1.7rem;
       font-weight: 700;
       color: #00c8ff;
       letter-spacing: 0.04em;
-      text-shadow: 0 0 14px rgba(0,200,255,0.35);
+      text-shadow: 0 0 16px rgba(0,200,255,0.38);
     }
 
     .goal-unit {
@@ -190,22 +222,7 @@
       text-transform: uppercase;
     }
 
-    .goal-kcal-row {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 0.88rem;
-      color: #3a5a6a;
-      letter-spacing: 0.04em;
-    }
-
-    .goal-hint {
-      font-family: 'Orbitron', monospace;
-      font-size: 0.45rem;
-      color: #1e3a46;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-    }
-
-    /* Balance display */
+    /* ── Balance display ──────────────────────────────────────── */
     #balance-wrap {
       display: flex;
       flex-direction: column;
@@ -227,31 +244,22 @@
       color: #021a0a;
       -webkit-text-stroke: 2px #aaffcc;
       text-shadow:
-        0 0 4px #ccffe0,
-        0 0 10px #44ff88,
-        0 0 22px #00dd66,
-        0 0 45px #00aa44,
-        0 0 80px #006628;
+        0 0 4px #ccffe0, 0 0 10px #44ff88,
+        0 0 22px #00dd66, 0 0 45px #00aa44, 0 0 80px #006628;
     }
     #balance.deficit {
       color: #1a0204;
       -webkit-text-stroke: 2px #ffaaaa;
       text-shadow:
-        0 0 4px #ffe0e0,
-        0 0 10px #ff5566,
-        0 0 22px #ee1133,
-        0 0 45px #bb0022,
-        0 0 80px #660011;
+        0 0 4px #ffe0e0, 0 0 10px #ff5566,
+        0 0 22px #ee1133, 0 0 45px #bb0022, 0 0 80px #660011;
     }
     #balance.zero {
       color: #020d1a;
       -webkit-text-stroke: 2px #aaddff;
       text-shadow:
-        0 0 4px #ddf0ff,
-        0 0 10px #66ccff,
-        0 0 22px #00aaee,
-        0 0 45px #0080cc,
-        0 0 80px #004880;
+        0 0 4px #ddf0ff, 0 0 10px #66ccff,
+        0 0 22px #00aaee, 0 0 45px #0080cc, 0 0 80px #004880;
     }
 
     .light-streak {
@@ -283,55 +291,7 @@
       text-transform: uppercase;
     }
 
-    #pounds-wrap {
-      margin-top: 14px;
-      font-family: 'Orbitron', monospace;
-      font-size: 2rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      display: flex;
-      align-items: baseline;
-      gap: 8px;
-      transition: text-shadow 0.3s;
-    }
-
-    #pounds-wrap span#pounds.surplus {
-      color: #021a0a;
-      -webkit-text-stroke: 1.5px #aaffcc;
-      text-shadow:
-        0 0 4px #ccffe0,
-        0 0 10px #44ff88,
-        0 0 22px #00dd66,
-        0 0 40px #00aa44;
-    }
-    #pounds-wrap span#pounds.deficit {
-      color: #1a0204;
-      -webkit-text-stroke: 1.5px #ffaaaa;
-      text-shadow:
-        0 0 4px #ffe0e0,
-        0 0 10px #ff5566,
-        0 0 22px #ee1133,
-        0 0 40px #bb0022;
-    }
-    #pounds-wrap span#pounds.zero {
-      color: #020d1a;
-      -webkit-text-stroke: 1.5px #aaddff;
-      text-shadow:
-        0 0 4px #ddf0ff,
-        0 0 10px #66ccff,
-        0 0 22px #00aaee,
-        0 0 40px #0080cc;
-    }
-
-    #pounds-wrap .lbs-unit {
-      font-size: 0.9rem;
-      color: #3a6a7a;
-      letter-spacing: 0.15em;
-      -webkit-text-stroke: 0;
-      text-shadow: none;
-    }
-
-    /* Sections */
+    /* ── Sections ─────────────────────────────────────────────── */
     .section { margin-bottom: 24px; }
 
     .section-title {
@@ -397,7 +357,7 @@
     }
     .add-btn.exp:hover { box-shadow: 0 0 14px rgba(248,113,113,0.25); border-color: rgba(248,113,113,0.6); }
 
-    /* Log */
+    /* ── Log ──────────────────────────────────────────────────── */
     #log-wrap { margin-bottom: 24px; }
 
     #log {
@@ -429,7 +389,7 @@
     }
     .del-btn:hover { color: rgba(255,80,80,0.7); }
 
-    /* Reset */
+    /* ── Reset ────────────────────────────────────────────────── */
     #reset-btn {
       width: 100%; padding: 14px;
       border: 1px solid rgba(0,200,255,0.15);
@@ -470,16 +430,17 @@
     <div class="section">
       <div class="section-title">Daily Goal</div>
       <div class="goal-row">
-        <div class="drum" id="goal-drum">
-          <div class="drum-inner" id="drum-inner"></div>
+        <div class="drum-shell" id="goal-drum">
+          <div class="drum-stage">
+            <div class="drum-inner" id="drum-inner"></div>
+          </div>
+          <div class="drum-bracket"></div>
         </div>
         <div class="goal-meta">
           <div class="goal-val-row">
             <span id="goal-lbs-shown">1.0</span>
             <span class="goal-unit">lbs / day</span>
           </div>
-          <div class="goal-kcal-row">= <span id="goal-kcal-shown">3,500</span> kcal</div>
-          <div class="goal-hint">scroll or drag to adjust</div>
         </div>
       </div>
     </div>
@@ -490,7 +451,6 @@
       <div id="balance" class="deficit">1,500</div>
       <div class="light-streak deficit" id="streak"></div>
       <div id="balance-label">kcal to goal</div>
-      <div id="pounds-wrap">≈ <span id="pounds" class="deficit">0.43</span><span class="lbs-unit">LBS</span></div>
     </div>
 
     <div class="divider"></div>
@@ -528,16 +488,17 @@
   </div>
 
   <script>
-    const BMR = -2000;
-    const STORAGE_KEY = 'calorie_tracker_v1';
-    const GOAL_VALUES = [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4,1.5];
-    const ITEM_H = 25;       // px per drum row
-    const DRUM_MID = 37.5;   // half of 75px drum height
+    const BMR          = -2000;
+    const STORAGE_KEY  = 'calorie_tracker_v1';
+    const GOAL_VALUES  = [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4,1.5];
+    const DRUM_RADIUS  = 54;   // cylinder radius in px
+    const DRUM_STEP    = 22;   // degrees between adjacent items
+    const DRAG_PX      = 20;   // px of drag per one increment
 
     let goalIndex = 10;  // default 1.0 lbs
-    let entries = [];
+    let entries   = [];
 
-    // ── Storage ──────────────────────────────────────────────────────────────
+    // ── Storage ────────────────────────────────────────────────────────────
     function load() {
       try {
         const s = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
@@ -551,39 +512,33 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify({ entries, goalIndex }));
     }
 
-    // ── Calculation ───────────────────────────────────────────────────────────
+    // ── Calculation ────────────────────────────────────────────────────────
     function goalCal() { return Math.round(GOAL_VALUES[goalIndex] * 3500); }
 
-    // positive = still need more deficit (red); negative = exceeded goal (green)
     function displayVal() {
       const actual = BMR + entries.reduce((s, e) => s + e.cal, 0);
       return actual + goalCal();
     }
 
-    // ── Render ────────────────────────────────────────────────────────────────
+    // ── Render ─────────────────────────────────────────────────────────────
     function render() {
-      const d = displayVal();
+      const d   = displayVal();
       const cls = d > 0 ? 'deficit' : d < 0 ? 'surplus' : 'zero';
 
       const balEl = document.getElementById('balance');
       balEl.textContent = Math.abs(d).toLocaleString();
-      balEl.className = cls;
+      balEl.className   = cls;
 
       document.getElementById('streak').className = 'light-streak ' + cls;
       document.getElementById('balance-label').textContent =
         d > 0 ? 'kcal to goal' : d < 0 ? 'kcal beyond goal' : 'goal reached';
 
-      const pEl = document.getElementById('pounds');
-      pEl.textContent = Math.abs(d / 3500).toFixed(2);
-      pEl.className = cls;
-
       document.getElementById('goal-lbs-shown').textContent = GOAL_VALUES[goalIndex].toFixed(1);
-      document.getElementById('goal-kcal-shown').textContent = goalCal().toLocaleString();
 
       const log = document.getElementById('log');
       log.innerHTML = '';
       entries.forEach((e, i) => {
-        const li = document.createElement('li');
+        const li   = document.createElement('li');
         li.className = e.cal > 0 ? 'pos' : 'neg';
         const sign = e.cal > 0 ? '+' : '−';
         li.innerHTML = `<span>${e.name}</span><span>${sign}${Math.abs(e.cal).toLocaleString()}<button class="del-btn" onclick="deleteEntry(${i})" title="Remove">✕</button></span>`;
@@ -591,39 +546,40 @@
       });
     }
 
-    // ── Drum roller ───────────────────────────────────────────────────────────
+    // ── Drum roller ────────────────────────────────────────────────────────
     function drumPosition(animate) {
-      const inner = document.getElementById('drum-inner');
-      // +1 for top padding item; centre offset formula:
-      // offset = DRUM_MID - (goalIndex + 1 + 0.5) * ITEM_H
-      inner.style.transition = animate ? 'transform 0.12s ease-out' : 'none';
-      inner.style.transform = `translateY(${DRUM_MID - (goalIndex + 1.5) * ITEM_H}px)`;
-      inner.querySelectorAll('.drum-item').forEach((el, i) =>
-        el.classList.toggle('active', i === goalIndex + 1)
-      );
+      document.querySelectorAll('.drum-item').forEach((el, i) => {
+        const deg    = (i - goalIndex) * DRUM_STEP;
+        const absDeg = Math.abs(deg);
+        // Items beyond 90° face away — backface-visibility hides them,
+        // but also zero out opacity for a clean fade.
+        const opacity = absDeg >= 90 ? 0 : Math.pow(Math.cos(deg * Math.PI / 180), 2);
+
+        el.style.transition = animate ? 'transform 0.14s ease-out, opacity 0.14s ease-out' : 'none';
+        el.style.transform  = `rotateX(${deg}deg) translateZ(${DRUM_RADIUS}px)`;
+        el.style.opacity    = opacity.toFixed(3);
+        el.classList.toggle('active', i === goalIndex);
+      });
     }
 
     function initDrum() {
       const inner = document.getElementById('drum-inner');
-      const blank = () => { const d = document.createElement('div'); d.className = 'drum-item'; return d; };
 
-      inner.appendChild(blank());
       GOAL_VALUES.forEach(v => {
         const el = document.createElement('div');
-        el.className = 'drum-item';
+        el.className   = 'drum-item';
         el.textContent = v.toFixed(1);
         inner.appendChild(el);
       });
-      inner.appendChild(blank());
 
       drumPosition(false);
 
-      const drum = document.getElementById('goal-drum');
+      const shell = document.getElementById('goal-drum');
       let startY, startIdx, active = false;
 
       function applyDrag(clientY) {
         const next = Math.max(0, Math.min(GOAL_VALUES.length - 1,
-          startIdx + Math.round((startY - clientY) / ITEM_H)));
+          startIdx + Math.round((startY - clientY) / DRAG_PX)));
         if (next !== goalIndex) {
           goalIndex = next;
           drumPosition(true);
@@ -632,15 +588,15 @@
         }
       }
 
-      drum.addEventListener('mousedown', e => { e.preventDefault(); startY = e.clientY; startIdx = goalIndex; active = true; });
+      shell.addEventListener('mousedown',  e => { e.preventDefault(); startY = e.clientY; startIdx = goalIndex; active = true; });
       document.addEventListener('mousemove', e => { if (active) applyDrag(e.clientY); });
-      document.addEventListener('mouseup', () => { active = false; });
+      document.addEventListener('mouseup',   () => { active = false; });
 
-      drum.addEventListener('touchstart', e => { e.preventDefault(); startY = e.touches[0].clientY; startIdx = goalIndex; active = true; }, { passive: false });
+      shell.addEventListener('touchstart', e => { e.preventDefault(); startY = e.touches[0].clientY; startIdx = goalIndex; active = true; }, { passive: false });
       document.addEventListener('touchmove', e => { if (active) { e.preventDefault(); applyDrag(e.touches[0].clientY); } }, { passive: false });
-      document.addEventListener('touchend', () => { active = false; });
+      document.addEventListener('touchend',  () => { active = false; });
 
-      drum.addEventListener('wheel', e => {
+      shell.addEventListener('wheel', e => {
         e.preventDefault();
         goalIndex = Math.max(0, Math.min(GOAL_VALUES.length - 1, goalIndex + (e.deltaY > 0 ? -1 : 1)));
         drumPosition(true);
@@ -649,7 +605,7 @@
       }, { passive: false });
     }
 
-    // ── Actions ───────────────────────────────────────────────────────────────
+    // ── Actions ────────────────────────────────────────────────────────────
     function addFromDropdown(type) {
       const sel = document.getElementById(type === 'meal' ? 'meal-select' : 'exp-select');
       if (!sel.value) return;
@@ -666,7 +622,7 @@
 
     function addExpenditure() {
       const input = document.getElementById('exp-input');
-      const val = parseInt(input.value, 10);
+      const val   = parseInt(input.value, 10);
       if (!val || val <= 0) return;
       entries = entries.filter(e => e.cal > 0);
       entries.push({ name: `${val.toLocaleString()} cal burn`, cal: -val });
