@@ -80,78 +80,112 @@
     .goal-row {
       display: flex;
       align-items: center;
-      gap: 22px;
+      justify-content: space-between;
+      gap: 16px;
     }
 
-    /* Outer clip shell — clips overflow without touching the 3D scene */
+    .goal-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .goal-val-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    #goal-lbs-shown {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: #00c8ff;
+      letter-spacing: 0.04em;
+      text-shadow: 0 0 16px rgba(0,200,255,0.38);
+      transition: color 0.2s, text-shadow 0.2s;
+    }
+
+    .goal-unit {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.52rem;
+      color: #3a6a7a;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    /* Clip shell — overflow:hidden on a non-3D element */
     .drum-shell {
       width: 62px;
       height: 92px;
       position: relative;
       flex-shrink: 0;
       border-radius: 5px;
-      border: 1px solid rgba(0,200,255,0.32);
       overflow: hidden;
+      cursor: ns-resize;
+      user-select: none;
+      /* border and shadow are set dynamically in JS via --drum-accent */
+      border: 1px solid rgba(0,200,255,0.32);
       box-shadow:
         inset 6px 0 16px rgba(0,0,0,0.85),
         inset -6px 0 16px rgba(0,0,0,0.85),
-        0 0 20px rgba(0,200,255,0.1);
-      cursor: ns-resize;
-      user-select: none;
+        0 0 18px rgba(0,200,255,0.08);
+      transition: border-color 0.25s, box-shadow 0.25s;
     }
 
-    /* Knurling texture */
+    /* Knurling ridges */
     .drum-shell::before {
       content: '';
       position: absolute;
       inset: 0;
-      background:
+      background-image:
         repeating-linear-gradient(
           to bottom,
           rgba(0,200,255,0.07) 0px, rgba(0,200,255,0.07) 2px,
           transparent 2px, transparent 9px
         ),
         linear-gradient(to right,
-          rgba(0,0,0,0.55) 0%, transparent 25%,
-          transparent 75%, rgba(0,0,0,0.55) 100%
+          rgba(0,0,0,0.6) 0%, transparent 30%,
+          transparent 70%, rgba(0,0,0,0.6) 100%
         );
+      background-position-y: var(--knurl-y, 0px), 0px;
+      transition: background-position-y 0.14s ease-out;
       z-index: 2;
       pointer-events: none;
     }
 
-    /* Top/bottom fade + center window */
+    /* Top/bottom depth fade */
     .drum-shell::after {
       content: '';
       position: absolute;
       inset: 0;
-      background:
-        linear-gradient(to bottom,
-          rgba(4,14,22,0.92) 0%,
-          rgba(4,14,22,0.35) 22%,
-          transparent 38%,
-          transparent 62%,
-          rgba(4,14,22,0.35) 78%,
-          rgba(4,14,22,0.92) 100%
-        );
+      background: linear-gradient(to bottom,
+        rgba(4,14,22,0.92) 0%,
+        rgba(4,14,22,0.3)  22%,
+        transparent        38%,
+        transparent        62%,
+        rgba(4,14,22,0.3)  78%,
+        rgba(4,14,22,0.92) 100%
+      );
       z-index: 3;
       pointer-events: none;
     }
 
-    /* Center selector bracket */
+    /* Center selection window — colour reacts to value */
     .drum-bracket {
       position: absolute;
-      top: 50%;
-      left: 0; right: 0;
+      top: 50%; left: 0; right: 0;
       height: 30px;
       transform: translateY(-50%);
-      border-top: 1px solid rgba(0,200,255,0.6);
-      border-bottom: 1px solid rgba(0,200,255,0.6);
-      background: rgba(0,200,255,0.025);
+      border-top: 1px solid var(--drum-accent, rgba(0,200,255,0.6));
+      border-bottom: 1px solid var(--drum-accent, rgba(0,200,255,0.6));
+      background: rgba(0,200,255,0.02);
       z-index: 4;
       pointer-events: none;
+      transition: border-color 0.25s;
     }
 
-    /* 3D scene container */
+    /* 3D perspective scene */
     .drum-stage {
       position: absolute;
       inset: 0;
@@ -175,51 +209,22 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Orbitron', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.06em;
-      color: rgba(0,200,255,0.55);
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
       transform-origin: 50% 50%;
     }
 
-    .drum-item.active {
-      color: #00c8ff;
-      font-size: 0.84rem;
-      font-weight: 900;
-      letter-spacing: 0.08em;
-      text-shadow: 0 0 14px rgba(0,200,255,0.85);
+    /* Tick mark inside each drum item */
+    .drum-tick {
+      width: 48%;
+      height: 2px;
+      border-radius: 1px;
+      transition: width 0.14s ease-out, height 0.14s ease-out, box-shadow 0.14s ease-out;
     }
 
-    /* Goal value label beside drum */
-    .goal-meta {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-
-    .goal-val-row {
-      display: flex;
-      align-items: baseline;
-      gap: 8px;
-    }
-
-    #goal-lbs-shown {
-      font-family: 'Orbitron', monospace;
-      font-size: 1.7rem;
-      font-weight: 700;
-      color: #00c8ff;
-      letter-spacing: 0.04em;
-      text-shadow: 0 0 16px rgba(0,200,255,0.38);
-    }
-
-    .goal-unit {
-      font-family: 'Orbitron', monospace;
-      font-size: 0.52rem;
-      color: #3a6a7a;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
+    .drum-item.active .drum-tick {
+      width: 70%;
+      height: 2.5px;
     }
 
     /* ── Balance display ──────────────────────────────────────── */
@@ -228,7 +233,6 @@
       flex-direction: column;
       align-items: center;
       margin-bottom: 8px;
-      position: relative;
     }
 
     #balance {
@@ -426,21 +430,21 @@
 
     <h1>Daily Calorie Balance</h1>
 
-    <!-- Goal roller -->
+    <!-- Goal roller — label left, drum right -->
     <div class="section">
       <div class="section-title">Daily Goal</div>
       <div class="goal-row">
-        <div class="drum-shell" id="goal-drum">
-          <div class="drum-stage">
-            <div class="drum-inner" id="drum-inner"></div>
-          </div>
-          <div class="drum-bracket"></div>
-        </div>
         <div class="goal-meta">
           <div class="goal-val-row">
             <span id="goal-lbs-shown">1.0</span>
             <span class="goal-unit">lbs / day</span>
           </div>
+        </div>
+        <div class="drum-shell" id="goal-drum">
+          <div class="drum-stage">
+            <div class="drum-inner" id="drum-inner"></div>
+          </div>
+          <div class="drum-bracket" id="drum-bracket"></div>
         </div>
       </div>
     </div>
@@ -488,15 +492,34 @@
   </div>
 
   <script>
-    const BMR          = -2000;
-    const STORAGE_KEY  = 'calorie_tracker_v1';
-    const GOAL_VALUES  = [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4,1.5];
-    const DRUM_RADIUS  = 54;   // cylinder radius in px
-    const DRUM_STEP    = 22;   // degrees between adjacent items
-    const DRAG_PX      = 20;   // px of drag per one increment
+    const BMR         = -2000;
+    const STORAGE_KEY = 'calorie_tracker_v1';
+    const GOAL_VALUES = [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4,1.5];
+    const DRUM_RADIUS = 54;
+    const DRUM_STEP   = 22;   // degrees between adjacent items
+    const DRAG_PX     = 20;   // pixels per increment
 
-    let goalIndex = 10;  // default 1.0 lbs
-    let entries   = [];
+    let goalIndex   = 10;
+    let entries     = [];
+    let knurlOffset = 0;  // accumulated knurling scroll offset
+
+    // ── Tick colour per value: dark blue (0 lbs) → bright cyan (1.5 lbs) ──
+    function tickColor(v) {
+      const t   = v / 1.5;
+      const h   = Math.round(220 - t * 28);   // 220° blue → 192° cyan
+      const s   = Math.round(65  + t * 35);   // 65% → 100%
+      const l   = Math.round(28  + t * 38);   // 28% → 66%
+      return `hsl(${h},${s}%,${l}%)`;
+    }
+
+    // Accent colour for the selection bracket and shell glow
+    function accentColor(v) {
+      const t = v / 1.5;
+      const h = Math.round(220 - t * 28);
+      const s = Math.round(70  + t * 30);
+      const l = Math.round(35  + t * 30);
+      return `hsl(${h},${s}%,${l}%)`;
+    }
 
     // ── Storage ────────────────────────────────────────────────────────────
     function load() {
@@ -513,11 +536,99 @@
     }
 
     // ── Calculation ────────────────────────────────────────────────────────
-    function goalCal() { return Math.round(GOAL_VALUES[goalIndex] * 3500); }
-
+    function goalCal()    { return Math.round(GOAL_VALUES[goalIndex] * 3500); }
     function displayVal() {
-      const actual = BMR + entries.reduce((s, e) => s + e.cal, 0);
-      return actual + goalCal();
+      return BMR + entries.reduce((s, e) => s + e.cal, 0) + goalCal();
+    }
+
+    // ── Drum position + colour update ──────────────────────────────────────
+    function drumPosition(animate, delta) {
+      // Shift knurling texture to simulate physical rotation
+      if (delta !== undefined) knurlOffset += delta * 4.5;
+      const shell   = document.getElementById('goal-drum');
+      const bracket = document.getElementById('drum-bracket');
+      shell.style.setProperty('--knurl-y', `${knurlOffset % 9}px`);
+
+      // Recolour bracket and shell glow based on active value
+      const v      = GOAL_VALUES[goalIndex];
+      const accent = accentColor(v);
+      bracket.style.borderTopColor    = accent;
+      bracket.style.borderBottomColor = accent;
+      shell.style.boxShadow = `inset 6px 0 16px rgba(0,0,0,0.85), inset -6px 0 16px rgba(0,0,0,0.85), 0 0 22px ${accent.replace('hsl', 'hsla').replace(')', ', 0.22)')}`;
+
+      // Update goal label colour to match
+      document.getElementById('goal-lbs-shown').style.color      = accent;
+      document.getElementById('goal-lbs-shown').style.textShadow = `0 0 18px ${accent.replace('hsl','hsla').replace(')',', 0.4)')}`;
+
+      // Rotate each cylinder item
+      document.querySelectorAll('.drum-item').forEach((el, i) => {
+        const deg    = (i - goalIndex) * DRUM_STEP;
+        const absDeg = Math.abs(deg);
+        const opacity = absDeg >= 90 ? 0 : Math.pow(Math.cos(deg * Math.PI / 180), 2);
+
+        el.style.transition = animate ? 'transform 0.14s ease-out, opacity 0.14s ease-out' : 'none';
+        el.style.transform  = `rotateX(${deg}deg) translateZ(${DRUM_RADIUS}px)`;
+        el.style.opacity    = opacity.toFixed(3);
+
+        const isActive = i === goalIndex;
+        el.classList.toggle('active', isActive);
+
+        // Tick glow intensifies on active item
+        const tick  = el.querySelector('.drum-tick');
+        const tCol  = tickColor(GOAL_VALUES[i]);
+        const glow  = isActive ? `0 0 10px ${tCol}, 0 0 22px ${tCol}` : `0 0 4px ${tCol}`;
+        tick.style.background = tCol;
+        tick.style.boxShadow  = glow;
+        tick.style.transition = animate ? 'width 0.14s ease-out, box-shadow 0.14s ease-out' : 'none';
+      });
+    }
+
+    // ── Drum init ──────────────────────────────────────────────────────────
+    function initDrum() {
+      const inner = document.getElementById('drum-inner');
+
+      GOAL_VALUES.forEach(v => {
+        const item = document.createElement('div');
+        item.className = 'drum-item';
+        const tick = document.createElement('div');
+        tick.className = 'drum-tick';
+        item.appendChild(tick);
+        inner.appendChild(item);
+      });
+
+      drumPosition(false);
+
+      const shell = document.getElementById('goal-drum');
+      let startY, startIdx, active = false;
+
+      function applyDrag(clientY) {
+        const delta = Math.round((startY - clientY) / DRAG_PX);
+        const next  = Math.max(0, Math.min(GOAL_VALUES.length - 1, startIdx + delta));
+        if (next !== goalIndex) {
+          const dir  = next > goalIndex ? 1 : -1;
+          goalIndex  = next;
+          drumPosition(true, dir);
+          render();
+          save();
+        }
+      }
+
+      shell.addEventListener('mousedown',  e => { e.preventDefault(); startY = e.clientY; startIdx = goalIndex; active = true; });
+      document.addEventListener('mousemove', e => { if (active) applyDrag(e.clientY); });
+      document.addEventListener('mouseup',   () => { active = false; });
+
+      shell.addEventListener('touchstart', e => { e.preventDefault(); startY = e.touches[0].clientY; startIdx = goalIndex; active = true; }, { passive: false });
+      document.addEventListener('touchmove', e => { if (active) { e.preventDefault(); applyDrag(e.touches[0].clientY); } }, { passive: false });
+      document.addEventListener('touchend',  () => { active = false; });
+
+      shell.addEventListener('wheel', e => {
+        e.preventDefault();
+        const dir = e.deltaY > 0 ? -1 : 1;
+        goalIndex  = Math.max(0, Math.min(GOAL_VALUES.length - 1, goalIndex + dir));
+        drumPosition(true, dir);
+        render();
+        save();
+      }, { passive: false });
     }
 
     // ── Render ─────────────────────────────────────────────────────────────
@@ -538,71 +649,12 @@
       const log = document.getElementById('log');
       log.innerHTML = '';
       entries.forEach((e, i) => {
-        const li   = document.createElement('li');
+        const li = document.createElement('li');
         li.className = e.cal > 0 ? 'pos' : 'neg';
         const sign = e.cal > 0 ? '+' : '−';
         li.innerHTML = `<span>${e.name}</span><span>${sign}${Math.abs(e.cal).toLocaleString()}<button class="del-btn" onclick="deleteEntry(${i})" title="Remove">✕</button></span>`;
         log.appendChild(li);
       });
-    }
-
-    // ── Drum roller ────────────────────────────────────────────────────────
-    function drumPosition(animate) {
-      document.querySelectorAll('.drum-item').forEach((el, i) => {
-        const deg    = (i - goalIndex) * DRUM_STEP;
-        const absDeg = Math.abs(deg);
-        // Items beyond 90° face away — backface-visibility hides them,
-        // but also zero out opacity for a clean fade.
-        const opacity = absDeg >= 90 ? 0 : Math.pow(Math.cos(deg * Math.PI / 180), 2);
-
-        el.style.transition = animate ? 'transform 0.14s ease-out, opacity 0.14s ease-out' : 'none';
-        el.style.transform  = `rotateX(${deg}deg) translateZ(${DRUM_RADIUS}px)`;
-        el.style.opacity    = opacity.toFixed(3);
-        el.classList.toggle('active', i === goalIndex);
-      });
-    }
-
-    function initDrum() {
-      const inner = document.getElementById('drum-inner');
-
-      GOAL_VALUES.forEach(v => {
-        const el = document.createElement('div');
-        el.className   = 'drum-item';
-        el.textContent = v.toFixed(1);
-        inner.appendChild(el);
-      });
-
-      drumPosition(false);
-
-      const shell = document.getElementById('goal-drum');
-      let startY, startIdx, active = false;
-
-      function applyDrag(clientY) {
-        const next = Math.max(0, Math.min(GOAL_VALUES.length - 1,
-          startIdx + Math.round((startY - clientY) / DRAG_PX)));
-        if (next !== goalIndex) {
-          goalIndex = next;
-          drumPosition(true);
-          render();
-          save();
-        }
-      }
-
-      shell.addEventListener('mousedown',  e => { e.preventDefault(); startY = e.clientY; startIdx = goalIndex; active = true; });
-      document.addEventListener('mousemove', e => { if (active) applyDrag(e.clientY); });
-      document.addEventListener('mouseup',   () => { active = false; });
-
-      shell.addEventListener('touchstart', e => { e.preventDefault(); startY = e.touches[0].clientY; startIdx = goalIndex; active = true; }, { passive: false });
-      document.addEventListener('touchmove', e => { if (active) { e.preventDefault(); applyDrag(e.touches[0].clientY); } }, { passive: false });
-      document.addEventListener('touchend',  () => { active = false; });
-
-      shell.addEventListener('wheel', e => {
-        e.preventDefault();
-        goalIndex = Math.max(0, Math.min(GOAL_VALUES.length - 1, goalIndex + (e.deltaY > 0 ? -1 : 1)));
-        drumPosition(true);
-        render();
-        save();
-      }, { passive: false });
     }
 
     // ── Actions ────────────────────────────────────────────────────────────
