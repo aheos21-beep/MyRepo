@@ -1,10 +1,10 @@
 {
   "articles": [
     {
-      "title": "Anthropic\u2019s latest feud with the Trump admin may actually help it, sales data suggests",
-      "url": "https://techcrunch.com/2026/06/16/anthropics-latest-feud-with-the-trump-admin-may-actually-help-it-sales-data-suggests/",
-      "summary": "Anthropic's popularity with business users is growing so well that the latest beef with the government might actually boost it, data from Ramp suggests.",
-      "published": "Tue, 16 Jun 2026 22:34:17 +0000",
+      "title": "NEA\u2019s Tiffany Luck says enterprises are still figuring out their AI ROI",
+      "url": "https://techcrunch.com/video/neas-tiffany-luck-says-enterprises-are-still-figuring-out-their-ai-roi/",
+      "summary": "Tokenmaxxing&#160;was&#160;the hottest trend in Silicon Valley earlier this year, with CEOs encouraging employees to push AI usage as far&#160;as it would go.&#160;Then the bill came due. Uber&#160;reportedly blew&#160;through its annual AI budget in a few months, some companies ",
+      "published": "Wed, 17 Jun 2026 20:17:38 +0000",
       "source": "TechCrunch AI"
     },
     {
@@ -15,9 +15,65 @@
       "source": "VentureBeat AI"
     },
     {
+      "title": "The Download: a reality check for geoengineering and the science of interoception",
+      "url": "https://www.technologyreview.com/2026/06/17/1139200/the-download-solar-geoengineering-interoception/",
+      "summary": "This is today&#8217;s edition of The Download, our weekday newsletter that provides a daily dose of what&#8217;s going on in the world of technology. Hacking the atmosphere: geoengineering gets a reality check Solar geoengineering, the controversial idea that we could deliberatel",
+      "published": "Wed, 17 Jun 2026 12:10:00 +0000",
+      "source": "MIT Technology Review"
+    },
+    {
+      "title": "\"Dangerous\" AI models are coming no matter what",
+      "url": "https://arstechnica.com/ai/2026/06/dangerous-ai-models-are-coming-no-matter-what/",
+      "summary": "AI models with advanced hacking capabilities will soon be the norm.",
+      "published": "Wed, 17 Jun 2026 17:50:46 +0000",
+      "source": "Ars Technica"
+    },
+    {
+      "title": "World leaders want American AI. They just don\u2019t want America to be able to turn it off.",
+      "url": "https://techcrunch.com/2026/06/17/world-leaders-want-american-ai-they-just-dont-want-america-to-be-able-to-turn-it-off/",
+      "summary": "French President Macron and Indian PM Modi raised alarms at the G7 summit that the U.S. could cut off access to American AI overnight  \u2014 a fear the Anthropic blackout just made real.",
+      "published": "Wed, 17 Jun 2026 19:01:19 +0000",
+      "source": "TechCrunch AI"
+    },
+    {
+      "title": "Railway secures $100 million to challenge AWS with AI-native cloud infrastructure",
+      "url": "https://venturebeat.com/infrastructure/railway-secures-usd100-million-to-challenge-aws-with-ai-native-cloud",
+      "summary": "Railway, a San Francisco-based cloud platform that has quietly amassed two million developers without spending a dollar on marketing, announced Thursday that it raised $100 million in a Series B funding round, as surging demand for artificial intelligence applications exposes the",
+      "published": "Thu, 22 Jan 2026 14:00:00 GMT",
+      "source": "VentureBeat AI"
+    },
+    {
       "title": "Entrepreneurs in Nairobi make the case for going solar",
       "url": "https://www.technologyreview.com/2026/06/17/1138600/entrepreneurs-nairobi-case-for-going-solar/",
       "summary": "Most of Kenya\u2019s power grid runs on renewables. But with 25% of communities lacking centralized electricity, the nation is looking to off-grid solar to hit its goal of delivering universal electricity access by 2030 without driving up emissions. The ever-\u00adimproving economics of so",
+      "published": "Wed, 17 Jun 2026 09:00:00 +0000",
+      "source": "MIT Technology Review"
+    },
+    {
+      "title": "Windows and Linux users: The deadline to update Secure Boot keys is near",
+      "url": "https://arstechnica.com/security/2026/06/windows-and-linux-users-the-deadline-to-update-secure-boot-keys-is-near/",
+      "summary": "What you need to know about the expiration of keys securing your machine's boot sequence.",
+      "published": "Wed, 17 Jun 2026 11:15:17 +0000",
+      "source": "Ars Technica"
+    },
+    {
+      "title": "Anthropic becomes first AI startup to join the Frontier carbon removal coalition",
+      "url": "https://techcrunch.com/2026/06/17/anthropic-becomes-first-ai-startup-to-join-the-frontier-carbon-removal-coalition/",
+      "summary": "Anthropic has joined the Frontier coalition, which received another $915M in pledges to fund carbon removal projects.",
+      "published": "Wed, 17 Jun 2026 18:30:56 +0000",
+      "source": "TechCrunch AI"
+    },
+    {
+      "title": "Claude Code costs up to $200 a month. Goose does the same thing for free.",
+      "url": "https://venturebeat.com/infrastructure/claude-code-costs-up-to-usd200-a-month-goose-does-the-same-thing-for-free",
+      "summary": "The artificial intelligence coding revolution comes with a catch: it&#x27;s expensive.Claude Code, Anthropic&#x27;s terminal-based AI agent that can write, debug, and deploy code autonomously, has captured the imagination of software developers worldwide. But its pricing \u2014 rangin",
+      "published": "Mon, 19 Jan 2026 14:00:00 GMT",
+      "source": "VentureBeat AI"
+    },
+    {
+      "title": "Hacking the atmosphere: Geoengineering gets a reality check",
+      "url": "https://www.technologyreview.com/2026/06/17/1138743/hacking-atmosphere-geoengineering-reality-check/",
+      "summary": "Jim Franke pulls away the cover page of a presentation on the wraparound desk in his office, revealing an illustration of an odd-\u00adlooking aircraft with massive wings stretching out from a stubby fuselage. The uncrewed plane is soaring thousands of meters higher than commercial je",
       "published": "Wed, 17 Jun 2026 09:00:00 +0000",
       "source": "MIT Technology Review"
     },
@@ -29,66 +85,10 @@
       "source": "Ars Technica"
     },
     {
-      "title": "SpaceX valuation balloons to $2.6T, briefly passes Amazon",
-      "url": "https://techcrunch.com/2026/06/16/spacex-valuation-balloons-to-2-6t-briefly-passes-amazon/",
-      "summary": "SpaceX's valuation has increased by $1 trillion since its shares started trading on Friday.",
-      "published": "Tue, 16 Jun 2026 20:11:00 +0000",
-      "source": "TechCrunch AI"
-    },
-    {
-      "title": "Railway secures $100 million to challenge AWS with AI-native cloud infrastructure",
-      "url": "https://venturebeat.com/infrastructure/railway-secures-usd100-million-to-challenge-aws-with-ai-native-cloud",
-      "summary": "Railway, a San Francisco-based cloud platform that has quietly amassed two million developers without spending a dollar on marketing, announced Thursday that it raised $100 million in a Series B funding round, as surging demand for artificial intelligence applications exposes the",
-      "published": "Thu, 22 Jan 2026 14:00:00 GMT",
-      "source": "VentureBeat AI"
-    },
-    {
-      "title": "Hacking the atmosphere: Geoengineering gets a reality check",
-      "url": "https://www.technologyreview.com/2026/06/17/1138743/hacking-atmosphere-geoengineering-reality-check/",
-      "summary": "Jim Franke pulls away the cover page of a presentation on the wraparound desk in his office, revealing an illustration of an odd-\u00adlooking aircraft with massive wings stretching out from a stubby fuselage. The uncrewed plane is soaring thousands of meters higher than commercial je",
-      "published": "Wed, 17 Jun 2026 09:00:00 +0000",
-      "source": "MIT Technology Review"
-    },
-    {
-      "title": "Critical Copilot vulnerability allowed hackers to steal 2FA code from users",
-      "url": "https://arstechnica.com/security/2026/06/critical-copilot-vulnerability-allowed-hackers-to-seal-2fa-code-from-users/",
-      "summary": "SearchLeak exploit shows why the industry's approach to LLM security fails over and over.",
-      "published": "Tue, 16 Jun 2026 11:15:46 +0000",
-      "source": "Ars Technica"
-    },
-    {
-      "title": "Android 17 launches with new multitasking tools as Google expands Gemini features",
-      "url": "https://techcrunch.com/2026/06/16/android-17-launches-with-new-multitasking-tools-as-google-expands-gemini-features/",
-      "summary": "Google has released Android 17 and Wear OS 7, introducing new multitasking features, parental controls, security tools, and smartwatch upgrades. The launch is also accompanied by a Pixel Drop that brings Google\u2019s latest AI models to its devices.",
-      "published": "Tue, 16 Jun 2026 18:00:00 +0000",
-      "source": "TechCrunch AI"
-    },
-    {
-      "title": "Claude Code costs up to $200 a month. Goose does the same thing for free.",
-      "url": "https://venturebeat.com/infrastructure/claude-code-costs-up-to-usd200-a-month-goose-does-the-same-thing-for-free",
-      "summary": "The artificial intelligence coding revolution comes with a catch: it&#x27;s expensive.Claude Code, Anthropic&#x27;s terminal-based AI agent that can write, debug, and deploy code autonomously, has captured the imagination of software developers worldwide. But its pricing \u2014 rangin",
-      "published": "Mon, 19 Jan 2026 14:00:00 GMT",
-      "source": "VentureBeat AI"
-    },
-    {
-      "title": "Exclusive eBook: How AI is becoming the next military advisor",
-      "url": "https://www.technologyreview.com/2026/06/16/1138905/exclusive-ebook-how-ai-is-becoming-the-next-military-advisor/",
-      "summary": "A collection of stories about how militaries are using AI models to make decisions. This subscriber-only eBook is a package of six stories that were originally published in MIT Technology Review between April 11, 2025, and April 21, 2026, and have been updated to reflect recent d",
-      "published": "Tue, 16 Jun 2026 20:35:02 +0000",
-      "source": "MIT Technology Review"
-    },
-    {
-      "title": "Users cry foul after AMD stripped memory crypto from its consumer CPUs",
-      "url": "https://arstechnica.com/security/2026/06/users-cry-foul-after-amd-stripped-memory-crypto-from-its-consumer-cpus/",
-      "summary": "AMD's stripping of TSME from consumer CPUs appears to be a deliberate, covert move.",
-      "published": "Mon, 15 Jun 2026 17:55:46 +0000",
-      "source": "Ars Technica"
-    },
-    {
-      "title": "Sixty percent of US consumers say \u2018AI\u2019 in brand messaging is a turnoff, survey finds",
-      "url": "https://techcrunch.com/2026/06/16/sixty-percent-of-u-s-consumers-say-ai-in-brand-messaging-is-a-turnoff-survey-finds/",
-      "summary": "WordPress VIP\u2019s latest survey suggests consumers are wary of AI-generated answers even as companies increasingly view AI search as an important referral channel.",
-      "published": "Tue, 16 Jun 2026 16:49:44 +0000",
+      "title": "Social media\u2019s next evolution: user-controlled algorithms",
+      "url": "https://techcrunch.com/2026/06/17/social-medias-next-evolution-user-controlled-algorithms/",
+      "summary": "Social media feeds are becoming more customizable as platforms like Threads, Instagram, and TikTok introduce tools that let users directly influence the algorithms powering their recommendations.",
+      "published": "Wed, 17 Jun 2026 18:19:48 +0000",
       "source": "TechCrunch AI"
     },
     {
@@ -99,24 +99,24 @@
       "source": "VentureBeat AI"
     },
     {
-      "title": "The Download: the first brain implant power user and South Korea\u2019s AI obsession",
-      "url": "https://www.technologyreview.com/2026/06/16/1139010/the-download-brain-implant-power-user-bci-south-korea-ai-obsession/",
-      "summary": "This is today&#8217;s edition of The Download, our weekday newsletter that provides a daily dose of what&#8217;s going on in the world of technology. This man with ALS is the first \u201cpower user\u201d of a brain implant that lets him speak Casey Harrell has had a set of electrodes embed",
-      "published": "Tue, 16 Jun 2026 12:10:00 +0000",
+      "title": "Exclusive eBook: How AI is becoming the next military advisor",
+      "url": "https://www.technologyreview.com/2026/06/16/1138905/exclusive-ebook-how-ai-is-becoming-the-next-military-advisor/",
+      "summary": "A collection of stories about how militaries are using AI models to make decisions. This subscriber-only eBook is a package of six stories that were originally published in MIT Technology Review between April 11, 2025, and April 21, 2026, and have been updated to reflect recent d",
+      "published": "Tue, 16 Jun 2026 20:35:02 +0000",
       "source": "MIT Technology Review"
     },
     {
-      "title": "PeopleSoft 0-day affecting hundreds of organizations steals gigabytes of data",
-      "url": "https://arstechnica.com/security/2026/06/peoplesoft-0-day-affecting-hundreds-of-organizations-steals-gigabytes-of-data/",
-      "summary": "Vulnerability in the Oracle-owned PeopleSoft software is about as critical as they come.",
-      "published": "Fri, 12 Jun 2026 19:26:47 +0000",
+      "title": "Critical Copilot vulnerability allowed hackers to steal 2FA code from users",
+      "url": "https://arstechnica.com/security/2026/06/critical-copilot-vulnerability-allowed-hackers-to-seal-2fa-code-from-users/",
+      "summary": "SearchLeak exploit shows why the industry's approach to LLM security fails over and over.",
+      "published": "Tue, 16 Jun 2026 11:15:46 +0000",
       "source": "Ars Technica"
     },
     {
-      "title": "SpaceX is public: Everything you need to know post-IPO",
-      "url": "https://techcrunch.com/2026/06/16/spacex-is-public-everything-you-need-to-know-post-ipo/",
-      "summary": "TechCrunch has followed SpaceX's start, struggles, and successes from the early days. And we're here for what happens next too. This package of SpaceX IPO coverage includes who stands to win (and maybe some who won't), pre-IPO deals, and what's tucked inside its S-1 registration ",
-      "published": "Tue, 16 Jun 2026 15:53:12 +0000",
+      "title": "NEA\u2019s Tiffany Luck on AI IPOs, personal agents, and the ROI reckoning",
+      "url": "https://techcrunch.com/podcast/neas-tiffany-luck-on-ai-ipos-personal-agents-and-the-roi-reckoning/",
+      "summary": "Tokenmaxxing&#160;was&#160;the hottest trend in Silicon Valley earlier this year, with CEOs encouraging employees to push AI usage as far&#160;as it would go.&#160;Then the bill came due. Uber&#160;reportedly blew&#160;through its annual AI budget in a few months, some companies ",
+      "published": "Wed, 17 Jun 2026 18:00:00 +0000",
       "source": "TechCrunch AI"
     },
     {
@@ -127,24 +127,24 @@
       "source": "VentureBeat AI"
     },
     {
-      "title": "Want to get a data center online quickly? Give it some flex.",
-      "url": "https://www.technologyreview.com/2026/06/16/1138591/data-center-online-quickly-electric-grid-flex/",
-      "summary": "At the end of a tense and scoreless first half of a soccer match between the English men\u2019s team and rival Germany, millions of Brits let out a collective sigh and did what they so often do in moments of stress: They made tea. That wave of electric kettles clicking on, however, ca",
-      "published": "Tue, 16 Jun 2026 09:00:00 +0000",
+      "title": "The Download: the first brain implant power user and South Korea\u2019s AI obsession",
+      "url": "https://www.technologyreview.com/2026/06/16/1139010/the-download-brain-implant-power-user-bci-south-korea-ai-obsession/",
+      "summary": "This is today&#8217;s edition of The Download, our weekday newsletter that provides a daily dose of what&#8217;s going on in the world of technology. This man with ALS is the first \u201cpower user\u201d of a brain implant that lets him speak Casey Harrell has had a set of electrodes embed",
+      "published": "Tue, 16 Jun 2026 12:10:00 +0000",
       "source": "MIT Technology Review"
     },
     {
-      "title": "Locked in heated rivalry with researcher, Microsoft fixes 0-day they disclosed",
-      "url": "https://arstechnica.com/security/2026/06/locked-in-heated-rivalry-with-researcher-microsoft-fixes-0-day-they-disclosed/",
-      "summary": "A separate zero-day also disclosed by Nightmare Eclipse appears to be patched as well.",
-      "published": "Tue, 09 Jun 2026 20:56:52 +0000",
+      "title": "Users cry foul after AMD stripped memory crypto from its consumer CPUs",
+      "url": "https://arstechnica.com/security/2026/06/users-cry-foul-after-amd-stripped-memory-crypto-from-its-consumer-cpus/",
+      "summary": "AMD's stripping of TSME from consumer CPUs appears to be a deliberate, covert move.",
+      "published": "Mon, 15 Jun 2026 17:55:46 +0000",
       "source": "Ars Technica"
     },
     {
-      "title": "DOJ claims xAI\u2019s unpermitted gas turbines are a matter of \u2018national, economic, and energy security\u2019",
-      "url": "https://techcrunch.com/2026/06/16/doj-claims-xais-unpermitted-gas-turbines-are-a-matter-of-national-economic-and-energy-security/",
-      "summary": "The Justice department says the Pentagon needs xAI to keep using its unpermitted gas turbines.",
-      "published": "Tue, 16 Jun 2026 15:05:03 +0000",
+      "title": "World model maker Odyssey nabs $1.45B valuation backed by Amazon and other big names",
+      "url": "https://techcrunch.com/2026/06/17/world-model-maker-odyssey-nabs-1-45b-valuation-backed-by-amazon-and-other-big-names/",
+      "summary": "World models are the next big thing in AI beyond LLMs and, with this round, Odyssey has cemented itself as one of the startups to watch.",
+      "published": "Wed, 17 Jun 2026 17:43:07 +0000",
       "source": "TechCrunch AI"
     },
     {
@@ -155,20 +155,20 @@
       "source": "VentureBeat AI"
     },
     {
-      "title": "Why do South Koreans love AI so much?",
-      "url": "https://www.technologyreview.com/2026/06/15/1138983/why-do-south-koreans-love-ai-so-much/",
-      "summary": "This story originally appeared in The Algorithm, our weekly newsletter on AI. To get stories like this in your inbox first,&#160;sign up here. When I landed in Seoul after a grueling 12-hour flight from San Francisco, I walked through an unmanned immigration checkpoint, where a m",
-      "published": "Mon, 15 Jun 2026 18:46:08 +0000",
+      "title": "Want to get a data center online quickly? Give it some flex.",
+      "url": "https://www.technologyreview.com/2026/06/16/1138591/data-center-online-quickly-electric-grid-flex/",
+      "summary": "At the end of a tense and scoreless first half of a soccer match between the English men\u2019s team and rival Germany, millions of Brits let out a collective sigh and did what they so often do in moments of stress: They made tea. That wave of electric kettles clicking on, however, ca",
+      "published": "Tue, 16 Jun 2026 09:00:00 +0000",
       "source": "MIT Technology Review"
     },
     {
-      "title": "High-severity vulnerability in Linux caused by a single faulty character",
-      "url": "https://arstechnica.com/security/2026/06/a-single-errant-character-in-the-linux-kernel-allows-attacker-to-gain-root/",
-      "summary": "Use-after-free bug can be exploited to evade sandbox defenses.",
-      "published": "Tue, 09 Jun 2026 15:12:43 +0000",
+      "title": "PeopleSoft 0-day affecting hundreds of organizations steals gigabytes of data",
+      "url": "https://arstechnica.com/security/2026/06/peoplesoft-0-day-affecting-hundreds-of-organizations-steals-gigabytes-of-data/",
+      "summary": "Vulnerability in the Oracle-owned PeopleSoft software is about as critical as they come.",
+      "published": "Fri, 12 Jun 2026 19:26:47 +0000",
       "source": "Ars Technica"
     }
   ],
-  "last_updated": "2026-06-17T11:04:40.770338+00:00",
+  "last_updated": "2026-06-17T20:22:16.479158+00:00",
   "source": "live"
 }
