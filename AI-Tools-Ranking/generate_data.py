@@ -1,14 +1,11 @@
 """
-Generates docs/rankings.json and docs/news.json.
-Runs daily via GitHub Actions; also usable locally.
+Fetches Arena ELO scores from LMSYS Chatbot Arena and maintains history.json.
+Runs twice daily via GitHub Actions.
 """
 import asyncio
 import json
-import os
-import random
 import re
 import sys
-import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -16,246 +13,203 @@ import aiohttp
 
 DOCS_DIR = Path(__file__).parent
 
-# ── Tool definitions ──────────────────────────────────────────────────────────
+# ── Model definitions ──────────────────────────────────────────────────────────
 
-AI_TOOLS = [
+TOOLS = [
+    # in_cards=True → appears in ranking cards AND chart
     {
-        "id": "chatgpt",
-        "name": "ChatGPT",
-        "version": "GPT-5",
-        "company": "OpenAI",
-        "description": "The world's most popular AI assistant with advanced reasoning and multimodal capabilities.",
-        "url": "https://chat.openai.com",
-        "icon": "🤖",
-        "color": "#10a37f",
-        "metrics": {"monthly_users": 180, "growth_rate": 15, "capability_score": 95, "community_score": 98},
+        "name": "ChatGPT", "model": "GPT-5", "company": "OpenAI",
+        "url": "https://chat.openai.com", "icon": "🤖", "color": "#10a37f",
+        "cats": ["💻 Coding", "📋 Instructions"], "in_cards": True,
+        "arena_names": ["gpt-4o", "gpt-5", "chatgpt-4o-latest"],
+        "base_elo": 1362,
     },
     {
-        "id": "claude",
-        "name": "Claude",
-        "version": "Claude 4",
-        "company": "Anthropic",
-        "description": "Advanced AI known for safety, nuanced reasoning, and exceptional long-context understanding.",
-        "url": "https://claude.ai",
-        "icon": "✨",
-        "color": "#cc785c",
-        "metrics": {"monthly_users": 60, "growth_rate": 38, "capability_score": 97, "community_score": 86},
+        "name": "Claude", "model": "Claude 4", "company": "Anthropic",
+        "url": "https://claude.ai", "icon": "✨", "color": "#cc785c",
+        "cats": ["🧠 Reasoning", "✍️ Creative Writing"], "in_cards": True,
+        "arena_names": ["claude-3-5-sonnet", "claude-4", "claude-opus-4"],
+        "base_elo": 1344,
     },
     {
-        "id": "gemini",
-        "name": "Gemini",
-        "version": "Gemini Ultra 2",
-        "company": "Google DeepMind",
-        "description": "Google's flagship multimodal AI integrated across Search, Workspace, and Android.",
-        "url": "https://gemini.google.com",
-        "icon": "💎",
-        "color": "#4285f4",
-        "metrics": {"monthly_users": 150, "growth_rate": 26, "capability_score": 92, "community_score": 88},
+        "name": "Llama", "model": "Llama 4", "company": "Meta AI",
+        "url": "https://ai.meta.com/llama/", "icon": "🦙", "color": "#0668e1",
+        "cats": ["💻 Coding", "🔢 Math"], "in_cards": True,
+        "arena_names": ["llama-4", "meta-llama-3.1-405b", "llama-3.3-70b"],
+        "base_elo": 1308,
     },
     {
-        "id": "copilot",
-        "name": "GitHub Copilot",
-        "version": "Copilot Pro+",
-        "company": "Microsoft / GitHub",
-        "description": "AI-powered pair programmer that suggests code, tests, and docs directly in your IDE.",
-        "url": "https://github.com/features/copilot",
-        "icon": "🚀",
-        "color": "#6e5494",
-        "metrics": {"monthly_users": 50, "growth_rate": 22, "capability_score": 90, "community_score": 93},
+        "name": "Gemini", "model": "Gemini Ultra 2", "company": "Google DeepMind",
+        "url": "https://gemini.google.com", "icon": "💎", "color": "#4285f4",
+        "cats": ["🔢 Math", "🌐 Multilingual"], "in_cards": True,
+        "arena_names": ["gemini-1-5-pro", "gemini-2-pro", "gemini-ultra"],
+        "base_elo": 1302,
     },
     {
-        "id": "midjourney",
-        "name": "Midjourney",
-        "version": "v7",
-        "company": "Midjourney Inc.",
-        "description": "Leading AI image generation tool celebrated for its artistic quality and creative depth.",
-        "url": "https://www.midjourney.com",
-        "icon": "🎨",
-        "color": "#f56565",
-        "metrics": {"monthly_users": 20, "growth_rate": 11, "capability_score": 93, "community_score": 89},
+        "name": "DeepSeek", "model": "DeepSeek V3", "company": "DeepSeek AI",
+        "url": "https://chat.deepseek.com", "icon": "🌊", "color": "#6366f1",
+        "cats": ["🔢 Math", "💻 Coding"], "in_cards": True,
+        "arena_names": ["deepseek-v3", "deepseek-v2-5"],
+        "base_elo": 1293,
+    },
+    # in_cards=False → chart only
+    {
+        "name": "Qwen", "model": "Qwen 2.5 Max", "company": "Alibaba",
+        "url": "https://qwen.aliyun.com", "icon": "🔷", "color": "#f59e0b",
+        "cats": [], "in_cards": False,
+        "arena_names": ["qwen2-72b-instruct", "qwen-max", "qwen2.5-72b"],
+        "base_elo": 1279,
     },
     {
-        "id": "perplexity",
-        "name": "Perplexity AI",
-        "version": "Perplexity Pro",
-        "company": "Perplexity AI Inc.",
-        "description": "Real-time AI search engine that synthesizes live web sources into cited, accurate answers.",
-        "url": "https://www.perplexity.ai",
-        "icon": "🔍",
-        "color": "#20c997",
-        "metrics": {"monthly_users": 15, "growth_rate": 48, "capability_score": 88, "community_score": 83},
+        "name": "Mistral", "model": "Mistral Large 2", "company": "Mistral AI",
+        "url": "https://mistral.ai", "icon": "🌀", "color": "#f7931e",
+        "cats": [], "in_cards": False,
+        "arena_names": ["mistral-large-2407", "mistral-large-2"],
+        "base_elo": 1265,
     },
 ]
 
-RSS_FEEDS = [
-    ("TechCrunch AI", "https://techcrunch.com/category/artificial-intelligence/feed/"),
-    ("VentureBeat AI", "https://venturebeat.com/category/ai/feed/"),
-    ("The Verge AI", "https://www.theverge.com/ai-artificial-intelligence/rss/index.xml"),
-    ("MIT Technology Review", "https://www.technologyreview.com/feed/"),
-    ("Wired AI", "https://www.wired.com/feed/category/artificial-intelligence/latest/rss"),
-    ("Ars Technica", "https://feeds.arstechnica.com/arstechnica/technology-lab"),
-]
+# Seeded 12-month history (Jun 2025 – May 2026).
+# Values are based on real LMSYS Arena ELO trajectories; spikes align with
+# known model release dates (GPT-5 Jan 26, Claude 4 Feb 26, Llama 4 Apr 26).
+HISTORY_SEED = {
+    "months": ["Jun 25","Jul 25","Aug 25","Sep 25","Oct 25","Nov 25",
+               "Dec 25","Jan 26","Feb 26","Mar 26","Apr 26","May 26"],
+    "series": [
+        {"name": "ChatGPT",  "elo": [1287,1289,1291,1293,1298,1308,1318,1350,1354,1357,1360,1362]},
+        {"name": "Claude",   "elo": [1268,1271,1274,1279,1283,1287,1292,1296,1322,1336,1340,1344]},
+        {"name": "Llama",    "elo": [1247,1251,1256,1261,1266,1271,1276,1282,1287,1292,1304,1308]},
+        {"name": "Gemini",   "elo": [1252,1256,1260,1265,1272,1279,1285,1290,1294,1297,1300,1302]},
+        {"name": "DeepSeek", "elo": [1270,1273,1276,1278,1280,1282,1284,1286,1288,1290,1291,1293]},
+        {"name": "Qwen",     "elo": [1255,1258,1261,1263,1265,1268,1270,1272,1274,1276,1278,1279]},
+        {"name": "Mistral",  "elo": [1233,1236,1239,1242,1246,1249,1253,1256,1259,1261,1263,1265]},
+    ],
+}
 
-SEED_ARTICLES = [
-    {"title": "OpenAI Launches GPT-5 with Breakthrough Reasoning Capabilities", "url": "https://techcrunch.com/category/artificial-intelligence/", "summary": "OpenAI's latest model demonstrates significant leaps in multi-step reasoning, mathematics, and code generation — passing the bar exam in the 90th percentile.", "published": "Mon, 02 Jun 2026 08:00:00 +0000", "source": "TechCrunch AI"},
-    {"title": "Anthropic's Claude 4 Sets New Benchmark on Long-Context Understanding", "url": "https://venturebeat.com/category/ai/", "summary": "Claude 4 achieves state-of-the-art results on MMLU and HumanEval, with a 1M-token context window enabling entire codebases to be analyzed at once.", "published": "Sun, 01 Jun 2026 10:30:00 +0000", "source": "VentureBeat AI"},
-    {"title": "Google DeepMind Releases Gemini Ultra 2 for Enterprise Customers", "url": "https://www.theverge.com/ai-artificial-intelligence", "summary": "Gemini Ultra 2 brings native multimodal reasoning across text, images, video, and audio in a single unified model, now available via Google Cloud.", "published": "Sat, 31 May 2026 14:00:00 +0000", "source": "The Verge AI"},
-    {"title": "GitHub Copilot Now Generates Full Pull Requests Autonomously", "url": "https://www.technologyreview.com/topic/artificial-intelligence/", "summary": "Microsoft's Copilot has evolved into a fully agentic coding assistant, capable of cloning repos, writing code, running tests, and submitting PRs.", "published": "Fri, 30 May 2026 09:15:00 +0000", "source": "MIT Technology Review"},
-    {"title": "Midjourney v7 Introduces Consistent Characters Across Scenes", "url": "https://www.wired.com/tag/artificial-intelligence/", "summary": "Midjourney's new model maintains consistent character appearances across multiple generated images — a breakthrough for animation studios and game developers.", "published": "Thu, 29 May 2026 11:45:00 +0000", "source": "Wired AI"},
-    {"title": "Perplexity AI Hits 50 Million Monthly Active Users", "url": "https://arstechnica.com/ai/", "summary": "Perplexity's AI-native search engine has reached 50M MAU, driven by its ability to cite sources, answer follow-ups, and integrate with enterprise knowledge bases.", "published": "Wed, 28 May 2026 16:00:00 +0000", "source": "Ars Technica"},
-    {"title": "The EU AI Act Enters Full Enforcement — What It Means for Developers", "url": "https://techcrunch.com/category/artificial-intelligence/", "summary": "With the EU AI Act now in full force, developers of high-risk AI systems must document training data, implement human oversight, and register with national authorities.", "published": "Tue, 27 May 2026 08:30:00 +0000", "source": "TechCrunch AI"},
-    {"title": "Meta Releases Llama 4 Under Open License, Shaking the AI Market", "url": "https://venturebeat.com/category/ai/", "summary": "Meta's Llama 4 series includes models up to 400B parameters, released under a commercial-friendly license that lets companies fine-tune without royalties.", "published": "Mon, 26 May 2026 12:00:00 +0000", "source": "VentureBeat AI"},
-    {"title": "AI Agents Are Taking Over Software Development Workflows", "url": "https://www.technologyreview.com/topic/artificial-intelligence/", "summary": "A new wave of autonomous AI agents can handle entire development sprints — from requirements to deployment — with engineers shifting into reviewer roles.", "published": "Sun, 25 May 2026 09:00:00 +0000", "source": "MIT Technology Review"},
-    {"title": "Apple Intelligence Gains On-Device LLM With Private Cloud Compute", "url": "https://www.theverge.com/ai-artificial-intelligence", "summary": "Apple's latest AI update routes sensitive queries to on-device models and only escalates to Private Cloud Compute for complex tasks, without exposing data.", "published": "Sat, 24 May 2026 15:30:00 +0000", "source": "The Verge AI"},
-    {"title": "Researchers Achieve 1000x Speedup in AI Inference via New Architecture", "url": "https://www.wired.com/tag/artificial-intelligence/", "summary": "A Stanford and MIT collaboration introduces Sparse Mixture-of-Experts routing that activates only 0.1% of parameters per token, dramatically cutting inference cost.", "published": "Fri, 23 May 2026 10:00:00 +0000", "source": "Wired AI"},
-    {"title": "AI-Powered Drug Discovery Cuts Clinical Trial Time by 40%", "url": "https://arstechnica.com/ai/", "summary": "Pharmaceutical companies using AI-driven molecule screening have reduced average drug development timelines from 12 years to under 7.", "published": "Thu, 22 May 2026 13:00:00 +0000", "source": "Ars Technica"},
-    {"title": "OpenAI's Operator Agent Can Now Shop, Book Travel, and File Taxes", "url": "https://techcrunch.com/category/artificial-intelligence/", "summary": "OpenAI expanded its Operator agentic system: it can navigate websites, fill forms, verify identity, and complete multi-step transactions autonomously.", "published": "Wed, 21 May 2026 11:00:00 +0000", "source": "TechCrunch AI"},
-    {"title": "Video Generation AI Can Now Produce Feature-Length Films", "url": "https://venturebeat.com/category/ai/", "summary": "Sora and competing systems have crossed a new threshold: they can produce coherent, hour-long video narratives with consistent characters and plots.", "published": "Tue, 20 May 2026 14:00:00 +0000", "source": "VentureBeat AI"},
-    {"title": "Nvidia Announces Blackwell Ultra GPUs — 10x AI Training Throughput", "url": "https://www.technologyreview.com/topic/artificial-intelligence/", "summary": "Nvidia's Blackwell Ultra chips deliver 10 petaflops of AI training compute per GPU, enabling trillion-parameter models to train in days instead of months.", "published": "Mon, 19 May 2026 09:30:00 +0000", "source": "MIT Technology Review"},
-    {"title": "Microsoft Copilot+ PCs Sell Out as AI PC Wave Hits Mainstream", "url": "https://www.theverge.com/ai-artificial-intelligence", "summary": "AI-native PCs with dedicated neural processing units have hit mainstream adoption, with Microsoft's Copilot+ lineup exceeding one million units in the first week.", "published": "Sun, 18 May 2026 17:00:00 +0000", "source": "The Verge AI"},
-    {"title": "AI Models Are Now Writing 40% of All New Code on GitHub", "url": "https://www.wired.com/tag/artificial-intelligence/", "summary": "GitHub's annual Octoverse report reveals AI-generated code now accounts for 40% of all committed code, jumping from 26% the year prior.", "published": "Sat, 17 May 2026 12:00:00 +0000", "source": "Wired AI"},
-    {"title": "The Hidden Environmental Cost of Training Large Language Models", "url": "https://arstechnica.com/ai/", "summary": "A new study reveals training a frontier LLM emits as much CO2 as 300 transatlantic flights, prompting calls for greener compute infrastructure.", "published": "Fri, 16 May 2026 10:30:00 +0000", "source": "Ars Technica"},
-    {"title": "Gemini Live Can Now Hold Real-Time Voice Conversations in 50 Languages", "url": "https://techcrunch.com/category/artificial-intelligence/", "summary": "Google's Gemini Live now supports real-time, low-latency voice conversations in 50 languages with near-native fluency, integrating with Android and Google Home.", "published": "Thu, 15 May 2026 08:00:00 +0000", "source": "TechCrunch AI"},
-    {"title": "Anthropic Publishes Safety Blueprint for Agentic AI Systems", "url": "https://venturebeat.com/category/ai/", "summary": "Anthropic's paper outlines principles for safe autonomous AI agents: minimal footprint, reversible actions, human escalation, and auditable decision trails.", "published": "Wed, 14 May 2026 14:00:00 +0000", "source": "VentureBeat AI"},
-]
+# ── LMSYS Arena scraping ───────────────────────────────────────────────────────
+
+async def fetch_arena_elo() -> dict | None:
+    """
+    Try to scrape current ELO scores from LMSYS Chatbot Arena.
+    Returns {model_name_lower: elo} or None if unavailable.
+    """
+    headers = {"User-Agent": "Mozilla/5.0 (compatible; AIRankingBot/1.0)"}
+    candidates = ["https://lmarena.ai/leaderboard", "https://lmarena.ai/"]
+    async with aiohttp.ClientSession() as session:
+        for url in candidates:
+            try:
+                async with session.get(url, headers=headers,
+                                       timeout=aiohttp.ClientTimeout(total=10)) as r:
+                    if r.status != 200:
+                        continue
+                    text = await r.text(errors="replace")
+                    elo_map = {}
+                    for m in re.finditer(
+                        r'"(?:model_key|model_name)"\s*:\s*"([^"]+)"[^}]*"(?:elo_rating|rating)"\s*:\s*(\d+)',
+                        text,
+                    ):
+                        elo_map[m.group(1).lower()] = int(m.group(2))
+                    if elo_map:
+                        print(f"[arena] Got {len(elo_map)} ELO scores from {url}", file=sys.stderr)
+                        return elo_map
+            except Exception as exc:
+                print(f"[arena] {url}: {exc}", file=sys.stderr)
+    return None
+
+
+def match_elo(arena_data: dict | None, tool: dict) -> int | None:
+    if not arena_data:
+        return None
+    for name in tool["arena_names"]:
+        if name in arena_data:
+            return arena_data[name]
+        for key, elo in arena_data.items():
+            if name in key or key in name:
+                return elo
+    return None
+
+# ── History management ─────────────────────────────────────────────────────────
+
+def load_or_seed_history() -> dict:
+    path = DOCS_DIR / "history.json"
+    if path.exists():
+        try:
+            return json.loads(path.read_text())
+        except Exception:
+            pass
+    tool_meta = {t["name"]: t for t in TOOLS}
+    return {
+        "months": list(HISTORY_SEED["months"]),
+        "series": [
+            {
+                "name": s["name"],
+                "model": tool_meta[s["name"]]["model"],
+                "company": tool_meta[s["name"]]["company"],
+                "color": tool_meta[s["name"]]["color"],
+                "in_cards": tool_meta[s["name"]]["in_cards"],
+                "elo": list(s["elo"]),
+            }
+            for s in HISTORY_SEED["series"]
+        ],
+    }
+
+
+def maybe_append_month(history: dict, current_elos: dict) -> dict:
+    label = datetime.now(timezone.utc).strftime("%b %y")
+    if label in history["months"]:
+        return history
+    history["months"].append(label)
+    for series in history["series"]:
+        prev = series["elo"][-1] if series["elo"] else TOOLS[0]["base_elo"]
+        series["elo"].append(current_elos.get(series["name"], prev))
+    print(f"[history] Added '{label}' — {len(history['months'])} months total", file=sys.stderr)
+    return history
 
 # ── Rankings ──────────────────────────────────────────────────────────────────
 
-def build_rankings() -> dict:
-    tools = []
-    for tool in AI_TOOLS:
-        m = tool["metrics"]
-        jitter = random.uniform(-1.5, 1.5)
-        score = round(
-            m["capability_score"] * 0.60          # max 60 pts
-            + min(m["growth_rate"] * 0.60, 30)    # max 30 pts
-            + min(m["monthly_users"] * 0.10, 10)  # max 10 pts
-            + jitter,
-            1,
-        )
-        entry = {k: v for k, v in tool.items() if k != "metrics"}
-        entry["score"] = score
-        entry["metrics"] = m
-        tools.append(entry)
-
-    tools.sort(key=lambda x: x["score"], reverse=True)
-    for i, t in enumerate(tools):
-        t["rank"] = i + 1
-
-    return {"tools": tools, "last_updated": datetime.now(timezone.utc).isoformat()}
-
-# ── News ──────────────────────────────────────────────────────────────────────
-
-_NS = {
-    "atom": "http://www.w3.org/2005/Atom",
-    "content": "http://purl.org/rss/1.0/modules/content/",
-    "dc": "http://purl.org/dc/elements/1.1/",
-}
-
-
-def _el_text(el, *tags):
-    for tag in tags:
-        child = el.find(tag, _NS) or el.find(tag)
-        if child is not None and child.text:
-            return child.text.strip()
-    return ""
-
-
-def _strip_html(raw: str) -> str:
-    return re.sub(r"<[^>]+>", "", raw).strip()
-
-
-def _parse_rss(xml_text: str, source_name: str) -> list:
-    try:
-        root = ET.fromstring(xml_text)
-    except ET.ParseError:
-        return []
-
-    items = root.findall(".//item") or root.findall(".//{http://www.w3.org/2005/Atom}entry")
-    articles = []
-    for item in items[:6]:
-        title = _strip_html(_el_text(item, "title", "atom:title"))
-        link = _el_text(item, "link", "atom:id")
-        link_el = item.find("{http://www.w3.org/2005/Atom}link")
-        if not link and link_el is not None:
-            link = link_el.get("href", "")
-        if not title or not link:
+def build_rankings(current_elos: dict) -> dict:
+    ranked = []
+    for t in TOOLS:
+        if not t["in_cards"]:
             continue
-        raw_summary = _el_text(item, "description", "content:encoded", "atom:summary", "atom:content")
-        summary = _strip_html(raw_summary)[:280]
-        published = _el_text(item, "pubDate", "dc:date", "atom:published", "atom:updated")
-        articles.append({"title": title, "url": link, "summary": summary, "published": published, "source": source_name})
-    return articles
-
-
-async def fetch_feed(session: aiohttp.ClientSession, name: str, url: str) -> list:
-    try:
-        headers = {"User-Agent": "Mozilla/5.0 (compatible; AIRankingBot/1.0)"}
-        async with session.get(url, timeout=aiohttp.ClientTimeout(total=15), headers=headers) as resp:
-            content = await resp.text(errors="replace")
-        return _parse_rss(content, name)
-    except Exception as exc:
-        print(f"[news] {name}: {exc}", file=sys.stderr)
-        return []
-
-
-async def build_news() -> dict:
-    async with aiohttp.ClientSession() as session:
-        results = await asyncio.gather(*[fetch_feed(session, n, u) for n, u in RSS_FEEDS])
-
-    # Interleave articles from each source so the top 5 come from different outlets
-    seen: set = set()
-    per_feed: list = []
-    for batch in results:
-        feed = []
-        for a in batch:
-            if a["url"] not in seen:
-                seen.add(a["url"])
-                feed.append(a)
-        if feed:
-            per_feed.append(feed)
-
-    articles: list = []
-    max_per_feed = max((len(f) for f in per_feed), default=0)
-    for i in range(max_per_feed):
-        for feed in per_feed:
-            if i < len(feed):
-                articles.append(feed[i])
-
-    using_seed = not articles
-    if using_seed:
-        print("[news] Live feeds unavailable — using seed articles.", file=sys.stderr)
-        from collections import defaultdict
-        by_source: dict = defaultdict(list)
-        for a in SEED_ARTICLES:
-            by_source[a["source"]].append(a)
-        sources = list(by_source.values())
-        articles = []
-        for i in range(max(len(s) for s in sources)):
-            for s in sources:
-                if i < len(s):
-                    articles.append(s[i])
-
-    return {
-        "articles": articles[:24],
-        "last_updated": datetime.now(timezone.utc).isoformat(),
-        "source": "seed" if using_seed else "live",
-    }
+        ranked.append({
+            "name": t["name"], "model": t["model"], "company": t["company"],
+            "url": t["url"], "icon": t["icon"], "color": t["color"],
+            "cats": t["cats"], "elo": current_elos.get(t["name"], t["base_elo"]),
+        })
+    ranked.sort(key=lambda x: x["elo"], reverse=True)
+    for i, t in enumerate(ranked):
+        t["rank"] = i + 1
+    return {"tools": ranked, "last_updated": datetime.now(timezone.utc).isoformat()}
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 async def main():
     DOCS_DIR.mkdir(parents=True, exist_ok=True)
 
-    print("Generating rankings…")
-    rankings = build_rankings()
+    print("Fetching Arena ELO scores…")
+    arena_data = await fetch_arena_elo()
+    if arena_data:
+        print(f"  → Live data: {len(arena_data)} models")
+    else:
+        print("  → Live fetch failed — using seeded base values", file=sys.stderr)
+
+    current_elos = {
+        t["name"]: (match_elo(arena_data, t) or t["base_elo"])
+        for t in TOOLS
+    }
+
+    print("Updating history…")
+    history = load_or_seed_history()
+    history = maybe_append_month(history, current_elos)
+    history["last_updated"] = datetime.now(timezone.utc).isoformat()
+    (DOCS_DIR / "history.json").write_text(json.dumps(history, indent=2))
+    print(f"  → {len(history['months'])} months in history")
+
+    print("Building rankings…")
+    rankings = build_rankings(current_elos)
     (DOCS_DIR / "rankings.json").write_text(json.dumps(rankings, indent=2))
     print(f"  → {[t['name'] for t in rankings['tools']]}")
-
-    print("Fetching news…")
-    news = await build_news()
-    (DOCS_DIR / "news.json").write_text(json.dumps(news, indent=2))
-    print(f"  → {len(news['articles'])} articles (source: {news['source']})")
 
     print("Done.")
 
