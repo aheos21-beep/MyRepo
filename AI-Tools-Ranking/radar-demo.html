@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Radar Chart Demo — AI Power Rankings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:     #08080f;
+      --bg2:    #10101e;
+      --card:   #14142a;
+      --border: rgba(255,255,255,0.08);
+      --text:   #e2e2f0;
+      --muted:  #888ab0;
+      --accent: #667eea;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      gap: 12px;
+    }
+
+    .page-title {
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 4px;
+    }
+
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea, #f093fb);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      width: 100%;
+      max-width: 700px;
+    }
+
+    .chart-wrap {
+      position: relative;
+      height: 420px;
+    }
+
+    /* Legend */
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 20px;
+      margin-top: 24px;
+      justify-content: center;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* Axis labels note */
+    .axes-note {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .axis-chip {
+      font-size: 0.72rem;
+      color: var(--muted);
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      padding: 3px 10px;
+    }
+
+    .back-link {
+      margin-top: 24px;
+      font-size: 0.8rem;
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .back-link:hover { opacity: 0.8; }
+  </style>
+</head>
+<body>
+
+  <p class="page-title">Preview — AI Power Rankings</p>
+  <h2 class="section-title">📡 AI Tools Capability Radar</h2>
+
+  <div class="card">
+    <div class="chart-wrap">
+      <canvas id="radar"></canvas>
+    </div>
+    <div class="legend" id="legend"></div>
+    <div class="axes-note">
+      <span class="axis-chip">🧠 Capability</span>
+      <span class="axis-chip">📈 Growth Rate</span>
+      <span class="axis-chip">👥 Adoption</span>
+      <span class="axis-chip">🔧 Versatility</span>
+      <span class="axis-chip">💰 Value</span>
+    </div>
+  </div>
+
+  <a class="back-link" href="../">← Back to rankings</a>
+
+  <script>
+    const TOOLS = [
+      {
+        name: 'Claude',
+        color: '#cc785c',
+        data: [97, 76, 33, 92, 85]
+      },
+      {
+        name: 'Perplexity AI',
+        color: '#20c997',
+        data: [88, 96, 8, 65, 92]
+      },
+      {
+        name: 'Gemini',
+        color: '#4285f4',
+        data: [92, 52, 83, 90, 80]
+      },
+      {
+        name: 'ChatGPT',
+        color: '#10a37f',
+        data: [95, 30, 100, 95, 78]
+      },
+      {
+        name: 'GitHub Copilot',
+        color: '#6e5494',
+        data: [90, 44, 28, 72, 88]
+      },
+    ];
+
+    // Build legend
+    const legendEl = document.getElementById('legend');
+    TOOLS.forEach(t => {
+      legendEl.innerHTML += `
+        <div class="legend-item">
+          <div class="legend-dot" style="background:${t.color}"></div>
+          ${t.name}
+        </div>`;
+    });
+
+    // Build chart
+    const ctx = document.getElementById('radar').getContext('2d');
+    new Chart(ctx, {
+      type: 'radar',
+      data: {
+        labels: ['Capability', 'Growth Rate', 'Adoption', 'Versatility', 'Value'],
+        datasets: TOOLS.map(t => ({
+          label: t.name,
+          data: t.data,
+          borderColor: t.color,
+          backgroundColor: t.color + '18',
+          borderWidth: 2,
+          pointBackgroundColor: t.color,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+        }))
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#14142a',
+            borderColor: 'rgba(255,255,255,0.1)',
+            borderWidth: 1,
+            titleColor: '#e2e2f0',
+            bodyColor: '#888ab0',
+            padding: 12,
+          }
+        },
+        scales: {
+          r: {
+            min: 0,
+            max: 100,
+            ticks: {
+              stepSize: 25,
+              color: '#888ab0',
+              backdropColor: 'transparent',
+              font: { size: 10, family: 'Inter' }
+            },
+            grid: { color: 'rgba(255,255,255,0.06)' },
+            angleLines: { color: 'rgba(255,255,255,0.06)' },
+            pointLabels: {
+              color: '#888ab0',
+              font: { size: 12, family: 'Inter', weight: '600' }
+            }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
