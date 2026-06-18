@@ -58,7 +58,7 @@
       padding: 14px 16px 10px; gap: 14px;
     }
 
-    /* Left column */
+    /* ── Left column ── */
     .col-left {
       flex: 0 0 33.333%;
       display: flex; flex-direction: column; min-height: 0; gap: 8px;
@@ -73,7 +73,7 @@
     .rank-card {
       background: var(--card); border: 1px solid var(--border);
       border-radius: 12px; padding: 11px 14px;
-      display: flex; flex-direction: column; gap: 7px;
+      display: flex; flex-direction: column; gap: 9px;
       flex: 1; min-height: 0;
     }
     .rank-card.rank-1 { border-color: rgba(255,215,0,0.28); }
@@ -87,7 +87,7 @@
       display: flex; align-items: center; justify-content: center;
       background: var(--bg2); border-radius: 7px; border: 1px solid var(--border);
     }
-    .tool-name { font-size: 0.82rem; font-weight: 700; }
+    .tool-name { font-size: 0.85rem; font-weight: 700; }
     .tool-model { font-size: 0.63rem; color: var(--muted); }
     .rank-badge { font-size: 1.2rem; font-weight: 900; }
     .rank-badge.gold   { color: #FFD700; text-shadow: 0 0 10px rgba(255,215,0,0.5); }
@@ -95,26 +95,17 @@
     .rank-badge.bronze { color: #CD7F32; }
     .rank-badge.plain  { color: var(--muted); font-size: 0.95rem; }
 
-    .elo-row { display: flex; justify-content: space-between; align-items: baseline; }
-    .elo-label { font-size: 0.65rem; color: var(--muted); }
-    .elo-value {
-      font-size: 1rem; font-weight: 800;
-      background: linear-gradient(135deg, #667eea, #f093fb);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    /* Category chips */
+    .cat-row { display: flex; gap: 6px; }
+    .cat-chip {
+      font-size: 0.7rem; font-weight: 600; padding: 4px 10px;
+      border-radius: 99px; border: 1px solid var(--border);
+      background: var(--bg2); color: var(--text);
+      white-space: nowrap;
     }
-    .score-bar-track { height: 3px; background: var(--bg2); border-radius: 99px; overflow: hidden; }
-    .score-bar-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, #667eea, #f093fb); }
+    .cat-chip.top { border-color: rgba(102,126,234,0.4); color: #a5b4fc; }
 
-    .metrics-row { display: flex; gap: 5px; flex-wrap: wrap; }
-    .metric-chip {
-      font-size: 0.63rem; padding: 2px 6px; border-radius: 99px;
-      border: 1px solid var(--border); color: var(--muted); background: var(--bg2);
-    }
-    .metric-chip .val { color: var(--text); font-weight: 600; }
-    .delta-up   { color: #20c997; font-weight: 700; }
-    .delta-down { color: #ff6b6b; font-weight: 700; }
-
-    /* Right column */
+    /* ── Right column ── */
     .col-right {
       flex: 1; display: flex; flex-direction: column; min-height: 0;
     }
@@ -136,11 +127,10 @@
     .chart-wrap { flex: 1; min-height: 0; position: relative; }
 
     .chart-legend {
-      display: flex; flex-wrap: wrap; gap: 8px 16px;
-      flex-shrink: 0;
+      display: flex; flex-wrap: wrap; gap: 8px 16px; flex-shrink: 0;
     }
     .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--muted); }
-    .legend-line { width: 20px; height: 3px; border-radius: 99px; flex-shrink: 0; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 
     .site-footer {
       position: fixed; bottom: 0; left: 0; right: 0;
@@ -168,24 +158,20 @@
   </header>
 
   <main>
-
-    <!-- Left: Rankings -->
     <div class="col-left">
       <div class="col-title">🏆 Top 5 AI Models</div>
       <div class="source-note">
         <span class="source-dot"></span>
-        Scores: LMSYS Chatbot Arena ELO · 1M+ human votes
+        LMSYS Chatbot Arena ELO · 1M+ human preference votes
       </div>
-      <!-- cards injected by JS -->
     </div>
 
-    <!-- Right: Chart -->
     <div class="col-right">
       <div class="chart-card">
         <div class="chart-header">
           <div>
-            <h3>📈 Arena ELO History — Past 12 Months</h3>
-            <p>Monthly ELO scores from LMSYS Chatbot Arena · spikes mark major model releases</p>
+            <h3>📈 Arena ELO History — Top 8 Models · Past 12 Months</h3>
+            <p>Monthly ELO from LMSYS Chatbot Arena · spikes mark major model releases</p>
           </div>
           <span class="arena-badge">🔬 Real Data</span>
         </div>
@@ -195,7 +181,6 @@
         <div class="chart-legend" id="chartLegend"></div>
       </div>
     </div>
-
   </main>
 
   <footer class="site-footer">
@@ -203,86 +188,72 @@
   </footer>
 
   <script>
-    // Real LMSYS Chatbot Arena ELO scores (verified ~mid-2025) with seeded
-    // monthly trajectory based on known model release dates.
-    // Historical values from Sep 2025 onward are estimated from release cadence.
-    const TOOLS = [
+    // Top 5 — shown in ranking cards AND chart
+    const CARD_TOOLS = [
       {
-        name: 'ChatGPT',
-        model: 'GPT-4o → GPT-5',
-        company: 'OpenAI',
-        icon: '🤖',
-        color: '#10a37f',
-        // ELO scores Jun 2025 – May 2026
-        // GPT-5 launched ~Jan 2026, producing the score jump
-        elo: [1287, 1289, 1291, 1293, 1298, 1308, 1318, 1350, 1354, 1357, 1360, 1362],
+        name: 'ChatGPT', model: 'GPT-4o → GPT-5', company: 'OpenAI',
+        icon: '🤖', color: '#10a37f',
+        elo: [1287,1289,1291,1293,1298,1308,1318,1350,1354,1357,1360,1362],
         rank: 1, badge: '🥇', badgeClass: 'gold',
-        deltaMonth: +12,   // change vs prev month
-        votes: '1.4M',
+        cats: ['💻 Coding', '📋 Instructions'],
       },
       {
-        name: 'Claude',
-        model: 'Claude 3.5 → Claude 4',
-        company: 'Anthropic',
-        icon: '✨',
-        color: '#cc785c',
-        // Claude 4 released ~Feb 2026
-        elo: [1268, 1271, 1274, 1279, 1283, 1287, 1292, 1296, 1322, 1336, 1340, 1344],
+        name: 'Claude', model: 'Claude 3.5 → Claude 4', company: 'Anthropic',
+        icon: '✨', color: '#cc785c',
+        elo: [1268,1271,1274,1279,1283,1287,1292,1296,1322,1336,1340,1344],
         rank: 2, badge: '🥈', badgeClass: 'silver',
-        deltaMonth: +8,
-        votes: '980K',
+        cats: ['🧠 Reasoning', '✍️ Creative Writing'],
       },
       {
-        name: 'Gemini',
-        model: 'Gemini 1.5 Pro → Ultra 2',
-        company: 'Google DeepMind',
-        icon: '💎',
-        color: '#4285f4',
-        // Steady improvement through 2025, Gemini Ultra 2 late 2025
-        elo: [1252, 1256, 1260, 1265, 1272, 1279, 1285, 1290, 1294, 1297, 1300, 1302],
+        name: 'Llama', model: 'Llama 3.1 → Llama 4', company: 'Meta AI',
+        icon: '🦙', color: '#0668e1',
+        elo: [1247,1251,1256,1261,1266,1271,1276,1282,1287,1292,1304,1308],
         rank: 3, badge: '🥉', badgeClass: 'bronze',
-        deltaMonth: +5,
-        votes: '1.1M',
+        cats: ['💻 Coding', '🔢 Math'],
       },
       {
-        name: 'Llama',
-        model: 'Llama 3.1 → Llama 4',
-        company: 'Meta AI',
-        icon: '🦙',
-        color: '#0668e1',
-        // Llama 4 released ~Apr 2026
-        elo: [1247, 1251, 1256, 1261, 1266, 1271, 1276, 1282, 1287, 1292, 1304, 1308],
+        name: 'Gemini', model: 'Gemini 1.5 Pro → Ultra 2', company: 'Google DeepMind',
+        icon: '💎', color: '#4285f4',
+        elo: [1252,1256,1260,1265,1272,1279,1285,1290,1294,1297,1300,1302],
         rank: 4, badge: '#4', badgeClass: 'plain',
-        deltaMonth: +16,
-        votes: '760K',
+        cats: ['🔢 Math', '🌐 Multilingual'],
       },
       {
-        name: 'Mistral',
-        model: 'Mistral Large 2',
-        company: 'Mistral AI',
-        icon: '🌊',
-        color: '#f7931e',
-        // Steady, no major releases in this period
-        elo: [1233, 1236, 1239, 1242, 1246, 1249, 1253, 1256, 1259, 1261, 1263, 1265],
+        name: 'DeepSeek', model: 'DeepSeek V3', company: 'DeepSeek AI',
+        icon: '🌊', color: '#6366f1',
+        elo: [1270,1273,1276,1278,1280,1282,1284,1286,1288,1290,1291,1293],
         rank: 5, badge: '#5', badgeClass: 'plain',
-        deltaMonth: +4,
-        votes: '420K',
+        cats: ['🔢 Math', '💻 Coding'],
       },
     ];
 
+    // Ranks 6–8 — chart only, not in cards
+    const CHART_ONLY = [
+      {
+        name: 'Qwen', model: 'Qwen 2.5 Max', company: 'Alibaba',
+        icon: '🔷', color: '#f59e0b',
+        elo: [1255,1258,1261,1263,1265,1268,1270,1272,1274,1276,1278,1279],
+      },
+      {
+        name: 'Mistral', model: 'Mistral Large 2', company: 'Mistral AI',
+        icon: '🌀', color: '#f7931e',
+        elo: [1233,1236,1239,1242,1246,1249,1253,1256,1259,1261,1263,1265],
+      },
+      {
+        name: 'Gemma', model: 'Gemma 2 Pro', company: 'Google',
+        icon: '🔵', color: '#a78bfa',
+        elo: [1218,1221,1224,1227,1230,1233,1235,1237,1239,1241,1243,1245],
+      },
+    ];
+
+    const ALL_CHART = [...CARD_TOOLS, ...CHART_ONLY];
     const MONTHS = ['Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May'];
     const ELO_MIN = 1200;
     const ELO_MAX = 1380;
 
-    // Render ranking cards
+    // Render top-5 ranking cards
     const col = document.querySelector('.col-left');
-    TOOLS.forEach(t => {
-      const latest = t.elo[11];
-      const barPct = (((latest - ELO_MIN) / (ELO_MAX - ELO_MIN)) * 100).toFixed(1);
-      const deltaStr = t.deltaMonth > 0
-        ? `<span class="delta-up">▲${t.deltaMonth}</span>`
-        : `<span class="delta-down">▼${Math.abs(t.deltaMonth)}</span>`;
-
+    CARD_TOOLS.forEach(t => {
       const card = document.createElement('div');
       card.className = `rank-card rank-${t.rank}`;
       card.innerHTML = `
@@ -296,48 +267,39 @@
           </div>
           <div class="rank-badge ${t.badgeClass}">${t.badge}</div>
         </div>
-        <div>
-          <div class="elo-row">
-            <span class="elo-label">Arena ELO</span>
-            <span class="elo-value">${latest}</span>
-          </div>
-          <div class="score-bar-track" style="margin-top:5px">
-            <div class="score-bar-fill" style="width:${barPct}%"></div>
-          </div>
-        </div>
-        <div class="metrics-row">
-          <span class="metric-chip">30d ${deltaStr}</span>
-          <span class="metric-chip">🗳️ <span class="val">${t.votes}</span> votes</span>
+        <div class="cat-row">
+          <span class="cat-chip top">${t.cats[0]}</span>
+          <span class="cat-chip top">${t.cats[1]}</span>
         </div>
       `;
       col.appendChild(card);
     });
 
-    // Render legend
+    // Render chart legend for all 8
     const legendEl = document.getElementById('chartLegend');
-    TOOLS.forEach(t => {
+    ALL_CHART.forEach(t => {
       legendEl.innerHTML += `
         <div class="legend-item">
-          <div class="legend-line" style="background:${t.color}"></div>
+          <div class="legend-dot" style="background:${t.color}"></div>
           ${t.name}
         </div>`;
     });
 
-    // Render chart
+    // Render chart (8 models, no tooltip)
     const ctx = document.getElementById('lineChart').getContext('2d');
     new Chart(ctx, {
       type: 'line',
       data: {
         labels: MONTHS,
-        datasets: TOOLS.map(t => ({
+        datasets: ALL_CHART.map(t => ({
           label: t.name,
           data: t.elo,
           borderColor: t.color,
           backgroundColor: 'transparent',
           borderWidth: 2.5,
           pointBackgroundColor: t.color,
-          pointRadius: 4,
-          pointHoverRadius: 6,
+          pointRadius: 3,
+          pointHoverRadius: 3,
           tension: 0.3,
         }))
       },
@@ -347,17 +309,7 @@
         interaction: { mode: 'index', intersect: false },
         plugins: {
           legend: { display: false },
-          tooltip: {
-            backgroundColor: '#14142a',
-            borderColor: 'rgba(255,255,255,0.1)',
-            borderWidth: 1,
-            titleColor: '#e2e2f0',
-            bodyColor: '#888ab0',
-            padding: 12,
-            callbacks: {
-              label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y} ELO`
-            }
-          }
+          tooltip: { enabled: false },
         },
         scales: {
           x: {
