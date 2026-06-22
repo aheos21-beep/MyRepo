@@ -34,8 +34,14 @@ fi
 cd "${REPO}" || { echo "[$(timestamp)] ERROR: cannot cd to repo." >> "${LOG}"; exit 1; }
 rm -f .git/index.lock .git/HEAD.lock
 chmod +x push.sh
-./push.sh >> "${LOG}" 2>&1
+
+# Capture push.sh output to a temp file so watcher.log isn't modified concurrently
+# (concurrent writes cause "unstaged changes" when push.sh later runs git pull --rebase)
+PUSH_TMP=$(mktemp /tmp/assetwatcher_push.XXXXXX)
+./push.sh > "${PUSH_TMP}" 2>&1
 PUSH_EXIT=$?
+cat "${PUSH_TMP}" >> "${LOG}"
+rm -f "${PUSH_TMP}"
 
 if [ ${PUSH_EXIT} -eq 0 ]; then
     COMMIT=$(git log -1 --format="%H %s" 2>/dev/null)
