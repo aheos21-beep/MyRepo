@@ -4,7 +4,7 @@
 
 REPO="/Users/christosmylonas/Documents/MyRepo"
 SOURCE="/Users/christosmylonas/Library/Mobile Documents/com~apple~CloudDocs/Claude Output/Asset Classes.html"
-DEST="${REPO}/Asset Classes.html"
+DEST="${REPO}/Asset-Classes/index.html"
 LOG="${REPO}/watcher.log"
 
 timestamp() { date "+%Y-%m-%d %H:%M:%S"; }
