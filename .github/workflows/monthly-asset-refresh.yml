@@ -1,0 +1,35 @@
+name: Monthly Asset Projections Refresh
+
+on:
+  schedule:
+    - cron: '0 8 1 * *'  # 8am UTC on the 1st of each month
+  workflow_dispatch:      # Allow manual trigger from GitHub Actions tab
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install anthropic
+
+      - name: Update asset projections
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python Asset-Classes/update_data.py
+
+      - name: Commit updated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Asset-Classes/data.json
+          git diff --staged --quiet || git commit -m "chore: monthly asset projection refresh $(date +%Y-%m-%d)"
+          git push
