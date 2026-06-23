@@ -1,17 +1,25 @@
 {
-  "updated": "2026-06-01",
+  "updated": "2026-06-23",
   "assets": [
     {
       "id": "cad-div",
       "name": "CAD Dividend Stocks",
       "cat": "Equity",
       "color": "#58a6ff",
-      "r": [5.0, 5.5, 5.5],
-      "d": [5.0, 5.5, 5.5],
+      "r": [
+        5.5,
+        5.5,
+        5.5
+      ],
+      "d": [
+        5.5,
+        5.5,
+        5.5
+      ],
       "why": [
-        "RBC pessimistic Jun 2026: stretched valuations post-35% 2025 rally; Scotiabank double-digit EPS growth priced in; BoC at 2.25%; dividend yield 4-5% dominates total return; Dogs of TSX 5-8%.",
-        "Gradual trade clarity expected; bank dividend growth 3-5%; BoC hold stabilizes credit; modest multiple recovery; domestic consumption drag persists; payout growth supports income floor.",
-        "Normalization as tariff risks fade; dividend compounding drives returns; ENB/BNS/TRP dividend yield 5-7% sustains income floor into 2028."
+        "RBC/Scotiabank Jun 2026: TSX consolidating after 2025 rally; BoC at 2.25% supports rate-sensitive dividend payers; dividend yield 4-5% anchors total return; Dogs of TSX screen 5-8%; modest multiple normalization.",
+        "BoC hold stabilizes financing costs; bank dividend growth 3-5%; ENB/TRP/BNS payout growth sustains income floor; trade clarity improving; domestic consumption remains a drag on capital appreciation.",
+        "Tariff risk fades into 2028; dividend compounding drives returns; pipeline/utility yields 5-7% provide reliable income floor; limited multiple expansion assumed at stretched valuations."
       ]
     },
     {
@@ -19,12 +27,20 @@
       "name": "US Dividend Stocks",
       "cat": "Equity",
       "color": "#3fb950",
-      "r": [5.0, 5.5, 5.0],
-      "d": [5.0, 5.5, 5.0],
+      "r": [
+        5.5,
+        5.5,
+        5.0
+      ],
+      "d": [
+        5.5,
+        5.5,
+        5.0
+      ],
       "why": [
-        "BofA pessimistic Jun 2026: S&P 7,100 target (+3.7%); dividend stocks add ~2% yield = ~5-6% total return; narrow market breadth risk; most conservative major Wall St forecast.",
-        "BofA: earnings growth moderates; dividend payers outperform in slower growth; ~21x forward P/E stretched; yield ~2% provides floor; moderate upside into 2027.",
-        "Dividend growth normalizes; yield provides income floor; growth moderates to sustainable pace; ~19-21x forward P/E range; stable income into 2028."
+        "BofA/Morgan Stanley Jun 2026: S&P 500 targets ~7,200-7,400; dividend payers add ~2% yield for ~5-6% total return; narrow breadth keeps defensives attractive; conservative income tilt.",
+        "Earnings growth moderates; dividend aristocrats outperform in slower-growth regime; ~21x forward P/E stretched; ~2% yield provides floor; modest upside into 2027.",
+        "Dividend growth normalizes; income floor dominates; ~19-21x forward P/E range; stable total return into 2028 as growth moderates to sustainable pace."
       ]
     },
     {
@@ -32,12 +48,20 @@
       "name": "Gold",
       "cat": "Commodity",
       "color": "#f0c040",
-      "r": [8.0, 5.0, 3.0],
-      "d": [8.0, 5.0, 3.0],
+      "r": [
+        7.0,
+        4.0,
+        3.0
+      ],
+      "d": [
+        7.0,
+        4.0,
+        3.0
+      ],
       "why": [
-        "WGC pessimistic Jun 2026: mild cooling scenario +5-15%; JPMorgan $5,055 Q4 2026 target; Goldman $4,900 yr-end; central bank buying 585 tonnes/quarter sustains demand floor.",
-        "WGC: elevated correction risk post-peak; USD strength weighs; profit-taking materializes; Goldman $4,900 full-yr limits further upside; consolidation follows record run.",
-        "Bull-run consolidation 2028; equilibrium $4,000-$4,500 as macro uncertainty fades; central bank buying moderates; EM central bank bid provides structural support floor."
+        "WGC/JPMorgan/Goldman Jun 2026: JPM ~$5,055 and Goldman ~$4,900 year-end targets; central-bank buying ~580 tonnes/quarter sustains demand floor; mild further upside after record run.",
+        "WGC: elevated correction risk post-peak; USD stabilization and profit-taking cap gains; consolidation around $4,800-$5,000; structural EM central-bank bid provides support.",
+        "Bull-run consolidation 2028; equilibrium ~$4,000-$4,500 as macro uncertainty eases; central-bank accumulation moderates but provides structural floor."
       ]
     },
     {
@@ -45,12 +69,20 @@
       "name": "Bitcoin (BTC)",
       "cat": "Crypto",
       "color": "#f97316",
-      "r": [25.0, 18.0, 12.0],
-      "d": [25.0, 18.0, 12.0],
+      "r": [
+        22.0,
+        16.0,
+        12.0
+      ],
+      "d": [
+        22.0,
+        16.0,
+        12.0
+      ],
       "why": [
-        "Consensus Jun 2026: Bitwise $200K, JPMorgan $170K yr-end targets; ETF demand absorbs new supply; Standard Chartered recovery scenario; middle consensus ~+25% from current levels.",
-        "Post-cycle consolidation; Bitwise $200K target into 2027; ETF institutional flows sustain bid; regulatory clarity improving globally; corporate treasury accumulation broadens.",
-        "Maturing asset class; volatility compressing; returns normalizing toward equities; structural demand via ETFs and corporate treasuries intact; halving cycle tailwind fading."
+        "Bitwise/Standard Chartered/JPMorgan Jun 2026: Bitwise ~$200K, JPM ~$170K year-end targets; ETF demand absorbs new supply; corporate treasury accumulation broadens; ~+20% consensus.",
+        "Post-halving consolidation; sustained ETF institutional flows; improving global regulatory clarity; Bitwise $200K+ into 2027; volatility gradually compressing.",
+        "Maturing asset class 2028; returns normalizing toward equities-plus; structural ETF and treasury demand intact; halving-cycle tailwind fading."
       ]
     },
     {
@@ -58,12 +90,20 @@
       "name": "Ethereum (ETH)",
       "cat": "Crypto",
       "color": "#a371f7",
-      "r": [35.0, 20.0, 15.0],
-      "d": [35.0, 20.0, 15.0],
+      "r": [
+        30.0,
+        18.0,
+        14.0
+      ],
+      "d": [
+        30.0,
+        18.0,
+        14.0
+      ],
       "why": [
-        "Standard Chartered Jun 2026: ETH target $7,500; staking yield ~4% income floor; L2 ecosystem growth; spot ETF inflows support; Bitwise expects ETH all-time highs in 2026.",
-        "L2 ecosystem growth accelerating; Bitwise: ETH all-time highs 2026-27; staking yield ~4% attractive; ETH supply tightening from staking lock-up; institutional adoption deepens.",
-        "Returns normalizing 2028; L2 competition compresses upside; staking yield ~4% floor; ecosystem expansion sustains structural bid; ETH/BTC ratio gradual recovery expected."
+        "Standard Chartered/Bitwise Jun 2026: ETH target ~$7,500; staking yield ~4% income floor; spot-ETF inflows supportive; L2 ecosystem growth accelerating; new highs expected 2026.",
+        "L2 scaling deepens; staking lock-up tightens float; institutional adoption broadens; ~4% staking yield attractive; Bitwise sees ETH/BTC ratio recovery into 2027.",
+        "Returns normalizing 2028; L2 competition compresses upside; staking yield ~4% floor; ecosystem expansion sustains structural bid."
       ]
     },
     {
@@ -71,12 +111,20 @@
       "name": "Canadian REITs",
       "cat": "Real Estate",
       "color": "#06b6d4",
-      "r": [6.5, 6.0, 6.0],
-      "d": [6.5, 6.0, 6.0],
+      "r": [
+        6.5,
+        6.0,
+        6.0
+      ],
+      "d": [
+        6.5,
+        6.0,
+        6.0
+      ],
       "why": [
-        "RBC pessimistic Jun 2026: FFOPU growth 4-6%; 7% NAV increase + 5% dividend = high single-digit total return; BoC at 2.25% stabilizes financing costs; no multiple expansion assumed.",
-        "BoC hold stabilizes REIT financing costs; near-record seniors housing occupancy; industrials solid; distribution growth resumes across sub-sectors; modest NAV recovery into 2027.",
-        "Income-driven returns stabilize 2028; distribution growth across sub-sectors; office headwinds priced; cap rate normalization benefits quality REITs; distribution yield floor ~5%."
+        "RBC Capital Markets Jun 2026: FFOPU growth 4-6%; ~5% distribution + modest NAV recovery = high-single-digit return; BoC at 2.25% stabilizes financing; minimal multiple expansion assumed.",
+        "BoC hold steadies REIT financing costs; seniors housing occupancy near record; industrials solid; distribution growth resumes across sub-sectors into 2027.",
+        "Income-driven returns stabilize 2028; office headwinds priced; cap-rate normalization benefits quality REITs; distribution yield floor ~5%."
       ]
     },
     {
@@ -84,12 +132,20 @@
       "name": "Canadian Real Estate",
       "cat": "Real Estate",
       "color": "#ec4899",
-      "r": [1.5, 2.0, 2.5],
-      "d": [1.5, 2.0, 2.5],
+      "r": [
+        2.0,
+        2.5,
+        3.0
+      ],
+      "d": [
+        2.0,
+        2.5,
+        3.0
+      ],
       "why": [
-        "CREA pessimistic Jun 2026: national avg price +1.5%; high inventory; Ontario/BC virtually flat; reduced immigration weighs on demand; large mortgage renewals at higher rates.",
-        "CREA: +2% in 2027; pent-up demand releases as affordability improves; Prairie markets outperform; condo overhang in Vancouver/Toronto persists; BoC stability helps buyers.",
-        "Modest recovery 2028; supply-demand rebalancing; population growth eventually underpins prices; Ontario/Vancouver condos remain headwind; rental supply overhang fades gradually."
+        "CREA Jun 2026: national avg price ~+2% as sales stabilize; high inventory in Ontario/BC; BoC at 2.25% improves affordability; mortgage renewals at higher rates still a drag.",
+        "CREA: ~+2.5% in 2027; pent-up demand releases as rates hold low; Prairie/Alberta markets outperform; Vancouver/Toronto condo overhang persists.",
+        "Modest recovery 2028; supply-demand rebalancing; population growth underpins prices; condo oversupply fades gradually; affordability slowly improves."
       ]
     },
     {
@@ -97,12 +153,20 @@
       "name": "US Real Estate",
       "cat": "Real Estate",
       "color": "#e05c5c",
-      "r": [8.0, 8.0, 7.0],
-      "d": [8.0, 8.0, 7.0],
+      "r": [
+        8.0,
+        7.5,
+        7.0
+      ],
+      "d": [
+        8.0,
+        7.5,
+        7.0
+      ],
       "why": [
-        "CBRE consensus Jun 2026: CRE investment +16% to $562B; cap rate compression 5-15bps; data centre+industrial+multifamily lead; 75% of investors plan to increase allocation.",
-        "CBRE: 10-yr Treasury settles ~3.5%; cap rate compression benefits quality assets; office challenges fully priced; healthcare+living sectors outperform; abundant liquidity supports.",
-        "Continued recovery 2028; data centre+senior housing structural demand; selective office recovery in gateway cities; income-driven returns dominate; cap rate normalization broadens."
+        "CBRE Jun 2026: CRE investment volumes +15-16%; cap-rate compression 5-15bps; data centre, industrial and multifamily lead; majority of investors raising allocations.",
+        "CBRE: 10-yr Treasury settling ~3.5%; cap-rate compression aids quality assets; office stress largely priced; living and healthcare sectors outperform; ample liquidity.",
+        "Continued recovery 2028; data centre and senior housing structural demand; selective gateway office recovery; income-driven returns dominate."
       ]
     },
     {
@@ -110,12 +174,20 @@
       "name": "Canadian Bonds",
       "cat": "Fixed Income",
       "color": "#84cc16",
-      "r": [3.5, 3.0, 3.5],
-      "d": [3.5, 3.0, 3.5],
+      "r": [
+        3.5,
+        3.5,
+        3.5
+      ],
+      "d": [
+        3.5,
+        3.5,
+        3.5
+      ],
       "why": [
-        "RBC pessimistic Jun 2026: BoC at 2.25% terminal rate; 1-yr GIC 3.60%, 5-yr 4.05%; steeper yield curve; coupon income ~3.5% partially offset by duration risk on longer bonds.",
-        "RBC: steeper yield curve improves duration risk/reward; BoC hold confirmed; coupon income dominates; government bonds preferred over corporate credit; modest price drag persists.",
-        "Rates stabilize at higher neutral 2028; 5-yr GoC yields settle ~3.25-3.5%; duration risk fades; income dominates; government bonds preferred; yield curve normalization complete."
+        "RBC Jun 2026: BoC at 2.25% terminal; 1-yr GIC ~3.60%, 5-yr ~4.05%; steeper curve improves duration risk/reward; coupon income ~3.5% dominates total return.",
+        "RBC: BoC hold confirmed; coupon income leads; government bonds preferred over corporate credit; modest price drag on longer duration persists.",
+        "Rates settle at higher neutral 2028; 5-yr GoC yields ~3.25-3.5%; duration risk fades; income dominates; curve normalization complete."
       ]
     },
     {
@@ -123,12 +195,20 @@
       "name": "Canadian HY Bonds",
       "cat": "Fixed Income",
       "color": "#a78bfa",
-      "r": [4.5, 4.0, 4.0],
-      "d": [4.5, 4.0, 4.0],
+      "r": [
+        4.5,
+        4.0,
+        4.0
+      ],
+      "d": [
+        4.5,
+        4.0,
+        4.0
+      ],
       "why": [
-        "RBC pessimistic Jun 2026: HY spreads near historic lows ~270bps OAS; all-in yield ~5-6% attractive; spread widening risk elevated; tariff-driven slowdown creates credit stress.",
-        "RBC cautious: credit cycle matures; defaults rise modestly as BoC normalizes; leveraged issuers face refinancing pressure; spread compression stalls at historically tight levels.",
-        "Stabilization 2028; carry dominates total return; selective high-quality HY outperforms; no meaningful tightening expected; income floor provides buffer in volatile markets."
+        "RBC Jun 2026: HY spreads near historic lows ~270bps OAS; all-in yield ~5-6% attractive; spread-widening risk elevated; carry-driven return with limited tightening.",
+        "RBC cautious: credit cycle matures; modest default uptick as BoC normalizes; leveraged issuers face refinancing pressure; spread compression stalls.",
+        "Stabilization 2028; carry dominates total return; selective high-quality HY outperforms; income floor buffers volatility."
       ]
     },
     {
@@ -136,12 +216,20 @@
       "name": "US Tech Stocks",
       "cat": "Equity",
       "color": "#0ea5e9",
-      "r": [12.0, 10.0, 9.0],
-      "d": [12.0, 10.0, 9.0],
+      "r": [
+        11.0,
+        10.0,
+        9.0
+      ],
+      "d": [
+        11.0,
+        10.0,
+        9.0
+      ],
       "why": [
-        "Goldman/MS consensus Jun 2026: Goldman S&P 8,000 (+17%), MS 8,300 mid-2027 (+14%); AI capex $670B drives 40% of EPS growth; EPS $340 +24%; tech leads narrow-breadth market.",
-        "Goldman EPS $342 in 2027 +10%; AI monetization ROI improving; enterprise adoption deepens; ~21x forward P/E supported; AI infrastructure spend sustains tech premium.",
-        "Growth normalizing; AI structural tailwind persists from buildout to monetization; ~19-21x P/E range; multiple compression possible but EPS growth sustains returns."
+        "Goldman/Morgan Stanley Jun 2026: Goldman S&P ~8,000, MS ~8,300 mid-2027; AI capex ~$670B drives ~40% of EPS growth; S&P EPS ~$340 +24%; tech leads narrow market.",
+        "Goldman 2027 EPS ~$342 (+10%); AI monetization ROI improving; enterprise adoption deepens; ~21x forward P/E supported by infrastructure spend.",
+        "Growth normalizing 2028; AI tailwind shifts from buildout to monetization; ~19-21x P/E range; EPS growth sustains returns despite compression risk."
       ]
     },
     {
@@ -149,12 +237,20 @@
       "name": "HISA (Canada)",
       "cat": "Cash",
       "color": "#94a3b8",
-      "r": [3.6, 3.4, 3.3],
-      "d": [3.6, 3.4, 3.3],
+      "r": [
+        3.5,
+        3.4,
+        3.3
+      ],
+      "d": [
+        3.5,
+        3.4,
+        3.3
+      ],
       "why": [
-        "BoC confirmed at 2.25% Jun 2026; best 1-yr GIC ~3.60%; 5-yr GIC ~4.05%; HISA tracks overnight rate; BoC likely done easing; capital preservation with reliable income.",
-        "GIC rates stable with BoC hold; best 5-yr GIC ~4.05%; HISA income modest but reliable; gradual normalization possible 2027; income floor improving slowly from 2025 lows.",
-        "GIC rates track BoC path toward gradual normalization; HISA remains low-risk income anchor; capital preservation with modest income growth; stable reliable return through 2028."
+        "BoC at 2.25% Jun 2026; best 1-yr GIC ~3.60%, 5-yr ~4.05%; HISA tracks overnight rate; easing cycle likely complete; capital preservation with reliable income.",
+        "GIC rates stable with BoC hold; HISA income modest but reliable; gradual normalization possible 2027; income floor steadier than 2025 lows.",
+        "HISA remains low-risk income anchor through 2028; rates track BoC neutral path; capital preservation with modest, stable return."
       ]
     },
     {
@@ -162,12 +258,20 @@
       "name": "Intl Dividend Stocks",
       "cat": "Equity",
       "color": "#fbbf24",
-      "r": [7.0, 7.0, 6.0],
-      "d": [7.0, 7.0, 6.0],
+      "r": [
+        7.0,
+        6.5,
+        6.0
+      ],
+      "d": [
+        7.0,
+        6.5,
+        6.0
+      ],
       "why": [
-        "Consensus Jun 2026: EAFE benefiting from USD moderation; European/Japan dividend yield ~3-4%; valuation discount to S&P 500 attractive; moderate economic recovery underway.",
-        "EAFE earnings momentum building; valuation discount narrows gradually; dividend yield ~3-4% provides floor; global growth improving with trade clarity easing headwinds.",
-        "Structural underperformance vs North America persists; geopolitical risk premium elevated; dividend income primary return 2028; EAFE discount provides value buffer."
+        "Jun 2026 consensus: EAFE benefiting from USD moderation; European/Japan dividend yield ~3-4%; valuation discount to S&P 500 attractive; moderate recovery underway.",
+        "EAFE earnings momentum builds; valuation gap narrows gradually; ~3-4% dividend yield floor; global growth improving as trade headwinds ease.",
+        "Structural underperformance vs North America persists 2028; dividend income the primary return driver; EAFE discount provides value buffer."
       ]
     },
     {
@@ -175,12 +279,20 @@
       "name": "Emerging Markets",
       "cat": "Equity",
       "color": "#fb7185",
-      "r": [9.0, 8.0, 7.0],
-      "d": [9.0, 8.0, 7.0],
+      "r": [
+        9.0,
+        8.0,
+        7.0
+      ],
+      "d": [
+        9.0,
+        8.0,
+        7.0
+      ],
       "why": [
-        "Consensus Jun 2026: EM offers relative value; India/SEA domestic demand rising; Korea/Taiwan AI supply chain beneficiaries; China recovery uncertain; 7-10% blended return expected.",
-        "EM GDP outpaces DM by 2-3%; Asia ex-Japan growth strong; supply-chain diversification gains; EM discount to DM narrows on earnings re-rating; moderate sustained upside.",
-        "Returns moderating 2028 as EM valuation gap vs DM closes; China policy uncertainty key risk; dividend yield ~3% provides partial income floor; geopolitical risks linger."
+        "Jun 2026 consensus: EM offers relative value; India/SEA domestic demand strong; Korea/Taiwan AI supply-chain beneficiaries; China recovery uncertain; ~7-10% blended return.",
+        "EM GDP outpaces DM by 2-3%; Asia ex-Japan growth robust; supply-chain diversification gains; EM-to-DM discount narrows on earnings re-rating.",
+        "Returns moderate 2028 as valuation gap closes; China policy uncertainty the key risk; ~3% dividend yield provides partial income floor."
       ]
     },
     {
@@ -188,12 +300,20 @@
       "name": "Silver",
       "cat": "Commodity",
       "color": "#cbd5e1",
-      "r": [20.0, 10.0, 6.0],
-      "d": [20.0, 10.0, 6.0],
+      "r": [
+        18.0,
+        9.0,
+        6.0
+      ],
+      "d": [
+        18.0,
+        9.0,
+        6.0
+      ],
       "why": [
-        "JPMorgan/Goldman consensus Jun 2026: JPM $81/oz avg, Goldman $85-100/oz; industrial demand (solar PV, EVs) + gold correlation; gold/silver ratio compression supports upside ~20%.",
-        "JPMorgan: $85/oz avg 2027; solar PV demand at all-time highs; ETF inflows continue; physical shortage narrative supports industrial bid; gold bull carries silver with lag.",
-        "Gold bull moderates 2028; industrial demand floor from solar+EV sustains prices; returns compress toward industrial commodity norms; structural demand provides long-term floor."
+        "JPMorgan/Goldman Jun 2026: JPM ~$81/oz avg, Goldman ~$85-100/oz; solar PV + EV industrial demand plus gold correlation; gold/silver ratio compression supports upside.",
+        "JPMorgan ~$85/oz avg 2027; solar PV demand at record highs; ETF inflows continue; physical-tightness narrative supports the bid; lags gold bull.",
+        "Gold bull moderates 2028; solar+EV industrial demand sustains a floor; returns compress toward industrial-commodity norms."
       ]
     },
     {
@@ -201,12 +321,20 @@
       "name": "Palladium",
       "cat": "Commodity",
       "color": "#c084fc",
-      "r": [8.0, 5.0, -3.0],
-      "d": [8.0, 5.0, -3.0],
+      "r": [
+        6.0,
+        3.0,
+        -4.0
+      ],
+      "d": [
+        6.0,
+        3.0,
+        -4.0
+      ],
       "why": [
-        "LBMA consensus Jun 2026: $1,740/oz avg; BofA $1,725, TD $1,819; prices surged ~90% past year; hybrid vehicle demand + Russia supply shortfall; 18 of 21 analysts bullish.",
-        "Hybrid vehicle production growth sustains near-term demand; Russia supply discipline persists; LBMA consensus at $1,740; gradual EV penetration moderates autocatalyst demand.",
-        "EV share rising post-2027; ICE vehicle production plateau weighs on autocatalyst; structural demand destruction accelerates; prices moderate from historically elevated levels."
+        "LBMA Jun 2026: ~$1,740/oz avg; BofA ~$1,725, TD ~$1,819; ~90% surge over past year; hybrid demand + Russia supply shortfall; most analysts still constructive near-term.",
+        "Hybrid vehicle production sustains near-term demand; Russia supply discipline persists; gradual EV penetration begins to erode autocatalyst demand.",
+        "EV share rising post-2027; ICE production plateaus and autocatalyst demand destruction accelerates; prices moderate from elevated levels."
       ]
     },
     {
@@ -214,12 +342,20 @@
       "name": "WTI Crude Oil",
       "cat": "Commodity",
       "color": "#78350f",
-      "r": [5.0, 3.0, 3.0],
-      "d": [5.0, 3.0, 3.0],
+      "r": [
+        4.0,
+        3.0,
+        3.0
+      ],
+      "d": [
+        4.0,
+        3.0,
+        3.0
+      ],
       "why": [
-        "Goldman/JPMorgan consensus Jun 2026: Goldman $85 Brent (raised +$8), JPMorgan $58 Brent; midpoint ~$70-72; OPEC+ supply management caps downside; AI/data centre adds demand floor.",
-        "EIA: gradual demand growth; OPEC+ discipline key variable; energy transition moderates long-run upside; $65-75/bbl Brent range most likely; demand growth insufficient for sharp rally.",
-        "Modest recovery 2028; energy transition moderates demand growth; OPEC discipline key; $65-75/bbl range; geopolitical risk premium partially embedded in prices."
+        "Goldman/JPMorgan Jun 2026: Goldman ~$85 Brent, JPMorgan ~$58 Brent; midpoint ~$68-72; OPEC+ supply management caps downside; AI/data-centre power adds modest demand.",
+        "EIA: gradual demand growth; OPEC+ discipline the swing factor; $65-75/bbl Brent most likely; energy transition tempers long-run upside.",
+        "Modest recovery 2028; transition moderates demand growth; OPEC discipline key; $65-75/bbl range; geopolitical premium partly embedded."
       ]
     },
     {
@@ -227,12 +363,20 @@
       "name": "Natural Gas",
       "cat": "Commodity",
       "color": "#60a5fa",
-      "r": [10.0, 8.0, 7.0],
-      "d": [10.0, 8.0, 7.0],
+      "r": [
+        10.0,
+        8.0,
+        6.0
+      ],
+      "d": [
+        10.0,
+        8.0,
+        6.0
+      ],
       "why": [
-        "JPMorgan/EIA Jun 2026: LNG exports +9%; AI data centre power demand adds structural floor; Henry Hub recovering; European demand support; strong consensus for +8-12% return.",
-        "EIA: demand growth rises faster than supply 2027; LNG exports +11%; Golden Pass LNG capacity begins; storage drawdown supports mild price uplift through 2027.",
-        "Post-LNG-boom normalization 2028; prices settle ~$3.90-$4.10/MMBtu; AI data centre power structural floor; supply-demand broadly balanced long-term."
+        "JPMorgan/EIA Jun 2026: LNG exports +9%; AI data-centre power demand adds a structural floor; Henry Hub recovering; European demand support; ~+8-12% consensus.",
+        "EIA: demand outpaces supply 2027; LNG exports +11%; Golden Pass capacity ramps; storage drawdown supports a mild price uplift.",
+        "Post-LNG-boom normalization 2028; prices settle ~$3.90-$4.10/MMBtu; AI power demand structural floor; supply-demand broadly balanced."
       ]
     },
     {
@@ -240,12 +384,20 @@
       "name": "Uranium",
       "cat": "Commodity",
       "color": "#4ade80",
-      "r": [12.0, 10.0, 8.0],
-      "d": [12.0, 10.0, 8.0],
+      "r": [
+        12.0,
+        10.0,
+        8.0
+      ],
+      "d": [
+        12.0,
+        10.0,
+        8.0
+      ],
       "why": [
-        "Sprott Jun 2026: spot >$85/lb; 85% of investors target $100-120/lb (+18-41%); AI data centre nuclear buildout accelerating demand; US policy support; supply deficit deepening.",
-        "IAEA: nuclear demand doubles to 150,000 MT by 2040; AI+data centre structural demand continues into 2027; long-term supply contracts tightening; mine fundamentals improving.",
-        "Sustained demand from AI energy+climate mandates 2028; supply under-delivery persists; decade-long mine development cycles constrain supply response; structural bull intact."
+        "Sprott Jun 2026: spot >$85/lb; most investors target $100-120/lb; AI data-centre nuclear buildout accelerating demand; US policy support; supply deficit deepening.",
+        "IAEA: nuclear demand on track to double by 2040; AI+data-centre demand continues into 2027; long-term contracting tightens; mine fundamentals improve.",
+        "Sustained demand from AI energy + climate mandates 2028; supply under-delivery persists; decade-long mine lead times constrain response; structural bull intact."
       ]
     },
     {
@@ -253,12 +405,20 @@
       "name": "Copper",
       "cat": "Commodity",
       "color": "#b45309",
-      "r": [15.0, 8.0, 8.0],
-      "d": [15.0, 8.0, 8.0],
+      "r": [
+        14.0,
+        8.0,
+        8.0
+      ],
+      "d": [
+        14.0,
+        8.0,
+        8.0
+      ],
       "why": [
-        "TD Securities consensus Jun 2026: $13,000/t target; copper gained +28.8% in 2025; electrification+AI grid buildout drives structural demand; supply deficit deepening; +12-15%.",
-        "Goldman: prices stable H2 2026 as tariff front-running normalizes; long-term floor $10,750/t; EV+data centre+grid structural demand continues; supply deficit persists into 2027.",
-        "Structural deficit deepens 2028; energy transition+AI infrastructure sustains imbalance; strong floor ~$10,000/t; decade-long supply constraint persists; bull market intact."
+        "TD Securities/Goldman Jun 2026: TD ~$13,000/t target; electrification + AI grid buildout drives structural demand; supply deficit deepening; ~+12-15% expected.",
+        "Goldman: prices stable H2 2026 as tariff front-running normalizes; long-term floor ~$10,750/t; EV+data-centre+grid demand continues into 2027.",
+        "Structural deficit deepens 2028; energy transition + AI infrastructure sustains imbalance; floor ~$10,000/t; long-run supply constraint persists."
       ]
     },
     {
@@ -266,12 +426,20 @@
       "name": "Lithium",
       "cat": "Commodity",
       "color": "#38bdf8",
-      "r": [-5.0, 5.0, 10.0],
-      "d": [-5.0, 5.0, 10.0],
+      "r": [
+        -3.0,
+        6.0,
+        10.0
+      ],
+      "d": [
+        -3.0,
+        6.0,
+        10.0
+      ],
       "why": [
-        "Goldman consensus Jun 2026: $8,900/t avg 2026; persistent oversupply as new capacity outpaces EV demand; EV adoption below prior projections; energy storage insufficient to absorb surplus.",
-        "Goldman: $9,100/t in 2027; surplus narrowing; supply discipline as low prices force deferrals; EV adoption accelerating in China; deficits possible from 2028 onward.",
-        "Goldman: $9,500/t by 2028; solid-state batteries+grid storage accelerates demand; supply discipline firms; Wood Mackenzie: structural deficit building; recovery well underway."
+        "Goldman Jun 2026: ~$8,900/t avg; oversupply easing as low prices force capacity deferrals; EV adoption recovering in China; surplus narrowing.",
+        "Goldman: ~$9,100/t 2027; supply discipline firms; China EV demand accelerating; energy storage absorbing more surplus; deficits possible from 2028.",
+        "Goldman: ~$9,500/t by 2028; grid storage + next-gen batteries lift demand; Wood Mackenzie sees structural deficit building; recovery underway."
       ]
     },
     {
@@ -279,12 +447,20 @@
       "name": "Wheat",
       "cat": "Commodity",
       "color": "#d97706",
-      "r": [3.0, 3.0, 3.0],
-      "d": [3.0, 3.0, 3.0],
+      "r": [
+        3.0,
+        3.0,
+        3.0
+      ],
+      "d": [
+        3.0,
+        3.0,
+        3.0
+      ],
       "why": [
-        "USDA/World Bank Jun 2026: adequate global supplies keep prices modest; Ukraine/Russia supply uncertainty maintains geopolitical risk premium; consensus flat to +3% annual gain.",
-        "World Bank: moderate price stability 2027; climate-driven yield variability adds risk premium; stable demand from global population growth; Black Sea supply risks persist.",
-        "Stable demand from population growth+biofuel mandates 2028; supply-demand broadly balanced; improving Black Sea supply access caps upside; moderate long-term trajectory."
+        "USDA/World Bank Jun 2026: adequate global supplies keep prices modest; Russia/Ukraine supply risk maintains a geopolitical premium; flat to +3% expected.",
+        "World Bank: moderate price stability 2027; climate-driven yield variability adds risk premium; population-driven demand steady; Black Sea risks persist.",
+        "Stable demand from population growth + biofuel mandates 2028; supply-demand broadly balanced; improving Black Sea access caps upside."
       ]
     },
     {
@@ -292,12 +468,20 @@
       "name": "Potash / Fertilizers",
       "cat": "Commodity",
       "color": "#a3e635",
-      "r": [6.0, 4.0, 4.0],
-      "d": [6.0, 4.0, 4.0],
+      "r": [
+        5.0,
+        4.0,
+        4.0
+      ],
+      "d": [
+        5.0,
+        4.0,
+        4.0
+      ],
       "why": [
-        "Procurement Resource Jun 2026: US potash $397/MT Q1 2026 moving upward; spring planting demand firm; global prices firm in Q1; supply tight; consensus +5-6% for 2026.",
-        "Fertilizer demand steady from global agriculture; supply discipline from major producers; spring/fall application seasons support demand; prices stabilizing at higher levels.",
-        "Demand floor from global agriculture 2028; moderate improvement as supply growth slows; fertilizer affordability improves; EU restrictions on Belarusian potash support prices."
+        "Procurement Resource Jun 2026: US potash ~$397/MT trending higher; firm spring planting demand; tight global supply; consensus ~+5%.",
+        "Steady global agricultural demand; supply discipline from major producers; seasonal application supports prices; stabilizing at higher levels.",
+        "Demand floor from global agriculture 2028; supply growth slows; EU restrictions on Belarusian potash support prices; affordability improves."
       ]
     },
     {
@@ -305,12 +489,20 @@
       "name": "Lumber",
       "cat": "Commodity",
       "color": "#65a30d",
-      "r": [5.0, 7.0, 6.0],
-      "d": [5.0, 7.0, 6.0],
+      "r": [
+        5.0,
+        7.0,
+        6.0
+      ],
+      "d": [
+        5.0,
+        7.0,
+        6.0
+      ],
       "why": [
-        "Jun 2026: lumber ~$587/MBF; analysts forecast $580-650 range; H2 2026 recovery expected; housing starts revival drives demand; Canadian tariff uncertainty remains headwind.",
-        "ERA: housing starts rise as rate normalization unlocks demand; Canadian mill closures tighten supply; Fastmarkets: +6-8% annual price increase continuing into 2027.",
-        "Housing rebound drives lumber toward $600/MBF by 2028; Canadian sawmill supply tightness structural constraint; US production partially offsets; prices recover with housing."
+        "Jun 2026: lumber ~$587/MBF; analysts forecast $580-650 range; H2 2026 recovery expected; housing-starts revival drives demand; Canadian tariff uncertainty a headwind.",
+        "ERA: housing starts rise as rate normalization unlocks demand; Canadian mill closures tighten supply; Fastmarkets sees +6-8% annual price gains into 2027.",
+        "Housing rebound lifts lumber toward $600/MBF by 2028; Canadian sawmill tightness a structural constraint; US production partly offsets."
       ]
     }
   ]
