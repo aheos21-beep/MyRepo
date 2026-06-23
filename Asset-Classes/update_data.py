@@ -57,12 +57,15 @@ Rules:
 
 Return the complete updated JSON array starting with [ and ending with ]."""
 
+    # Auto-select latest Haiku model so no code change needed when versions update
+    models = client.models.list()
+    model_id = next(m.id for m in models.data if "haiku" in m.id)
+    print(f"Using model: {model_id}")
     print(f"Requesting updated projections from Claude for {today}...")
 
     with client.messages.stream(
-        model="claude-opus-4-8",
-        max_tokens=16000,
-        thinking={"type": "adaptive"},
+        model=model_id,
+        max_tokens=8000,
         messages=[{"role": "user", "content": prompt}]
     ) as stream:
         message = stream.get_final_message()
