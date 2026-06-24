@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WealthTrack – Net Worth Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/recharts@2.12.7/umd/Recharts.js"></script>
+  <script src="https://unpkg.com/lucide-react/dist/umd/lucide-react.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    @media print {
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect, useMemo } = React;
+
+    const {
+      XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+      BarChart, Bar
+    } = Recharts;
+
+    const {
+      Plus, Trash2, Wallet, Timer, Percent, Coins, X,
+      Printer, ChevronRight, ChevronUp, ChevronDown,
+      Building2, CreditCard, ArrowUpRight, ArrowDownRight
+    } = LucideReact;
+
+    const STORAGE_KEY = 'wealthtrack-v1';
+
+    const DEFAULT_STATE = {
+      items: [
+        { id: '1', name: 'Investment Portfolio', value: 850000, type: 'asset', category: 'Investments', returnRate: 8, rentalIncome: 0, monthlyPayment: 0 },
+        { id: '2', name: 'Primary Residence',    value: 600000, type: 'asset', category: 'Property',         returnRate: 3, rentalIncome: 0, monthlyPayment: 0 },
+        { id: '3', name: 'Rental Condo',          value: 350000, type: 'asset', category: 'Rental Property',  returnRate: 4, rentalIncome: 18000, monthlyPayment: 0 },
+        { id: '4', name: 'Mortgage',              value: 550000, type: 'liability', category: 'Debt',         returnRate: 0, rentalIncome: 0, monthlyPayment: 2800 }
+      ],
+      annualExpense: 60000,
+      inflation: 3
+    };
+
+    const load = () => {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch { return null; }
+    };
+
+    const save = (state) => {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+      catch (e) { console.error('localStorage save failed', e); }
+    };
+
+    const EMPTY_ITEM = { name: '', value: '', type: 'asset', category: 'Cash', returnRate: 0, rentalIncome: 0, monthlyPayment: 0 };
+
+    const fmt = (v) =>
+      new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(v);
+
+    const App = () => {
+      const [items, setItems]               = useState(DEFAULT_STATE.items);
+      const [annualExpense, setAnnualExpense] = useState(DEFAULT_STATE.annualExpense);
+      const [inflation, setInflation]       = useState(DEFAULT_STATE.inflation);
+      const [ready, setReady]               = useState(false);
+
+      const [isModalOpen, setIsModalOpen]   = useState(false);
+      const [editingItem, setEditingItem]   = useState(null);
+      const [newItem, setNewItem]           = useState(EMPTY_ITEM);
+      const [activeTab, setActiveTab]       = useState('assets');
+
+      useEffect(() => {
+        const saved = load();
+        if (saved) {
+          setItems(saved.items ?? DEFAULT_STATE.items);
+          setAnnualExpense(saved.annualExpense ?? DEFAULT_STATE.annualExpense);
+          setInflation(saved.inflation ?? DEFAULT_STATE.inflation);
+        }
+        setReady(true);
+      }, []);
+
+      useEffect(() => {
+        if (ready) save({ items, annualExpense, inflation });
+      }, [items, annualExpense, inflation, ready]);
+
+      const totals = useMemo(() => {
+        const assets      = items.filter(i => i.type === 'asset');
+        const liabilities = items.filter(i => i.type === 'liability');
+        const totalAssets      = assets.reduce((s, i) => s + Number(i.value), 0);
+        const totalLiabilities = liabilities.reduce((s, i) => s + Number(i.value), 0);
+        const totalRentalIncome = assets
+          .filter(i => i.category === 'Rental Property')
+          .reduce((s, i) => s + Number(i.rentalIncome || 0), 0);
+        const totalDebtService = liabilities
+          .reduce((s, i) => s + Number(i.monthlyPayment || 0) * 12, 0);
+        const investable = assets.filter(i => i.category !== 'Property' && i.category !== 'Rental Property');
+        const investableValue = investable.reduce((s, i) => s + Number(i.value), 0);
+        const weightedReturn  = investable.reduce((s, i) => s + Number(i.value) * (Number(i.returnRate || 0) / 100), 0);
+        const avgReturn = investableValue > 0 ? (weightedReturn / investableValue) * 100 : 0;
+        return {
+          assets: totalAssets,
+          liabilities: totalLiabilities,
+          netWorth: totalAssets - totalLiabilities,
+          liquidNetWorth: investableValue,
+          avgReturn,
+          totalRentalIncome,
+          totalDebtService
+        };
+      }, [items]);
+
+      const runwayData = useMemo(() => {
+        const data = [];
+        let capital    = totals.liquidNetWorth;
+        let lifestyle  = annualExpense;
+        let debt       = totals.totalDebtService;
+        let rental     = totals.totalRentalIncome;
+        const portReturn    = totals.avgReturn / 100;
+        const rentalGrowth  = 0.02;
+        for (let yr = 0; yr <= 40; yr++) {
+          data.push({ year: `Yr ${yr}`, remainingCapital: Math.max(0, capital) });
+          capital   = capital * (1 + portReturn) + rental - (lifestyle + debt);
+          lifestyle *= 1 + inflation / 100;
+          rental    *= 1 + rentalGrowth;
+          if (capital <= 0 && yr > 0) break;
+        }
+        return data;
+      }, [totals, annualExpense, inflation]);
+
+      const runwayYears = runwayData.filter(d => d.remainingCapital > 0).length - 1;
+
+      const closeModal = () => { setIsModalOpen(false); setEditingItem(null); };
+
+      const openAddModal = () => {
+        setEditingItem(null);
+        setNewItem(EMPTY_ITEM);
+        setIsModalOpen(true);
+      };
+
+      const openEditModal = (item) => {
+        setEditingItem(item);
+        setNewItem({ ...item });
+        setIsModalOpen(true);
+      };
+
+      const handleSave = (e) => {
+        e.preventDefault();
+        if (!newItem.name || !newItem.value) return;
+        const processed = {
+          ...newItem,
+          value:         parseFloat(newItem.value),
+          returnRate:    parseFloat(newItem.returnRate    || 0),
+          rentalIncome:  newItem.category === 'Rental Property' ? parseFloat(newItem.rentalIncome  || 0) : 0,
+          monthlyPayment: newItem.type === 'liability'          ? parseFloat(newItem.monthlyPayment || 0) : 0
+        };
+        if (editingItem) {
+          setItems(prev => prev.map(i => i.id === editingItem.id ? { ...processed, id: editingItem.id } : i));
+        } else {
+          setItems(prev => [...prev, { ...processed, id: Date.now().toString() }]);
+        }
+        closeModal();
+      };
+
+      const handleDelete = () => {
+        if (!editingItem) return;
+        setItems(prev => prev.filter(i => i.id !== editingItem.id));
+        closeModal();
+      };
+
+      const shiftExpense = (delta) => setAnnualExpense(prev => Math.max(0, prev + delta));
+
+      return (
+        <div className="min-h-screen bg-slate-50 text-slate-900 p-4 md:p-8">
+          <div className="max-w-6xl mx-auto">
+
+            {/* Header */}
+            <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+              <div>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-3xl font-bold text-slate-800 tracking-tight">WealthTrack</h1>
+                  <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                    Saved Locally
+                  </span>
+                </div>
+                <p className="text-slate-500 text-sm">Financial Position Report &bull; {new Date().toLocaleDateString()}</p>
+              </div>
+              <div className="flex items-center gap-3 no-print">
+                <button
+                  onClick={() => window.print()}
+                  className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-all shadow-sm"
+                >
+                  <Printer className="w-4 h-4" /> Print
+                </button>
+                <div className="flex bg-white rounded-xl p-1 shadow-sm border border-slate-200">
+                  <button
+                    onClick={() => setActiveTab('assets')}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'assets' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-600 hover:bg-slate-100'}`}
+                  >
+                    Ledger
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('dashboard')}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'dashboard' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-600 hover:bg-slate-100'}`}
+                  >
+                    Analysis
+                  </button>
+                </div>
+              </div>
+            </header>
+
+            {/* LEDGER TAB */}
+            {activeTab === 'assets' && (
+              <div className="space-y-6">
+
+                {/* Net Worth Banner */}
+                <div className="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-sm flex flex-col md:flex-row justify-between items-center gap-8 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-blue-50 rounded-full -mr-24 -mt-24 blur-3xl opacity-50 pointer-events-none" />
+                  <div className="flex items-center gap-6 relative z-10">
+                    <div className="p-4 bg-blue-50 rounded-2xl border border-blue-100">
+                      <Wallet className="w-10 h-10 text-blue-600" />
+                    </div>
+                    <div>
+                      <h3 className="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">Total Net Worth</h3>
+                      <p className="text-4xl font-black tracking-tight text-slate-900">{fmt(totals.netWorth)}</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap justify-center gap-8 md:gap-16 relative z-10">
+                    <div className="text-center md:text-left">
+                      <div className="flex items-center gap-1.5 mb-1">
+                        <ArrowUpRight className="w-3 h-3 text-emerald-500" />
+                        <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">Gross Assets</p>
+                      </div>
+                      <p className="text-xl font-bold text-emerald-600">{fmt(totals.assets)}</p>
+                    </div>
+                    <div className="text-center md:text-left">
+                      <div className="flex items-center gap-1.5 mb-1">
+                        <ArrowDownRight className="w-3 h-3 text-rose-500" />
+                        <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">Total Debt</p>
+                      </div>
+                      <p className="text-xl font-bold text-rose-600">{fmt(totals.liabilities)}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Records header */}
+                <div className="flex justify-between items-center">
+                  <h2 className="text-xl font-bold text-slate-800 tracking-tight">Financial Records</h2>
+                  <button
+                    onClick={openAddModal}
+                    className="no-print px-5 py-2.5 bg-blue-600 text-white font-bold rounded-xl flex items-center hover:bg-blue-700 transition-colors shadow-lg"
+                  >
+                    <Plus className="w-5 h-5 mr-2" /> Add Entry
+                  </button>
+                </div>
+
+                {/* Assets / Liabilities columns */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                  {/* Assets */}
+                  <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div className="bg-emerald-50 px-6 py-4 border-b border-emerald-100 flex justify-between items-center font-bold text-sm text-emerald-800 uppercase tracking-wide">
+                      Assets
+                      <span className="bg-emerald-600 text-white px-2 py-0.5 rounded text-[10px]">{fmt(totals.assets)}</span>
+                    </div>
+                    <div className="divide-y divide-slate-100">
+                      {items.filter(i => i.type === 'asset').length === 0 && (
+                        <div className="p-8 text-center text-slate-400 text-sm italic">No assets added yet</div>
+                      )}
+                      {items.filter(i => i.type === 'asset').map(item => (
+                        <div
+                          key={item.id}
+                          onClick={() => openEditModal(item)}
+                          className="p-4 flex justify-between items-center hover:bg-slate-50 transition-colors cursor-pointer group"
+                        >
+                          <div>
+                            <div className="text-sm font-bold text-slate-800 group-hover:text-blue-600 transition-colors">{item.name}</div>
+                            <div className="text-[10px] text-slate-400 uppercase tracking-tighter flex items-center gap-1.5">
+                              {(item.category === 'Property' || item.category === 'Rental Property') && (
+                                <Building2 className="w-3 h-3 text-slate-400" />
+                              )}
+                              {item.category}
+                              {item.rentalIncome > 0
+                                ? ` • ${fmt(item.rentalIncome)} Rent`
+                                : item.category === 'Property'
+                                  ? ' • Primary Residence'
+                                  : ` • ${item.returnRate}% yield`}
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <span className="font-bold text-sm text-emerald-700">{fmt(item.value)}</span>
+                            <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-400" />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Liabilities */}
+                  <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div className="bg-rose-50 px-6 py-4 border-b border-rose-100 flex justify-between items-center font-bold text-sm text-rose-800 uppercase tracking-wide">
+                      Liabilities
+                      <span className="bg-rose-600 text-white px-2 py-0.5 rounded text-[10px]">{fmt(totals.liabilities)}</span>
+                    </div>
+                    <div className="divide-y divide-slate-100">
+                      {items.filter(i => i.type === 'liability').length === 0 && (
+                        <div className="p-8 text-center text-slate-400 text-sm italic">No liabilities added yet</div>
+                      )}
+                      {items.filter(i => i.type === 'liability').map(item => (
+                        <div
+                          key={item.id}
+                          onClick={() => openEditModal(item)}
+                          className="p-4 flex justify-between items-center hover:bg-slate-50 transition-colors cursor-pointer group"
+                        >
+                          <div>
+                            <div className="text-sm font-bold text-slate-800 group-hover:text-blue-600 transition-colors">{item.name}</div>
+                            <div className="text-[10px] text-slate-400 uppercase tracking-tighter flex items-center gap-1.5">
+                              <CreditCard className="w-3 h-3 text-slate-400" />
+                              {item.category}
+                              {item.monthlyPayment > 0 ? ` • ${fmt(item.monthlyPayment)}/mo` : ''}
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <span className="font-bold text-rose-600 text-sm">({fmt(item.value)})</span>
+                            <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-400" />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ANALYSIS TAB */}
+            {activeTab === 'dashboard' && (
+              <div className="space-y-6">
+
+                {/* KPI cards */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                  <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <div className="flex items-center justify-between mb-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
+                      Liquid Capital <Wallet className="w-4 h-4 text-blue-500" />
+                    </div>
+                    <div className="text-2xl font-bold">{fmt(totals.liquidNetWorth)}</div>
+                  </div>
+                  <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <div className="flex items-center justify-between mb-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
+                      Portfolio Yield <Percent className="w-4 h-4 text-blue-500" />
+                    </div>
+                    <div className="text-2xl font-bold text-blue-700">{totals.avgReturn.toFixed(1)}%</div>
+                  </div>
+                  <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <div className="flex items-center justify-between mb-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
+                      Annual Rent <Coins className="w-4 h-4 text-emerald-500" />
+                    </div>
+                    <div className="text-2xl font-bold text-emerald-600">{fmt(totals.totalRentalIncome)}</div>
+                  </div>
+                  <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <div className="flex items-center justify-between mb-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
+                      Est. Runway <Timer className="w-4 h-4 text-emerald-500" />
+                    </div>
+                    <div className="text-2xl font-bold text-emerald-700">{runwayYears >= 40 ? '40+' : runwayYears} Years</div>
+                  </div>
+                </div>
+
+                {/* Forecast chart */}
+                <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-6">
+                    <div>
+                      <h2 className="text-lg font-bold flex items-center">
+                        <Timer className="w-5 h-5 mr-2 text-emerald-500" /> Survival Forecast
+                      </h2>
+                      <p className="text-sm text-slate-400 mt-1">
+                        Projection assumes {inflation}% annual inflation and current lifestyle spend of {fmt(annualExpense)}.
+                      </p>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-8 no-print">
+                      {/* Expense stepper */}
+                      <div className="flex flex-col gap-2 min-w-[200px]">
+                        <label className="text-xs font-bold text-slate-500 uppercase">Lifestyle Burn (Annual)</label>
+                        <div className="flex items-center bg-slate-50 border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                          <div className="flex-1 px-4 py-3 font-bold text-blue-600">{fmt(annualExpense)}</div>
+                          <div className="flex flex-col border-l border-slate-200">
+                            <button onClick={() => shiftExpense(1000)} className="p-1.5 hover:bg-slate-100 text-slate-400 hover:text-blue-600 transition-colors border-b border-slate-200">
+                              <ChevronUp className="w-3 h-3" />
+                            </button>
+                            <button onClick={() => shiftExpense(-1000)} className="p-1.5 hover:bg-slate-100 text-slate-400 hover:text-blue-600 transition-colors">
+                              <ChevronDown className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      {/* Inflation slider */}
+                      <div className="flex flex-col gap-2 min-w-[150px]">
+                        <div className="flex justify-between items-center">
+                          <label className="text-xs font-bold text-slate-500 uppercase">Inflation</label>
+                          <span className="text-xs font-bold text-emerald-600">{inflation}%</span>
+                        </div>
+                        <input
+                          type="range" min="0" max="15" step="0.5" value={inflation}
+                          onChange={e => setInflation(Number(e.target.value))}
+                          className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="h-80">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={runwayData}>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                        <XAxis dataKey="year" axisLine={false} tickLine={false} fontSize={11} stroke="#94a3b8" />
+                        <YAxis axisLine={false} tickLine={false} fontSize={11} stroke="#94a3b8" tickFormatter={v => `$${v/1000}k`} />
+                        <Tooltip
+                          formatter={v => fmt(v)}
+                          cursor={{ fill: '#f8fafc' }}
+                          contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)' }}
+                        />
+                        <Bar dataKey="remainingCapital" fill="#3b82f6" radius={[6, 6, 0, 0]} name="Deployable Capital" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ADD / EDIT MODAL */}
+            {isModalOpen && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={closeModal} />
+                <form onSubmit={handleSave} className="relative bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 space-y-6">
+                  <div className="flex justify-between items-center">
+                    <h2 className="text-xl font-bold tracking-tight">{editingItem ? 'Edit Record' : 'New Record'}</h2>
+                    <button type="button" onClick={closeModal} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
+                      <X className="w-5 h-5 text-slate-400" />
+                    </button>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Description</label>
+                      <input
+                        type="text" placeholder="e.g. Portfolio or Mortgage" required
+                        className="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none"
+                        value={newItem.name}
+                        onChange={e => setNewItem({ ...newItem, name: e.target.value })}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                          {newItem.type === 'asset' ? 'Current Value ($)' : 'Remaining Balance ($)'}
+                        </label>
+                        <input
+                          type="number" required
+                          className="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none"
+                          value={newItem.value}
+                          onChange={e => setNewItem({ ...newItem, value: e.target.value })}
+                        />
+                      </div>
+
+                      {newItem.type === 'asset' ? (
+                        <div className="space-y-2">
+                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Growth (%)</label>
+                          <input
+                            type="number" step="0.1"
+                            className="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none"
+                            value={newItem.returnRate}
+                            onChange={e => setNewItem({ ...newItem, returnRate: e.target.value })}
+                          />
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          <label className="text-xs font-bold text-rose-600 uppercase tracking-wider">Monthly Payment</label>
+                          <input
+                            type="number" placeholder="0"
+                            className="w-full p-4 bg-rose-50 border border-rose-100 rounded-2xl focus:ring-2 focus:ring-rose-500 outline-none text-rose-700 font-bold"
+                            value={newItem.monthlyPayment}
+                            onChange={e => setNewItem({ ...newItem, monthlyPayment: e.target.value })}
+                          />
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Category</label>
+                        <select
+                          className="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none"
+                          value={newItem.category}
+                          onChange={e => setNewItem({ ...newItem, category: e.target.value })}
+                        >
+                          <option value="Cash">Cash</option>
+                          <option value="Investments">Investments</option>
+                          <option value="Rental Property">Rental Property</option>
+                          <option value="Property">Primary Residence</option>
+                          <option value="Debt">General Debt</option>
+                        </select>
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Type</label>
+                        <select
+                          className="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none font-bold"
+                          value={newItem.type}
+                          onChange={e => setNewItem({ ...newItem, type: e.target.value })}
+                        >
+                          <option value="asset">Asset (+)</option>
+                          <option value="liability">Liability (-)</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {newItem.category === 'Rental Property' && (
+                      <div className="space-y-2 p-4 bg-emerald-50 rounded-2xl border border-emerald-100">
+                        <label className="text-xs font-bold text-emerald-700 uppercase tracking-wider">Net Annual Rental Income ($)</label>
+                        <input
+                          type="number"
+                          className="w-full p-3 bg-white border border-emerald-200 rounded-xl font-bold text-emerald-700 outline-none focus:ring-2 focus:ring-emerald-500"
+                          value={newItem.rentalIncome}
+                          onChange={e => setNewItem({ ...newItem, rentalIncome: e.target.value })}
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="pt-4 flex gap-3">
+                    {editingItem && (
+                      <button
+                        type="button" onClick={handleDelete}
+                        className="flex-1 py-4 border border-rose-200 text-rose-500 font-bold rounded-2xl hover:bg-rose-50 transition-colors flex items-center justify-center gap-2"
+                      >
+                        <Trash2 className="w-4 h-4" /> Delete
+                      </button>
+                    )}
+                    <button type="submit" className="flex-[2] py-4 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 shadow-xl transition-all active:scale-[0.98]">
+                      {editingItem ? 'Update Entry' : 'Add to Ledger'}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
