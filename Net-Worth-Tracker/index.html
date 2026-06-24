@@ -5,757 +5,610 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WealthTrack – Net Worth Tracker</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://unpkg.com/recharts@2.12.7/umd/Recharts.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     @media print { .no-print { display: none !important; } }
   </style>
 </head>
-<body>
-  <div id="root"></div>
-  <script>
-const {
-  useState,
-  useEffect,
-  useMemo
-} = React;
-const {
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  BarChart,
-  Bar
-} = Recharts;
-const Svg = ({
-  children,
-  className = 'w-4 h-4',
-  ...p
-}) => /*#__PURE__*/React.createElement("svg", {
-  xmlns: "http://www.w3.org/2000/svg",
-  width: "24",
-  height: "24",
-  viewBox: "0 0 24 24",
-  fill: "none",
-  stroke: "currentColor",
-  strokeWidth: "2",
-  strokeLinecap: "round",
-  strokeLinejoin: "round",
-  className: className,
-  ...p
-}, children);
-const Plus = p => /*#__PURE__*/React.createElement(Svg, p, /*#__PURE__*/React.createElement("line", {
-  x1: "12",
-  y1: "5",
-  x2: "12",
-  y2: "19"
-}), /*#__PURE__*/React.createElement("line", {
-  x1: "5",
-  y1: "12",
-  x2: "19",
-  y2: "12"
-}));
-const Trash2 = p => /*#__PURE__*/React.createElement(Svg, p, /*#__PURE__*/React.createElement("polyline", {
-  points: "3 6 5 6 21 6"
-}), /*#__PURE__*/React.createElement("path", {
-  d: "M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"
-}), /*#__PURE__*/React.createElement("path", {
-  d: "M10 11v6"
-}), /*#__PURE__*/React.createElement("path", {
-  d: "M14 11v6"
-}), /*#__PURE__*/React.createElement("path", {
-  d: "M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"
-}));
-const Wallet = p => /*#__PURE__*/React.createElement(Svg, p, /*#__PURE__*/React.createElement("path", {
-  d: "M20 12V8H6a2 2 0 0 1 0-4h14v4"
-}), /*#__PURE__*/React.createElement("path", {
-  d: "M4 6v12a2 2 0 0 0 2 2h14v-4"
-}), /*#__PURE__*/React.createElement("path", {
-  d: "M18 12a2 2 0 0 0 0 4h4v-4Z"
-}));
-const Timer = p => /*#__PURE__*/React.createElement(Svg, p, /*#__PURE__*/React.createElement("line", {
-  x1: "10",
-  y1: "2",
-  x2: "14",
-  y2: "2"
-}), /*#__PURE__*/React.createElement("path", {
-  d: "M12 14l3-3"
-}), /*#__PURE__*/React.createElement("circle", {
-  cx: "12",
-  cy: "14",
-  r: "8"
-}));
-const Percent = p => /*#__PURE__*/React.createElement(Svg, p, /*#__PURE__*/React.createElement("line", {
-  x1: "19",
-  y1: "5",
-  x2: "5",
-  y2: "19"
-}), /*#__PURE__*/React.createElement("circle", {
-  cx: "6.5",
-  cy: "6.5",
-  r: "2.5"
-}), /*#__PURE__*/React.createElement("circle", {
-  cx: "17.5",
-  cy: "17.5",
-  r: "2.5"
-}));
-const Coins = p => /*#__PURE__*/React.createElement(Svg, p, /*#__PURE__*/React.createElement("circle", {
-  cx: "8",
-  cy: "8",
-  r: "6"
-}), /*#__PURE__*/React.createElement("path", {
-  d: "M18.09 10.37A6 6 0 1 1 10.34 18"
-}), /*#__PURE__*/React.createElement("path", {
-  d: "M7 6h1v4"
-}), /*#__PURE__*/React.createElement("line", {
-  x1: "16.71",
-  y1: "13.88",
-  x2: "18.13",
-  y2: "15.3"
-}));
-const X = p => /*#__PURE__*/React.createElement(Svg, p, /*#__PURE__*/React.createElement("line", {
-  x1: "18",
-  y1: "6",
-  x2: "6",
-  y2: "18"
-}), /*#__PURE__*/React.createElement("line", {
-  x1: "6",
-  y1: "6",
-  x2: "18",
-  y2: "18"
-}));
-const Printer = p => /*#__PURE__*/React.createElement(Svg, p, /*#__PURE__*/React.createElement("polyline", {
-  points: "6 9 6 2 18 2 18 9"
-}), /*#__PURE__*/React.createElement("path", {
-  d: "M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"
-}), /*#__PURE__*/React.createElement("rect", {
-  x: "6",
-  y: "14",
-  width: "12",
-  height: "8"
-}));
-const ChevronRight = p => /*#__PURE__*/React.createElement(Svg, p, /*#__PURE__*/React.createElement("polyline", {
-  points: "9 18 15 12 9 6"
-}));
-const ChevronUp = p => /*#__PURE__*/React.createElement(Svg, p, /*#__PURE__*/React.createElement("polyline", {
-  points: "18 15 12 9 6 15"
-}));
-const ChevronDown = p => /*#__PURE__*/React.createElement(Svg, p, /*#__PURE__*/React.createElement("polyline", {
-  points: "6 9 12 15 18 9"
-}));
-const Building2 = p => /*#__PURE__*/React.createElement(Svg, p, /*#__PURE__*/React.createElement("path", {
-  d: "M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"
-}), /*#__PURE__*/React.createElement("path", {
-  d: "M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"
-}), /*#__PURE__*/React.createElement("path", {
-  d: "M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"
-}), /*#__PURE__*/React.createElement("path", {
-  d: "M10 6h4"
-}), /*#__PURE__*/React.createElement("path", {
-  d: "M10 10h4"
-}), /*#__PURE__*/React.createElement("path", {
-  d: "M10 14h4"
-}), /*#__PURE__*/React.createElement("path", {
-  d: "M10 18h4"
-}));
-const CreditCard = p => /*#__PURE__*/React.createElement(Svg, p, /*#__PURE__*/React.createElement("rect", {
-  x: "2",
-  y: "5",
-  width: "20",
-  height: "14",
-  rx: "2"
-}), /*#__PURE__*/React.createElement("line", {
-  x1: "2",
-  y1: "10",
-  x2: "22",
-  y2: "10"
-}));
-const ArrowUpRight = p => /*#__PURE__*/React.createElement(Svg, p, /*#__PURE__*/React.createElement("line", {
-  x1: "7",
-  y1: "17",
-  x2: "17",
-  y2: "7"
-}), /*#__PURE__*/React.createElement("polyline", {
-  points: "7 7 17 7 17 17"
-}));
-const ArrowDownRight = p => /*#__PURE__*/React.createElement(Svg, p, /*#__PURE__*/React.createElement("line", {
-  x1: "7",
-  y1: "7",
-  x2: "17",
-  y2: "17"
-}), /*#__PURE__*/React.createElement("polyline", {
-  points: "17 7 17 17 7 17"
-}));
-const STORAGE_KEY = 'wealthtrack-v1';
-const load = () => {
-  try {
-    const r = localStorage.getItem(STORAGE_KEY);
-    return r ? JSON.parse(r) : null;
-  } catch {
-    return null;
-  }
-};
-const persist = d => {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
-  } catch (e) {
-    console.error(e);
-  }
-};
-const DEFAULT = {
-  items: [{
-    id: '1',
-    name: 'Investment Portfolio',
-    value: 850000,
-    type: 'asset',
-    category: 'Investments',
-    returnRate: 8,
-    rentalIncome: 0,
-    monthlyPayment: 0
-  }, {
-    id: '2',
-    name: 'Primary Residence',
-    value: 600000,
-    type: 'asset',
-    category: 'Property',
-    returnRate: 3,
-    rentalIncome: 0,
-    monthlyPayment: 0
-  }, {
-    id: '3',
-    name: 'Rental Condo',
-    value: 350000,
-    type: 'asset',
-    category: 'Rental Property',
-    returnRate: 4,
-    rentalIncome: 18000,
-    monthlyPayment: 0
-  }, {
-    id: '4',
-    name: 'Mortgage',
-    value: 550000,
-    type: 'liability',
-    category: 'Debt',
-    returnRate: 0,
-    rentalIncome: 0,
-    monthlyPayment: 2800
-  }],
+<body class="bg-slate-50 text-slate-900 p-4 md:p-8 min-h-screen">
+<div class="max-w-6xl mx-auto">
+
+  <!-- HEADER -->
+  <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+    <div>
+      <div class="flex items-center gap-2">
+        <h1 class="text-3xl font-bold text-slate-800 tracking-tight">WealthTrack</h1>
+        <span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-xs font-bold uppercase tracking-wider">Saved Locally</span>
+      </div>
+      <p id="hdr-date" class="text-slate-500 text-sm"></p>
+    </div>
+    <div class="flex items-center gap-3 no-print">
+      <button onclick="window.print()" class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 shadow-sm">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Print
+      </button>
+      <div class="flex bg-white rounded-xl p-1 shadow-sm border border-slate-200">
+        <button id="btn-assets" onclick="switchTab('assets')" class="px-4 py-2 rounded-lg text-sm font-medium bg-blue-600 text-white shadow-md">Ledger</button>
+        <button id="btn-dashboard" onclick="switchTab('dashboard')" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100">Analysis</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- LEDGER TAB -->
+  <div id="tab-assets">
+    <div class="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm flex flex-col md:flex-row justify-between items-center gap-8 mb-6 relative overflow-hidden">
+      <div style="position:absolute;top:0;right:0;width:16rem;height:16rem;background:#eff6ff;border-radius:50%;margin-right:-6rem;margin-top:-6rem;filter:blur(40px);opacity:0.5;pointer-events:none"></div>
+      <div class="flex items-center gap-6" style="position:relative;z-index:1">
+        <div class="p-4 bg-blue-50 rounded-2xl border border-blue-100">
+          <svg class="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 12V8H6a2 2 0 0 1 0-4h14v4"/><path d="M4 6v12a2 2 0 0 0 2 2h14v-4"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+        </div>
+        <div>
+          <h3 class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">Total Net Worth</h3>
+          <p id="net-worth" class="text-4xl font-black tracking-tight text-slate-900">—</p>
+        </div>
+      </div>
+      <div class="flex flex-wrap justify-center gap-8 md:gap-16" style="position:relative;z-index:1">
+        <div class="text-center md:text-left">
+          <div class="flex items-center gap-1 mb-1">
+            <svg class="w-3 h-3 text-emerald-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+            <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Gross Assets</p>
+          </div>
+          <p id="gross-assets" class="text-xl font-bold text-emerald-600">—</p>
+        </div>
+        <div class="text-center md:text-left">
+          <div class="flex items-center gap-1 mb-1">
+            <svg class="w-3 h-3 text-rose-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="7" y1="7" x2="17" y2="17"/><polyline points="17 7 17 17 7 17"/></svg>
+            <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Total Debt</p>
+          </div>
+          <p id="gross-liabilities" class="text-xl font-bold text-rose-600">—</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-bold text-slate-800">Financial Records</h2>
+      <button onclick="openAdd()" class="no-print px-5 py-2.5 bg-blue-600 text-white font-bold rounded-xl flex items-center gap-2 hover:bg-blue-700 shadow-lg">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Entry
+      </button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="bg-emerald-50 px-6 py-4 border-b border-emerald-100 flex justify-between items-center font-bold text-sm text-emerald-800 uppercase tracking-wide">
+          Assets <span id="assets-badge" class="bg-emerald-600 text-white px-2 py-0.5 rounded text-xs"></span>
+        </div>
+        <div id="assets-list" class="divide-y divide-slate-100"></div>
+      </div>
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="bg-rose-50 px-6 py-4 border-b border-rose-100 flex justify-between items-center font-bold text-sm text-rose-800 uppercase tracking-wide">
+          Liabilities <span id="liabilities-badge" class="bg-rose-600 text-white px-2 py-0.5 rounded text-xs"></span>
+        </div>
+        <div id="liabilities-list" class="divide-y divide-slate-100"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANALYSIS TAB (hidden initially) -->
+  <div id="tab-dashboard" style="display:none" class="space-y-6">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div class="flex items-center justify-between mb-2 text-xs font-bold text-slate-400 uppercase tracking-widest">Liquid Capital
+          <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 12V8H6a2 2 0 0 1 0-4h14v4"/><path d="M4 6v12a2 2 0 0 0 2 2h14v-4"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+        </div>
+        <div id="kpi-liquid" class="text-2xl font-bold text-slate-900">—</div>
+      </div>
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div class="flex items-center justify-between mb-2 text-xs font-bold text-slate-400 uppercase tracking-widest">Portfolio Yield
+          <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+        </div>
+        <div id="kpi-yield" class="text-2xl font-bold text-blue-700">—</div>
+      </div>
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div class="flex items-center justify-between mb-2 text-xs font-bold text-slate-400 uppercase tracking-widest">Annual Rent
+          <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/></svg>
+        </div>
+        <div id="kpi-rent" class="text-2xl font-bold text-emerald-600">—</div>
+      </div>
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div class="flex items-center justify-between mb-2 text-xs font-bold text-slate-400 uppercase tracking-widest">Est. Runway
+          <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="10" y1="2" x2="14" y2="2"/><path d="M12 14l3-3"/><circle cx="12" cy="14" r="8"/></svg>
+        </div>
+        <div id="kpi-runway" class="text-2xl font-bold text-emerald-700">—</div>
+      </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+      <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-6">
+        <div>
+          <h2 class="text-lg font-bold flex items-center gap-2">
+            <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="10" y1="2" x2="14" y2="2"/><path d="M12 14l3-3"/><circle cx="12" cy="14" r="8"/></svg>
+            Survival Forecast
+          </h2>
+          <p id="forecast-desc" class="text-sm text-slate-400 mt-1"></p>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-8 no-print">
+          <div class="flex flex-col gap-2" style="min-width:200px">
+            <label class="text-xs font-bold text-slate-500 uppercase">Lifestyle Burn (Annual)</label>
+            <div class="flex items-center bg-slate-50 border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+              <div id="expense-display" class="flex-1 px-4 py-3 font-bold text-blue-600"></div>
+              <div class="flex flex-col border-l border-slate-200">
+                <button type="button" onclick="shiftExpense(1000)" class="p-2 hover:bg-slate-100 text-slate-400 border-b border-slate-200">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+                </button>
+                <button type="button" onclick="shiftExpense(-1000)" class="p-2 hover:bg-slate-100 text-slate-400">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-col gap-2" style="min-width:150px">
+            <div class="flex justify-between items-center">
+              <label class="text-xs font-bold text-slate-500 uppercase">Inflation</label>
+              <span id="inflation-label" class="text-xs font-bold text-emerald-600"></span>
+            </div>
+            <input id="inflation-slider" type="range" min="0" max="15" step="0.5"
+              oninput="setInflation(parseFloat(this.value))"
+              class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-500" />
+          </div>
+        </div>
+      </div>
+      <div style="height:320px;position:relative">
+        <canvas id="runway-chart"></canvas>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /max-w -->
+
+<!-- MODAL -->
+<div id="modal" style="display:none;position:fixed;inset:0;z-index:50;align-items:center;justify-content:center;padding:1rem">
+  <div onclick="closeModal()" style="position:absolute;inset:0;background:rgba(15,23,42,0.6);backdrop-filter:blur(4px)"></div>
+  <form id="modal-form" onsubmit="handleSave(event)" style="position:relative;background:white;border-radius:1.5rem;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);width:100%;max-width:28rem;padding:2rem;overflow-y:auto;max-height:90vh">
+    <div class="flex justify-between items-center mb-6">
+      <h2 id="modal-title" class="text-xl font-bold"></h2>
+      <button type="button" onclick="closeModal()" class="p-2 hover:bg-slate-100 rounded-full">
+        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div id="modal-body"></div>
+    <div id="modal-footer" class="flex gap-3 mt-6"></div>
+  </form>
+</div>
+
+<script>
+/* ── State ─────────────────────────────────────────────────────────────── */
+var state = {
+  items: [
+    { id:'1', name:'Investment Portfolio', value:850000, type:'asset',     category:'Investments',    returnRate:8, rentalIncome:0,     monthlyPayment:0    },
+    { id:'2', name:'Primary Residence',    value:600000, type:'asset',     category:'Property',       returnRate:3, rentalIncome:0,     monthlyPayment:0    },
+    { id:'3', name:'Rental Condo',         value:350000, type:'asset',     category:'Rental Property',returnRate:4, rentalIncome:18000, monthlyPayment:0    },
+    { id:'4', name:'Mortgage',             value:550000, type:'liability', category:'Debt',           returnRate:0, rentalIncome:0,     monthlyPayment:2800 }
+  ],
   annualExpense: 60000,
-  inflation: 3
+  inflation: 3,
+  activeTab: 'assets',
+  editingId: null
 };
-const EMPTY = {
-  name: '',
-  value: '',
-  type: 'asset',
-  category: 'Cash',
-  returnRate: 0,
-  rentalIncome: 0,
-  monthlyPayment: 0
-};
-const fmt = v => new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-  maximumFractionDigits: 0
-}).format(v);
-const App = () => {
-  const [items, setItems] = useState(DEFAULT.items);
-  const [annualExpense, setAnnualExpense] = useState(DEFAULT.annualExpense);
-  const [inflation, setInflation] = useState(DEFAULT.inflation);
-  const [ready, setReady] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState(null);
-  const [form, setForm] = useState(EMPTY);
-  const [activeTab, setActiveTab] = useState('assets');
-  useEffect(() => {
-    const s = load();
-    if (s) {
-      setItems(s.items ?? DEFAULT.items);
-      setAnnualExpense(s.annualExpense ?? DEFAULT.annualExpense);
-      setInflation(s.inflation ?? DEFAULT.inflation);
+
+var runwayChart = null;
+
+/* ── Helpers ────────────────────────────────────────────────────────────── */
+function fmt(v) {
+  return new Intl.NumberFormat('en-US', { style:'currency', currency:'USD', maximumFractionDigits:0 }).format(v);
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+function el(id) { return document.getElementById(id); }
+
+/* ── Storage ────────────────────────────────────────────────────────────── */
+function save() {
+  try {
+    localStorage.setItem('wealthtrack-v1', JSON.stringify({
+      items: state.items,
+      annualExpense: state.annualExpense,
+      inflation: state.inflation
+    }));
+  } catch(e) {}
+}
+
+function loadSaved() {
+  try {
+    var raw = localStorage.getItem('wealthtrack-v1');
+    if (!raw) return;
+    var d = JSON.parse(raw);
+    if (d.items) state.items = d.items;
+    if (d.annualExpense) state.annualExpense = d.annualExpense;
+    if (typeof d.inflation === 'number') state.inflation = d.inflation;
+  } catch(e) {}
+}
+
+/* ── Computed values ────────────────────────────────────────────────────── */
+function computeTotals() {
+  var assets = state.items.filter(function(i) { return i.type === 'asset'; });
+  var liabs  = state.items.filter(function(i) { return i.type === 'liability'; });
+
+  var totalA = assets.reduce(function(s,i) { return s + Number(i.value); }, 0);
+  var totalL = liabs.reduce(function(s,i)  { return s + Number(i.value); }, 0);
+
+  var totalRental = assets
+    .filter(function(i) { return i.category === 'Rental Property'; })
+    .reduce(function(s,i) { return s + Number(i.rentalIncome || 0); }, 0);
+
+  var totalDebt = liabs.reduce(function(s,i) { return s + Number(i.monthlyPayment || 0) * 12; }, 0);
+
+  var investable = assets.filter(function(i) {
+    return i.category !== 'Property' && i.category !== 'Rental Property';
+  });
+  var investableVal = investable.reduce(function(s,i) { return s + Number(i.value); }, 0);
+  var weightedRet   = investable.reduce(function(s,i) {
+    return s + Number(i.value) * (Number(i.returnRate || 0) / 100);
+  }, 0);
+  var avgReturn = investableVal > 0 ? (weightedRet / investableVal) * 100 : 0;
+
+  return {
+    assets: totalA,
+    liabilities: totalL,
+    netWorth: totalA - totalL,
+    liquidNetWorth: investableVal,
+    avgReturn: avgReturn,
+    totalRental: totalRental,
+    totalDebt: totalDebt
+  };
+}
+
+function computeRunway(totals) {
+  var out = [];
+  var cap      = totals.liquidNetWorth;
+  var lifestyle = state.annualExpense;
+  var debt     = totals.totalDebt;
+  var rental   = totals.totalRental;
+  var ret      = totals.avgReturn / 100;
+
+  for (var yr = 0; yr <= 40; yr++) {
+    out.push({ year: 'Yr ' + yr, capital: Math.max(0, cap) });
+    cap       = cap * (1 + ret) + rental - (lifestyle + debt);
+    lifestyle = lifestyle * (1 + state.inflation / 100);
+    rental    = rental * 1.02;
+    if (cap <= 0 && yr > 0) break;
+  }
+  return out;
+}
+
+/* ── Render ─────────────────────────────────────────────────────────────── */
+function renderAll() {
+  var t = computeTotals();
+
+  el('net-worth').textContent        = fmt(t.netWorth);
+  el('gross-assets').textContent     = fmt(t.assets);
+  el('gross-liabilities').textContent = fmt(t.liabilities);
+  el('assets-badge').textContent     = fmt(t.assets);
+  el('liabilities-badge').textContent = fmt(t.liabilities);
+
+  renderItemList('assets-list',      state.items.filter(function(i) { return i.type === 'asset'; }),     'asset');
+  renderItemList('liabilities-list', state.items.filter(function(i) { return i.type === 'liability'; }), 'liability');
+
+  el('kpi-liquid').textContent  = fmt(t.liquidNetWorth);
+  el('kpi-yield').textContent   = t.avgReturn.toFixed(1) + '%';
+  el('kpi-rent').textContent    = fmt(t.totalRental);
+
+  var runway = computeRunway(t);
+  var solventYears = runway.filter(function(d) { return d.capital > 0; }).length - 1;
+  el('kpi-runway').textContent  = (solventYears >= 40 ? '40+' : solventYears) + ' Yrs';
+
+  el('forecast-desc').textContent =
+    'Projection assumes ' + state.inflation + '% annual inflation and current lifestyle spend of ' + fmt(state.annualExpense) + '.';
+  el('expense-display').textContent = fmt(state.annualExpense);
+  el('inflation-label').textContent = state.inflation + '%';
+  el('inflation-slider').value = state.inflation;
+
+  renderChart(runway);
+}
+
+function buildingIcon() {
+  return '<svg style="display:inline;width:12px;height:12px;margin-right:2px" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>';
+}
+
+function cardIcon() {
+  return '<svg style="display:inline;width:12px;height:12px;margin-right:2px" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>';
+}
+
+function renderItemList(containerId, items, type) {
+  var c = el(containerId);
+  if (!items.length) {
+    c.innerHTML = '<div style="padding:2rem;text-align:center;color:#94a3b8;font-size:0.875rem;font-style:italic">No ' + type + 's added yet</div>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < items.length; i++) {
+    var item = items[i];
+    var sub  = '';
+    if (type === 'asset') {
+      if (Number(item.rentalIncome) > 0) {
+        sub = buildingIcon() + esc(item.category) + ' &bull; ' + fmt(item.rentalIncome) + ' Rent';
+      } else if (item.category === 'Property') {
+        sub = buildingIcon() + 'Property &bull; Primary Residence';
+      } else {
+        sub = esc(item.category) + ' &bull; ' + (item.returnRate || 0) + '% yield';
+      }
+    } else {
+      sub = cardIcon() + esc(item.category) + (Number(item.monthlyPayment) > 0 ? ' &bull; ' + fmt(item.monthlyPayment) + '/mo' : '');
     }
-    setReady(true);
-  }, []);
-  useEffect(() => {
-    if (ready) persist({
-      items,
-      annualExpense,
-      inflation
-    });
-  }, [items, annualExpense, inflation, ready]);
-  const totals = useMemo(() => {
-    const assets = items.filter(i => i.type === 'asset');
-    const liabilities = items.filter(i => i.type === 'liability');
-    const totalAssets = assets.reduce((s, i) => s + Number(i.value), 0);
-    const totalLiabilities = liabilities.reduce((s, i) => s + Number(i.value), 0);
-    const totalRental = assets.filter(i => i.category === 'Rental Property').reduce((s, i) => s + Number(i.rentalIncome || 0), 0);
-    const totalDebt = liabilities.reduce((s, i) => s + Number(i.monthlyPayment || 0) * 12, 0);
-    const investable = assets.filter(i => i.category !== 'Property' && i.category !== 'Rental Property');
-    const investableVal = investable.reduce((s, i) => s + Number(i.value), 0);
-    const weightedRet = investable.reduce((s, i) => s + Number(i.value) * (Number(i.returnRate || 0) / 100), 0);
-    const avgReturn = investableVal > 0 ? weightedRet / investableVal * 100 : 0;
-    return {
-      assets: totalAssets,
-      liabilities: totalLiabilities,
-      netWorth: totalAssets - totalLiabilities,
-      liquidNetWorth: investableVal,
-      avgReturn,
-      totalRental,
-      totalDebt
-    };
-  }, [items]);
-  const runwayData = useMemo(() => {
-    const out = [];
-    let cap = totals.liquidNetWorth,
-      lifestyle = annualExpense,
-      debt = totals.totalDebt,
-      rental = totals.totalRental;
-    const ret = totals.avgReturn / 100;
-    for (let yr = 0; yr <= 40; yr++) {
-      out.push({
-        year: `Yr ${yr}`,
-        remainingCapital: Math.max(0, cap)
-      });
-      cap = cap * (1 + ret) + rental - (lifestyle + debt);
-      lifestyle *= 1 + inflation / 100;
-      rental *= 1.02;
-      if (cap <= 0 && yr > 0) break;
-    }
-    return out;
-  }, [totals, annualExpense, inflation]);
-  const runwayYears = runwayData.filter(d => d.remainingCapital > 0).length - 1;
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setEditingItem(null);
-  };
-  const openAdd = () => {
-    setEditingItem(null);
-    setForm(EMPTY);
-    setIsModalOpen(true);
-  };
-  const openEdit = item => {
-    setEditingItem(item);
-    setForm({
-      ...item
-    });
-    setIsModalOpen(true);
-  };
-  const handleSave = e => {
-    e.preventDefault();
-    if (!form.name || !form.value) return;
-    const item = {
-      ...form,
-      value: parseFloat(form.value),
-      returnRate: parseFloat(form.returnRate || 0),
-      rentalIncome: form.category === 'Rental Property' ? parseFloat(form.rentalIncome || 0) : 0,
-      monthlyPayment: form.type === 'liability' ? parseFloat(form.monthlyPayment || 0) : 0
-    };
-    setItems(prev => editingItem ? prev.map(i => i.id === editingItem.id ? {
-      ...item,
-      id: editingItem.id
-    } : i) : [...prev, {
-      ...item,
-      id: Date.now().toString()
-    }]);
-    closeModal();
-  };
-  const handleDelete = () => {
-    if (!editingItem) return;
-    setItems(prev => prev.filter(i => i.id !== editingItem.id));
-    closeModal();
-  };
-  const shiftExpense = delta => setAnnualExpense(prev => Math.max(0, prev + delta));
-  return /*#__PURE__*/React.createElement("div", {
-    className: "min-h-screen bg-slate-50 text-slate-900 p-4 md:p-8"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "max-w-6xl mx-auto"
-  }, /*#__PURE__*/React.createElement("header", {
-    className: "flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4"
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center gap-2"
-  }, /*#__PURE__*/React.createElement("h1", {
-    className: "text-3xl font-bold text-slate-800 tracking-tight"
-  }, "WealthTrack"), /*#__PURE__*/React.createElement("span", {
-    className: "px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-[10px] font-bold uppercase tracking-wider"
-  }, "Saved Locally")), /*#__PURE__*/React.createElement("p", {
-    className: "text-slate-500 text-sm"
-  }, "Financial Position Report • ", new Date().toLocaleDateString())), /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center gap-3 no-print"
-  }, /*#__PURE__*/React.createElement("button", {
-    onClick: () => window.print(),
-    className: "flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 shadow-sm"
-  }, /*#__PURE__*/React.createElement(Printer, {
-    className: "w-4 h-4"
-  }), " Print"), /*#__PURE__*/React.createElement("div", {
-    className: "flex bg-white rounded-xl p-1 shadow-sm border border-slate-200"
-  }, ['assets', 'dashboard'].map(tab => /*#__PURE__*/React.createElement("button", {
-    key: tab,
-    onClick: () => setActiveTab(tab),
-    className: `px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === tab ? 'bg-blue-600 text-white shadow-md' : 'text-slate-600 hover:bg-slate-100'}`
-  }, tab === 'assets' ? 'Ledger' : 'Analysis'))))), activeTab === 'assets' && /*#__PURE__*/React.createElement("div", {
-    className: "space-y-6"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "bg-white border border-slate-200 rounded-[2rem] p-8 shadow-sm flex flex-col md:flex-row justify-between items-center gap-8 relative overflow-hidden"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "absolute top-0 right-0 w-64 h-64 bg-blue-50 rounded-full -mr-24 -mt-24 blur-3xl opacity-50 pointer-events-none"
-  }), /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center gap-6 relative z-10"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "p-4 bg-blue-50 rounded-2xl border border-blue-100"
-  }, /*#__PURE__*/React.createElement(Wallet, {
-    className: "w-10 h-10 text-blue-600"
-  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
-    className: "text-slate-400 text-xs font-bold uppercase tracking-widest mb-1"
-  }, "Total Net Worth"), /*#__PURE__*/React.createElement("p", {
-    className: "text-4xl font-black tracking-tight text-slate-900"
-  }, fmt(totals.netWorth)))), /*#__PURE__*/React.createElement("div", {
-    className: "flex flex-wrap justify-center gap-8 md:gap-16 relative z-10"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "text-center md:text-left"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center gap-1.5 mb-1"
-  }, /*#__PURE__*/React.createElement(ArrowUpRight, {
-    className: "w-3 h-3 text-emerald-500"
-  }), /*#__PURE__*/React.createElement("p", {
-    className: "text-slate-400 text-xs font-bold uppercase tracking-widest"
-  }, "Gross Assets")), /*#__PURE__*/React.createElement("p", {
-    className: "text-xl font-bold text-emerald-600"
-  }, fmt(totals.assets))), /*#__PURE__*/React.createElement("div", {
-    className: "text-center md:text-left"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center gap-1.5 mb-1"
-  }, /*#__PURE__*/React.createElement(ArrowDownRight, {
-    className: "w-3 h-3 text-rose-500"
-  }), /*#__PURE__*/React.createElement("p", {
-    className: "text-slate-400 text-xs font-bold uppercase tracking-widest"
-  }, "Total Debt")), /*#__PURE__*/React.createElement("p", {
-    className: "text-xl font-bold text-rose-600"
-  }, fmt(totals.liabilities))))), /*#__PURE__*/React.createElement("div", {
-    className: "flex justify-between items-center"
-  }, /*#__PURE__*/React.createElement("h2", {
-    className: "text-xl font-bold text-slate-800"
-  }, "Financial Records"), /*#__PURE__*/React.createElement("button", {
-    onClick: openAdd,
-    className: "no-print px-5 py-2.5 bg-blue-600 text-white font-bold rounded-xl flex items-center hover:bg-blue-700 transition-colors shadow-lg"
-  }, /*#__PURE__*/React.createElement(Plus, {
-    className: "w-5 h-5 mr-2"
-  }), " Add Entry")), /*#__PURE__*/React.createElement("div", {
-    className: "grid grid-cols-1 md:grid-cols-2 gap-6"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "bg-emerald-50 px-6 py-4 border-b border-emerald-100 flex justify-between items-center font-bold text-sm text-emerald-800 uppercase tracking-wide"
-  }, "Assets ", /*#__PURE__*/React.createElement("span", {
-    className: "bg-emerald-600 text-white px-2 py-0.5 rounded text-[10px]"
-  }, fmt(totals.assets))), /*#__PURE__*/React.createElement("div", {
-    className: "divide-y divide-slate-100"
-  }, items.filter(i => i.type === 'asset').length === 0 && /*#__PURE__*/React.createElement("div", {
-    className: "p-8 text-center text-slate-400 text-sm italic"
-  }, "No assets added yet"), items.filter(i => i.type === 'asset').map(item => /*#__PURE__*/React.createElement("div", {
-    key: item.id,
-    onClick: () => openEdit(item),
-    className: "p-4 flex justify-between items-center hover:bg-slate-50 cursor-pointer group"
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    className: "text-sm font-bold text-slate-800 group-hover:text-blue-600"
-  }, item.name), /*#__PURE__*/React.createElement("div", {
-    className: "text-[10px] text-slate-400 uppercase tracking-tighter flex items-center gap-1.5"
-  }, (item.category === 'Property' || item.category === 'Rental Property') && /*#__PURE__*/React.createElement(Building2, {
-    className: "w-3 h-3 text-slate-400"
-  }), item.category, item.rentalIncome > 0 ? ` • ${fmt(item.rentalIncome)} Rent` : item.category === 'Property' ? ' • Primary Residence' : ` • ${item.returnRate}% yield`)), /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center gap-3"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "font-bold text-sm text-emerald-700"
-  }, fmt(item.value)), /*#__PURE__*/React.createElement(ChevronRight, {
-    className: "w-4 h-4 text-slate-300 group-hover:text-slate-400"
-  })))))), /*#__PURE__*/React.createElement("div", {
-    className: "bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "bg-rose-50 px-6 py-4 border-b border-rose-100 flex justify-between items-center font-bold text-sm text-rose-800 uppercase tracking-wide"
-  }, "Liabilities ", /*#__PURE__*/React.createElement("span", {
-    className: "bg-rose-600 text-white px-2 py-0.5 rounded text-[10px]"
-  }, fmt(totals.liabilities))), /*#__PURE__*/React.createElement("div", {
-    className: "divide-y divide-slate-100"
-  }, items.filter(i => i.type === 'liability').length === 0 && /*#__PURE__*/React.createElement("div", {
-    className: "p-8 text-center text-slate-400 text-sm italic"
-  }, "No liabilities added yet"), items.filter(i => i.type === 'liability').map(item => /*#__PURE__*/React.createElement("div", {
-    key: item.id,
-    onClick: () => openEdit(item),
-    className: "p-4 flex justify-between items-center hover:bg-slate-50 cursor-pointer group"
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    className: "text-sm font-bold text-slate-800 group-hover:text-blue-600"
-  }, item.name), /*#__PURE__*/React.createElement("div", {
-    className: "text-[10px] text-slate-400 uppercase tracking-tighter flex items-center gap-1.5"
-  }, /*#__PURE__*/React.createElement(CreditCard, {
-    className: "w-3 h-3 text-slate-400"
-  }), item.category, item.monthlyPayment > 0 ? ` • ${fmt(item.monthlyPayment)}/mo` : '')), /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center gap-3"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "font-bold text-rose-600 text-sm"
-  }, "(", fmt(item.value), ")"), /*#__PURE__*/React.createElement(ChevronRight, {
-    className: "w-4 h-4 text-slate-300 group-hover:text-slate-400"
-  })))))))), activeTab === 'dashboard' && /*#__PURE__*/React.createElement("div", {
-    className: "space-y-6"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "grid grid-cols-2 md:grid-cols-4 gap-6"
-  }, [{
-    label: 'Liquid Capital',
-    value: fmt(totals.liquidNetWorth),
-    Icon: Wallet,
-    color: 'text-slate-900'
-  }, {
-    label: 'Portfolio Yield',
-    value: `${totals.avgReturn.toFixed(1)}%`,
-    Icon: Percent,
-    color: 'text-blue-700'
-  }, {
-    label: 'Annual Rent',
-    value: fmt(totals.totalRental),
-    Icon: Coins,
-    color: 'text-emerald-600'
-  }, {
-    label: 'Est. Runway',
-    value: `${runwayYears >= 40 ? '40+' : runwayYears} Yrs`,
-    Icon: Timer,
-    color: 'text-emerald-700'
-  }].map(({
-    label,
-    value,
-    Icon: I,
-    color
-  }) => /*#__PURE__*/React.createElement("div", {
-    key: label,
-    className: "bg-white p-6 rounded-2xl shadow-sm border border-slate-200"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center justify-between mb-2 text-xs font-bold text-slate-400 uppercase tracking-widest"
-  }, label, " ", /*#__PURE__*/React.createElement(I, {
-    className: "w-4 h-4 text-blue-500"
-  })), /*#__PURE__*/React.createElement("div", {
-    className: `text-2xl font-bold ${color}`
-  }, value)))), /*#__PURE__*/React.createElement("div", {
-    className: "bg-white p-6 rounded-2xl shadow-sm border border-slate-200"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "flex flex-col md:flex-row md:items-center justify-between mb-8 gap-6"
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h2", {
-    className: "text-lg font-bold flex items-center"
-  }, /*#__PURE__*/React.createElement(Timer, {
-    className: "w-5 h-5 mr-2 text-emerald-500"
-  }), " Survival Forecast"), /*#__PURE__*/React.createElement("p", {
-    className: "text-sm text-slate-400 mt-1"
-  }, "Projection assumes ", inflation, "% annual inflation and current lifestyle spend of ", fmt(annualExpense), ".")), /*#__PURE__*/React.createElement("div", {
-    className: "flex flex-col sm:flex-row gap-8 no-print"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "flex flex-col gap-2 min-w-[200px]"
-  }, /*#__PURE__*/React.createElement("label", {
-    className: "text-xs font-bold text-slate-500 uppercase"
-  }, "Lifestyle Burn (Annual)"), /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center bg-slate-50 border border-slate-200 rounded-xl overflow-hidden shadow-sm"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "flex-1 px-4 py-3 font-bold text-blue-600"
-  }, fmt(annualExpense)), /*#__PURE__*/React.createElement("div", {
-    className: "flex flex-col border-l border-slate-200"
-  }, /*#__PURE__*/React.createElement("button", {
-    onClick: () => shiftExpense(1000),
-    className: "p-1.5 hover:bg-slate-100 text-slate-400 hover:text-blue-600 border-b border-slate-200"
-  }, /*#__PURE__*/React.createElement(ChevronUp, {
-    className: "w-3 h-3"
-  })), /*#__PURE__*/React.createElement("button", {
-    onClick: () => shiftExpense(-1000),
-    className: "p-1.5 hover:bg-slate-100 text-slate-400 hover:text-blue-600"
-  }, /*#__PURE__*/React.createElement(ChevronDown, {
-    className: "w-3 h-3"
-  }))))), /*#__PURE__*/React.createElement("div", {
-    className: "flex flex-col gap-2 min-w-[150px]"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "flex justify-between"
-  }, /*#__PURE__*/React.createElement("label", {
-    className: "text-xs font-bold text-slate-500 uppercase"
-  }, "Inflation"), /*#__PURE__*/React.createElement("span", {
-    className: "text-xs font-bold text-emerald-600"
-  }, inflation, "%")), /*#__PURE__*/React.createElement("input", {
-    type: "range",
-    min: "0",
-    max: "15",
-    step: "0.5",
-    value: inflation,
-    onChange: e => setInflation(Number(e.target.value)),
-    className: "w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-500"
-  })))), /*#__PURE__*/React.createElement("div", {
-    className: "h-80"
-  }, /*#__PURE__*/React.createElement(ResponsiveContainer, {
-    width: "100%",
-    height: "100%"
-  }, /*#__PURE__*/React.createElement(BarChart, {
-    data: runwayData
-  }, /*#__PURE__*/React.createElement(CartesianGrid, {
-    strokeDasharray: "3 3",
-    vertical: false,
-    stroke: "#f1f5f9"
-  }), /*#__PURE__*/React.createElement(XAxis, {
-    dataKey: "year",
-    axisLine: false,
-    tickLine: false,
-    fontSize: 11,
-    stroke: "#94a3b8"
-  }), /*#__PURE__*/React.createElement(YAxis, {
-    axisLine: false,
-    tickLine: false,
-    fontSize: 11,
-    stroke: "#94a3b8",
-    tickFormatter: v => `$${v / 1000}k`
-  }), /*#__PURE__*/React.createElement(Tooltip, {
-    formatter: v => fmt(v),
-    cursor: {
-      fill: '#f8fafc'
+
+    var valHtml = type === 'asset'
+      ? '<span style="font-weight:700;font-size:0.875rem;color:#059669">' + fmt(item.value) + '</span>'
+      : '<span style="font-weight:700;font-size:0.875rem;color:#e11d48">(' + fmt(item.value) + ')</span>';
+
+    var chevron = '<svg style="width:16px;height:16px;color:#cbd5e1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>';
+
+    html += '<div onclick="openEdit(\'' + esc(item.id) + '\')" style="padding:1rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onmouseover="this.style.background=\'#f8fafc\'" onmouseout="this.style.background=\'\'">'
+      + '<div>'
+      + '<div style="font-size:0.875rem;font-weight:700;color:#1e293b">' + esc(item.name) + '</div>'
+      + '<div style="font-size:0.65rem;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-top:2px">' + sub + '</div>'
+      + '</div>'
+      + '<div style="display:flex;align-items:center;gap:0.75rem">' + valHtml + chevron + '</div>'
+      + '</div>';
+  }
+  c.innerHTML = html;
+}
+
+function renderChart(runway) {
+  var canvas = el('runway-chart');
+  if (!canvas) return;
+  var labels = runway.map(function(d) { return d.year; });
+  var values = runway.map(function(d) { return d.capital; });
+
+  if (runwayChart) {
+    runwayChart.data.labels = labels;
+    runwayChart.data.datasets[0].data = values;
+    runwayChart.update('none');
+    return;
+  }
+  runwayChart = new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Deployable Capital',
+        data: values,
+        backgroundColor: '#3b82f6',
+        borderRadius: 6,
+        borderSkipped: false
+      }]
     },
-    contentStyle: {
-      borderRadius: '16px',
-      border: 'none',
-      boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)'
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: { label: function(ctx) { return fmt(ctx.raw); } },
+          backgroundColor: 'white',
+          titleColor: '#1e293b',
+          bodyColor: '#3b82f6',
+          borderColor: '#e2e8f0',
+          borderWidth: 1,
+          padding: 12,
+          cornerRadius: 12
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { color: '#94a3b8', font: { size: 11 } }
+        },
+        y: {
+          grid: { color: '#f1f5f9' },
+          ticks: {
+            color: '#94a3b8',
+            font: { size: 11 },
+            callback: function(v) { return '$' + (v / 1000) + 'k'; }
+          }
+        }
+      }
     }
-  }), /*#__PURE__*/React.createElement(Bar, {
-    dataKey: "remainingCapital",
-    fill: "#3b82f6",
-    radius: [6, 6, 0, 0],
-    name: "Deployable Capital"
-  })))))), isModalOpen && /*#__PURE__*/React.createElement("div", {
-    className: "fixed inset-0 z-50 flex items-center justify-center p-4"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "absolute inset-0 bg-slate-900/60 backdrop-blur-sm",
-    onClick: closeModal
-  }), /*#__PURE__*/React.createElement("form", {
-    onSubmit: handleSave,
-    className: "relative bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 space-y-6"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "flex justify-between items-center"
-  }, /*#__PURE__*/React.createElement("h2", {
-    className: "text-xl font-bold"
-  }, editingItem ? 'Edit Record' : 'New Record'), /*#__PURE__*/React.createElement("button", {
-    type: "button",
-    onClick: closeModal,
-    className: "p-2 hover:bg-slate-100 rounded-full"
-  }, /*#__PURE__*/React.createElement(X, {
-    className: "w-5 h-5 text-slate-400"
-  }))), /*#__PURE__*/React.createElement("div", {
-    className: "space-y-4"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "space-y-2"
-  }, /*#__PURE__*/React.createElement("label", {
-    className: "text-xs font-bold text-slate-500 uppercase tracking-wider"
-  }, "Description"), /*#__PURE__*/React.createElement("input", {
-    type: "text",
-    placeholder: "e.g. Portfolio or Mortgage",
-    required: true,
-    className: "w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none",
-    value: form.name,
-    onChange: e => setForm({
-      ...form,
-      name: e.target.value
-    })
-  })), /*#__PURE__*/React.createElement("div", {
-    className: "grid grid-cols-2 gap-4"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "space-y-2"
-  }, /*#__PURE__*/React.createElement("label", {
-    className: "text-xs font-bold text-slate-500 uppercase tracking-wider"
-  }, form.type === 'asset' ? 'Current Value ($)' : 'Remaining Balance ($)'), /*#__PURE__*/React.createElement("input", {
-    type: "number",
-    required: true,
-    className: "w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none",
-    value: form.value,
-    onChange: e => setForm({
-      ...form,
-      value: e.target.value
-    })
-  })), form.type === 'asset' ? /*#__PURE__*/React.createElement("div", {
-    className: "space-y-2"
-  }, /*#__PURE__*/React.createElement("label", {
-    className: "text-xs font-bold text-slate-500 uppercase tracking-wider"
-  }, "Growth (%)"), /*#__PURE__*/React.createElement("input", {
-    type: "number",
-    step: "0.1",
-    className: "w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none",
-    value: form.returnRate,
-    onChange: e => setForm({
-      ...form,
-      returnRate: e.target.value
-    })
-  })) : /*#__PURE__*/React.createElement("div", {
-    className: "space-y-2"
-  }, /*#__PURE__*/React.createElement("label", {
-    className: "text-xs font-bold text-rose-600 uppercase tracking-wider"
-  }, "Monthly Payment"), /*#__PURE__*/React.createElement("input", {
-    type: "number",
-    placeholder: "0",
-    className: "w-full p-4 bg-rose-50 border border-rose-100 rounded-2xl focus:ring-2 focus:ring-rose-500 outline-none text-rose-700 font-bold",
-    value: form.monthlyPayment,
-    onChange: e => setForm({
-      ...form,
-      monthlyPayment: e.target.value
-    })
-  }))), /*#__PURE__*/React.createElement("div", {
-    className: "grid grid-cols-2 gap-4"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "space-y-2"
-  }, /*#__PURE__*/React.createElement("label", {
-    className: "text-xs font-bold text-slate-500 uppercase tracking-wider"
-  }, "Category"), /*#__PURE__*/React.createElement("select", {
-    className: "w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none",
-    value: form.category,
-    onChange: e => setForm({
-      ...form,
-      category: e.target.value
-    })
-  }, /*#__PURE__*/React.createElement("option", {
-    value: "Cash"
-  }, "Cash"), /*#__PURE__*/React.createElement("option", {
-    value: "Investments"
-  }, "Investments"), /*#__PURE__*/React.createElement("option", {
-    value: "Rental Property"
-  }, "Rental Property"), /*#__PURE__*/React.createElement("option", {
-    value: "Property"
-  }, "Primary Residence"), /*#__PURE__*/React.createElement("option", {
-    value: "Debt"
-  }, "General Debt"))), /*#__PURE__*/React.createElement("div", {
-    className: "space-y-2"
-  }, /*#__PURE__*/React.createElement("label", {
-    className: "text-xs font-bold text-slate-500 uppercase tracking-wider"
-  }, "Type"), /*#__PURE__*/React.createElement("select", {
-    className: "w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none font-bold",
-    value: form.type,
-    onChange: e => setForm({
-      ...form,
-      type: e.target.value
-    })
-  }, /*#__PURE__*/React.createElement("option", {
-    value: "asset"
-  }, "Asset (+)"), /*#__PURE__*/React.createElement("option", {
-    value: "liability"
-  }, "Liability (-)")))), form.category === 'Rental Property' && /*#__PURE__*/React.createElement("div", {
-    className: "space-y-2 p-4 bg-emerald-50 rounded-2xl border border-emerald-100"
-  }, /*#__PURE__*/React.createElement("label", {
-    className: "text-xs font-bold text-emerald-700 uppercase tracking-wider"
-  }, "Net Annual Rental Income ($)"), /*#__PURE__*/React.createElement("input", {
-    type: "number",
-    className: "w-full p-3 bg-white border border-emerald-200 rounded-xl font-bold text-emerald-700 outline-none focus:ring-2 focus:ring-emerald-500",
-    value: form.rentalIncome,
-    onChange: e => setForm({
-      ...form,
-      rentalIncome: e.target.value
-    })
-  }))), /*#__PURE__*/React.createElement("div", {
-    className: "pt-4 flex gap-3"
-  }, editingItem && /*#__PURE__*/React.createElement("button", {
-    type: "button",
-    onClick: handleDelete,
-    className: "flex-1 py-4 border border-rose-200 text-rose-500 font-bold rounded-2xl hover:bg-rose-50 flex items-center justify-center gap-2"
-  }, /*#__PURE__*/React.createElement(Trash2, {
-    className: "w-4 h-4"
-  }), " Delete"), /*#__PURE__*/React.createElement("button", {
-    type: "submit",
-    className: "flex-[2] py-4 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 shadow-xl transition-all active:scale-[0.98]"
-  }, editingItem ? 'Update Entry' : 'Add to Ledger'))))));
-};
-ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(App, null));  </script>
+  });
+}
+
+/* ── Tab switching ──────────────────────────────────────────────────────── */
+function switchTab(tab) {
+  state.activeTab = tab;
+  el('tab-assets').style.display    = tab === 'assets'    ? '' : 'none';
+  el('tab-dashboard').style.display = tab === 'dashboard' ? '' : 'none';
+
+  var activeClass   = 'px-4 py-2 rounded-lg text-sm font-medium bg-blue-600 text-white shadow-md';
+  var inactiveClass = 'px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100';
+  el('btn-assets').className    = tab === 'assets'    ? activeClass : inactiveClass;
+  el('btn-dashboard').className = tab === 'dashboard' ? activeClass : inactiveClass;
+
+  if (tab === 'dashboard') { renderAll(); }
+}
+
+/* ── Controls ───────────────────────────────────────────────────────────── */
+function shiftExpense(delta) {
+  state.annualExpense = Math.max(0, state.annualExpense + delta);
+  save();
+  renderAll();
+}
+
+function setInflation(val) {
+  state.inflation = val;
+  save();
+  renderAll();
+}
+
+/* ── Modal ──────────────────────────────────────────────────────────────── */
+function openAdd() {
+  state.editingId = null;
+  showModal(null);
+}
+
+function openEdit(id) {
+  state.editingId = id;
+  var item = null;
+  for (var i = 0; i < state.items.length; i++) {
+    if (state.items[i].id === id) { item = state.items[i]; break; }
+  }
+  showModal(item);
+}
+
+function closeModal() {
+  el('modal').style.display = 'none';
+  state.editingId = null;
+}
+
+function showModal(item) {
+  var isEdit   = !!item;
+  var type     = item ? item.type     : 'asset';
+  var category = item ? item.category : 'Cash';
+  var name     = item ? item.name     : '';
+  var value    = item ? item.value    : '';
+  var rate     = item ? (item.returnRate    || 0) : 0;
+  var payment  = item ? (item.monthlyPayment|| 0) : 0;
+  var rental   = item ? (item.rentalIncome  || 0) : 0;
+
+  el('modal-title').textContent = isEdit ? 'Edit Record' : 'New Record';
+
+  var secondaryField = type === 'asset'
+    ? '<label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Growth (%)</label>'
+      + '<input type="number" id="f-rate" step="0.1" value="' + esc(rate) + '" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none mt-1" />'
+    : '<label class="text-xs font-bold text-rose-600 uppercase tracking-wider">Monthly Payment</label>'
+      + '<input type="number" id="f-payment" placeholder="0" value="' + esc(payment) + '" class="w-full p-4 bg-rose-50 border border-rose-100 rounded-2xl outline-none text-rose-700 font-bold mt-1" />';
+
+  var rentalField = category === 'Rental Property'
+    ? '<div class="p-4 bg-emerald-50 rounded-2xl border border-emerald-100 mt-4">'
+      + '<label class="text-xs font-bold text-emerald-700 uppercase tracking-wider">Net Annual Rental Income ($)</label>'
+      + '<input type="number" id="f-rental" value="' + esc(rental) + '" class="w-full p-3 bg-white border border-emerald-200 rounded-xl font-bold text-emerald-700 outline-none mt-1" />'
+      + '</div>'
+    : '';
+
+  var cats = ['Cash','Investments','Rental Property','Property','Debt'];
+  var catOptions = cats.map(function(c) {
+    return '<option value="' + c + '"' + (c === category ? ' selected' : '') + '>' + (c === 'Property' ? 'Primary Residence' : c) + '</option>';
+  }).join('');
+
+  el('modal-body').innerHTML =
+    '<div class="space-y-1">'
+    + '<label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Description</label>'
+    + '<input type="text" id="f-name" required placeholder="e.g. Portfolio or Mortgage" value="' + esc(name) + '" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none" />'
+    + '</div>'
+    + '<div class="grid grid-cols-2 gap-4 mt-4">'
+    + '<div><label class="text-xs font-bold text-slate-500 uppercase tracking-wider">' + (type === 'asset' ? 'Current Value ($)' : 'Remaining Balance ($)') + '</label>'
+    + '<input type="number" id="f-value" required value="' + esc(value) + '" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none mt-1" /></div>'
+    + '<div id="secondary-wrap">' + secondaryField + '</div>'
+    + '</div>'
+    + '<div class="grid grid-cols-2 gap-4 mt-4">'
+    + '<div><label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Category</label>'
+    + '<select id="f-category" onchange="onCategoryChange()" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none mt-1">' + catOptions + '</select></div>'
+    + '<div><label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Type</label>'
+    + '<select id="f-type" onchange="onTypeChange()" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none font-bold mt-1">'
+    + '<option value="asset"' + (type==='asset' ? ' selected' : '') + '>Asset (+)</option>'
+    + '<option value="liability"' + (type==='liability' ? ' selected' : '') + '>Liability (-)</option>'
+    + '</select></div>'
+    + '</div>'
+    + '<div id="rental-wrap">' + rentalField + '</div>';
+
+  var deleteBtn = isEdit
+    ? '<button type="button" onclick="handleDelete()" style="flex:1" class="py-4 border border-rose-200 text-rose-500 font-bold rounded-2xl hover:bg-rose-50 flex items-center justify-center gap-2">'
+      + '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>'
+      + ' Delete</button>'
+    : '';
+
+  el('modal-footer').innerHTML = deleteBtn
+    + '<button type="submit" style="flex:2" class="py-4 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 shadow-xl">'
+    + (isEdit ? 'Update Entry' : 'Add to Ledger') + '</button>';
+
+  el('modal').style.display = 'flex';
+}
+
+function onTypeChange() {
+  var type = el('f-type').value;
+  el('secondary-wrap').innerHTML = type === 'asset'
+    ? '<label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Growth (%)</label>'
+      + '<input type="number" id="f-rate" step="0.1" value="0" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none mt-1" />'
+    : '<label class="text-xs font-bold text-rose-600 uppercase tracking-wider">Monthly Payment</label>'
+      + '<input type="number" id="f-payment" placeholder="0" value="0" class="w-full p-4 bg-rose-50 border border-rose-100 rounded-2xl outline-none text-rose-700 font-bold mt-1" />';
+}
+
+function onCategoryChange() {
+  var cat = el('f-category').value;
+  el('rental-wrap').innerHTML = cat === 'Rental Property'
+    ? '<div class="p-4 bg-emerald-50 rounded-2xl border border-emerald-100 mt-4">'
+      + '<label class="text-xs font-bold text-emerald-700 uppercase tracking-wider">Net Annual Rental Income ($)</label>'
+      + '<input type="number" id="f-rental" value="0" class="w-full p-3 bg-white border border-emerald-200 rounded-xl font-bold text-emerald-700 outline-none mt-1" />'
+      + '</div>'
+    : '';
+}
+
+function handleSave(e) {
+  e.preventDefault();
+  var nameEl   = el('f-name');
+  var valueEl  = el('f-value');
+  var typeEl   = el('f-type');
+  var catEl    = el('f-category');
+  var rateEl   = el('f-rate');
+  var payEl    = el('f-payment');
+  var rentEl   = el('f-rental');
+
+  var name  = nameEl  ? nameEl.value.trim()         : '';
+  var value = valueEl ? parseFloat(valueEl.value)   : NaN;
+  if (!name || isNaN(value)) return;
+
+  var type     = typeEl  ? typeEl.value  : 'asset';
+  var category = catEl   ? catEl.value   : 'Cash';
+  var rate     = rateEl  ? parseFloat(rateEl.value  || 0) : 0;
+  var payment  = payEl   ? parseFloat(payEl.value   || 0) : 0;
+  var rental   = rentEl  ? parseFloat(rentEl.value  || 0) : 0;
+
+  var item = {
+    name:           name,
+    value:          value,
+    type:           type,
+    category:       category,
+    returnRate:     rate,
+    monthlyPayment: type === 'liability'          ? payment : 0,
+    rentalIncome:   category === 'Rental Property' ? rental  : 0
+  };
+
+  if (state.editingId) {
+    for (var i = 0; i < state.items.length; i++) {
+      if (state.items[i].id === state.editingId) {
+        item.id = state.editingId;
+        state.items[i] = item;
+        break;
+      }
+    }
+  } else {
+    item.id = String(Date.now());
+    state.items.push(item);
+  }
+
+  save();
+  closeModal();
+  renderAll();
+}
+
+function handleDelete() {
+  if (!state.editingId) return;
+  var id = state.editingId;
+  state.items = state.items.filter(function(i) { return i.id !== id; });
+  save();
+  closeModal();
+  renderAll();
+}
+
+/* ── Init ───────────────────────────────────────────────────────────────── */
+el('hdr-date').textContent = 'Financial Position Report • ' + new Date().toLocaleDateString();
+loadSaved();
+el('inflation-slider').value = state.inflation;
+renderAll();
+</script>
 </body>
 </html>
