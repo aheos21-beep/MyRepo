@@ -23,6 +23,9 @@
       <p id="hdr-date" class="text-slate-500 text-sm"></p>
     </div>
     <div class="flex items-center gap-3 no-print">
+      <button onclick="openSettings()" class="flex items-center justify-center w-10 h-10 bg-white border border-slate-200 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-slate-700 shadow-sm" title="Settings">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
       <button onclick="window.print()" class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 shadow-sm">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
         Print
@@ -161,6 +164,26 @@
 
 </div><!-- /max-w -->
 
+<!-- SETTINGS MODAL -->
+<div id="settings-modal" style="display:none;position:fixed;inset:0;z-index:50;align-items:center;justify-content:center;padding:1rem">
+  <div onclick="closeSettings()" style="position:absolute;inset:0;background:rgba(15,23,42,0.6);backdrop-filter:blur(4px)"></div>
+  <div style="position:relative;background:white;border-radius:1.5rem;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);width:100%;max-width:24rem;padding:2rem">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-xl font-bold text-slate-800">Settings</h2>
+      <button type="button" onclick="closeSettings()" class="p-2 hover:bg-slate-100 rounded-full">
+        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div>
+      <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Your Current Age</label>
+      <p class="text-xs text-slate-400 mt-1 mb-2">Displays your age alongside elapsed years in the Survival Forecast chart.</p>
+      <input type="number" id="settings-age" min="1" max="120" placeholder="e.g. 45"
+        class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none text-slate-900 font-bold" />
+    </div>
+    <button onclick="saveSettings()" class="w-full mt-6 py-4 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 shadow-xl">Save Settings</button>
+  </div>
+</div>
+
 <!-- MODAL -->
 <div id="modal" style="display:none;position:fixed;inset:0;z-index:50;align-items:center;justify-content:center;padding:1rem">
   <div onclick="closeModal()" style="position:absolute;inset:0;background:rgba(15,23,42,0.6);backdrop-filter:blur(4px)"></div>
@@ -187,6 +210,7 @@ var state = {
   ],
   annualExpense: 60000,
   inflation: 3,
+  age: 0,
   activeTab: 'assets',
   editingId: null
 };
@@ -214,7 +238,8 @@ function save() {
     localStorage.setItem('wealthtrack-v1', JSON.stringify({
       items: state.items,
       annualExpense: state.annualExpense,
-      inflation: state.inflation
+      inflation: state.inflation,
+      age: state.age
     }));
   } catch(e) {}
 }
@@ -227,6 +252,7 @@ function loadSaved() {
     if (d.items) state.items = d.items;
     if (d.annualExpense) state.annualExpense = d.annualExpense;
     if (typeof d.inflation === 'number') state.inflation = d.inflation;
+    if (typeof d.age === 'number') state.age = d.age;
   } catch(e) {}
 }
 
@@ -362,13 +388,15 @@ function renderItemList(containerId, items, type) {
 function renderChart(runway) {
   var canvas = el('runway-chart');
   if (!canvas) return;
-  var labels = runway.map(function(d) { return d.year; });
+  var labels = runway.map(function(d, i) {
+    return state.age > 0 ? ['Yr ' + i, 'Age ' + (state.age + i)] : 'Yr ' + i;
+  });
   var values = runway.map(function(d) { return d.capital; });
 
   if (runwayChart) {
     runwayChart.data.labels = labels;
     runwayChart.data.datasets[0].data = values;
-    runwayChart.update('none');
+    runwayChart.update();
     return;
   }
   runwayChart = new Chart(canvas, {
@@ -441,6 +469,26 @@ function shiftExpense(delta) {
 function setInflation(val) {
   state.inflation = val;
   save();
+  renderAll();
+}
+
+/* ── Settings ───────────────────────────────────────────────────────────── */
+function openSettings() {
+  el('settings-age').value = state.age > 0 ? state.age : '';
+  el('settings-modal').style.display = 'flex';
+}
+
+function closeSettings() {
+  el('settings-modal').style.display = 'none';
+}
+
+function saveSettings() {
+  var ageEl = el('settings-age');
+  var age = ageEl ? parseInt(ageEl.value, 10) : 0;
+  state.age = (age > 0 && age < 120) ? age : 0;
+  save();
+  closeSettings();
+  if (runwayChart) { runwayChart.destroy(); runwayChart = null; }
   renderAll();
 }
 
