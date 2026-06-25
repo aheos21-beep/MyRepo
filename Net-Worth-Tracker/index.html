@@ -129,6 +129,10 @@
             Survival Forecast
           </h2>
           <p id="forecast-desc" class="text-sm text-slate-400 mt-1"></p>
+          <button id="fixed-toggle-btn" onclick="toggleFixed()" class="no-print mt-2 flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold border border-slate-200 bg-white text-slate-500 hover:bg-slate-50" style="width:fit-content">
+            <span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:#fbbf24"></span>
+            Show Fixed Assets
+          </button>
         </div>
         <div class="flex flex-col sm:flex-row gap-8 no-print">
           <div class="flex flex-col gap-2" style="min-width:200px">
@@ -216,6 +220,7 @@ var state = {
 };
 
 var runwayChart = null;
+var showFixed   = false;
 
 /* ── Helpers ────────────────────────────────────────────────────────────── */
 function fmt(v) {
@@ -313,6 +318,20 @@ function computeRunway(totals) {
   return out;
 }
 
+function computeFixedSeries(n) {
+  var props = state.items.filter(function(i) {
+    return i.type === 'asset' && (i.category === 'Property' || i.category === 'Rental Property');
+  });
+  var vals  = props.map(function(i) { return Number(i.value); });
+  var rates = props.map(function(i) { return Number(i.returnRate || 0) / 100; });
+  var series = [];
+  for (var yr = 0; yr < n; yr++) {
+    series.push(vals.reduce(function(s, v) { return s + v; }, 0));
+    for (var j = 0; j < vals.length; j++) { vals[j] = vals[j] * (1 + rates[j]); }
+  }
+  return series;
+}
+
 /* ── Render ─────────────────────────────────────────────────────────────── */
 function renderAll() {
   var t = computeTotals();
@@ -340,7 +359,8 @@ function renderAll() {
   el('inflation-label').textContent = state.inflation + '%';
   el('inflation-slider').value = state.inflation;
 
-  renderChart(runway);
+  var fixedSeries = computeFixedSeries(runway.length);
+  renderChart(runway, fixedSeries);
 }
 
 function buildingIcon() {
@@ -391,31 +411,47 @@ function renderItemList(containerId, items, type) {
   c.innerHTML = html;
 }
 
-function renderChart(runway) {
+function renderChart(runway, fixedSeries) {
   var canvas = el('runway-chart');
   if (!canvas) return;
-  var labels = runway.map(function(d, i) {
+
+  var labels     = runway.map(function(d, i) {
     return state.age > 0 ? ['Yr ' + i, 'Age ' + (state.age + i)] : 'Yr ' + i;
   });
-  var values = runway.map(function(d) { return d.capital; });
+  var liquidData = runway.map(function(d) { return d.capital; });
+  var fixedData  = showFixed ? fixedSeries : liquidData.map(function() { return 0; });
 
   if (runwayChart) {
     runwayChart.data.labels = labels;
-    runwayChart.data.datasets[0].data = values;
+    runwayChart.data.datasets[0].data = liquidData;
+    runwayChart.data.datasets[0].borderRadius = showFixed ? 0 : 6;
+    runwayChart.data.datasets[1].data = fixedData;
     runwayChart.update();
     return;
   }
+
   runwayChart = new Chart(canvas, {
     type: 'bar',
     data: {
       labels: labels,
-      datasets: [{
-        label: 'Deployable Capital',
-        data: values,
-        backgroundColor: '#3b82f6',
-        borderRadius: 6,
-        borderSkipped: false
-      }]
+      datasets: [
+        {
+          label: 'Liquid Capital',
+          data: liquidData,
+          backgroundColor: '#3b82f6',
+          borderRadius: showFixed ? 0 : 6,
+          borderSkipped: false,
+          stack: 'combined'
+        },
+        {
+          label: 'Fixed Assets',
+          data: fixedData,
+          backgroundColor: '#fbbf24',
+          borderRadius: 6,
+          borderSkipped: false,
+          stack: 'combined'
+        }
+      ]
     },
     options: {
       responsive: true,
@@ -423,10 +459,15 @@ function renderChart(runway) {
       plugins: {
         legend: { display: false },
         tooltip: {
-          callbacks: { label: function(ctx) { return fmt(ctx.raw); } },
+          callbacks: {
+            label: function(ctx) {
+              if (!showFixed && ctx.datasetIndex === 1) return null;
+              return ctx.dataset.label + ': ' + fmt(ctx.raw);
+            }
+          },
           backgroundColor: 'white',
           titleColor: '#1e293b',
-          bodyColor: '#3b82f6',
+          bodyColor: '#475569',
           borderColor: '#e2e8f0',
           borderWidth: 1,
           padding: 12,
@@ -435,15 +476,19 @@ function renderChart(runway) {
       },
       scales: {
         x: {
+          stacked: true,
           grid: { display: false },
           ticks: { color: '#94a3b8', font: { size: 11 } }
         },
         y: {
+          stacked: true,
           grid: { color: '#f1f5f9' },
           ticks: {
             color: '#94a3b8',
             font: { size: 11 },
-            callback: function(v) { return '$' + (v / 1000) + 'k'; }
+            callback: function(v) {
+              return v >= 1000000 ? '$' + (v / 1000000).toFixed(1) + 'M' : '$' + (v / 1000) + 'k';
+            }
           }
         }
       }
@@ -475,6 +520,20 @@ function shiftExpense(delta) {
 function setInflation(val) {
   state.inflation = val;
   save();
+  renderAll();
+}
+
+function toggleFixed() {
+  showFixed = !showFixed;
+  var btn = el('fixed-toggle-btn');
+  if (btn) {
+    btn.className = showFixed
+      ? 'no-print mt-2 flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold border border-amber-300 bg-amber-50 text-amber-700'
+      : 'no-print mt-2 flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold border border-slate-200 bg-white text-slate-500 hover:bg-slate-50';
+    btn.innerHTML = showFixed
+      ? '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:#fbbf24"></span> Hide Fixed Assets'
+      : '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:#fbbf24"></span> Show Fixed Assets';
+  }
   renderAll();
 }
 
