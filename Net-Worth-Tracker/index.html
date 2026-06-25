@@ -206,7 +206,7 @@ var state = {
     { id:'1', name:'Investment Portfolio', value:850000, type:'asset',     category:'Investments',    returnRate:8, rentalIncome:0,     monthlyPayment:0    },
     { id:'2', name:'Primary Residence',    value:600000, type:'asset',     category:'Property',       returnRate:3, rentalIncome:0,     monthlyPayment:0    },
     { id:'3', name:'Rental Condo',         value:350000, type:'asset',     category:'Rental Property',returnRate:4, rentalIncome:18000, monthlyPayment:0    },
-    { id:'4', name:'Mortgage',             value:550000, type:'liability', category:'Debt',           returnRate:0, rentalIncome:0,     monthlyPayment:2800 }
+    { id:'4', name:'Mortgage',             value:550000, type:'liability', category:'Debt',           returnRate:0, rentalIncome:0,     monthlyPayment:2800, remainingYears:25 }
   ],
   annualExpense: 60000,
   inflation: 3,
@@ -291,16 +291,21 @@ function computeTotals() {
 }
 
 function computeRunway(totals) {
-  var out = [];
-  var cap      = totals.liquidNetWorth;
+  var out   = [];
+  var cap   = totals.liquidNetWorth;
   var lifestyle = state.annualExpense;
-  var debt     = totals.totalDebt;
-  var rental   = totals.totalRental;
-  var ret      = totals.avgReturn / 100;
+  var rental = totals.totalRental;
+  var ret   = totals.avgReturn / 100;
+  var liabs = state.items.filter(function(i) { return i.type === 'liability'; });
 
   for (var yr = 0; yr <= 40; yr++) {
+    var activeDebt = liabs.reduce(function(s, i) {
+      var rem = Number(i.remainingYears || 0);
+      var active = (rem === 0) || (yr < rem);
+      return active ? s + Number(i.monthlyPayment || 0) * 12 : s;
+    }, 0);
     out.push({ year: 'Yr ' + yr, capital: Math.max(0, cap) });
-    cap       = cap * (1 + ret) + rental - (lifestyle + debt);
+    cap       = cap * (1 + ret) + rental - (lifestyle + activeDebt);
     lifestyle = lifestyle * (1 + state.inflation / 100);
     rental    = rental * 1.02;
     if (cap <= 0 && yr > 0) break;
@@ -365,7 +370,8 @@ function renderItemList(containerId, items, type) {
         sub = esc(item.category) + ' &bull; ' + (item.returnRate || 0) + '% yield';
       }
     } else {
-      sub = cardIcon() + esc(item.category) + (Number(item.monthlyPayment) > 0 ? ' &bull; ' + fmt(item.monthlyPayment) + '/mo' : '');
+      var termLabel = Number(item.remainingYears) > 0 ? ' &bull; ' + item.remainingYears + ' yrs rem.' : '';
+      sub = cardIcon() + esc(item.category) + (Number(item.monthlyPayment) > 0 ? ' &bull; ' + fmt(item.monthlyPayment) + '/mo' : '') + termLabel;
     }
 
     var valHtml = type === 'asset'
@@ -512,15 +518,24 @@ function closeModal() {
   state.editingId = null;
 }
 
+function termField(val) {
+  return '<div class="p-4 bg-rose-50 rounded-2xl border border-rose-100 mt-4">'
+    + '<label class="text-xs font-bold text-rose-700 uppercase tracking-wider">Remaining Term (yrs)</label>'
+    + '<p style="font-size:0.7rem;color:#94a3b8;margin:2px 0 6px">Leave blank or 0 if payments continue indefinitely.</p>'
+    + '<input type="number" id="f-term" min="0" max="100" placeholder="e.g. 25" value="' + (val > 0 ? val : '') + '" class="w-full p-3 bg-white border border-rose-200 rounded-xl font-bold text-rose-700 outline-none" />'
+    + '</div>';
+}
+
 function showModal(item) {
   var isEdit   = !!item;
   var type     = item ? item.type     : 'asset';
   var category = item ? item.category : 'Cash';
   var name     = item ? item.name     : '';
   var value    = item ? item.value    : '';
-  var rate     = item ? (item.returnRate    || 0) : 0;
-  var payment  = item ? (item.monthlyPayment|| 0) : 0;
-  var rental   = item ? (item.rentalIncome  || 0) : 0;
+  var rate     = item ? (item.returnRate     || 0) : 0;
+  var payment  = item ? (item.monthlyPayment || 0) : 0;
+  var rental   = item ? (item.rentalIncome   || 0) : 0;
+  var term     = item ? (item.remainingYears || 0) : 0;
 
   el('modal-title').textContent = isEdit ? 'Edit Record' : 'New Record';
 
@@ -561,7 +576,8 @@ function showModal(item) {
     + '<option value="liability"' + (type==='liability' ? ' selected' : '') + '>Liability (-)</option>'
     + '</select></div>'
     + '</div>'
-    + '<div id="rental-wrap">' + rentalField + '</div>';
+    + '<div id="rental-wrap">' + rentalField + '</div>'
+    + '<div id="term-wrap">' + (type === 'liability' ? termField(term) : '') + '</div>';
 
   var deleteBtn = isEdit
     ? '<button type="button" onclick="handleDelete()" style="flex:1" class="py-4 border border-rose-200 text-rose-500 font-bold rounded-2xl hover:bg-rose-50 flex items-center justify-center gap-2">'
@@ -583,6 +599,7 @@ function onTypeChange() {
       + '<input type="number" id="f-rate" step="0.1" value="0" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none mt-1" />'
     : '<label class="text-xs font-bold text-rose-600 uppercase tracking-wider">Monthly Payment</label>'
       + '<input type="number" id="f-payment" placeholder="0" value="0" class="w-full p-4 bg-rose-50 border border-rose-100 rounded-2xl outline-none text-rose-700 font-bold mt-1" />';
+  el('term-wrap').innerHTML = type === 'liability' ? termField(0) : '';
 }
 
 function onCategoryChange() {
@@ -604,6 +621,7 @@ function handleSave(e) {
   var rateEl   = el('f-rate');
   var payEl    = el('f-payment');
   var rentEl   = el('f-rental');
+  var termEl   = el('f-term');
 
   var name  = nameEl  ? nameEl.value.trim()         : '';
   var value = valueEl ? parseFloat(valueEl.value)   : NaN;
@@ -614,6 +632,7 @@ function handleSave(e) {
   var rate     = rateEl  ? parseFloat(rateEl.value  || 0) : 0;
   var payment  = payEl   ? parseFloat(payEl.value   || 0) : 0;
   var rental   = rentEl  ? parseFloat(rentEl.value  || 0) : 0;
+  var term     = termEl  ? parseInt(termEl.value    || 0, 10) : 0;
 
   var item = {
     name:           name,
@@ -621,8 +640,9 @@ function handleSave(e) {
     type:           type,
     category:       category,
     returnRate:     rate,
-    monthlyPayment: type === 'liability'          ? payment : 0,
-    rentalIncome:   category === 'Rental Property' ? rental  : 0
+    monthlyPayment: type === 'liability'           ? payment : 0,
+    rentalIncome:   category === 'Rental Property' ? rental  : 0,
+    remainingYears: type === 'liability'           ? (term > 0 ? term : 0) : 0
   };
 
   if (state.editingId) {
