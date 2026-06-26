@@ -1048,7 +1048,6 @@ const App = {
         <button class="back-link" onclick="App.renderHome()">← Back to Home</button>
         <button class="btn btn-secondary" onclick="App.goBackToEdit()">✏️ Back to Editing</button>
         <button class="btn btn-primary" onclick="window.print()">🖨️ Print</button>
-        <button class="btn btn-success" onclick="App.exportWord()">📧 Export &amp; Email</button>
         <button class="btn btn-danger" onclick="App.resetAll()">🔄 Reset &amp; Start Over</button>
       </div>
       <div class="final-doc" id="finalDoc">
@@ -1066,42 +1065,6 @@ const App = {
     } else {
       this.renderHome();
     }
-  },
-
-  exportWord() {
-    const today = new Date().toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' });
-    let body = `<h1 style="text-align:center;font-family:Calibri,sans-serif;color:#1a2744;">Financial Plan Summary</h1>`;
-    body += `<p style="text-align:center;color:#888;font-size:11pt;font-family:Calibri,sans-serif;">${today}</p>`;
-
-    SECTIONS.forEach(section => {
-      const edits = State.getSectionEdits(section.id);
-      if (Object.keys(edits).length === 0) return;
-      body += `<h2 style="font-family:Calibri,sans-serif;color:#1a2744;border-bottom:2pt solid #c9a84c;padding-bottom:4pt;margin-top:24pt;">${section.label.toUpperCase()}</h2>`;
-      section.items.forEach(item => {
-        if (!edits[item.title]) return;
-        const e = edits[item.title];
-        body += `<h3 style="font-family:Calibri,sans-serif;color:#243560;margin-top:14pt;">${e.title}</h3>`;
-        body += `<p style="font-family:Calibri,sans-serif;font-size:11pt;line-height:1.6;">${e.content.replace(/\n/g, '<br>')}</p>`;
-      });
-    });
-
-    const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>Financial Plan Summary</title></head><body>${body}</body></html>`;
-    const blob = new Blob(['﻿', html], { type: 'application/msword' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'Financial-Plan-Summary.doc';
-    a.click();
-    URL.revokeObjectURL(url);
-
-    // Open email client
-    setTimeout(() => {
-      const subject = encodeURIComponent('Financial Plan Summary');
-      const emailBody = encodeURIComponent('Please find the Financial Plan Summary document attached.\n\nNote: The document has been downloaded to your device. Please attach it to this email before sending.');
-      window.location.href = `mailto:?subject=${subject}&body=${emailBody}`;
-    }, 800);
-
-    showToast('Document downloaded. Opening email...');
   },
 
   // ── RESET ──────────────────────────────────────────────────────────────────
