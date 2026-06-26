@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Financial Plan Summary</title>
+<style>
+  :root {
+    --navy: #1a2744;
+    --navy-light: #243560;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --bg: #f5f6f8;
+    --card-bg: #ffffff;
+    --border: #dde1ea;
+    --text: #1e2535;
+    --text-muted: #6b7280;
+    --accent: #2563eb;
+    --success: #16a34a;
+    --danger: #dc2626;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* HEADER */
+  header {
+    background: var(--navy);
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .header-top h1 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--gold-light);
+  }
+  .btn-publish {
+    background: var(--gold);
+    color: var(--navy);
+    border: none;
+    border-radius: 6px;
+    padding: 8px 20px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+    transition: background 0.15s;
+  }
+  .btn-publish:hover { background: var(--gold-light); }
+
+  /* NAV */
+  nav {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    padding: 0 24px;
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  .nav-btn {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.65);
+    padding: 10px 18px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s;
+    letter-spacing: 0.02em;
+  }
+  .nav-btn:hover { color: rgba(255,255,255,0.9); }
+  .nav-btn.active { color: var(--gold-light); border-bottom-color: var(--gold); }
+  .nav-btn .dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    background: var(--gold);
+    border-radius: 50%;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  /* MAIN */
+  main { max-width: 900px; margin: 0 auto; padding: 28px 20px; }
+
+  /* HOME */
+  .home-welcome {
+    text-align: center;
+    padding: 60px 20px;
+  }
+  .home-welcome h2 { font-size: 1.6rem; color: var(--navy); margin-bottom: 12px; }
+  .home-welcome p { color: var(--text-muted); max-width: 480px; margin: 0 auto 28px; line-height: 1.6; }
+  .section-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 14px;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .section-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: box-shadow 0.15s, transform 0.15s, border-color 0.15s;
+  }
+  .section-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); transform: translateY(-2px); border-color: var(--gold); }
+  .section-card .icon { font-size: 1.8rem; margin-bottom: 8px; }
+  .section-card span { font-size: 0.82rem; font-weight: 600; color: var(--navy); }
+  .section-card .saved-count { display: block; font-size: 0.72rem; color: var(--text-muted); margin-top: 4px; }
+
+  /* SECTION VIEW */
+  .section-header { margin-bottom: 20px; }
+  .section-header h2 { font-size: 1.3rem; color: var(--navy); }
+  .section-header p { color: var(--text-muted); font-size: 0.875rem; margin-top: 4px; }
+
+  .phase-bar {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .phase-step {
+    flex: 1;
+    text-align: center;
+    padding: 9px 12px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    border-right: 1px solid var(--border);
+    position: relative;
+  }
+  .phase-step:last-child { border-right: none; }
+  .phase-step.active { background: var(--navy); color: white; }
+  .phase-step.done { background: #f0fdf4; color: var(--success); }
+
+  /* SUBHEADING SELECTION */
+  .toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .toolbar-left { display: flex; gap: 8px; align-items: center; }
+  .btn { border: none; border-radius: 6px; padding: 8px 16px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+  .btn-primary { background: var(--navy); color: white; }
+  .btn-primary:hover { background: var(--navy-light); }
+  .btn-secondary { background: white; color: var(--navy); border: 1px solid var(--border); }
+  .btn-secondary:hover { background: var(--bg); }
+  .btn-ghost { background: none; color: var(--text-muted); border: 1px solid var(--border); }
+  .btn-ghost:hover { background: white; }
+  .btn-success { background: var(--success); color: white; }
+  .btn-success:hover { background: #15803d; }
+  .btn-danger { background: var(--danger); color: white; }
+  .btn-sm { padding: 5px 12px; font-size: 0.78rem; }
+
+  .subheading-list { display: flex; flex-direction: column; gap: 8px; }
+  .sub-item {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .sub-item:hover { border-color: #93c5fd; }
+  .sub-item.selected { border-color: var(--accent); background: #eff6ff; }
+  .sub-item input[type="checkbox"] { width: 17px; height: 17px; accent-color: var(--accent); flex-shrink: 0; cursor: pointer; }
+  .sub-item-title { font-size: 0.875rem; font-weight: 500; flex: 1; }
+  .sub-item .saved-badge {
+    font-size: 0.7rem;
+    background: #f0fdf4;
+    color: var(--success);
+    border: 1px solid #bbf7d0;
+    border-radius: 4px;
+    padding: 2px 7px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* EDIT VIEW */
+  .edit-blocks { display: flex; flex-direction: column; gap: 20px; }
+  .edit-block {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .edit-block-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+  .edit-block-header h3 { font-size: 0.9rem; font-weight: 600; color: var(--navy); flex: 1; }
+  .edit-block-header input {
+    border: none;
+    background: transparent;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--navy);
+    flex: 1;
+    outline: none;
+    font-family: inherit;
+  }
+  .edit-block-header input:focus { background: white; border-radius: 4px; padding: 2px 6px; }
+  .edit-content {
+    padding: 16px;
+    min-height: 80px;
+    font-size: 0.875rem;
+    line-height: 1.7;
+    outline: none;
+    color: var(--text);
+    white-space: pre-wrap;
+  }
+  .edit-content:focus { background: #fafbff; }
+  .edit-content[contenteditable]:empty:before { content: 'Enter content here...'; color: var(--text-muted); }
+
+  .save-bar {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* PUBLISH VIEW */
+  .publish-actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .publish-actions .back-link {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    cursor: pointer;
+    text-decoration: underline;
+    background: none;
+    border: none;
+    margin-right: auto;
+  }
+  .final-doc {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 48px 56px;
+    line-height: 1.75;
+  }
+  .final-doc .doc-title {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 6px;
+    letter-spacing: 0.02em;
+  }
+  .final-doc .doc-date {
+    text-align: center;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-bottom: 36px;
+  }
+  .final-doc .doc-h1 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin-top: 32px;
+    margin-bottom: 16px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .final-doc .doc-h2 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--navy-light);
+    margin-top: 20px;
+    margin-bottom: 6px;
+  }
+  .final-doc .doc-body {
+    font-size: 0.875rem;
+    color: var(--text);
+    white-space: pre-wrap;
+  }
+  .final-doc .doc-h1:first-child { margin-top: 0; }
+
+  /* PRINT */
+  @media print {
+    header, .publish-actions { display: none !important; }
+    body { background: white; }
+    main { padding: 0; max-width: 100%; }
+    .final-doc { border: none; padding: 20px; box-shadow: none; }
+    .final-doc .doc-h1 { page-break-before: auto; }
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+  }
+  .empty-state .big { font-size: 2.5rem; margin-bottom: 12px; }
+
+  /* NOTIFICATION */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--success);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.2s, transform 0.2s;
+    z-index: 999;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  .select-all-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 4px;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    user-select: none;
+  }
+  .select-all-row input { width: 15px; height: 15px; accent-color: var(--accent); cursor: pointer; }
+
+  /* TEMPLATE EDITING */
+  .home-template-zone {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+  .btn-template-edit {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 9px 20px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.02em;
+  }
+  .btn-template-edit:hover { background: white; border-color: #fde68a; color: #92400e; }
+  .template-hint { font-size: 0.75rem; color: var(--text-muted); margin-top: 8px; }
+  .perm-badge {
+    display: inline-block;
+    background: #fffbeb;
+    color: #92400e;
+    border: 1px solid #fde68a;
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 0.72rem;
+    font-weight: 600;
+  }
+  .perm-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 8px;
+    padding: 10px 16px;
+    margin-bottom: 20px;
+    font-size: 0.82rem;
+    color: #92400e;
+  }
+  .saved-badge.perm-saved {
+    background: #fffbeb;
+    color: #92400e;
+    border-color: #fde68a;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <h1>Financial Plan Summary</h1>
+    <button class="btn-publish" onclick="App.showPublish()">&#128196; Publish Document</button>
+  </div>
+  <nav id="mainNav"></nav>
+</header>
+
+<main id="mainContent"></main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────────────
+const SECTIONS = [
+  {
+    id: 'financial-management',
+    label: 'Financial Management',
+    icon: '💼',
+    items: [
+      {
+        title: 'Separate Analysis',
+        content: 'Although you have a spouse, you do not want to include them in your financial plan. Because of this exclusion, it is important to realize the plan\'s limitations. Any recommendations or findings presented may not be accurate as the plan would not be comprehensive. Despite this, the plan can still serve as a guide to provide you insight.'
+      },
+      {
+        title: 'Plan Update',
+        content: 'This is an update to your previous financial plan completed in 2022. Your current plan is starting with a net worth which is $814,000 greater than what was originally predicted for the year 2025. Your original plan will be used for reference to make comparisons throughout this update.'
+      },
+      {
+        title: 'Retirement Goal',
+        content: 'You plan on retiring in Jan 2027, in three years\' time.'
+      },
+      {
+        title: 'Annual Expenses',
+        content: 'You want to be able to support an annual lifestyle expense of $78,228 after taxes. This lifestyle expense will increase annually with inflation.'
+      },
+      {
+        title: 'Vacation Expense',
+        content: 'You want to assume an annual vacation expense of $20,000 which would increase with inflation. You anticipate this expense will last until the first person turns age 80 in the plan.'
+      },
+      {
+        title: 'Salary Continuation',
+        content: 'As part of your retirement package, you are receiving a salary continuation of $250,000 in total which will be paid to you up to and including September 2024.'
+      },
+      {
+        title: 'Long Term Care',
+        content: 'For the purposes of this plan it is assumed that at Joe\'s age 85 your expenses will increase to $96,000 annually to cover assumed long term care costs.'
+      },
+      {
+        title: 'Children\'s Private School',
+        content: 'Harper and Cole are attending private school at a cost of $12,000 each, and will do so until they graduate from high school. Addison will attend private school once she is of age and at the same cost which would be adjusted for inflation.'
+      },
+      {
+        title: 'Children\'s Education',
+        content: 'The children\'s education will be addressed firstly with RESP savings and then from your pre-retirement cashflow. The plan will factor in annual educational expenses assuming costs of $20,000 per child for 4 years each when they turn age 18.'
+      },
+      {
+        title: 'Dependent Child',
+        content: 'Your son Liam is a dependent whom you are currently supporting financially. One of your focuses for the plan is to make sure you can continue this assistance in to retirement and beyond. You want to make sure that there will be enough of a financial cushion when you pass away to make sure care is provided.'
+      },
+      {
+        title: 'Primary Residence',
+        content: 'You own your primary residence which is free and clear of any mortgage and which you currently value at $2,500,000. For the purpose of this plan it was assumed that you will not sell or downsize this property, but will keep it until the end of the projection.'
+      },
+      {
+        title: 'Downsize Residence',
+        content: 'You are looking to downsize your primary residence in 2021. You are expecting to sell your home for $3,500,000 and anticipate purchasing a new home in the range of $2,000,000 in today\'s dollars. The remaining proceeds after closing costs were directed to your investments in the plan.'
+      },
+      {
+        title: 'Rental Property',
+        content: 'You own a rental property that you currently value at $1,100,000. You have a mortgage on this property with a balance of $600,000 at a rate of 3% and payments of $3,200 monthly. Your rental property earns you $3,000 in monthly income, and has an estimated monthly expenses of $1,100.'
+      },
+      {
+        title: 'Renovations',
+        content: 'You expect to incur renovation costs over the period of 2023 to 2024, which you want to incorporate into your financial plan. In order to incorporate this, an expense of $75,000 was added to the years 2023 and 2024 to account for these costs.'
+      },
+      {
+        title: 'Mortgage Repayment',
+        content: 'You currently have the following mortgages:\n\nMortgage (1) is $9,000 with payments of $438 monthly. You plan on paying this out on January 2025.\n\nMortgage (2) is $64,000 with payments of $198 bi-weekly. You plan on paying this out in June 2026.\n\nMortgage (3) is $76,000 with payments of $375 bi-weekly. You plan on paying this out in January 2026.'
+      },
+      {
+        title: 'Inheritance',
+        content: 'For the purposes of this plan it is assumed that Liz will receive an inheritance of $50,000 in 5 years\' time. This sum will be brought into your cashflow in the corresponding year.'
+      },
+      {
+        title: 'Assisting Children',
+        content: 'You want to be able to assist your children with their weddings. The plan assumes an expense of $100,000 for each child at age 26 in the year 2027 and 2030.'
+      },
+      {
+        title: 'New Car Purchase',
+        content: 'Every 10 years starting in 2029 we have added an expense of $30,000 which increases with inflation, to account for new car purchases in the future.'
+      },
+      {
+        title: 'Return of Premiums (Critical Illness)',
+        content: 'In 2027, the plan will assume you receive a return of premiums on your insurance policy of $227,918 to be injected into your cashflow in that year.'
+      }
+    ]
+  },
+  {
+    id: 'assumptions',
+    label: 'Assumptions',
+    icon: '📋',
+    items: [
+      {
+        title: 'Projection Parameters',
+        content: 'Year 1 in the plan is 2026.\n\nThe plan was projected to your ages 90.\n\nIn the plan Inflation is assumed at 2.5% annually.\n\nIn the plan your Real Estate assets are assumed to grow at a rate of 2.5% annually.\n\nInvestment returns were assumed to grow at 5% net of fees, representing a balanced risk portfolio mix and calculated using historical rate of return data.'
+      },
+      {
+        title: 'Government Benefits & Pension',
+        content: 'CPP (Canada Pension Plan) and OAS (Old Age Security) payments were estimated based on your income, retirement dates and assuming 40 years of residency in Canada at retirement.\n\nCPP (Canada Pension Plan) – You are currently receiving payments of $13,692 annually.\n\nOAS (Old Age Security) – You are currently receiving payments of $1,494 annually.\n\nCPP (Canada Pension Plan) payments are assumed at 100% of maximum based on contribution history, throughout your employment.\n\nCPP Survivor Benefit – You are currently receiving CPP Survivor benefit payments of $1,131.64 monthly.\n\nMichael is receiving defined benefit pension payments of $468 per month from his Bell pension. These payments are indexed by 2% annually to adjust for inflation.\n\nYou do not have a company pension plan from any current or previous employer.'
+      },
+      {
+        title: 'Insurance Policies',
+        content: 'You did not disclose ownership of any life insurance policies.\n\nYou own the following insurance policies:\n\n  • A Term 10 Life policy on Brian maturing in 2025 with death benefit of $200,000 and Susan as beneficiary.'
+      },
+      {
+        title: 'Pre-Retirement Savings Strategy',
+        content: 'Your current pre-retirement savings strategies include:\n\n  • Annual contributions of $200,000 to your margin account\n  • Topping up your TFSAs annually (current annual amount per TFSA is $6,500)\n  • Topping up your RSP annually\n\nIt is assumed in the plan that in retirement you will be equalizing incomes by splitting claim of RSP withdrawals and/or pension income (up to 50%) in your income tax returns to increase tax efficiency.'
+      }
+    ]
+  },
+  {
+    id: 'tax-planning',
+    label: 'Tax Planning',
+    icon: '📊',
+    items: [
+      {
+        title: 'RSP Contributions',
+        content: 'Although the plan reflects your current investment savings strategy, it is highly recommended if you have extra savings during your pre-retirement period that you direct this to maximizing your RSPs. At your level of income this is the best method to invest from a tax perspective.'
+      },
+      {
+        title: 'TFSA',
+        content: 'We recommend you top up your tax free savings accounts annually going forward. Contributions can be made primarily by transferring from non-registered assets in years of cashflow deficit. TFSAs are a great method for tax deferred investment growth, and should be the last source of income you tap into in retirement.'
+      },
+      {
+        title: 'RESP',
+        content: 'We recommend you continue putting $5,000 annually toward the RESP until your children reach the age of 17, where there will no longer be a matching grant amount. Provided each child will not require more than $13,500 annually as per the findings for their education costs, it is not required to save further for this.'
+      },
+      {
+        title: 'Mortgage Analysis',
+        content: 'An analysis was done to determine if it would make sense to use your TFSAs to make more aggressive mortgage payments. For this comparison your mortgage was assumed to renew at a 4% rate. Our analysis showed a negligible benefit of only about $2,300 over your lifetime if you renew your mortgage. This analysis assumed a mortgage rate of 4% and rate of return of TFSA investments of 4.76%. As there would not be any immediate tax consequences when withdrawing from TFSAs, your best course of action would be solely determined by comparing the renewal mortgage rate to your potential rate of return in your TFSAs.'
+      },
+      {
+        title: 'Spousal RSP',
+        content: 'As your spouse is currently not working, there is room for income splitting. They may consider withdrawals from the spousal RSP early. Provided there has not been a contribution made within 3 years to the spousal RSP, withdrawals can be made and they would be taxed at lower tax levels.'
+      },
+      {
+        title: 'RIF Conversion',
+        content: 'An analysis was done to determine the best time to convert your RSP to a RIF. Assuming the last person to die is age 95, you would benefit by approximately $6,000 over the duration of the plan by pushing back your RIF conversion to age 71, and then take minimum payments.\n\nIf however the survivor lives to an age less than age 93, the reverse strategy of taking early RIF payments would now be more beneficial, and the benefit would increase for every year less than that age. For example, if the last person to die is at age 85, then the benefit would be about $5,100 in favour of immediate RIF withdrawals.'
+      },
+      {
+        title: 'RRIF Minimum (Spouse\'s Age)',
+        content: 'Typically, people who choose the minimum income option for a RRIF do not need the money and want to defer taxable income for as long as possible. The annuitant can elect (when setting up the minimum payment) to use the age of their spouse or common law partner (if the spouse or common law partner is younger than the annuitant) in calculating the minimum payout percentages for RRIFs. This can be quite advantageous as the annuitant can withdraw less based on a younger spouse\'s age.'
+      },
+      {
+        title: 'OAS Claw-back Analysis',
+        content: 'Based on your level of projected income in retirement you will not be subject to a partial Old Age Security claw back. Currently the income level for OAS claw back begins at $95,323 and is fully clawed back at $160,647 (in 2026).'
+      },
+      {
+        title: 'CPP Timing',
+        content: 'Although we assumed a CPP starting date at age 65 in line with convention, it is worth considering taking CPP at a later date. We recommend not applying for CPP until age 70 to increase these payments. For every month CPP is delayed, a 0.7% per month increase to the benefit will occur to a maximum of 42%. The more confident you are in your life expectancy, the more attractive the deferral becomes.\n\n*Note: If you work past age 65 and are not yet receiving CPP pension benefits, you must still contribute to the CPP. However, if you were already eligible for maximum CPP pension benefits as of age 65, this would mean that any contributions made to CPP between ages 65 and 70 would not further increase CPP pension benefits. In this case, you would benefit by receiving CPP at age 65 as your contributions would give you post-retirement benefits in addition.'
+      },
+      {
+        title: 'CPP with Survivor Benefit',
+        content: 'When receiving a survivor benefit, the best time to enroll in your CPP may be tricky as the two benefits would be combined and you cannot receive more than the annual maximum benefit of CPP. If the combined amount of your survivor and CPP benefit do not reach the maximum however, there is an increasing benefit by delaying enrollment. For every month CPP is delayed, a 0.7% per month increase to the benefit will occur to a maximum of 42%. The more confident you are in your life expectancy, the more attractive the deferral becomes.'
+      },
+      {
+        title: 'Sharing of CPP Benefits Between Spouses',
+        content: 'It is possible to equalize CPP benefits between spouses and to gain tax benefits as long as both are at least 60 and receive a CPP pension. Such benefit sharing can take place even when only one spouse is receiving CPP retirement benefits because the other spouse does not qualify for such benefits. In order to share CPP benefits, the spouses must file Form ISP1002 available on Service Canada website. The portion of CPP pension that can be shared is based on the number of months the individual and his or her spouse lived together during the joint contributory period. Using this rule, a spouse can receive a maximum of 50% of the other spouse\'s CPP retirement benefit.'
+      },
+      {
+        title: 'Education Funding',
+        content: 'Based on your RESP savings to date and continued growth you should be able to fund both children\'s education for 3 years each with annual spending for each of about $15,000.'
+      },
+      {
+        title: 'Excess Income Years',
+        content: 'According to our projections you will have several years where you will have excess cashflow. It is highly recommended that you top up your TFSAs first, then look to add to your non-registered investments in order to have your money continue to grow and keep up with inflation.'
+      },
+      {
+        title: 'Insurance Review',
+        content: 'As you are transitioning into retirement your focus might turn from protection against loss of income due to disability or death to estate planning. This tends to be a good time to review any insurance policies already in place and your options for insurance to leave a legacy.'
+      },
+      {
+        title: 'Whole Life Insurance (Corporate)',
+        content: 'Whole life insurance can offer several benefits for a corporation in Canada, including:\n\n  • Tax-advantaged: Whole life insurance policies allow for tax-advantaged investment growth within the policy, which can provide a tax-efficient way to build wealth for the corporation.\n\n  • Asset protection: The cash value in a whole life insurance policy is generally protected from creditors, which can help protect the corporation\'s assets.\n\n  • Estate planning: Whole life insurance policies can provide a tax-efficient way to transfer wealth to future generations, which can be beneficial for estate planning purposes.\n\n  • Pension planning: Whole life insurance policies can be used as a funding mechanism for corporate pensions, providing a stable source of funding and helping to mitigate the risks associated with market fluctuations.\n\n  • Tax-free death benefit: The death benefit from a whole life insurance policy is generally tax-free, which can provide financial support for the corporation\'s beneficiaries without incurring tax liabilities.\n\nIt is important to note that the benefits of whole life insurance can vary depending on the specific circumstances of the corporation and the policy itself.'
+      },
+      {
+        title: 'Pension Income Tax Credit',
+        content: 'We recommend converting part of the RSP to a RIF at age 65 for those who do not have a company pension. With withdrawals of $2,000 annually, this can trigger the full pension income tax credit when completing income taxes.'
+      },
+      {
+        title: 'Prescribed Rate Loan',
+        content: 'Consider a prescribed rate loan strategy to split income with a lower-income spouse or family member. Loaning funds at the CRA\'s prescribed rate can shift investment income to lower tax brackets, reducing the overall family tax burden.'
+      },
+      {
+        title: 'Family Trust with Prescribed Rate Loan',
+        content: 'Consider establishing a trust, subject to certain requirements and recommendations, with personal non-registered funds loaned to the trust at the prescribed rate from the higher income-earning spouse. Allocated funds are taxed in the hands of the beneficiaries, ideally at a lower marginal income tax rate. In addition, to the extent that one of the spouses is in a lower marginal income tax bracket, they may also be a beneficiary of the trust, thereby achieving the same income tax benefit as a spousal loan strategy while also income splitting with minor beneficiaries.'
+      },
+      {
+        title: 'Cottage as Primary Residence',
+        content: 'Your cottage can be designated as a principal residence (even if you don\'t use it as your primary residence) as long as it is "ordinarily inhabited" at some point during the year. Ordinarily inhabited includes living at the cottage for only a short period of time as long as the main reason for owning it isn\'t for the purposes of earning income. The CRA doesn\'t consider incidental or occasional rental of a property sufficient to prevent it from qualifying as a principal residence. Generally, the surrounding land in excess of a half-hectare (approximately 1.24 acres) is deemed not to qualify as part of the principal residence, unless the taxpayer can prove that its use is necessary to the continued use and enjoyment of the residence.'
+      },
+      {
+        title: 'Dividends to Spouse (TOSI Exemption, Age 65+)',
+        content: 'Beginning 2018, the expanded "Tax on Split Income" (TOSI) rules for Canadian private corporations added many restrictions for business owners to split income with family members. However, in keeping in line with the pension income splitting rules, a business owner who is 65 years of age or older can split dividend income with his or her spouse (or common-law partner), regardless of the recipient spouse\'s age.\n\nBusiness owners can pay dividends to shareholders in specific situations and not subject to the TOSI rules. Where a business owner is age 65 or older and their spouse is a shareholder of the corporation, dividends can be paid to the spouse.'
+      },
+      {
+        title: 'Disability Programs',
+        content: 'If you have not already done so you may inquire about disability benefits programs through provincial and federal governments such as ODSP (Ontario Disability Support Program) and the federal disability tax credit to assist with current needs.\n\nTo address your concerns later in life, there are several strategies which you can implement to assist:\n\n  • You have already opened an RDSP, and are contributing to it. Based on our analysis at your age 90 the RDSP is estimated to grow to $392,667.\n\n  • Another strategy would be to open a TFSA and possibly the new FHSA, as contributions can be made for assets to grow in a tax-free environment.\n\n  • You could consider a Henson Trust to flow through the portion of your estate to be administered by a third party upon your passing. A Henson trust is a type of trust used in Canada to provide financial support to a disabled individual while not affecting their eligibility for provincial and federal benefits.'
+      }
+    ]
+  },
+  {
+    id: 'retirement-planning',
+    label: 'Retirement Planning',
+    icon: '🏖️',
+    items: [
+      {
+        title: 'Retirement Goal',
+        content: 'Your retirement lifestyle expense goal of $80,000 after tax is achievable. This is sustainable from your retirement income sources and allows you to retain 93% of your current net worth at age 90.'
+      },
+      {
+        title: 'Final Net Worth',
+        content: 'By the end of the projection you will have an estimated net worth of $5,297,095. That is $2,719,527 in today\'s dollars and would consist of your primary residence and projected investment assets.'
+      },
+      {
+        title: 'Increase Retirement Spending',
+        content: 'According to plan projections you can afford an increased lifestyle expense of up to $107,000 annually and your investment assets would only be depleted at age 95. This would be an increase of $42,000 in annual retirement spending, without needing to sell your properties.'
+      },
+      {
+        title: 'Retire Earlier',
+        content: 'According to plan projections you could afford to retire early at age 62 and 60 respectively, while supporting your requested lifestyle expense of $112,000 after tax annually and your assets would not be depleted before age 95.'
+      },
+      {
+        title: 'Comparison to 2024 Plan',
+        content: 'You are starting with a higher projected balance for the year 2025, and your new projected net worth at age 95 is now approximately $369,000 greater. Your new plan update reflects that you are only slightly ahead of track compared to what was previously projected.'
+      }
+    ]
+  },
+  {
+    id: 'estate-planning',
+    label: 'Estate Planning',
+    icon: '🏛️',
+    items: [
+      {
+        title: 'Probate and Taxes',
+        content: 'Estate planning is a key component of financial planning, addressing how your assets and liabilities will be managed after your passing. Probate, the legal process for administering your estate, involves costs and the filing of a final tax return. While your primary residence and tax-free savings accounts are generally not taxable to your estate, assets such as RRSPs (without a surviving spouse), non-registered investments, and secondary properties may trigger tax liabilities.'
+      },
+      {
+        title: 'Lifetime Gifts / Charitable Donations',
+        content: 'With a disproportionately large amount of non-registered investments, you may consider if you will be needing them during retirement. If you intend to gift to a lower earning beneficiary, you can do this early to reduce your taxable income. This can be done directly or through an irrevocable trust (if you do not want them to have immediate control of the assets). Alternatively if you were considering gifting to a charity, there are favorable tax benefits if you gift company shares in kind.'
+      },
+      {
+        title: 'Considerable Real Estate Holdings',
+        content: 'Your net worth will grow disproportionately, with your properties increasing their share over time. You may want to consider selling greater portions later in retirement to better diversify your assets, reduce deferred tax on capital gains, and lower your involvement as a landlord.'
+      },
+      {
+        title: 'Gifting of Rental Properties',
+        content: 'When gifting property in kind you need to be aware that although Canada does not have a gift tax, you may be susceptible to pay taxes on capital gains accrued as this would be considered a deemed disposition. This would however benefit you in that future capital gains would no longer accrue to you, and it is assumed your children would be in lower tax brackets which would further benefit.'
+      },
+      {
+        title: 'Joint Partner Trust',
+        content: 'If you are both over age 65 you could establish a joint partner trust, which would allow you to transfer property tax-deferred into a trust. However, only you and your partner could benefit from the trust income during your lives, so you — not your children — would be the initial beneficiaries. On your deaths, the property would pass to your children without probate fees applicable.'
+      },
+      {
+        title: 'Charitable Donation of Life Insurance',
+        content: 'A taxpayer may be able to reap immediate tax benefits by naming a charity as the beneficiary of a life insurance policy and irrevocably assigning ownership of the policy to the charity. In addition to receiving a donation tax credit for the fair market value of the policy, the individual may be able to claim donation tax credits for any insurance premiums paid after the assignment.\n\nWhen a charitable organization is named as the beneficiary of an insurance policy and the policy is not irrevocably assigned to the charity, the estate representative will have the flexibility to allocate the donations between the estate and the final 2 taxation years of the deceased. Clients donating life insurance policies should seek expert legal and tax advice on how to structure the donation to maximize its tax benefits.'
+      },
+      {
+        title: 'US Estate Taxes',
+        content: 'For a Canadian citizen who is not a U.S. citizen, U.S. estate tax can apply to U.S. situs assets such as U.S. stocks and U.S. real estate. If your worldwide estate is below the U.S. estate tax exemption (about USD 13.99 million for 2025), the Canada–U.S. tax treaty generally allows your estate to use a proportionate share of the U.S. unified credit so that no U.S. estate tax is payable, though a U.S. filing is still required once U.S. assets exceed USD 60,000.\n\nFor a U.S. citizen living in Canada, U.S. estate tax applies to your worldwide assets, regardless of where you reside. If your worldwide estate is below the U.S. exemption (about USD 13.99 million for 2025), no U.S. federal estate tax is generally payable; if it may exceed this amount, strategies such as lifetime gifting, trust planning, and life insurance should be reviewed with a qualified cross-border tax and estate specialist, especially given that exemption levels and rules can change over time.'
+      },
+      {
+        title: 'Secondary Will (Dual Will)',
+        content: 'If not already in place, consider utilizing a secondary will strategy to deal with your corporate holdings. If drawn up properly, this document will allow your corporate assets to bypass probate (estate administration tax) which could result in significant savings for your estate. The current estate administration tax in Ontario is 0.5% on the first $50,000 of value, and 1.5% on the value of assets above $50,000. An additional benefit of a secondary will is privacy, as the contents of a non-probated will are generally not subject to public disclosure.'
+      },
+      {
+        title: 'Update Will and POA',
+        content: 'Ensure that you take steps to draft and periodically update your Wills and Powers of Attorney. It is recommended that a proper estate plan is in place to ensure that wealth is directed in an efficient manner to the intended recipients and increase the after-tax flow of assets to the beneficiaries. You should review the beneficiaries named on your registered accounts and pension plans to ensure that they reflect the intentions of your Will.\n\nAccessibility of Asset Records: Keeping all asset records and important information in a secure, accessible location ensures that executors and beneficiaries can efficiently administer your estate and fulfill your wishes without unnecessary delays or complications. Clear organization of these documents helps prevent lost assets, reduces stress for loved ones, and streamlines the estate settlement process.'
+      }
+    ]
+  }
+];
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+const State = {
+  view: 'home',          // 'home' | 'subheadings' | 'edit' | 'publish' | 'perm-home' | 'perm-sub' | 'perm-edit'
+  activeSection: null,
+  permMode: false,       // true when in permanent template-editing mode
+  edited: {},            // { sectionId: { itemTitle: { title, content } } } — session edits
+  base: {},              // { sectionId: { itemTitle: { title, content } } } — permanent overrides
+  selectedItems: {},
+
+  load() {
+    try {
+      const saved = localStorage.getItem('fps_edited');
+      if (saved) this.edited = JSON.parse(saved);
+    } catch(e) {}
+    this.loadBase();
+  },
+
+  loadBase() {
+    try {
+      const saved = localStorage.getItem('fps_base');
+      if (saved) this.base = JSON.parse(saved);
+    } catch(e) {}
+  },
+
+  save() {
+    localStorage.setItem('fps_edited', JSON.stringify(this.edited));
+  },
+
+  saveBase() {
+    localStorage.setItem('fps_base', JSON.stringify(this.base));
+  },
+
+  // Returns permanent base content (custom override, or hardcoded fallback)
+  getBaseContent(sectionId, originalTitle) {
+    if (this.base[sectionId]?.[originalTitle]) {
+      return { ...this.base[sectionId][originalTitle] };
+    }
+    const section = SECTIONS.find(s => s.id === sectionId);
+    const item = section?.items.find(i => i.title === originalTitle);
+    return item ? { title: item.title, content: item.content } : null;
+  },
+
+  setBase(sectionId, originalTitle, title, content) {
+    if (!this.base[sectionId]) this.base[sectionId] = {};
+    this.base[sectionId][originalTitle] = { title, content };
+    this.saveBase();
+  },
+
+  deleteBase(sectionId, originalTitle) {
+    if (!this.base[sectionId]) return;
+    delete this.base[sectionId][originalTitle];
+    if (Object.keys(this.base[sectionId]).length === 0) delete this.base[sectionId];
+    this.saveBase();
+  },
+
+  getSectionEdits(sectionId) {
+    return this.edited[sectionId] || {};
+  },
+
+  setEdit(sectionId, originalTitle, title, content) {
+    if (!this.edited[sectionId]) this.edited[sectionId] = {};
+    this.edited[sectionId][originalTitle] = { title, content };
+    this.save();
+  },
+
+  getEdit(sectionId, originalTitle) {
+    return this.edited[sectionId]?.[originalTitle] || null;
+  },
+
+  hasEdits(sectionId) {
+    const edits = this.edited[sectionId];
+    return edits && Object.keys(edits).length > 0;
+  },
+
+  totalEdited() {
+    return Object.values(this.edited).reduce((sum, sec) => sum + Object.keys(sec).length, 0);
+  },
+
+  hasBaseOverrides() {
+    return Object.values(this.base).some(sec => Object.keys(sec).length > 0);
+  },
+
+  getSelectedForSection(sectionId) {
+    return this.selectedItems[sectionId] || new Set();
+  },
+
+  setSelected(sectionId, titles) {
+    this.selectedItems[sectionId] = new Set(titles);
+  },
+
+  // Clears session edits only — base/permanent overrides are kept
+  resetEdits() {
+    this.edited = {};
+    this.selectedItems = {};
+    localStorage.removeItem('fps_edited');
+  }
+};
+
+// ─── APP ─────────────────────────────────────────────────────────────────────
+const App = {
+  init() {
+    State.load();
+    this.renderNav();
+    this.renderHome();
+  },
+
+  renderNav() {
+    const nav = document.getElementById('mainNav');
+    const nonSectionViews = ['home', 'publish', 'perm-home'];
+    nav.innerHTML = SECTIONS.map(s => {
+      const hasEdits = State.hasEdits(s.id);
+      const hasBase = !!(State.base[s.id] && Object.keys(State.base[s.id]).length);
+      const isActive = State.activeSection === s.id && !nonSectionViews.includes(State.view);
+      const dot = hasEdits ? '<span class="dot"></span>' : (hasBase && State.permMode ? '<span class="dot" style="background:#fbbf24"></span>' : '');
+      return `<button class="nav-btn ${isActive ? 'active' : ''}" onclick="App.selectSection('${s.id}')">
+        ${s.label}${dot}
+      </button>`;
+    }).join('');
+  },
+
+  selectSection(sectionId) {
+    State.activeSection = sectionId;
+    if (State.permMode) {
+      State.view = 'perm-sub';
+      this.renderNav();
+      this.renderPermSubheadings();
+    } else {
+      State.view = 'subheadings';
+      this.renderNav();
+      this.renderSubheadings();
+    }
+  },
+
+  renderHome() {
+    State.view = 'home';
+    State.permMode = false;
+    State.activeSection = null;
+    this.renderNav();
+    const main = document.getElementById('mainContent');
+    const totalBaseOverrides = Object.values(State.base).reduce((n, sec) => n + Object.keys(sec).length, 0);
+    main.innerHTML = `
+      <div class="home-welcome">
+        <h2>Financial Plan Summary</h2>
+        <p>Select a section from the navigation above to begin. Choose the topics you want to include, edit the content, then publish your final document.</p>
+        <div class="section-cards">
+          ${SECTIONS.map(s => {
+            const editCount = Object.keys(State.getSectionEdits(s.id)).length;
+            return `<div class="section-card" onclick="App.selectSection('${s.id}')">
+              <div class="icon">${s.icon}</div>
+              <span>${s.label}</span>
+              <span class="saved-count">${editCount > 0 ? editCount + ' item' + (editCount !== 1 ? 's' : '') + ' saved' : s.items.length + ' topics'}</span>
+            </div>`;
+          }).join('')}
+        </div>
+        <div class="home-template-zone">
+          <button class="btn-template-edit" onclick="App.enterPermMode()">
+            ⚙️ Edit Template Defaults
+          </button>
+          <p class="template-hint">Permanently customize the default wording for any topic across all five sections.${totalBaseOverrides > 0 ? ' <span class="perm-badge">' + totalBaseOverrides + ' customized</span>' : ''}</p>
+        </div>
+      </div>`;
+  },
+
+  renderSubheadings() {
+    const section = SECTIONS.find(s => s.id === State.activeSection);
+    if (!section) return;
+    const main = document.getElementById('mainContent');
+    const edits = State.getSectionEdits(section.id);
+    const selected = State.getSelectedForSection(section.id);
+
+    main.innerHTML = `
+      <div class="section-header">
+        <h2>${section.icon} ${section.label}</h2>
+        <p>Select the topics you want to include in your plan, then click <strong>Apply</strong> to edit their content.</p>
+      </div>
+      <div class="phase-bar">
+        <div class="phase-step active">1 · Select Topics</div>
+        <div class="phase-step">2 · Edit Content</div>
+        <div class="phase-step">3 · Publish</div>
+      </div>
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <label class="select-all-row">
+            <input type="checkbox" id="selectAll" onchange="App.toggleSelectAll(this.checked)">
+            Select All
+          </label>
+        </div>
+        <button class="btn btn-primary" onclick="App.applySelection()">Apply Selected →</button>
+      </div>
+      <div class="subheading-list">
+        ${section.items.map(item => {
+          const isSelected = selected.has(item.title);
+          const isSaved = !!edits[item.title];
+          return `<div class="sub-item ${isSelected ? 'selected' : ''}" onclick="App.toggleItem(this, '${escHtml(item.title)}')">
+            <input type="checkbox" ${isSelected ? 'checked' : ''} onclick="event.stopPropagation(); App.toggleItem(this.closest('.sub-item'), '${escHtml(item.title)}')">
+            <span class="sub-item-title">${escHtml(item.title)}</span>
+            ${isSaved ? '<span class="saved-badge">✓ Saved</span>' : ''}
+          </div>`;
+        }).join('')}
+      </div>`;
+
+    this.syncSelectAll();
+  },
+
+  toggleItem(el, title) {
+    const cb = el.querySelector('input[type="checkbox"]');
+    const selected = State.getSelectedForSection(State.activeSection);
+    if (selected.has(title)) {
+      selected.delete(title);
+      el.classList.remove('selected');
+      cb.checked = false;
+    } else {
+      selected.add(title);
+      el.classList.add('selected');
+      cb.checked = true;
+    }
+    State.setSelected(State.activeSection, [...selected]);
+    this.syncSelectAll();
+  },
+
+  toggleSelectAll(checked) {
+    const section = SECTIONS.find(s => s.id === State.activeSection);
+    if (!section) return;
+    const titles = checked ? section.items.map(i => i.title) : [];
+    State.setSelected(State.activeSection, titles);
+    document.querySelectorAll('.sub-item').forEach((el, idx) => {
+      const cb = el.querySelector('input[type="checkbox"]');
+      cb.checked = checked;
+      el.classList.toggle('selected', checked);
+    });
+  },
+
+  syncSelectAll() {
+    const section = SECTIONS.find(s => s.id === State.activeSection);
+    if (!section) return;
+    const selected = State.getSelectedForSection(State.activeSection);
+    const sa = document.getElementById('selectAll');
+    if (sa) sa.checked = selected.size === section.items.length;
+  },
+
+  applySelection() {
+    const selected = State.getSelectedForSection(State.activeSection);
+    if (selected.size === 0) {
+      showToast('Please select at least one topic.', '#dc2626');
+      return;
+    }
+    State.view = 'edit';
+    this.renderEdit();
+  },
+
+  renderEdit() {
+    const section = SECTIONS.find(s => s.id === State.activeSection);
+    if (!section) return;
+    const main = document.getElementById('mainContent');
+    const selected = State.getSelectedForSection(State.activeSection);
+    const items = section.items.filter(i => selected.has(i.title));
+    const edits = State.getSectionEdits(section.id);
+
+    main.innerHTML = `
+      <div class="section-header">
+        <h2>${section.icon} ${section.label}</h2>
+        <p>Edit the content below. Changes are saved when you click <strong>Save Changes</strong>.</p>
+      </div>
+      <div class="phase-bar">
+        <div class="phase-step done">1 · Select Topics</div>
+        <div class="phase-step active">2 · Edit Content</div>
+        <div class="phase-step">3 · Publish</div>
+      </div>
+      <div class="toolbar">
+        <button class="btn btn-ghost" onclick="App.renderSubheadings()">← Back to Topics</button>
+      </div>
+      <div class="edit-blocks" id="editBlocks">
+        ${items.map(item => {
+          const saved = edits[item.title];
+          const base = State.getBaseContent(section.id, item.title);
+          const displayTitle = saved ? saved.title : base.title;
+          const displayContent = saved ? saved.content : base.content;
+          return `<div class="edit-block" data-original="${escHtml(item.title)}">
+            <div class="edit-block-header">
+              <input type="text" class="block-title" value="${escHtml(displayTitle)}" placeholder="Subheading title">
+            </div>
+            <div class="edit-content" contenteditable="true" data-original="${escHtml(item.title)}">${escHtml(displayContent)}</div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div class="save-bar">
+        <button class="btn btn-ghost" onclick="App.renderSubheadings()">← Back</button>
+        <button class="btn btn-success" onclick="App.saveEdits()">Save Changes</button>
+      </div>`;
+  },
+
+  saveEdits() {
+    const blocks = document.querySelectorAll('.edit-block');
+    blocks.forEach(block => {
+      const originalTitle = block.dataset.original;
+      const titleInput = block.querySelector('.block-title');
+      const contentDiv = block.querySelector('.edit-content');
+      const title = titleInput.value.trim() || originalTitle;
+      const content = contentDiv.innerText.trim();
+      State.setEdit(State.activeSection, originalTitle, title, content);
+    });
+    this.renderNav();
+    showToast('Changes saved!');
+    setTimeout(() => App.renderSubheadings(), 600);
+  },
+
+  showPublish() {
+    State.view = 'publish';
+    State.activeSection = null;
+    this.renderNav();
+    const main = document.getElementById('mainContent');
+    const totalEdited = State.totalEdited();
+
+    if (totalEdited === 0) {
+      main.innerHTML = `<div class="empty-state">
+        <div class="big">📄</div>
+        <p>No content saved yet. Select a section from the menu above, choose topics, edit, and save.</p>
+      </div>`;
+      return;
+    }
+
+    // Build document HTML
+    let docHTML = '';
+    SECTIONS.forEach(section => {
+      const edits = State.getSectionEdits(section.id);
+      const keys = Object.keys(edits);
+      if (keys.length === 0) return;
+
+      docHTML += `<div class="doc-h1">${section.label}</div>`;
+      // Keep original order
+      section.items.forEach(item => {
+        if (!edits[item.title]) return;
+        const e = edits[item.title];
+        docHTML += `<div class="doc-h2">${escHtml(e.title)}</div>`;
+        docHTML += `<div class="doc-body">${escHtml(e.content)}</div>`;
+      });
+    });
+
+    const today = new Date().toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' });
+
+    main.innerHTML = `
+      <div class="phase-bar">
+        <div class="phase-step done">1 · Select Topics</div>
+        <div class="phase-step done">2 · Edit Content</div>
+        <div class="phase-step active">3 · Published Document</div>
+      </div>
+      <div class="publish-actions">
+        <button class="back-link" onclick="App.renderHome()">← Back to Home</button>
+        <button class="btn btn-secondary" onclick="App.goBackToEdit()">✏️ Back to Editing</button>
+        <button class="btn btn-primary" onclick="window.print()">🖨️ Print</button>
+        <button class="btn btn-success" onclick="App.exportWord()">📧 Export &amp; Email</button>
+        <button class="btn btn-danger" onclick="App.resetAll()">🔄 Reset &amp; Start Over</button>
+      </div>
+      <div class="final-doc" id="finalDoc">
+        <div class="doc-title">Financial Plan Summary</div>
+        <div class="doc-date">Prepared: ${today}</div>
+        ${docHTML}
+      </div>`;
+  },
+
+  goBackToEdit() {
+    // Go back to the first section that has edits, or home
+    const firstEdited = SECTIONS.find(s => State.hasEdits(s.id));
+    if (firstEdited) {
+      this.selectSection(firstEdited.id);
+    } else {
+      this.renderHome();
+    }
+  },
+
+  exportWord() {
+    const today = new Date().toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' });
+    let body = `<h1 style="text-align:center;font-family:Calibri,sans-serif;color:#1a2744;">Financial Plan Summary</h1>`;
+    body += `<p style="text-align:center;color:#888;font-size:11pt;font-family:Calibri,sans-serif;">${today}</p>`;
+
+    SECTIONS.forEach(section => {
+      const edits = State.getSectionEdits(section.id);
+      if (Object.keys(edits).length === 0) return;
+      body += `<h2 style="font-family:Calibri,sans-serif;color:#1a2744;border-bottom:2pt solid #c9a84c;padding-bottom:4pt;margin-top:24pt;">${section.label.toUpperCase()}</h2>`;
+      section.items.forEach(item => {
+        if (!edits[item.title]) return;
+        const e = edits[item.title];
+        body += `<h3 style="font-family:Calibri,sans-serif;color:#243560;margin-top:14pt;">${e.title}</h3>`;
+        body += `<p style="font-family:Calibri,sans-serif;font-size:11pt;line-height:1.6;">${e.content.replace(/\n/g, '<br>')}</p>`;
+      });
+    });
+
+    const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>Financial Plan Summary</title></head><body>${body}</body></html>`;
+    const blob = new Blob(['﻿', html], { type: 'application/msword' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Financial-Plan-Summary.doc';
+    a.click();
+    URL.revokeObjectURL(url);
+
+    // Open email client
+    setTimeout(() => {
+      const subject = encodeURIComponent('Financial Plan Summary');
+      const emailBody = encodeURIComponent('Please find the Financial Plan Summary document attached.\n\nNote: The document has been downloaded to your device. Please attach it to this email before sending.');
+      window.location.href = `mailto:?subject=${subject}&body=${emailBody}`;
+    }, 800);
+
+    showToast('Document downloaded. Opening email...');
+  },
+
+  // ── RESET ──────────────────────────────────────────────────────────────────
+  resetAll() {
+    if (!confirm('This will clear all your current edits and return to the start.\n\nYour template defaults (permanent changes) will be preserved.\n\nContinue?')) return;
+    State.resetEdits();
+    this.renderNav();
+    this.renderHome();
+    showToast('Reset complete. Ready to start a new plan.');
+  },
+
+  // ── PERMANENT TEMPLATE EDITING ─────────────────────────────────────────────
+  enterPermMode() {
+    State.permMode = true;
+    State.view = 'perm-home';
+    State.activeSection = null;
+    this.renderNav();
+    this.renderPermHome();
+  },
+
+  exitPermMode() {
+    State.permMode = false;
+    State.activeSection = null;
+    this.renderNav();
+    this.renderHome();
+  },
+
+  renderPermHome() {
+    const main = document.getElementById('mainContent');
+    main.innerHTML = `
+      <div class="perm-banner">
+        <span>⚙️ <strong>Template Editing Mode</strong> — Changes here permanently update the default content for all future plans</span>
+        <button class="btn btn-ghost btn-sm" onclick="App.exitPermMode()">✕ Exit Template Editing</button>
+      </div>
+      <div class="home-welcome">
+        <h2>Edit Template Defaults</h2>
+        <p>Select a section to permanently customize the default wording for any topic. These become the new starting point whenever the tool is reset.</p>
+        <div class="section-cards">
+          ${SECTIONS.map(s => {
+            const customCount = Object.keys(State.base[s.id] || {}).length;
+            return `<div class="section-card" onclick="App.selectSection('${s.id}')">
+              <div class="icon">${s.icon}</div>
+              <span>${s.label}</span>
+              <span class="saved-count">${customCount > 0 ? customCount + ' customized' : 'Using defaults'}</span>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>`;
+  },
+
+  renderPermSubheadings() {
+    const section = SECTIONS.find(s => s.id === State.activeSection);
+    if (!section) return;
+    const main = document.getElementById('mainContent');
+
+    main.innerHTML = `
+      <div class="perm-banner">
+        <span>⚙️ <strong>Template Editing</strong> — ${section.label}</span>
+        <button class="btn btn-ghost btn-sm" onclick="App.exitPermMode()">✕ Exit</button>
+      </div>
+      <div class="section-header">
+        <h2>${section.icon} ${section.label}</h2>
+        <p>Click any topic to permanently edit its default content.</p>
+      </div>
+      <div class="subheading-list">
+        ${section.items.map(item => {
+          const base = State.getBaseContent(section.id, item.title);
+          const isCustomized = !!State.base[section.id]?.[item.title];
+          return `<div class="sub-item" style="cursor:pointer;" onclick="App.editPermItem('${escHtml(section.id)}', '${escHtml(item.title)}')">
+            <span class="sub-item-title">${escHtml(base.title)}</span>
+            ${isCustomized ? '<span class="saved-badge perm-saved">✓ Customized</span>' : ''}
+            <span style="color:var(--text-muted);font-size:0.78rem;white-space:nowrap;margin-left:auto;">Edit →</span>
+          </div>`;
+        }).join('')}
+      </div>
+      <div class="save-bar">
+        <button class="btn btn-ghost" onclick="App.renderPermHome()">← Back to Sections</button>
+      </div>`;
+  },
+
+  editPermItem(sectionId, originalTitle) {
+    const base = State.getBaseContent(sectionId, originalTitle);
+    const section = SECTIONS.find(s => s.id === sectionId);
+    const isCustomized = !!State.base[sectionId]?.[originalTitle];
+    const main = document.getElementById('mainContent');
+
+    main.innerHTML = `
+      <div class="perm-banner">
+        <span>⚙️ <strong>Editing Default Content</strong></span>
+        <button class="btn btn-ghost btn-sm" onclick="App.renderPermSubheadings()">← Back to ${section.label}</button>
+      </div>
+      <div class="edit-blocks">
+        <div class="edit-block">
+          <div class="edit-block-header">
+            <input type="text" id="permTitle" value="${escHtml(base.title)}" placeholder="Subheading title">
+          </div>
+          <div class="edit-content" contenteditable="true" id="permContent">${escHtml(base.content)}</div>
+        </div>
+      </div>
+      <div class="save-bar">
+        <button class="btn btn-ghost" onclick="App.renderPermSubheadings()">Cancel</button>
+        ${isCustomized ? `<button class="btn btn-danger btn-sm" onclick="App.resetPermItem('${escHtml(sectionId)}','${escHtml(originalTitle)}')">↩ Restore Original</button>` : ''}
+        <button class="btn btn-success" onclick="App.savePermItem('${escHtml(sectionId)}','${escHtml(originalTitle)}')">Save as Default</button>
+      </div>`;
+  },
+
+  savePermItem(sectionId, originalTitle) {
+    const title = document.getElementById('permTitle').value.trim() || originalTitle;
+    const content = document.getElementById('permContent').innerText.trim();
+    State.setBase(sectionId, originalTitle, title, content);
+    showToast('Default content saved permanently!', '#92400e');
+    setTimeout(() => App.renderPermSubheadings(), 600);
+  },
+
+  resetPermItem(sectionId, originalTitle) {
+    if (!confirm('Restore this topic to its original hardcoded wording?')) return;
+    State.deleteBase(sectionId, originalTitle);
+    showToast('Restored to original.');
+    setTimeout(() => App.renderPermSubheadings(), 400);
+  }
+};
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function escHtml(str) {
+  return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+let toastTimer;
+function showToast(msg, color = '#16a34a') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = color;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ─── BOOT ────────────────────────────────────────────────────────────────────
+App.init();
+</script>
+</body>
+</html>
