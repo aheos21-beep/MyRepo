@@ -19,8 +19,8 @@ All projects are hosted on **GitHub Pages** (static files only — no server-sid
 ## AI-Tools-Ranking
 
 The only project with automation. Architecture:
-- `generate_data.py` — fetches RSS feeds and calculates rankings; writes `rankings.json` and `news.json` into its own folder. Run locally with `pip install aiohttp && python AI-Tools-Ranking/generate_data.py`.
-- `index.html` + `app.js` + `style.css` — static frontend that reads `rankings.json` and `news.json` directly via `fetch()`.
+- `generate_data.py` — fetches RSS feeds and calculates rankings; writes `rankings.json` into its own folder. Run locally with `pip install aiohttp && python AI-Tools-Ranking/generate_data.py`.
+- `index.html` + `app.js` + `style.css` — static frontend that reads `rankings.json` directly via `fetch()`.
 - GitHub Actions (`.github/workflows/daily-refresh.yml`) runs `generate_data.py` at 6am and 6pm UTC and commits the updated JSON files. Can be triggered manually from the GitHub Actions tab.
 
 ## Before starting any new project
