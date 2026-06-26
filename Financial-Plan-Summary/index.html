@@ -128,30 +128,6 @@
   .section-header h2 { font-size: 1.3rem; color: var(--navy); }
   .section-header p { color: var(--text-muted); font-size: 0.875rem; margin-top: 4px; }
 
-  .phase-bar {
-    display: flex;
-    align-items: center;
-    gap: 0;
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    margin-bottom: 20px;
-    overflow: hidden;
-  }
-  .phase-step {
-    flex: 1;
-    text-align: center;
-    padding: 9px 12px;
-    font-size: 0.78rem;
-    font-weight: 500;
-    color: var(--text-muted);
-    border-right: 1px solid var(--border);
-    position: relative;
-  }
-  .phase-step:last-child { border-right: none; }
-  .phase-step.active { background: var(--navy); color: white; }
-  .phase-step.done { background: #f0fdf4; color: var(--success); }
-
   /* SUBHEADING SELECTION */
   .toolbar {
     display: flex;
@@ -873,11 +849,6 @@ const App = {
         <h2>${section.icon} ${section.label}</h2>
         <p>Select the topics you want to include in your plan, then click <strong>Apply</strong> to edit their content.</p>
       </div>
-      <div class="phase-bar">
-        <div class="phase-step active">1 · Select Topics</div>
-        <div class="phase-step">2 · Edit Content</div>
-        <div class="phase-step">3 · Publish</div>
-      </div>
       <div class="toolbar">
         <div class="toolbar-left">
           <label class="select-all-row">
@@ -961,11 +932,6 @@ const App = {
         <h2>${section.icon} ${section.label}</h2>
         <p>Edit the content below. Changes are saved when you click <strong>Save Changes</strong>.</p>
       </div>
-      <div class="phase-bar">
-        <div class="phase-step done">1 · Select Topics</div>
-        <div class="phase-step active">2 · Edit Content</div>
-        <div class="phase-step">3 · Publish</div>
-      </div>
       <div class="toolbar">
         <button class="btn btn-ghost" onclick="App.renderSubheadings()">← Back to Topics</button>
       </div>
@@ -1039,11 +1005,6 @@ const App = {
     const today = new Date().toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' });
 
     main.innerHTML = `
-      <div class="phase-bar">
-        <div class="phase-step done">1 · Select Topics</div>
-        <div class="phase-step done">2 · Edit Content</div>
-        <div class="phase-step active">3 · Published Document</div>
-      </div>
       <div class="publish-actions">
         <button class="back-link" onclick="App.renderHome()">← Back to Home</button>
         <button class="btn btn-secondary" onclick="App.goBackToEdit()">✏️ Back to Editing</button>
