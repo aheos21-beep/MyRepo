@@ -57,6 +57,9 @@
     transition: background 0.15s;
   }
   .btn-publish:hover { background: var(--gold-light); }
+  .nav-publish { color: var(--gold) !important; font-weight: 700 !important; margin-left: auto; }
+  .nav-publish:hover { color: var(--gold-light) !important; }
+  .nav-publish.active { color: var(--gold-light) !important; border-bottom-color: var(--gold) !important; }
 
   /* NAV */
   nav {
@@ -393,7 +396,6 @@
 <header>
   <div class="header-top">
     <h1>Financial Plan Summary</h1>
-    <button class="btn-publish" onclick="App.showPublish()">&#128196; Publish Document</button>
   </div>
   <nav id="mainNav"></nav>
 </header>
@@ -783,7 +785,7 @@ const App = {
   renderNav() {
     const nav = document.getElementById('mainNav');
     const nonSectionViews = ['home', 'publish', 'perm-home'];
-    nav.innerHTML = SECTIONS.map(s => {
+    const sectionBtns = SECTIONS.map(s => {
       const hasEdits = State.hasEdits(s.id);
       const hasBase = !!(State.base[s.id] && Object.keys(State.base[s.id]).length);
       const isActive = State.activeSection === s.id && !nonSectionViews.includes(State.view);
@@ -792,6 +794,8 @@ const App = {
         ${s.label}${dot}
       </button>`;
     }).join('');
+    const publishBtn = `<button class="nav-btn nav-publish ${State.view === 'publish' ? 'active' : ''}" onclick="App.showPublish()">Publish Document</button>`;
+    nav.innerHTML = sectionBtns + publishBtn;
   },
 
   selectSection(sectionId) {
