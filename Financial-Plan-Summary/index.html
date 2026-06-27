@@ -822,16 +822,6 @@ const App = {
       <div class="home-welcome">
         <h2>Financial Plan Summary</h2>
         <p>Select a section from the navigation above to begin. Choose the topics you want to include, edit the content, then publish your final document.</p>
-        <div class="section-cards">
-          ${SECTIONS.map(s => {
-            const editCount = Object.keys(State.getSectionEdits(s.id)).length;
-            return `<div class="section-card" onclick="App.selectSection('${s.id}')">
-              <div class="icon">${s.icon}</div>
-              <span>${s.label}</span>
-              <span class="saved-count">${editCount > 0 ? editCount + ' item' + (editCount !== 1 ? 's' : '') + ' saved' : s.items.length + ' topics'}</span>
-            </div>`;
-          }).join('')}
-        </div>
         <div class="home-template-zone">
           <button class="btn-template-edit" onclick="App.enterPermMode()">
             ⚙️ Edit Template Defaults
