@@ -1056,17 +1056,7 @@ const App = {
       </div>
       <div class="home-welcome">
         <h2>Edit Template Defaults</h2>
-        <p>Select a section to permanently customize the default wording for any topic. These become the new starting point whenever the tool is reset.</p>
-        <div class="section-cards">
-          ${SECTIONS.map(s => {
-            const customCount = Object.keys(State.base[s.id] || {}).length;
-            return `<div class="section-card" onclick="App.selectSection('${s.id}')">
-              <div class="icon">${s.icon}</div>
-              <span>${s.label}</span>
-              <span class="saved-count">${customCount > 0 ? customCount + ' customized' : 'Using defaults'}</span>
-            </div>`;
-          }).join('')}
-        </div>
+        <p>Select a section from the navigation above to permanently customize the default wording for any topic. These become the new starting point whenever the tool is reset.</p>
       </div>`;
   },
 
