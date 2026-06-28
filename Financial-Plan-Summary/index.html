@@ -1330,6 +1330,8 @@ const App = {
   attachPermListDragEvents() {
     const list = document.getElementById('permList');
     if (!list) return;
+
+    // ── Mouse drag (desktop) ──────────────────────────────────────────────────
     let dragged = null;
     list.querySelectorAll('.perm-row').forEach(row => {
       row.addEventListener('dragstart', e => {
@@ -1342,9 +1344,7 @@ const App = {
         row.classList.remove('dragging');
         list.querySelectorAll('.perm-row').forEach(r => r.classList.remove('drag-over'));
         dragged = null;
-        const newOrder = [...list.querySelectorAll('.perm-row')].map(r => r.dataset.key);
-        State.baseOrder[State.activeSection] = newOrder;
-        State.saveBase();
+        App._savePermOrder();
       });
       row.addEventListener('dragover', e => {
         e.preventDefault();
@@ -1359,6 +1359,65 @@ const App = {
       row.addEventListener('drop', e => { e.preventDefault(); row.classList.remove('drag-over'); });
       row.querySelector('.drag-handle').addEventListener('mousedown', () => { row.draggable = true; });
     });
+
+    // ── Touch drag (iPad / iOS Safari) ───────────────────────────────────────
+    if (App._permTouchMove) document.removeEventListener('touchmove', App._permTouchMove);
+    if (App._permTouchEnd) document.removeEventListener('touchend', App._permTouchEnd);
+
+    let touchDragged = null;
+    let touchClone = null;
+    let touchOffsetY = 0;
+
+    list.querySelectorAll('.perm-row .drag-handle').forEach(handle => {
+      handle.addEventListener('touchstart', e => {
+        e.preventDefault();
+        const row = handle.closest('.perm-row');
+        touchDragged = row;
+        const touch = e.touches[0];
+        const rect = row.getBoundingClientRect();
+        touchOffsetY = touch.clientY - rect.top;
+        touchClone = row.cloneNode(true);
+        touchClone.style.cssText = `position:fixed;left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;opacity:0.85;z-index:1000;pointer-events:none;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,0.18);background:white;`;
+        document.body.appendChild(touchClone);
+        row.classList.add('dragging');
+      }, { passive: false });
+    });
+
+    App._permTouchMove = e => {
+      if (!touchDragged) return;
+      e.preventDefault();
+      const touch = e.touches[0];
+      touchClone.style.top = (touch.clientY - touchOffsetY) + 'px';
+      touchClone.style.visibility = 'hidden';
+      const el = document.elementFromPoint(touch.clientX, touch.clientY);
+      touchClone.style.visibility = '';
+      const targetRow = el?.closest?.('.perm-row');
+      if (targetRow && targetRow !== touchDragged) {
+        const siblings = [...list.querySelectorAll('.perm-row')];
+        if (siblings.indexOf(touchDragged) > siblings.indexOf(targetRow)) list.insertBefore(touchDragged, targetRow);
+        else list.insertBefore(touchDragged, targetRow.nextSibling);
+      }
+    };
+
+    App._permTouchEnd = () => {
+      if (!touchDragged) return;
+      touchDragged.classList.remove('dragging');
+      touchClone?.remove();
+      touchClone = null;
+      App._savePermOrder();
+      touchDragged = null;
+    };
+
+    document.addEventListener('touchmove', App._permTouchMove, { passive: false });
+    document.addEventListener('touchend', App._permTouchEnd);
+  },
+
+  _savePermOrder() {
+    const list = document.getElementById('permList');
+    if (!list) return;
+    const newOrder = [...list.querySelectorAll('.perm-row')].map(r => r.dataset.key);
+    State.baseOrder[State.activeSection] = newOrder;
+    State.saveBase();
   }
 };
 
