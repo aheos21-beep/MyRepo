@@ -433,6 +433,10 @@
     color: #92400e;
     border-color: #fde68a;
   }
+  .perm-row { cursor: default; }
+  .perm-row .drag-handle { cursor: grab; }
+  .perm-row.dragging { opacity: 0.35; border-style: dashed; }
+  .perm-row.drag-over { border-color: var(--accent); box-shadow: 0 0 0 2px #bfdbfe; }
 </style>
 </head>
 <body>
@@ -1227,10 +1231,17 @@ const App = {
     const main = document.getElementById('mainContent');
 
     const keys = State.getBaseOrder(section.id);
-    const blocksHtml = keys.map(key => {
+    const itemsHtml = keys.map(key => {
       const base = State.getBaseContent(section.id, key);
       if (!base) return '';
-      return App.buildEditBlock(key, base.title, base.content, true);
+      const isCustomized = !!State.base[section.id]?.[key];
+      return `<div class="sub-item perm-row" data-key="${escHtml(key)}">
+        <span class="drag-handle" title="Drag to reorder">⠿</span>
+        <span class="sub-item-title">${escHtml(base.title)}</span>
+        ${isCustomized ? '<span class="saved-badge perm-saved">✓ Customized</span>' : ''}
+        <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); App.editPermItem('${escHtml(section.id)}', '${escHtml(key)}')">Edit →</button>
+        <button class="btn-delete-block" onclick="event.stopPropagation(); App.deletePermRow(this, '${escHtml(section.id)}', '${escHtml(key)}')" title="Delete">×</button>
+      </div>`;
     }).join('');
 
     main.innerHTML = `
@@ -1240,83 +1251,114 @@ const App = {
       </div>
       <div class="section-header">
         <h2>${section.icon} ${section.label}</h2>
-        <p>Edit, reorder, add or delete subheadings. Click <strong>Save as Defaults</strong> to apply permanently.</p>
+        <p>Drag ⠿ to reorder, click <strong>Edit →</strong> to change content, or × to delete.</p>
       </div>
-      <div class="edit-blocks" id="permBlocks">${blocksHtml}</div>
-      <button class="btn-add-block" onclick="App.addPermBlock()">+ Add Subheading</button>
+      <div class="subheading-list" id="permList">${itemsHtml}</div>
+      <button class="btn-add-block" onclick="App.addPermRow('${escHtml(section.id)}')">+ Add Subheading</button>
       <div class="save-bar">
         <button class="btn btn-ghost" onclick="App.renderPermHome()">← Back to Sections</button>
-        <button class="btn btn-success" onclick="App.savePermEdits('${escHtml(section.id)}')">Save as Defaults</button>
       </div>`;
 
-    this.attachAllPermDragEvents();
+    this.attachPermListDragEvents();
   },
 
-  savePermEdits(sectionId) {
-    const blocks = document.querySelectorAll('#permBlocks .edit-block');
-    const items = [];
-    blocks.forEach(block => {
-      const key = block.dataset.key;
-      const title = block.querySelector('.block-title').value.trim() || '(untitled)';
-      const content = block.querySelector('.edit-content').innerText.trim();
-      items.push({ key, title, content });
-    });
-    State.setSectionBase(sectionId, items);
-    this.renderNav();
-    showToast('Template defaults saved permanently!', '#92400e');
-    setTimeout(() => App.renderPermHome(), 600);
-  },
-
-  addPermBlock() {
+  addPermRow(sectionId) {
     const key = 'new-' + Date.now();
-    const html = App.buildEditBlock(key, '', '', true);
-    const container = document.getElementById('permBlocks');
-    const div = document.createElement('div');
-    div.innerHTML = html;
-    const block = div.firstElementChild;
-    container.appendChild(block);
-    App.attachPermDragEvents(block);
-    block.querySelector('.block-title').focus();
+    if (!State.base[sectionId]) State.base[sectionId] = {};
+    State.base[sectionId][key] = { title: 'New Subheading', content: '' };
+    State.baseOrder[sectionId] = [...State.getBaseOrder(sectionId), key];
+    State.saveBase();
+    App.editPermItem(sectionId, key);
   },
 
-  attachAllPermDragEvents() {
-    document.querySelectorAll('#permBlocks .edit-block').forEach(b => App.attachPermDragEvents(b));
+  deletePermRow(btn, sectionId, key) {
+    const base = State.getBaseContent(sectionId, key);
+    if (!confirm(`Delete "${base?.title || 'this subheading'}"?`)) return;
+    if (State.base[sectionId]?.[key]) delete State.base[sectionId][key];
+    State.baseOrder[sectionId] = State.getBaseOrder(sectionId).filter(k => k !== key);
+    State.saveBase();
+    App.renderPermSubheadings();
   },
 
-  attachPermDragEvents(block) {
-    block.addEventListener('dragstart', e => {
-      App._dragged = block;
-      e.dataTransfer.effectAllowed = 'move';
-      setTimeout(() => block.classList.add('dragging'), 0);
+  editPermItem(sectionId, key) {
+    const base = State.getBaseContent(sectionId, key);
+    const section = SECTIONS.find(s => s.id === sectionId);
+    const isCustomized = !!State.base[sectionId]?.[key] && !key.startsWith('new-');
+    const main = document.getElementById('mainContent');
+
+    main.innerHTML = `
+      <div class="perm-banner">
+        <span>⚙️ <strong>Editing Default Content</strong></span>
+        <button class="btn btn-ghost btn-sm" onclick="App.renderPermSubheadings()">← Back to ${escHtml(section.label)}</button>
+      </div>
+      <div class="edit-blocks">
+        <div class="edit-block">
+          <div class="edit-block-header">
+            <input type="text" id="permTitle" value="${escHtml(base ? base.title : '')}" placeholder="Subheading title">
+          </div>
+          <div class="edit-content" contenteditable="true" id="permContent">${escHtml(base ? base.content : '')}</div>
+        </div>
+      </div>
+      <div class="save-bar">
+        <button class="btn btn-ghost" onclick="App.renderPermSubheadings()">Cancel</button>
+        ${isCustomized ? `<button class="btn btn-danger btn-sm" onclick="App.resetPermItem('${escHtml(sectionId)}','${escHtml(key)}')">↩ Restore Original</button>` : ''}
+        <button class="btn btn-success" onclick="App.savePermItem('${escHtml(sectionId)}','${escHtml(key)}')">Save as Default</button>
+      </div>`;
+  },
+
+  savePermItem(sectionId, key) {
+    const title = document.getElementById('permTitle').value.trim() || '(untitled)';
+    const content = document.getElementById('permContent').innerText.trim();
+    if (!State.base[sectionId]) State.base[sectionId] = {};
+    State.base[sectionId][key] = { title, content };
+    State.saveBase();
+    showToast('Default content saved permanently!', '#92400e');
+    setTimeout(() => App.renderPermSubheadings(), 600);
+  },
+
+  resetPermItem(sectionId, key) {
+    if (!confirm('Restore this topic to its original wording?')) return;
+    if (State.base[sectionId]) {
+      delete State.base[sectionId][key];
+      if (Object.keys(State.base[sectionId]).length === 0) delete State.base[sectionId];
+    }
+    State.saveBase();
+    showToast('Restored to original.');
+    setTimeout(() => App.renderPermSubheadings(), 400);
+  },
+
+  attachPermListDragEvents() {
+    const list = document.getElementById('permList');
+    if (!list) return;
+    let dragged = null;
+    list.querySelectorAll('.perm-row').forEach(row => {
+      row.addEventListener('dragstart', e => {
+        dragged = row;
+        e.dataTransfer.effectAllowed = 'move';
+        setTimeout(() => row.classList.add('dragging'), 0);
+      });
+      row.addEventListener('dragend', () => {
+        row.draggable = false;
+        row.classList.remove('dragging');
+        list.querySelectorAll('.perm-row').forEach(r => r.classList.remove('drag-over'));
+        dragged = null;
+        const newOrder = [...list.querySelectorAll('.perm-row')].map(r => r.dataset.key);
+        State.baseOrder[State.activeSection] = newOrder;
+        State.saveBase();
+      });
+      row.addEventListener('dragover', e => {
+        e.preventDefault();
+        if (!dragged || dragged === row) return;
+        list.querySelectorAll('.perm-row').forEach(r => r.classList.remove('drag-over'));
+        row.classList.add('drag-over');
+        const siblings = [...list.querySelectorAll('.perm-row')];
+        if (siblings.indexOf(dragged) > siblings.indexOf(row)) list.insertBefore(dragged, row);
+        else list.insertBefore(dragged, row.nextSibling);
+      });
+      row.addEventListener('dragleave', () => row.classList.remove('drag-over'));
+      row.addEventListener('drop', e => { e.preventDefault(); row.classList.remove('drag-over'); });
+      row.querySelector('.drag-handle').addEventListener('mousedown', () => { row.draggable = true; });
     });
-    block.addEventListener('dragend', () => {
-      block.classList.remove('dragging');
-      document.querySelectorAll('#permBlocks .edit-block').forEach(b => b.classList.remove('drag-over'));
-      App._dragged = null;
-    });
-    block.addEventListener('dragover', e => {
-      e.preventDefault();
-      e.dataTransfer.dropEffect = 'move';
-      const dragged = App._dragged;
-      if (!dragged || dragged === block) return;
-      document.querySelectorAll('#permBlocks .edit-block').forEach(b => b.classList.remove('drag-over'));
-      block.classList.add('drag-over');
-      const container = block.parentNode;
-      const siblings = [...container.querySelectorAll('.edit-block')];
-      const dragIdx = siblings.indexOf(dragged);
-      const targetIdx = siblings.indexOf(block);
-      if (dragIdx > targetIdx) {
-        container.insertBefore(dragged, block);
-      } else {
-        container.insertBefore(dragged, block.nextSibling);
-      }
-    });
-    block.addEventListener('dragleave', () => block.classList.remove('drag-over'));
-    block.addEventListener('drop', e => { e.preventDefault(); block.classList.remove('drag-over'); });
-    block.querySelector('.edit-content').addEventListener('mousedown', () => { block.draggable = false; });
-    block.querySelector('.block-title').addEventListener('mousedown', () => { block.draggable = false; });
-    block.querySelector('.drag-handle').addEventListener('mousedown', () => { block.draggable = true; });
-    document.addEventListener('mouseup', () => { block.draggable = true; }, { once: false });
   }
 };
 
