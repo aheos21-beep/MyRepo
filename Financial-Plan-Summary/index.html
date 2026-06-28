@@ -220,6 +220,50 @@
   .edit-content:focus { background: #fafbff; }
   .edit-content[contenteditable]:empty:before { content: 'Enter content here...'; color: var(--text-muted); }
 
+  .drag-handle {
+    cursor: grab;
+    color: #b0b7c3;
+    font-size: 1.1rem;
+    padding-right: 8px;
+    user-select: none;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+  .drag-handle:active { cursor: grabbing; }
+  .edit-block.dragging { opacity: 0.35; border: 2px dashed var(--border); }
+  .edit-block.drag-over { border-color: var(--accent); box-shadow: 0 0 0 2px #bfdbfe; }
+  .btn-delete-block {
+    background: none;
+    border: none;
+    color: #b0b7c3;
+    font-size: 1.2rem;
+    line-height: 1;
+    padding: 0 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    flex-shrink: 0;
+    transition: color 0.12s, background 0.12s;
+  }
+  .btn-delete-block:hover { color: var(--danger); background: #fee2e2; }
+  .btn-add-block {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    padding: 10px;
+    background: none;
+    border: 2px dashed var(--border);
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+    margin-top: 4px;
+  }
+  .btn-add-block:hover { border-color: var(--accent); color: var(--accent); background: #eff6ff; }
+
   .save-bar {
     display: flex;
     justify-content: flex-end;
@@ -680,15 +724,20 @@ const SECTIONS = [
 const State = {
   view: 'home',          // 'home' | 'subheadings' | 'edit' | 'publish' | 'perm-home' | 'perm-sub' | 'perm-edit'
   activeSection: null,
-  permMode: false,       // true when in permanent template-editing mode
-  edited: {},            // { sectionId: { itemTitle: { title, content } } } — session edits
-  base: {},              // { sectionId: { itemTitle: { title, content } } } — permanent overrides
+  permMode: false,
+  edited: {},            // { sectionId: { key: { title, content } } } — session edits
+  editedOrder: {},       // { sectionId: [key, ...] } — explicit saved order (keys may be original titles or '__new__*')
+  base: {},              // { sectionId: { key: { title, content } } } — permanent overrides
   selectedItems: {},
 
   load() {
     try {
       const saved = localStorage.getItem('fps_edited');
       if (saved) this.edited = JSON.parse(saved);
+    } catch(e) {}
+    try {
+      const saved = localStorage.getItem('fps_order');
+      if (saved) this.editedOrder = JSON.parse(saved);
     } catch(e) {}
     this.loadBase();
   },
@@ -702,6 +751,7 @@ const State = {
 
   save() {
     localStorage.setItem('fps_edited', JSON.stringify(this.edited));
+    localStorage.setItem('fps_order', JSON.stringify(this.editedOrder));
   },
 
   saveBase() {
@@ -745,13 +795,36 @@ const State = {
     return this.edited[sectionId]?.[originalTitle] || null;
   },
 
+  // Replace entire section's edits and order in one atomic save
+  setSectionEdits(sectionId, itemsArray) {
+    this.edited[sectionId] = {};
+    itemsArray.forEach(item => {
+      this.edited[sectionId][item.key] = { title: item.title, content: item.content };
+    });
+    this.editedOrder[sectionId] = itemsArray.map(i => i.key);
+    this.save();
+  },
+
   hasEdits(sectionId) {
+    if (this.editedOrder[sectionId]?.length > 0) return true;
     const edits = this.edited[sectionId];
-    return edits && Object.keys(edits).length > 0;
+    return !!(edits && Object.keys(edits).length > 0);
   },
 
   totalEdited() {
-    return Object.values(this.edited).reduce((sum, sec) => sum + Object.keys(sec).length, 0);
+    let total = 0;
+    SECTIONS.forEach(s => {
+      total += this.editedOrder[s.id]?.length ?? Object.keys(this.edited[s.id] || {}).length;
+    });
+    return total;
+  },
+
+  // Returns ordered keys for a section (for publish)
+  getOrderedKeys(sectionId) {
+    if (this.editedOrder[sectionId]?.length > 0) return this.editedOrder[sectionId];
+    const section = SECTIONS.find(s => s.id === sectionId);
+    if (!section) return [];
+    return section.items.filter(i => this.edited[sectionId]?.[i.title]).map(i => i.title);
   },
 
   hasBaseOverrides() {
@@ -769,8 +842,10 @@ const State = {
   // Clears session edits only — base/permanent overrides are kept
   resetEdits() {
     this.edited = {};
+    this.editedOrder = {};
     this.selectedItems = {};
     localStorage.removeItem('fps_edited');
+    localStorage.removeItem('fps_order');
   }
 };
 
@@ -921,44 +996,71 @@ const App = {
     const items = section.items.filter(i => selected.has(i.title));
     const edits = State.getSectionEdits(section.id);
 
+    const blocksHtml = items.map(item => {
+      const saved = edits[item.title];
+      const base = State.getBaseContent(section.id, item.title);
+      const displayTitle = saved ? saved.title : base.title;
+      const displayContent = saved ? saved.content : base.content;
+      return App.buildEditBlock(item.title, displayTitle, displayContent);
+    }).join('');
+
     main.innerHTML = `
       <div class="section-header">
         <h2>${section.icon} ${section.label}</h2>
-        <p>Edit the content below. Changes are saved when you click <strong>Save Changes</strong>.</p>
+        <p>Edit content below. Drag ⠿ to reorder. Use + to add blank topics, × to delete.</p>
       </div>
       <div class="toolbar">
         <button class="btn btn-ghost" onclick="App.renderSubheadings()">← Back to Topics</button>
       </div>
-      <div class="edit-blocks" id="editBlocks">
-        ${items.map(item => {
-          const saved = edits[item.title];
-          const base = State.getBaseContent(section.id, item.title);
-          const displayTitle = saved ? saved.title : base.title;
-          const displayContent = saved ? saved.content : base.content;
-          return `<div class="edit-block" data-original="${escHtml(item.title)}">
-            <div class="edit-block-header">
-              <input type="text" class="block-title" value="${escHtml(displayTitle)}" placeholder="Subheading title">
-            </div>
-            <div class="edit-content" contenteditable="true" data-original="${escHtml(item.title)}">${escHtml(displayContent)}</div>
-          </div>`;
-        }).join('')}
-      </div>
+      <div class="edit-blocks" id="editBlocks">${blocksHtml}</div>
+      <button class="btn-add-block" onclick="App.addNewBlock()">+ Add Subheading</button>
       <div class="save-bar">
         <button class="btn btn-ghost" onclick="App.renderSubheadings()">← Back</button>
         <button class="btn btn-success" onclick="App.saveEdits()">Save Changes</button>
       </div>`;
+
+    App.attachAllDragEvents();
+  },
+
+  buildEditBlock(key, title, content) {
+    return `<div class="edit-block" draggable="true" data-key="${escHtml(key)}">
+      <div class="edit-block-header">
+        <span class="drag-handle" title="Drag to reorder">⠿</span>
+        <input type="text" class="block-title" value="${escHtml(title)}" placeholder="Subheading title">
+        <button class="btn-delete-block" onclick="App.deleteBlock(this)" title="Delete subheading">×</button>
+      </div>
+      <div class="edit-content" contenteditable="true">${escHtml(content)}</div>
+    </div>`;
+  },
+
+  addNewBlock() {
+    const key = '__new__' + Date.now();
+    const container = document.getElementById('editBlocks');
+    const div = document.createElement('div');
+    div.outerHTML; // no-op, just to init
+    container.insertAdjacentHTML('beforeend', App.buildEditBlock(key, '', ''));
+    const newBlock = container.lastElementChild;
+    App.attachDragEvents(newBlock);
+    newBlock.querySelector('.block-title').focus();
+  },
+
+  deleteBlock(btn) {
+    const block = btn.closest('.edit-block');
+    const title = block.querySelector('.block-title').value || 'this subheading';
+    if (!confirm(`Delete "${title}"?`)) return;
+    block.remove();
   },
 
   saveEdits() {
-    const blocks = document.querySelectorAll('.edit-block');
+    const blocks = document.querySelectorAll('#editBlocks .edit-block');
+    const items = [];
     blocks.forEach(block => {
-      const originalTitle = block.dataset.original;
-      const titleInput = block.querySelector('.block-title');
-      const contentDiv = block.querySelector('.edit-content');
-      const title = titleInput.value.trim() || originalTitle;
-      const content = contentDiv.innerText.trim();
-      State.setEdit(State.activeSection, originalTitle, title, content);
+      const key = block.dataset.key;
+      const title = block.querySelector('.block-title').value.trim() || '(untitled)';
+      const content = block.querySelector('.edit-content').innerText.trim();
+      items.push({ key, title, content });
     });
+    State.setSectionEdits(State.activeSection, items);
     this.renderNav();
     showToast('Changes saved!');
     setTimeout(() => App.renderSubheadings(), 600);
@@ -979,18 +1081,17 @@ const App = {
       return;
     }
 
-    // Build document HTML
+    // Build document HTML using saved order
     let docHTML = '';
     SECTIONS.forEach(section => {
       const edits = State.getSectionEdits(section.id);
-      const keys = Object.keys(edits);
+      const keys = State.getOrderedKeys(section.id);
       if (keys.length === 0) return;
 
       docHTML += `<div class="doc-h1">${section.label}</div>`;
-      // Keep original order
-      section.items.forEach(item => {
-        if (!edits[item.title]) return;
-        const e = edits[item.title];
+      keys.forEach(key => {
+        const e = edits[key];
+        if (!e) return;
         docHTML += `<div class="doc-h2">${escHtml(e.title)}</div>`;
         docHTML += `<div class="doc-body">${escHtml(e.content)}</div>`;
       });
@@ -1020,6 +1121,48 @@ const App = {
     } else {
       this.renderHome();
     }
+  },
+
+  // ── DRAG & DROP ────────────────────────────────────────────────────────────
+  attachAllDragEvents() {
+    document.querySelectorAll('#editBlocks .edit-block').forEach(b => App.attachDragEvents(b));
+  },
+
+  attachDragEvents(block) {
+    block.addEventListener('dragstart', e => {
+      App._dragged = block;
+      e.dataTransfer.effectAllowed = 'move';
+      setTimeout(() => block.classList.add('dragging'), 0);
+    });
+    block.addEventListener('dragend', () => {
+      block.classList.remove('dragging');
+      document.querySelectorAll('.edit-block').forEach(b => b.classList.remove('drag-over'));
+      App._dragged = null;
+    });
+    block.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      const dragged = App._dragged;
+      if (!dragged || dragged === block) return;
+      document.querySelectorAll('.edit-block').forEach(b => b.classList.remove('drag-over'));
+      block.classList.add('drag-over');
+      const container = block.parentNode;
+      const siblings = [...container.querySelectorAll('.edit-block')];
+      const dragIdx = siblings.indexOf(dragged);
+      const targetIdx = siblings.indexOf(block);
+      if (dragIdx > targetIdx) {
+        container.insertBefore(dragged, block);
+      } else {
+        container.insertBefore(dragged, block.nextSibling);
+      }
+    });
+    block.addEventListener('dragleave', () => block.classList.remove('drag-over'));
+    block.addEventListener('drop', e => { e.preventDefault(); block.classList.remove('drag-over'); });
+    // Prevent contenteditable and inputs from triggering drag
+    block.querySelector('.edit-content').addEventListener('mousedown', e => { block.draggable = false; });
+    block.querySelector('.block-title').addEventListener('mousedown', e => { block.draggable = false; });
+    block.querySelector('.drag-handle').addEventListener('mousedown', e => { block.draggable = true; });
+    document.addEventListener('mouseup', () => { block.draggable = true; }, { once: false });
   },
 
   // ── RESET ──────────────────────────────────────────────────────────────────
