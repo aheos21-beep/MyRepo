@@ -1236,11 +1236,11 @@ const App = {
       if (!base) return '';
       const isCustomized = !!State.base[section.id]?.[key];
       return `<div class="sub-item perm-row" data-key="${escHtml(key)}">
-        <span class="drag-handle" title="Drag to reorder">⠿</span>
+        <button class="btn-delete-block" onclick="event.stopPropagation(); App.deletePermRow(this, '${escHtml(section.id)}', '${escHtml(key)}')" title="Delete">×</button>
         <span class="sub-item-title">${escHtml(base.title)}</span>
         ${isCustomized ? '<span class="saved-badge perm-saved">✓ Customized</span>' : ''}
         <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); App.editPermItem('${escHtml(section.id)}', '${escHtml(key)}')">Edit →</button>
-        <button class="btn-delete-block" onclick="event.stopPropagation(); App.deletePermRow(this, '${escHtml(section.id)}', '${escHtml(key)}')" title="Delete">×</button>
+        <span class="drag-handle" title="Drag to reorder">⠿</span>
       </div>`;
     }).join('');
 
