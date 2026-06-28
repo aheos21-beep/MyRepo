@@ -726,8 +726,9 @@ const State = {
   activeSection: null,
   permMode: false,
   edited: {},            // { sectionId: { key: { title, content } } } — session edits
-  editedOrder: {},       // { sectionId: [key, ...] } — explicit saved order (keys may be original titles or '__new__*')
+  editedOrder: {},       // { sectionId: [key, ...] } — saved order for session edits
   base: {},              // { sectionId: { key: { title, content } } } — permanent overrides
+  baseOrder: {},         // { sectionId: [key, ...] } — permanent order/item list
   selectedItems: {},
 
   load() {
@@ -747,6 +748,10 @@ const State = {
       const saved = localStorage.getItem('fps_base');
       if (saved) this.base = JSON.parse(saved);
     } catch(e) {}
+    try {
+      const saved = localStorage.getItem('fps_base_order');
+      if (saved) this.baseOrder = JSON.parse(saved);
+    } catch(e) {}
   },
 
   save() {
@@ -756,6 +761,24 @@ const State = {
 
   saveBase() {
     localStorage.setItem('fps_base', JSON.stringify(this.base));
+    localStorage.setItem('fps_base_order', JSON.stringify(this.baseOrder));
+  },
+
+  // Replace an entire section's permanent base content + order
+  setSectionBase(sectionId, itemsArray) {
+    this.base[sectionId] = {};
+    itemsArray.forEach(item => {
+      this.base[sectionId][item.key] = { title: item.title, content: item.content };
+    });
+    this.baseOrder[sectionId] = itemsArray.map(i => i.key);
+    this.saveBase();
+  },
+
+  // Ordered keys for a section's permanent template
+  getBaseOrder(sectionId) {
+    if (this.baseOrder[sectionId]?.length > 0) return this.baseOrder[sectionId];
+    const section = SECTIONS.find(s => s.id === sectionId);
+    return section ? section.items.map(i => i.title) : [];
   },
 
   // Returns permanent base content (custom override, or hardcoded fallback)
@@ -1001,47 +1024,42 @@ const App = {
       const base = State.getBaseContent(section.id, item.title);
       const displayTitle = saved ? saved.title : base.title;
       const displayContent = saved ? saved.content : base.content;
-      return App.buildEditBlock(item.title, displayTitle, displayContent);
+      return App.buildEditBlock(item.title, displayTitle, displayContent, false);
     }).join('');
 
     main.innerHTML = `
       <div class="section-header">
         <h2>${section.icon} ${section.label}</h2>
-        <p>Edit content below. Drag ⠿ to reorder. Use + to add blank topics, × to delete.</p>
+        <p>Edit the content below. Changes are saved when you click <strong>Save Changes</strong>.</p>
       </div>
       <div class="toolbar">
         <button class="btn btn-ghost" onclick="App.renderSubheadings()">← Back to Topics</button>
       </div>
       <div class="edit-blocks" id="editBlocks">${blocksHtml}</div>
-      <button class="btn-add-block" onclick="App.addNewBlock()">+ Add Subheading</button>
       <div class="save-bar">
         <button class="btn btn-ghost" onclick="App.renderSubheadings()">← Back</button>
         <button class="btn btn-success" onclick="App.saveEdits()">Save Changes</button>
       </div>`;
-
-    App.attachAllDragEvents();
   },
 
-  buildEditBlock(key, title, content) {
-    return `<div class="edit-block" draggable="true" data-key="${escHtml(key)}">
+  // withControls = true adds drag handle, delete button (used in perm mode only)
+  buildEditBlock(key, title, content, withControls) {
+    if (withControls) {
+      return `<div class="edit-block" draggable="true" data-key="${escHtml(key)}">
+        <div class="edit-block-header">
+          <span class="drag-handle" title="Drag to reorder">⠿</span>
+          <input type="text" class="block-title" value="${escHtml(title)}" placeholder="Subheading title">
+          <button class="btn-delete-block" onclick="App.deleteBlock(this)" title="Delete">×</button>
+        </div>
+        <div class="edit-content" contenteditable="true">${escHtml(content)}</div>
+      </div>`;
+    }
+    return `<div class="edit-block" data-key="${escHtml(key)}">
       <div class="edit-block-header">
-        <span class="drag-handle" title="Drag to reorder">⠿</span>
         <input type="text" class="block-title" value="${escHtml(title)}" placeholder="Subheading title">
-        <button class="btn-delete-block" onclick="App.deleteBlock(this)" title="Delete subheading">×</button>
       </div>
       <div class="edit-content" contenteditable="true">${escHtml(content)}</div>
     </div>`;
-  },
-
-  addNewBlock() {
-    const key = '__new__' + Date.now();
-    const container = document.getElementById('editBlocks');
-    const div = document.createElement('div');
-    div.outerHTML; // no-op, just to init
-    container.insertAdjacentHTML('beforeend', App.buildEditBlock(key, '', ''));
-    const newBlock = container.lastElementChild;
-    App.attachDragEvents(newBlock);
-    newBlock.querySelector('.block-title').focus();
   },
 
   deleteBlock(btn) {
@@ -1208,6 +1226,13 @@ const App = {
     if (!section) return;
     const main = document.getElementById('mainContent');
 
+    const keys = State.getBaseOrder(section.id);
+    const blocksHtml = keys.map(key => {
+      const base = State.getBaseContent(section.id, key);
+      if (!base) return '';
+      return App.buildEditBlock(key, base.title, base.content, true);
+    }).join('');
+
     main.innerHTML = `
       <div class="perm-banner">
         <span>⚙️ <strong>Template Editing</strong> — ${section.label}</span>
@@ -1215,63 +1240,83 @@ const App = {
       </div>
       <div class="section-header">
         <h2>${section.icon} ${section.label}</h2>
-        <p>Click any topic to permanently edit its default content.</p>
+        <p>Edit, reorder, add or delete subheadings. Click <strong>Save as Defaults</strong> to apply permanently.</p>
       </div>
-      <div class="subheading-list">
-        ${section.items.map(item => {
-          const base = State.getBaseContent(section.id, item.title);
-          const isCustomized = !!State.base[section.id]?.[item.title];
-          return `<div class="sub-item" style="cursor:pointer;" onclick="App.editPermItem('${escHtml(section.id)}', '${escHtml(item.title)}')">
-            <span class="sub-item-title">${escHtml(base.title)}</span>
-            ${isCustomized ? '<span class="saved-badge perm-saved">✓ Customized</span>' : ''}
-            <span style="color:var(--text-muted);font-size:0.78rem;white-space:nowrap;margin-left:auto;">Edit →</span>
-          </div>`;
-        }).join('')}
-      </div>
+      <div class="edit-blocks" id="permBlocks">${blocksHtml}</div>
+      <button class="btn-add-block" onclick="App.addPermBlock()">+ Add Subheading</button>
       <div class="save-bar">
         <button class="btn btn-ghost" onclick="App.renderPermHome()">← Back to Sections</button>
+        <button class="btn btn-success" onclick="App.savePermEdits('${escHtml(section.id)}')">Save as Defaults</button>
       </div>`;
+
+    this.attachAllPermDragEvents();
   },
 
-  editPermItem(sectionId, originalTitle) {
-    const base = State.getBaseContent(sectionId, originalTitle);
-    const section = SECTIONS.find(s => s.id === sectionId);
-    const isCustomized = !!State.base[sectionId]?.[originalTitle];
-    const main = document.getElementById('mainContent');
-
-    main.innerHTML = `
-      <div class="perm-banner">
-        <span>⚙️ <strong>Editing Default Content</strong></span>
-        <button class="btn btn-ghost btn-sm" onclick="App.renderPermSubheadings()">← Back to ${section.label}</button>
-      </div>
-      <div class="edit-blocks">
-        <div class="edit-block">
-          <div class="edit-block-header">
-            <input type="text" id="permTitle" value="${escHtml(base.title)}" placeholder="Subheading title">
-          </div>
-          <div class="edit-content" contenteditable="true" id="permContent">${escHtml(base.content)}</div>
-        </div>
-      </div>
-      <div class="save-bar">
-        <button class="btn btn-ghost" onclick="App.renderPermSubheadings()">Cancel</button>
-        ${isCustomized ? `<button class="btn btn-danger btn-sm" onclick="App.resetPermItem('${escHtml(sectionId)}','${escHtml(originalTitle)}')">↩ Restore Original</button>` : ''}
-        <button class="btn btn-success" onclick="App.savePermItem('${escHtml(sectionId)}','${escHtml(originalTitle)}')">Save as Default</button>
-      </div>`;
+  savePermEdits(sectionId) {
+    const blocks = document.querySelectorAll('#permBlocks .edit-block');
+    const items = [];
+    blocks.forEach(block => {
+      const key = block.dataset.key;
+      const title = block.querySelector('.block-title').value.trim() || '(untitled)';
+      const content = block.querySelector('.edit-content').innerText.trim();
+      items.push({ key, title, content });
+    });
+    State.setSectionBase(sectionId, items);
+    this.renderNav();
+    showToast('Template defaults saved permanently!', '#92400e');
+    setTimeout(() => App.renderPermHome(), 600);
   },
 
-  savePermItem(sectionId, originalTitle) {
-    const title = document.getElementById('permTitle').value.trim() || originalTitle;
-    const content = document.getElementById('permContent').innerText.trim();
-    State.setBase(sectionId, originalTitle, title, content);
-    showToast('Default content saved permanently!', '#92400e');
-    setTimeout(() => App.renderPermSubheadings(), 600);
+  addPermBlock() {
+    const key = 'new-' + Date.now();
+    const html = App.buildEditBlock(key, '', '', true);
+    const container = document.getElementById('permBlocks');
+    const div = document.createElement('div');
+    div.innerHTML = html;
+    const block = div.firstElementChild;
+    container.appendChild(block);
+    App.attachPermDragEvents(block);
+    block.querySelector('.block-title').focus();
   },
 
-  resetPermItem(sectionId, originalTitle) {
-    if (!confirm('Restore this topic to its original hardcoded wording?')) return;
-    State.deleteBase(sectionId, originalTitle);
-    showToast('Restored to original.');
-    setTimeout(() => App.renderPermSubheadings(), 400);
+  attachAllPermDragEvents() {
+    document.querySelectorAll('#permBlocks .edit-block').forEach(b => App.attachPermDragEvents(b));
+  },
+
+  attachPermDragEvents(block) {
+    block.addEventListener('dragstart', e => {
+      App._dragged = block;
+      e.dataTransfer.effectAllowed = 'move';
+      setTimeout(() => block.classList.add('dragging'), 0);
+    });
+    block.addEventListener('dragend', () => {
+      block.classList.remove('dragging');
+      document.querySelectorAll('#permBlocks .edit-block').forEach(b => b.classList.remove('drag-over'));
+      App._dragged = null;
+    });
+    block.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      const dragged = App._dragged;
+      if (!dragged || dragged === block) return;
+      document.querySelectorAll('#permBlocks .edit-block').forEach(b => b.classList.remove('drag-over'));
+      block.classList.add('drag-over');
+      const container = block.parentNode;
+      const siblings = [...container.querySelectorAll('.edit-block')];
+      const dragIdx = siblings.indexOf(dragged);
+      const targetIdx = siblings.indexOf(block);
+      if (dragIdx > targetIdx) {
+        container.insertBefore(dragged, block);
+      } else {
+        container.insertBefore(dragged, block.nextSibling);
+      }
+    });
+    block.addEventListener('dragleave', () => block.classList.remove('drag-over'));
+    block.addEventListener('drop', e => { e.preventDefault(); block.classList.remove('drag-over'); });
+    block.querySelector('.edit-content').addEventListener('mousedown', () => { block.draggable = false; });
+    block.querySelector('.block-title').addEventListener('mousedown', () => { block.draggable = false; });
+    block.querySelector('.drag-handle').addEventListener('mousedown', () => { block.draggable = true; });
+    document.addEventListener('mouseup', () => { block.draggable = true; }, { once: false });
   }
 };
 
