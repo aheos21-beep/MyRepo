@@ -849,9 +849,7 @@ const State = {
   // Returns ordered keys for a section (for publish)
   getOrderedKeys(sectionId) {
     if (this.editedOrder[sectionId]?.length > 0) return this.editedOrder[sectionId];
-    const section = SECTIONS.find(s => s.id === sectionId);
-    if (!section) return [];
-    return section.items.filter(i => this.edited[sectionId]?.[i.title]).map(i => i.title);
+    return this.getBaseOrder(sectionId).filter(key => this.edited[sectionId]?.[key]);
   },
 
   hasBaseOverrides() {
@@ -955,12 +953,14 @@ const App = {
         <button class="btn btn-primary" onclick="App.applySelection()">Apply Selected →</button>
       </div>
       <div class="subheading-list">
-        ${section.items.map(item => {
-          const isSelected = selected.has(item.title);
-          const isSaved = !!edits[item.title];
-          return `<div class="sub-item ${isSelected ? 'selected' : ''}" onclick="App.toggleItem(this, '${escHtml(item.title)}')">
-            <input type="checkbox" ${isSelected ? 'checked' : ''} onclick="event.stopPropagation(); App.toggleItem(this.closest('.sub-item'), '${escHtml(item.title)}')">
-            <span class="sub-item-title">${escHtml(item.title)}</span>
+        ${State.getBaseOrder(section.id).map(key => {
+          const base = State.getBaseContent(section.id, key);
+          if (!base) return '';
+          const isSelected = selected.has(key);
+          const isSaved = !!edits[key];
+          return `<div class="sub-item ${isSelected ? 'selected' : ''}" data-key="${escHtml(key)}" onclick="App.toggleItem(this)">
+            <input type="checkbox" ${isSelected ? 'checked' : ''} onclick="event.stopPropagation(); App.toggleItem(this.closest('.sub-item'))">
+            <span class="sub-item-title">${escHtml(base.title)}</span>
             ${isSaved ? '<span class="saved-badge">✓ Saved</span>' : ''}
           </div>`;
         }).join('')}
@@ -969,15 +969,16 @@ const App = {
     this.syncSelectAll();
   },
 
-  toggleItem(el, title) {
+  toggleItem(el) {
+    const key = el.dataset.key;
     const cb = el.querySelector('input[type="checkbox"]');
     const selected = State.getSelectedForSection(State.activeSection);
-    if (selected.has(title)) {
-      selected.delete(title);
+    if (selected.has(key)) {
+      selected.delete(key);
       el.classList.remove('selected');
       cb.checked = false;
     } else {
-      selected.add(title);
+      selected.add(key);
       el.classList.add('selected');
       cb.checked = true;
     }
@@ -986,11 +987,9 @@ const App = {
   },
 
   toggleSelectAll(checked) {
-    const section = SECTIONS.find(s => s.id === State.activeSection);
-    if (!section) return;
-    const titles = checked ? section.items.map(i => i.title) : [];
-    State.setSelected(State.activeSection, titles);
-    document.querySelectorAll('.sub-item').forEach((el, idx) => {
+    const keys = checked ? State.getBaseOrder(State.activeSection) : [];
+    State.setSelected(State.activeSection, keys);
+    document.querySelectorAll('.sub-item').forEach(el => {
       const cb = el.querySelector('input[type="checkbox"]');
       cb.checked = checked;
       el.classList.toggle('selected', checked);
@@ -998,11 +997,10 @@ const App = {
   },
 
   syncSelectAll() {
-    const section = SECTIONS.find(s => s.id === State.activeSection);
-    if (!section) return;
     const selected = State.getSelectedForSection(State.activeSection);
+    const total = State.getBaseOrder(State.activeSection).length;
     const sa = document.getElementById('selectAll');
-    if (sa) sa.checked = selected.size === section.items.length;
+    if (sa) sa.checked = selected.size === total;
   },
 
   applySelection() {
@@ -1020,15 +1018,16 @@ const App = {
     if (!section) return;
     const main = document.getElementById('mainContent');
     const selected = State.getSelectedForSection(State.activeSection);
-    const items = section.items.filter(i => selected.has(i.title));
+    const keys = State.getBaseOrder(section.id).filter(key => selected.has(key));
     const edits = State.getSectionEdits(section.id);
 
-    const blocksHtml = items.map(item => {
-      const saved = edits[item.title];
-      const base = State.getBaseContent(section.id, item.title);
+    const blocksHtml = keys.map(key => {
+      const saved = edits[key];
+      const base = State.getBaseContent(section.id, key);
+      if (!base) return '';
       const displayTitle = saved ? saved.title : base.title;
       const displayContent = saved ? saved.content : base.content;
-      return App.buildEditBlock(item.title, displayTitle, displayContent, false);
+      return App.buildEditBlock(key, displayTitle, displayContent, false);
     }).join('');
 
     main.innerHTML = `
@@ -1235,11 +1234,11 @@ const App = {
       const base = State.getBaseContent(section.id, key);
       if (!base) return '';
       const isCustomized = !!State.base[section.id]?.[key];
-      return `<div class="sub-item perm-row" data-key="${escHtml(key)}">
-        <button class="btn-delete-block" onclick="event.stopPropagation(); App.deletePermRow(this, '${escHtml(section.id)}', '${escHtml(key)}')" title="Delete">×</button>
+      return `<div class="sub-item perm-row" data-key="${escHtml(key)}" data-section="${escHtml(section.id)}">
+        <button class="btn-delete-block" onclick="event.stopPropagation(); App.deletePermRow(this)" title="Delete">×</button>
         <span class="sub-item-title">${escHtml(base.title)}</span>
         ${isCustomized ? '<span class="saved-badge perm-saved">✓ Customized</span>' : ''}
-        <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); App.editPermItem('${escHtml(section.id)}', '${escHtml(key)}')">Edit →</button>
+        <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); App.editPermItem(this)">Edit →</button>
         <span class="drag-handle" title="Drag to reorder">⠿</span>
       </div>`;
     }).join('');
@@ -1271,7 +1270,10 @@ const App = {
     App.editPermItem(sectionId, key);
   },
 
-  deletePermRow(btn, sectionId, key) {
+  deletePermRow(btn) {
+    const row = btn.closest('.perm-row');
+    const sectionId = row.dataset.section;
+    const key = row.dataset.key;
     const base = State.getBaseContent(sectionId, key);
     if (!confirm(`Delete "${base?.title || 'this subheading'}"?`)) return;
     if (State.base[sectionId]?.[key]) delete State.base[sectionId][key];
@@ -1280,7 +1282,13 @@ const App = {
     App.renderPermSubheadings();
   },
 
-  editPermItem(sectionId, key) {
+  editPermItem(elOrSectionId, key) {
+    let sectionId = elOrSectionId;
+    if (typeof elOrSectionId !== 'string') {
+      const row = elOrSectionId.closest('.perm-row');
+      sectionId = row.dataset.section;
+      key = row.dataset.key;
+    }
     const base = State.getBaseContent(sectionId, key);
     const section = SECTIONS.find(s => s.id === sectionId);
     const isCustomized = !!State.base[sectionId]?.[key] && !key.startsWith('new-');
@@ -1301,8 +1309,8 @@ const App = {
       </div>
       <div class="save-bar">
         <button class="btn btn-ghost" onclick="App.renderPermSubheadings()">Cancel</button>
-        ${isCustomized ? `<button class="btn btn-danger btn-sm" onclick="App.resetPermItem('${escHtml(sectionId)}','${escHtml(key)}')">↩ Restore Original</button>` : ''}
-        <button class="btn btn-success" onclick="App.savePermItem('${escHtml(sectionId)}','${escHtml(key)}')">Save as Default</button>
+        ${isCustomized ? `<button class="btn btn-danger btn-sm" onclick="App.resetPermItem(${jsStr(sectionId)},${jsStr(key)})">↩ Restore Original</button>` : ''}
+        <button class="btn btn-success" onclick="App.savePermItem(${jsStr(sectionId)},${jsStr(key)})">Save as Default</button>
       </div>`;
   },
 
@@ -1424,6 +1432,10 @@ const App = {
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 function escHtml(str) {
   return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+// Produces a safely-quoted JS string literal for use inside an HTML attribute value
+function jsStr(val) {
+  return '"' + (val || '').replace(/\\/g, '\\\\').replace(/"/g, '&quot;') + '"';
 }
 
 let toastTimer;
