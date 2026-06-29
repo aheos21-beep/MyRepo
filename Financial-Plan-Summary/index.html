@@ -1433,9 +1433,9 @@ const App = {
 function escHtml(str) {
   return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-// Produces a safely-quoted JS string literal for use inside an HTML attribute value
+// Produces a safely-quoted JS string literal for use inside a double-quoted HTML attribute
 function jsStr(val) {
-  return '"' + (val || '').replace(/\\/g, '\\\\').replace(/"/g, '&quot;') + '"';
+  return '&quot;' + (val || '').replace(/&/g, '&amp;').replace(/\\/g, '\\\\').replace(/"/g, '\\&quot;') + '&quot;';
 }
 
 let toastTimer;
