@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Stock Screener — TSX Dividends</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A0E14; --surface:#111826; --line:#1C2636; --text:#E6EDF3; --muted:#7A8AA0;
+  --cyan:#00E5C7; --pink:#FF4D7E; --amber:#FFB84D;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--text);font:400 14px/1.45 "IBM Plex Sans",sans-serif;padding-bottom:40px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 12px}
+header{padding:18px 0 10px;display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 14px}
+h1{font:700 22px "Chakra Petch";letter-spacing:.04em}
+h1 span{color:var(--cyan)}
+.stamp{font:400 11px "IBM Plex Mono";color:var(--muted)}
+.stamp b{color:var(--amber);font-weight:500}
+.controls{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 4px}
+input[type=search],select{background:var(--surface);border:1px solid var(--line);color:var(--text);
+  border-radius:6px;padding:8px 10px;font:400 13px "IBM Plex Sans";min-width:0}
+input[type=search]{flex:1 1 160px}
+select{flex:0 1 auto}
+button.gear{background:var(--surface);border:1px solid var(--line);color:var(--muted);border-radius:6px;
+  padding:8px 12px;font:500 12px "IBM Plex Mono";cursor:pointer}
+button.gear:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--cyan);outline-offset:1px}
+.panel{display:none;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px;margin:8px 0;
+  grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.panel.open{display:grid}
+.panel label{font:500 11px "IBM Plex Mono";color:var(--muted);display:block;margin-bottom:4px;letter-spacing:.05em}
+.panel output{color:var(--cyan);margin-left:6px}
+.panel input[type=range]{width:100%;accent-color:var(--cyan)}
+table{width:100%;border-collapse:collapse;font:400 13px "IBM Plex Mono";margin-top:10px}
+th{font:600 10px "IBM Plex Mono";letter-spacing:.08em;color:var(--muted);text-transform:uppercase;
+  text-align:right;padding:8px 6px;border-bottom:1px solid var(--line);cursor:pointer;user-select:none;
+  position:sticky;top:0;background:var(--bg);z-index:2;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th .arr{color:var(--cyan)}
+td{padding:9px 6px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+tr.row{cursor:pointer}
+tr.row:hover td{background:#141d2e}
+.tk{font-weight:600}
+.nm{display:block;font:400 10px "IBM Plex Sans";color:var(--muted);max-width:180px;overflow:hidden;text-overflow:ellipsis}
+.pass .yld{color:var(--cyan);font-weight:600}
+.fail .yld{color:var(--pink)}
+.up{color:var(--amber)} .up.neg{color:var(--muted)}
+.prox{color:var(--muted);font-size:10px}
+.scorebar{display:inline-block;width:52px;height:5px;background:var(--line);border-radius:3px;overflow:hidden;
+  vertical-align:middle;margin-left:6px}
+.scorebar i{display:block;height:100%;background:var(--cyan)}
+.fail .scorebar i{background:var(--pink)}
+tr.gate td{border:none;padding:14px 6px 6px;text-align:center;color:var(--pink);
+  font:600 11px "Chakra Petch";letter-spacing:.35em;text-transform:uppercase;
+  text-shadow:0 0 12px rgba(255,77,126,.8);background:
+  linear-gradient(90deg,transparent,rgba(255,77,126,.12),transparent)}
+tr.detail td{background:#0D131E;font:400 12px "IBM Plex Mono";color:var(--muted);text-align:left;padding:10px 12px}
+tr.detail b{color:var(--text);font-weight:500}
+tr.detail .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:6px 16px}
+.hideMob{display:none}
+@media(min-width:700px){.hideMob{display:table-cell}.nm{max-width:260px}}
+.msg{padding:40px 12px;text-align:center;color:var(--muted);font:400 13px "IBM Plex Mono";line-height:1.8}
+.msg b{color:var(--pink)}
+@media(prefers-reduced-motion:no-preference){
+  tr.gate td{animation:pulse 3s ease-in-out infinite}
+  @keyframes pulse{50%{text-shadow:0 0 22px rgba(255,77,126,1)}}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>STOCK<span>_</span>SCREENER</h1>
+  <div class="stamp" id="stamp">loading…</div>
+</header>
+
+<div class="controls">
+  <input type="search" id="q" placeholder="Search ticker or name" aria-label="Search">
+  <select id="sector" aria-label="Sector filter"><option value="">All sectors</option></select>
+  <button class="gear" id="gearBtn" aria-expanded="false">TUNE ▾</button>
+</div>
+
+<div class="panel" id="panel">
+  <div><label>YIELD GATE %<output id="oGate">4.0</output></label>
+    <input type="range" id="gate" min="2" max="7" step="0.25" value="4"></div>
+  <div><label>GROWTH WEIGHT %<output id="oGw">70</output></label>
+    <input type="range" id="gw" min="0" max="100" step="5" value="70"></div>
+  <div><label>UPSIDE CAP % (full marks)<output id="oCap">30</output></label>
+    <input type="range" id="cap" min="10" max="60" step="5" value="30"></div>
+</div>
+
+<div id="out"><div class="msg">Loading data.json…</div></div>
+</div>
+
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const store={get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},
+             set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let DATA=null, sortKey="score", sortDir=-1, openSym=null;
+const S={gate:store.get("gate",4), gw:store.get("gw",70), cap:store.get("cap",30)};
+
+function growth(s,cap){
+  // Primary: analyst consensus expected 1-yr return. Fallback: value+recovery proxy.
+  if(s.target && s.analysts>=3 && s.price>0){
+    const er=(s.target-s.price)/s.price;
+    return {v:Math.min(Math.max(er,0)/(cap/100),1)*100, er:er*100, proxy:false};
+  }
+  let v=0, parts=0;
+  if(s.eps>0&&s.price>0){v+=Math.min((s.eps/s.price)/0.12,1)*50;parts++}
+  if(s.hi52&&s.price>0){v+=Math.min(Math.max((s.hi52-s.price)/s.price,0)/(cap/100),1)*50;parts++}
+  return {v:parts?v:null, er:null, proxy:true};
+}
+function stability(s){
+  const b=(s.beta!=null)?Math.min(Math.max((1.6-s.beta)/1.2,0),1):0.5;
+  const p=(s.payout!=null)?Math.min(Math.max((1.2-s.payout)/0.6,0),1):0.5;
+  const m=(s.mcap)?Math.min(s.mcap/1e10,1):0.5;
+  return 40*b+35*p+25*m;
+}
+function compute(){
+  const gw=S.gw/100, sw=1-gw;
+  return DATA.stocks.map(s=>{
+    const g=growth(s,S.cap), st=stability(s);
+    const score=(g.v==null)?st*sw:gw*g.v+sw*st;
+    return {...s, g:g.v, er:g.er, proxy:g.proxy, st, score,
+            pass:(s.yield??0)>=S.gate};
+  });
+}
+const fmt=(n,d=1)=>n==null?"—":n.toLocaleString("en-CA",{maximumFractionDigits:d,minimumFractionDigits:d});
+const mc=n=>n==null?"—":n>=1e9?fmt(n/1e9)+"B":fmt(n/1e6,0)+"M";
+
+function render(){
+  if(!DATA)return;
+  let rows=compute();
+  const q=$("q").value.trim().toLowerCase(), sec=$("sector").value;
+  if(q)rows=rows.filter(r=>r.sym.toLowerCase().includes(q)||(r.name||"").toLowerCase().includes(q));
+  if(sec)rows=rows.filter(r=>r.sector===sec);
+  rows.sort((a,b)=>{
+    if(a.pass!==b.pass)return a.pass?-1:1;
+    const x=a[sortKey]??-1e9,y=b[sortKey]??-1e9;
+    return (x<y?-1:x>y?1:0)*sortDir;
+  });
+  const cols=[["sym","TICKER"],["price","PRICE"],["yield","YIELD%"],["er","TGT UP%"],
+              ["g","GROWTH","hideMob"],["st","STABLE","hideMob"],["score","SCORE"]];
+  let h="<table><thead><tr>"+cols.map(([k,l,c])=>
+    `<th class="${c||""}" data-k="${k}">${l}${k===sortKey?`<span class="arr"> ${sortDir<0?"▼":"▲"}</span>`:""}</th>`
+  ).join("")+"</tr></thead><tbody>";
+  let gateDrawn=false;
+  for(const r of rows){
+    if(!r.pass&&!gateDrawn){h+=`<tr class="gate"><td colspan="7">◢ ${S.gate}% GATE — WATCHLIST BELOW ◣</td></tr>`;gateDrawn=true}
+    h+=`<tr class="row ${r.pass?"pass":"fail"}" data-s="${r.sym}">
+      <td><span class="tk">${r.sym}</span><span class="nm">${r.name||""}</span></td>
+      <td>${fmt(r.price,2)}</td>
+      <td class="yld">${fmt(r.yield)}</td>
+      <td class="up ${r.er!=null&&r.er<0?"neg":""}">${r.er!=null?fmt(r.er):'<span class="prox">≈proxy</span>'}</td>
+      <td class="hideMob">${fmt(r.g,0)}</td>
+      <td class="hideMob">${fmt(r.st,0)}</td>
+      <td><b>${fmt(r.score)}</b><span class="scorebar"><i style="width:${Math.min(r.score,100)}%"></i></span></td></tr>`;
+    if(openSym===r.sym){
+      h+=`<tr class="detail"><td colspan="7"><div class="grid">
+        <div>Sector <b>${r.sector}</b></div><div>Div/yr <b>$${fmt(r.divRate,2)}</b></div>
+        <div>Payout <b>${r.payout!=null?fmt(r.payout*100,0)+"%":"—"}</b></div>
+        <div>EPS <b>${fmt(r.eps,2)}</b></div><div>P/E <b>${fmt(r.pe)}</b></div>
+        <div>Beta <b>${fmt(r.beta,2)}</b></div><div>Mkt cap <b>${mc(r.mcap)}</b></div>
+        <div>52wk high <b>${fmt(r.hi52,2)}</b></div>
+        <div>Analyst target <b>${fmt(r.target,2)}</b> (${r.analysts||0} analysts)</div>
+      </div></td></tr>`;
+    }
+  }
+  h+="</tbody></table>";
+  if(!rows.length)h='<div class="msg">No matches.</div>';
+  $("out").innerHTML=h;
+  document.querySelectorAll("th").forEach(th=>th.onclick=()=>{
+    const k=th.dataset.k;
+    if(k===sortKey)sortDir*=-1;else{sortKey=k;sortDir=k==="sym"?1:-1}
+    render();
+  });
+  document.querySelectorAll("tr.row").forEach(tr=>tr.onclick=()=>{
+    openSym=openSym===tr.dataset.s?null:tr.dataset.s;render();
+  });
+}
+
+function wire(){
+  $("gearBtn").onclick=()=>{const p=$("panel");p.classList.toggle("open");
+    $("gearBtn").setAttribute("aria-expanded",p.classList.contains("open"))};
+  [["gate","oGate",1],["gw","oGw",0],["cap","oCap",0]].forEach(([id,o,d])=>{
+    const el=$(id);el.value=S[id];$(o).textContent=fmt(S[id],d);
+    el.oninput=()=>{S[id]=+el.value;$(o).textContent=fmt(S[id],d);store.set(id,S[id]);render()};
+  });
+  $("q").oninput=render;$("sector").onchange=render;
+}
+
+fetch("data.json?t="+Date.now()).then(r=>{if(!r.ok)throw 0;return r.json()}).then(d=>{
+  DATA=d;
+  const dt=new Date(d.updated);
+  $("stamp").innerHTML=`${d.count} stocks · updated <b>${dt.toLocaleDateString("en-CA",{month:"short",day:"numeric"})} ${dt.toLocaleTimeString("en-CA",{hour:"2-digit",minute:"2-digit"})}</b>${d.dead?.length?` · <b>${d.dead.length} dead tickers</b>`:""}`;
+  [...new Set(d.stocks.map(s=>s.sector).filter(Boolean))].sort().forEach(s=>{
+    const o=document.createElement("option");o.value=o.textContent=s;$("sector").appendChild(o);
+  });
+  wire();render();
+}).catch(()=>{
+  $("stamp").textContent="no data";
+  $("out").innerHTML='<div class="msg"><b>data.json not found.</b><br>Run the GitHub Action once (Actions tab → Update dividend data → Run workflow),<br>or run <b>python fetch_data.py</b> locally and commit docs/data.json.</div>';
+});
+})();
+</script>
+</body>
+</html>
