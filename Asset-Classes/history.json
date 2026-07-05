@@ -1,0 +1,33 @@
+{
+  "history": [
+    {
+      "date": "2026-07-01",
+      "ranks": {
+        "eth": 1,
+        "btc": 2,
+        "us-tech": 3,
+        "uranium": 4,
+        "copper": 5,
+        "silver": 6,
+        "em": 7,
+        "natgas": 8,
+        "us-re": 9,
+        "lithium": 10,
+        "intl-div": 11,
+        "cad-reit": 12,
+        "lumber": 13,
+        "cad-div": 14,
+        "us-div": 15,
+        "potash": 16,
+        "cad-hy": 17,
+        "gold": 18,
+        "cad-bond": 19,
+        "hisa": 20,
+        "oil": 21,
+        "wheat": 22,
+        "cad-re": 23,
+        "palladium": 24
+      }
+    }
+  ]
+}
