@@ -13,6 +13,25 @@ from pathlib import Path
 import anthropic
 
 DATA_PATH = Path(__file__).parent / "data.json"
+HISTORY_PATH = Path(__file__).parent / "history.json"
+MAX_HISTORY_MONTHS = 12
+
+
+def avg_return(rates):
+    return sum(rates) / len(rates)
+
+
+def compute_ranks(assets):
+    """Rank assets 1..N by 3-yr avg return, best (highest) first."""
+    ranked = sorted(range(len(assets)), key=lambda i: -avg_return(assets[i]["r"]))
+    return {assets[idx]["id"]: rank for rank, idx in enumerate(ranked, start=1)}
+
+
+def load_history():
+    if HISTORY_PATH.exists():
+        with open(HISTORY_PATH) as f:
+            return json.load(f)
+    return {"history": []}
 
 
 def main():
@@ -83,11 +102,33 @@ Return the complete updated JSON array starting with [ and ending with ]."""
             f"Asset count mismatch: expected {len(data['assets'])}, got {len(updated_assets)}"
         )
 
+    # Rank by 3-yr avg return and compare to last month's ranks to flag
+    # each asset's position change for the up/down/no-change arrow in the UI.
+    new_ranks = compute_ranks(updated_assets)
+    history = load_history()
+    prev_ranks = history["history"][-1]["ranks"] if history["history"] else {}
+
+    for asset in updated_assets:
+        prev_rank = prev_ranks.get(asset["id"])
+        new_rank = new_ranks[asset["id"]]
+        if prev_rank is None or prev_rank == new_rank:
+            asset["posChange"] = "same"
+        elif new_rank < prev_rank:
+            asset["posChange"] = "up"
+        else:
+            asset["posChange"] = "down"
+
     data["assets"] = updated_assets
     data["updated"] = today
 
     with open(DATA_PATH, "w") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
+
+    history["history"].append({"date": today, "ranks": new_ranks})
+    history["history"] = history["history"][-MAX_HISTORY_MONTHS:]
+
+    with open(HISTORY_PATH, "w") as f:
+        json.dump(history, f, indent=2, ensure_ascii=False)
 
     print(f"data.json updated — {len(updated_assets)} assets, date: {today}")
 
