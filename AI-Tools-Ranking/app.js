@@ -48,10 +48,10 @@ function buildRankCard(tool) {
   // Benchmark breakdown pill (show raw values if available)
   const b = tool.benchmarks || {};
   const bRow = [
-    b.lmsys_elo != null ? `Arena&nbsp;${b.lmsys_elo}` : null,
-    b.mmlu      != null ? `MMLU&nbsp;${b.mmlu.toFixed(0)}%` : null,
-    b.humaneval != null ? `HEval&nbsp;${b.humaneval.toFixed(0)}%` : null,
-    b.math      != null ? `MATH&nbsp;${b.math.toFixed(0)}%` : null,
+    b.lmsys_elo != null ? `ELO&nbsp;${b.lmsys_elo}` : null,
+    b.mmlu      != null ? `Reasoning&nbsp;${b.mmlu.toFixed(0)}%` : null,
+    b.humaneval != null ? `Coding&nbsp;${b.humaneval.toFixed(0)}%` : null,
+    b.math      != null ? `Math&nbsp;${b.math.toFixed(0)}%` : null,
   ].filter(Boolean).map(t => `<span class="bench-chip">${t}</span>`).join('');
 
   card.innerHTML = `
