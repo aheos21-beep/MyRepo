@@ -233,10 +233,6 @@ def load_or_seed_history() -> dict:
 
 def maybe_append_month(history: dict, current_scores: dict) -> dict:
     now = datetime.now(timezone.utc)
-    # Only record a month after the 25th so the data point represents a near-complete month
-    if now.day < 25:
-        print(f"[history] Day {now.day} — waiting until day 25 to record {now.strftime('%b %y')}", file=sys.stderr)
-        return history
     label = now.strftime("%b %y")
     if label in history["months"]:
         return history
