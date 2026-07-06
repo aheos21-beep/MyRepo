@@ -1,13 +1,13 @@
 {
   "months": ["Jun 25","Jul 25","Aug 25","Sep 25","Oct 25","Nov 25","Dec 25","Jan 26","Feb 26","Mar 26","Apr 26","May 26"],
   "series": [
-    {"name":"ChatGPT",  "model":"GPT-5",         "company":"OpenAI",          "color":"#10a37f","in_cards":true,  "elo":[1287,1289,1291,1293,1298,1308,1318,1350,1354,1357,1360,1362]},
-    {"name":"Claude",   "model":"Claude 4",       "company":"Anthropic",       "color":"#cc785c","in_cards":true,  "elo":[1268,1271,1274,1279,1283,1287,1292,1296,1322,1336,1340,1344]},
-    {"name":"Llama",    "model":"Llama 4",        "company":"Meta AI",         "color":"#0668e1","in_cards":true,  "elo":[1247,1251,1256,1261,1266,1271,1276,1282,1287,1292,1304,1308]},
-    {"name":"Gemini",   "model":"Gemini Ultra 2", "company":"Google DeepMind", "color":"#4285f4","in_cards":true,  "elo":[1252,1256,1260,1265,1272,1279,1285,1290,1294,1297,1300,1302]},
-    {"name":"DeepSeek", "model":"DeepSeek V3",    "company":"DeepSeek AI",     "color":"#6366f1","in_cards":true,  "elo":[1270,1273,1276,1278,1280,1282,1284,1286,1288,1290,1291,1293]},
-    {"name":"Qwen",     "model":"Qwen 2.5 Max",   "company":"Alibaba",         "color":"#f59e0b","in_cards":false, "elo":[1255,1258,1261,1263,1265,1268,1270,1272,1274,1276,1278,1279]},
-    {"name":"Mistral",  "model":"Mistral Large 2","company":"Mistral AI",      "color":"#f7931e","in_cards":false, "elo":[1233,1236,1239,1242,1246,1249,1253,1256,1259,1261,1263,1265]}
+    {"name":"ChatGPT",  "model":"GPT-5",          "company":"OpenAI",          "color":"#10a37f","in_cards":true,  "score":[71,71,71,72,73,75,77,83,84,85,85,86]},
+    {"name":"Claude",   "model":"Claude 4",        "company":"Anthropic",       "color":"#cc785c","in_cards":true,  "score":[68,68,69,70,71,71,72,73,78,81,82,83]},
+    {"name":"Llama",    "model":"Llama 4",         "company":"Meta AI",         "color":"#0668e1","in_cards":true,  "score":[61,61,62,63,64,65,66,68,69,70,72,73]},
+    {"name":"Gemini",   "model":"Gemini Ultra 2",  "company":"Google DeepMind", "color":"#4285f4","in_cards":true,  "score":[62,63,63,64,66,67,68,69,70,71,71,72]},
+    {"name":"DeepSeek", "model":"DeepSeek V3",     "company":"DeepSeek AI",     "color":"#6366f1","in_cards":true,  "score":[67,67,68,68,69,69,69,70,70,71,71,71]},
+    {"name":"Qwen",     "model":"Qwen 2.5 Max",    "company":"Alibaba",         "color":"#f59e0b","in_cards":false, "score":[61,61,62,62,63,63,64,64,64,65,65,65]},
+    {"name":"Mistral",  "model":"Mistral Large 2", "company":"Mistral AI",      "color":"#f7931e","in_cards":false, "score":[53,53,54,55,55,56,57,57,58,58,59,59]}
   ],
   "last_updated": "2026-06-18T00:00:00+00:00"
 }

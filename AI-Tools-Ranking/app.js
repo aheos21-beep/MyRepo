@@ -45,6 +45,15 @@ function buildRankCard(tool) {
   const cats = (tool.cats || []).slice(0, 2)
     .map(c => `<span class="cat-chip">${esc(c)}</span>`).join('');
 
+  // Benchmark breakdown pill (show raw values if available)
+  const b = tool.benchmarks || {};
+  const bRow = [
+    b.lmsys_elo != null ? `Arena&nbsp;${b.lmsys_elo}` : null,
+    b.mmlu      != null ? `MMLU&nbsp;${b.mmlu.toFixed(0)}%` : null,
+    b.humaneval != null ? `HEval&nbsp;${b.humaneval.toFixed(0)}%` : null,
+    b.math      != null ? `MATH&nbsp;${b.math.toFixed(0)}%` : null,
+  ].filter(Boolean).map(t => `<span class="bench-chip">${t}</span>`).join('');
+
   card.innerHTML = `
     <div class="card-top">
       <div class="card-identity">
@@ -54,9 +63,13 @@ function buildRankCard(tool) {
           <div class="tool-company">${esc(tool.company)}</div>
         </div>
       </div>
+      <div class="score-badge" style="color:${tool.color}">${tool.score}<span class="score-denom">/100</span></div>
+    </div>
+    <div class="bench-row">${bRow}</div>
+    <div class="card-bottom">
+      <div class="cat-row">${cats}</div>
       <div class="rank-badge ${rankClass}">${rankEmoji}</div>
     </div>
-    <div class="cat-row">${cats}</div>
   `;
   return card;
 }
@@ -73,7 +86,7 @@ function renderChart(data) {
       labels: data.months,
       datasets: series.map(s => ({
         label: s.name,
-        data: s.elo,
+        data: s.score,
         borderColor: s.color,
         backgroundColor: 'transparent',
         borderWidth: s.in_cards ? 2.5 : 1.5,
@@ -98,15 +111,21 @@ function renderChart(data) {
           border: { color: 'rgba(255,255,255,0.08)' },
         },
         y: {
-          min: 1200,
-          max: 1380,
+          min: 45,
+          max: 95,
           grid: { color: 'rgba(255,255,255,0.05)' },
           ticks: {
             color: '#888ab0',
             font: { size: 11, family: 'Inter' },
-            callback: v => v + ' ELO',
+            callback: v => v,
           },
           border: { color: 'rgba(255,255,255,0.08)' },
+          title: {
+            display: true,
+            text: 'Composite Score (0–100)',
+            color: '#888ab0',
+            font: { size: 10, family: 'Inter' },
+          },
         },
       },
     },
@@ -142,16 +161,19 @@ function renderChart(data) {
   });
 }
 
-// ── Countdown ─────────────────────────────────────────────────────────────────
+// ── Countdown (next 1st or 15th at 9am UTC) ───────────────────────────────────
 
 function nextRefreshTime() {
   const now = new Date();
-  return [6, 18].map(h => {
-    const t = new Date();
-    t.setUTCHours(h, 0, 0, 0);
-    if (t <= now) t.setUTCDate(t.getUTCDate() + 1);
-    return t;
-  }).reduce((a, b) => a < b ? a : b);
+  const candidates = [];
+  for (let offset = 0; offset <= 1; offset++) {
+    const base = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + offset, 1));
+    for (const day of [1, 15]) {
+      const t = new Date(Date.UTC(base.getUTCFullYear(), base.getUTCMonth(), day, 9, 0, 0));
+      if (t > now) candidates.push(t);
+    }
+  }
+  return candidates.reduce((a, b) => a < b ? a : b);
 }
 
 function startCountdown() {
@@ -159,13 +181,13 @@ function startCountdown() {
   const tick = () => {
     const diff = nextRefreshTime() - Date.now();
     if (diff <= 0) { el.textContent = 'now'; return; }
-    const h = Math.floor(diff / 3_600_000);
+    const d = Math.floor(diff / 86_400_000);
+    const h = Math.floor((diff % 86_400_000) / 3_600_000);
     const m = Math.floor((diff % 3_600_000) / 60_000);
-    const s = Math.floor((diff % 60_000) / 1_000);
-    el.textContent = `${pad(h)}h ${pad(m)}m ${pad(s)}s`;
+    el.textContent = d > 0 ? `${d}d ${pad(h)}h ${pad(m)}m` : `${pad(h)}h ${pad(m)}m`;
   };
   tick();
-  setInterval(tick, 1000);
+  setInterval(tick, 60_000);
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────

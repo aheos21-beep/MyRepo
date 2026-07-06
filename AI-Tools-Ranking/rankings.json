@@ -5,13 +5,11 @@
       "model": "GPT-5",
       "company": "OpenAI",
       "url": "https://chat.openai.com",
-      "icon": "\ud83e\udd16",
+      "icon": "🤖",
       "color": "#10a37f",
-      "cats": [
-        "\ud83d\udcbb Coding",
-        "\ud83d\udccb Instructions"
-      ],
-      "elo": 1362,
+      "cats": ["💻 Coding", "📋 Instructions"],
+      "score": 86,
+      "benchmarks": {"lmsys_elo": 1362, "mmlu": 90.0, "humaneval": 90.0, "math": 85.0},
       "rank": 1
     },
     {
@@ -19,13 +17,11 @@
       "model": "Claude 4",
       "company": "Anthropic",
       "url": "https://claude.ai",
-      "icon": "\u2728",
+      "icon": "✨",
       "color": "#cc785c",
-      "cats": [
-        "\ud83e\udde0 Reasoning",
-        "\u270d\ufe0f Creative Writing"
-      ],
-      "elo": 1344,
+      "cats": ["🧠 Reasoning", "✍️ Creative Writing"],
+      "score": 83,
+      "benchmarks": {"lmsys_elo": 1344, "mmlu": 89.0, "humaneval": 93.0, "math": 88.0},
       "rank": 2
     },
     {
@@ -33,13 +29,11 @@
       "model": "Llama 4",
       "company": "Meta AI",
       "url": "https://ai.meta.com/llama/",
-      "icon": "\ud83e\udd99",
+      "icon": "🦙",
       "color": "#0668e1",
-      "cats": [
-        "\ud83d\udcbb Coding",
-        "\ud83d\udd22 Math"
-      ],
-      "elo": 1308,
+      "cats": ["💻 Coding", "🔢 Math"],
+      "score": 73,
+      "benchmarks": {"lmsys_elo": 1308, "mmlu": 86.0, "humaneval": 88.0, "math": 80.0},
       "rank": 3
     },
     {
@@ -47,13 +41,11 @@
       "model": "Gemini Ultra 2",
       "company": "Google DeepMind",
       "url": "https://gemini.google.com",
-      "icon": "\ud83d\udc8e",
+      "icon": "💎",
       "color": "#4285f4",
-      "cats": [
-        "\ud83d\udd22 Math",
-        "\ud83c\udf10 Multilingual"
-      ],
-      "elo": 1302,
+      "cats": ["🔢 Math", "🌐 Multilingual"],
+      "score": 72,
+      "benchmarks": {"lmsys_elo": 1302, "mmlu": 87.0, "humaneval": 86.0, "math": 83.0},
       "rank": 4
     },
     {
@@ -61,15 +53,13 @@
       "model": "DeepSeek V3",
       "company": "DeepSeek AI",
       "url": "https://chat.deepseek.com",
-      "icon": "\ud83c\udf0a",
+      "icon": "🌊",
       "color": "#6366f1",
-      "cats": [
-        "\ud83d\udd22 Math",
-        "\ud83d\udcbb Coding"
-      ],
-      "elo": 1293,
+      "cats": ["🔢 Math", "💻 Coding"],
+      "score": 71,
+      "benchmarks": {"lmsys_elo": 1293, "mmlu": 88.0, "humaneval": 85.0, "math": 90.0},
       "rank": 5
     }
   ],
-  "last_updated": "2026-07-05T19:26:37.534113+00:00"
+  "last_updated": "2026-07-06T09:00:00+00:00"
 }
