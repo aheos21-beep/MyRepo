@@ -42,17 +42,19 @@ function buildRankCard(tool) {
 
   const rankClass = ['', 'gold', 'silver', 'bronze'][tool.rank] || 'plain';
   const rankEmoji = ['', '🥇', '🥈', '🥉'][tool.rank] || `#${tool.rank}`;
-  const cats = (tool.cats || []).slice(0, 2)
-    .map(c => `<span class="cat-chip">${esc(c)}</span>`).join('');
 
-  // Benchmark breakdown pill (show raw values if available)
+  // ELO first, then sort percentage benchmarks high → low
   const b = tool.benchmarks || {};
-  const bRow = [
-    b.lmsys_elo != null ? `ELO&nbsp;${b.lmsys_elo}` : null,
-    b.mmlu      != null ? `Reasoning&nbsp;${b.mmlu.toFixed(0)}%` : null,
-    b.humaneval != null ? `Coding&nbsp;${b.humaneval.toFixed(0)}%` : null,
-    b.math      != null ? `Math&nbsp;${b.math.toFixed(0)}%` : null,
-  ].filter(Boolean).map(t => `<span class="bench-chip">${t}</span>`).join('');
+  const pctBenchmarks = [
+    { label: 'Reasoning', val: b.mmlu },
+    { label: 'Coding',    val: b.humaneval },
+    { label: 'Math',      val: b.math },
+  ].filter(x => x.val != null).sort((a, z) => z.val - a.val);
+
+  const bChips = [
+    b.lmsys_elo != null ? `<span class="bench-chip">ELO&nbsp;${b.lmsys_elo}</span>` : '',
+    ...pctBenchmarks.map(x => `<span class="bench-chip">${x.label}&nbsp;${x.val.toFixed(0)}%</span>`),
+  ].join('');
 
   card.innerHTML = `
     <div class="card-top">
@@ -63,13 +65,12 @@ function buildRankCard(tool) {
           <div class="tool-company">${esc(tool.company)}</div>
         </div>
       </div>
-      <div class="score-badge" style="color:${tool.color}">${tool.score}<span class="score-denom">/100</span></div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+        <div class="score-badge" style="color:${tool.color}">${tool.score}<span class="score-denom">/100</span></div>
+        <div class="rank-badge ${rankClass}">${rankEmoji}</div>
+      </div>
     </div>
-    <div class="bench-row">${bRow}</div>
-    <div class="card-bottom">
-      <div class="cat-row">${cats}</div>
-      <div class="rank-badge ${rankClass}">${rankEmoji}</div>
-    </div>
+    <div class="bench-row">${bChips}</div>
   `;
   return card;
 }
