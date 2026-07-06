@@ -226,7 +226,7 @@ main {
 .bench-row { display: flex; gap: 5px; flex-wrap: wrap; }
 
 .bench-chip {
-  font-size: 1.24rem;
+  font-size: 0.62rem;
   font-weight: 500;
   padding: 2px 7px;
   border-radius: 99px;
