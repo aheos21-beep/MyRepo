@@ -223,12 +223,12 @@ main {
 }
 
 /* Benchmark chips */
-.bench-row { display: flex; gap: 5px; flex-wrap: wrap; }
+.bench-row { display: flex; gap: 5px; flex-wrap: nowrap; overflow: hidden; }
 
 .bench-chip {
-  font-size: 0.62rem;
-  font-weight: 500;
-  padding: 2px 7px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 2px 8px;
   border-radius: 99px;
   border: 1px solid rgba(255,255,255,0.08);
   background: rgba(255,255,255,0.04);

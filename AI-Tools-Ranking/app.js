@@ -24,15 +24,25 @@ async function loadAll() {
 function renderRankings(data) {
   const grid = document.getElementById('rankings-grid');
   grid.innerHTML = '';
-  data.tools.slice(0, 5).forEach((tool, idx) => {
-    const card = buildRankCard(tool);
+  const tools = data.tools.slice(0, 5);
+
+  // Find top score and count of ties for each benchmark category
+  const keys = ['mmlu', 'humaneval', 'math'];
+  const topScores = {}, topCounts = {};
+  keys.forEach(k => {
+    topScores[k] = Math.max(...tools.map(t => (t.benchmarks || {})[k] ?? 0));
+    topCounts[k] = tools.filter(t => ((t.benchmarks || {})[k] ?? 0) === topScores[k]).length;
+  });
+
+  tools.forEach((tool, idx) => {
+    const card = buildRankCard(tool, topScores, topCounts);
     card.style.animationDelay = `${idx * 60}ms`;
     card.style.animation = 'fadeUp 0.45s ease both';
     grid.appendChild(card);
   });
 }
 
-function buildRankCard(tool) {
+function buildRankCard(tool, topScores = {}, topCounts = {}) {
   const card = document.createElement('a');
   card.className = `rank-card rank-${tool.rank}`;
   card.href = tool.url;
@@ -43,18 +53,24 @@ function buildRankCard(tool) {
   const rankClass = ['', 'gold', 'silver', 'bronze'][tool.rank] || 'plain';
   const rankEmoji = ['', '🥇', '🥈', '🥉'][tool.rank] || `#${tool.rank}`;
 
-  // ELO first, then sort percentage benchmarks high → low
+  // Sort percentage benchmarks high → low, color the top scorer per category
   const b = tool.benchmarks || {};
   const pctBenchmarks = [
-    { label: 'Reasoning', val: b.mmlu },
-    { label: 'Coding',    val: b.humaneval },
-    { label: 'Math',      val: b.math },
+    { label: 'Reasoning', val: b.mmlu,      key: 'mmlu' },
+    { label: 'Coding',    val: b.humaneval, key: 'humaneval' },
+    { label: 'Math',      val: b.math,      key: 'math' },
   ].filter(x => x.val != null).sort((a, z) => z.val - a.val);
 
-  const bChips = [
-    b.lmsys_elo != null ? `<span class="bench-chip">ELO&nbsp;${b.lmsys_elo}</span>` : '',
-    ...pctBenchmarks.map(x => `<span class="bench-chip">${x.label}&nbsp;${x.val.toFixed(0)}%</span>`),
-  ].join('');
+  const bChips = pctBenchmarks.map(x => {
+    const isTop = x.val === topScores[x.key];
+    const isTie = isTop && topCounts[x.key] > 1;
+    const style = isTop
+      ? isTie
+        ? 'border-color:rgba(32,201,151,0.3);background:rgba(32,201,151,0.08);color:#6ee8c8;'
+        : 'border-color:rgba(32,201,151,0.6);background:rgba(32,201,151,0.18);color:#20c997;'
+      : '';
+    return `<span class="bench-chip"${style ? ` style="${style}"` : ''}>${x.label}&nbsp;${x.val.toFixed(0)}%</span>`;
+  }).join('');
 
   card.innerHTML = `
     <div class="card-top">
