@@ -1,17 +1,20 @@
 """
-Fetches Arena ELO scores from LMSYS Chatbot Arena and maintains history.json.
-Runs twice daily via GitHub Actions.
+Fetches Arena ELO scores via Claude API web search and maintains history.json.
+Runs bi-monthly (1st and 15th) via GitHub Actions.
 """
-import asyncio
 import json
+import os
 import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-import aiohttp
+import anthropic
 
 DOCS_DIR = Path(__file__).parent
+
+# Upgrade by changing this env var in GitHub Actions secrets or locally.
+CLAUDE_MODEL = os.getenv("CLAUDE_MODEL", "claude-haiku-4-5")
 
 # ── Model definitions ──────────────────────────────────────────────────────────
 
@@ -70,8 +73,6 @@ TOOLS = [
 ]
 
 # Seeded 12-month history (Jun 2025 – May 2026).
-# Values are based on real LMSYS Arena ELO trajectories; spikes align with
-# known model release dates (GPT-5 Jan 26, Claude 4 Feb 26, Llama 4 Apr 26).
 HISTORY_SEED = {
     "months": ["Jun 25","Jul 25","Aug 25","Sep 25","Oct 25","Nov 25",
                "Dec 25","Jan 26","Feb 26","Mar 26","Apr 26","May 26"],
@@ -86,34 +87,75 @@ HISTORY_SEED = {
     ],
 }
 
-# ── LMSYS Arena scraping ───────────────────────────────────────────────────────
+# ── Claude API web search ──────────────────────────────────────────────────────
 
-async def fetch_arena_elo() -> dict | None:
+def fetch_arena_elo_via_claude() -> dict | None:
     """
-    Try to scrape current ELO scores from LMSYS Chatbot Arena.
-    Returns {model_name_lower: elo} or None if unavailable.
+    Use Claude + web search to find current LMSYS Chatbot Arena ELO scores.
+    Returns {model_display_name: elo_int} or None on failure.
     """
-    headers = {"User-Agent": "Mozilla/5.0 (compatible; AIRankingBot/1.0)"}
-    candidates = ["https://lmarena.ai/leaderboard", "https://lmarena.ai/"]
-    async with aiohttp.ClientSession() as session:
-        for url in candidates:
-            try:
-                async with session.get(url, headers=headers,
-                                       timeout=aiohttp.ClientTimeout(total=10)) as r:
-                    if r.status != 200:
-                        continue
-                    text = await r.text(errors="replace")
-                    elo_map = {}
-                    for m in re.finditer(
-                        r'"(?:model_key|model_name)"\s*:\s*"([^"]+)"[^}]*"(?:elo_rating|rating)"\s*:\s*(\d+)',
-                        text,
-                    ):
-                        elo_map[m.group(1).lower()] = int(m.group(2))
-                    if elo_map:
-                        print(f"[arena] Got {len(elo_map)} ELO scores from {url}", file=sys.stderr)
-                        return elo_map
-            except Exception as exc:
-                print(f"[arena] {url}: {exc}", file=sys.stderr)
+    api_key = os.getenv("ANTHROPIC_API_KEY")
+    if not api_key:
+        print("[claude] ANTHROPIC_API_KEY not set — skipping web search", file=sys.stderr)
+        return None
+
+    client = anthropic.Anthropic(api_key=api_key)
+    model_names = ", ".join(
+        name
+        for t in TOOLS
+        for name in t["arena_names"]
+    )
+    prompt = (
+        "Search the web for the current LMSYS Chatbot Arena ELO leaderboard "
+        "(lmarena.ai or huggingface.co/spaces/lmsys/chatbot-arena-leaderboard). "
+        "Find the latest ELO scores for these models (use partial matches if exact names differ): "
+        f"{model_names}. "
+        "Return ONLY a JSON object mapping each model key to its integer ELO score, "
+        'e.g. {"gpt-4o": 1287, "claude-3-5-sonnet": 1265, ...}. '
+        "No markdown, no explanation — raw JSON only."
+    )
+
+    try:
+        response = client.messages.create(
+            model=CLAUDE_MODEL,
+            max_tokens=1024,
+            tools=[{"type": "web_search_20250305", "name": "web_search", "max_uses": 3}],
+            messages=[{"role": "user", "content": prompt}],
+        )
+    except Exception as exc:
+        print(f"[claude] API call failed: {exc}", file=sys.stderr)
+        return None
+
+    # Extract text from the final assistant message
+    raw_text = ""
+    for block in response.content:
+        if hasattr(block, "type") and block.type == "text":
+            raw_text += block.text
+
+    if not raw_text.strip():
+        print("[claude] No text in response", file=sys.stderr)
+        return None
+
+    # Parse JSON — handle possible markdown code fences
+    json_match = re.search(r"\{[^{}]+\}", raw_text, re.DOTALL)
+    if not json_match:
+        print(f"[claude] No JSON found in response: {raw_text[:200]}", file=sys.stderr)
+        return None
+
+    try:
+        elo_map = json.loads(json_match.group())
+        # Validate: values should be plausible ELO integers
+        elo_map = {
+            k.lower(): int(v)
+            for k, v in elo_map.items()
+            if isinstance(v, (int, float)) and 800 < float(v) < 2000
+        }
+        if elo_map:
+            print(f"[claude] Got {len(elo_map)} ELO scores via web search", file=sys.stderr)
+            return elo_map
+    except (json.JSONDecodeError, ValueError) as exc:
+        print(f"[claude] JSON parse error: {exc} — raw: {raw_text[:200]}", file=sys.stderr)
+
     return None
 
 
@@ -121,10 +163,11 @@ def match_elo(arena_data: dict | None, tool: dict) -> int | None:
     if not arena_data:
         return None
     for name in tool["arena_names"]:
-        if name in arena_data:
-            return arena_data[name]
-        for key, elo in arena_data.items():
-            if name in key or key in name:
+        key = name.lower()
+        if key in arena_data:
+            return arena_data[key]
+        for arena_key, elo in arena_data.items():
+            if name.lower() in arena_key or arena_key in name.lower():
                 return elo
     return None
 
@@ -189,15 +232,16 @@ def build_rankings(current_elos: dict) -> dict:
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
-async def main():
+def main():
     DOCS_DIR.mkdir(parents=True, exist_ok=True)
 
-    print("Fetching Arena ELO scores…")
-    arena_data = await fetch_arena_elo()
+    print(f"Using model: {CLAUDE_MODEL}")
+    print("Fetching Arena ELO scores via Claude web search…")
+    arena_data = fetch_arena_elo_via_claude()
     if arena_data:
         print(f"  → Live data: {len(arena_data)} models")
     else:
-        print("  → Live fetch failed — using seeded base values", file=sys.stderr)
+        print("  → Web search unavailable — using seeded base values", file=sys.stderr)
 
     current_elos = {
         t["name"]: (match_elo(arena_data, t) or t["base_elo"])
@@ -220,4 +264,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
