@@ -13,16 +13,16 @@
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{background:var(--bg);color:var(--text);font:400 14px/1.45 "IBM Plex Sans",sans-serif;padding-bottom:40px}
+body{background:var(--bg);color:var(--text);font:400 15px/1.45 "IBM Plex Sans",sans-serif;padding-bottom:40px}
 .wrap{max-width:1080px;margin:0 auto;padding:0 12px}
 header{padding:18px 0 10px;display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 14px}
-h1{font:700 22px "Chakra Petch";letter-spacing:.04em}
+h1{font:700 24px "Chakra Petch";letter-spacing:.04em}
 h1 span{color:var(--cyan)}
-.stamp{font:400 11px "IBM Plex Mono";color:var(--muted)}
+.stamp{font:400 13px "IBM Plex Mono";color:var(--muted);margin-left:auto;text-align:right}
 .stamp b{color:var(--amber);font-weight:500}
 .controls{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 4px}
 input[type=search],select{background:var(--surface);border:1px solid var(--line);color:var(--text);
-  border-radius:6px;padding:8px 10px;font:400 13px "IBM Plex Sans";min-width:0}
+  border-radius:6px;padding:8px 10px;font:400 14px "IBM Plex Sans";min-width:0}
 input[type=search]{flex:1 1 160px}
 select{flex:0 1 auto}
 button.gear{background:var(--surface);border:1px solid var(--line);color:var(--muted);border-radius:6px;
@@ -34,8 +34,8 @@ button.gear:focus-visible,input:focus-visible,select:focus-visible{outline:2px s
 .panel label{font:500 11px "IBM Plex Mono";color:var(--muted);display:block;margin-bottom:4px;letter-spacing:.05em}
 .panel output{color:var(--cyan);margin-left:6px}
 .panel input[type=range]{width:100%;accent-color:var(--cyan)}
-table{width:100%;border-collapse:collapse;font:400 13px "IBM Plex Mono";margin-top:10px}
-th{font:600 10px "IBM Plex Mono";letter-spacing:.08em;color:var(--muted);text-transform:uppercase;
+table{width:100%;border-collapse:collapse;font:400 14px "IBM Plex Mono";margin-top:10px}
+th{font:600 11px "IBM Plex Mono";letter-spacing:.08em;color:var(--muted);text-transform:uppercase;
   text-align:right;padding:8px 6px;border-bottom:1px solid var(--line);cursor:pointer;user-select:none;
   position:sticky;top:0;background:var(--bg);z-index:2;white-space:nowrap}
 th:first-child,td:first-child{text-align:left}
@@ -197,7 +197,7 @@ function wire(){
 fetch("data.json?t="+Date.now()).then(r=>{if(!r.ok)throw 0;return r.json()}).then(d=>{
   DATA=d;
   const dt=new Date(d.updated);
-  $("stamp").innerHTML=`${d.count} stocks · updated <b>${dt.toLocaleDateString("en-CA",{month:"short",day:"numeric"})} ${dt.toLocaleTimeString("en-CA",{hour:"2-digit",minute:"2-digit"})}</b>${d.dead?.length?` · <b>${d.dead.length} dead tickers</b>`:""}`;
+  $("stamp").innerHTML=`${d.count} stocks · updated <b>${dt.toLocaleDateString("en-CA",{month:"short",day:"numeric"})}</b> · auto-refreshes weekdays after close${d.dead?.length?` · <b>${d.dead.length} dead tickers</b>`:""}`;
   [...new Set(d.stocks.map(s=>s.sector).filter(Boolean))].sort().forEach(s=>{
     const o=document.createElement("option");o.value=o.textContent=s;$("sector").appendChild(o);
   });
