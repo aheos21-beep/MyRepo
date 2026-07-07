@@ -40,11 +40,12 @@ th{font:600 11px "IBM Plex Mono";letter-spacing:.08em;color:var(--muted);text-tr
   position:sticky;top:0;background:var(--bg);z-index:2;white-space:nowrap}
 th:first-child,td:first-child{text-align:left}
 th .arr{color:var(--cyan)}
-td{padding:9px 6px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:6px 6px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
 tr.row{cursor:pointer}
 tr.row:hover td{background:#141d2e}
 .tk{font-weight:600}
-.nm{display:block;font:400 10px "IBM Plex Sans";color:var(--muted);max-width:180px;overflow:hidden;text-overflow:ellipsis}
+.nm{display:inline-block;font:400 11px "IBM Plex Sans";color:var(--muted);margin-left:8px;
+  max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:middle}
 .pass .yld{color:var(--cyan);font-weight:600}
 .fail .yld{color:var(--pink)}
 .up{color:var(--amber)} .up.neg{color:var(--muted)}
@@ -61,7 +62,7 @@ tr.detail td{background:#0D131E;font:400 12px "IBM Plex Mono";color:var(--muted)
 tr.detail b{color:var(--text);font-weight:500}
 tr.detail .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:6px 16px}
 .hideMob{display:none}
-@media(min-width:700px){.hideMob{display:table-cell}.nm{max-width:260px}}
+@media(min-width:700px){.hideMob{display:table-cell}.nm{max-width:240px}}
 .msg{padding:40px 12px;text-align:center;color:var(--muted);font:400 13px "IBM Plex Mono";line-height:1.8}
 .msg b{color:var(--pink)}
 @media(prefers-reduced-motion:no-preference){
