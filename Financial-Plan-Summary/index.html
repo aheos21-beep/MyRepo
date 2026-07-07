@@ -1072,8 +1072,8 @@ const App = {
       </div>
       <div class="mark-toolbar">
         <span class="mark-toolbar-label">Review marks:</span>
-        <button class="btn-mark btn-mark-red" onpointerdown="event.preventDefault()" onclick="App.markRed()">● Mark Red</button>
-        <button class="btn-mark btn-mark-clear" onpointerdown="event.preventDefault()" onclick="App.clearMark()">✕ Clear Mark</button>
+        <button class="btn-mark btn-mark-red" onpointerdown="event.preventDefault()" ontouchstart="event.preventDefault()" onclick="App.markRed()">● Mark Red</button>
+        <button class="btn-mark btn-mark-clear" onpointerdown="event.preventDefault()" ontouchstart="event.preventDefault()" onclick="App.clearMark()">✕ Clear Mark</button>
       </div>
       <div class="edit-blocks" id="editBlocks">${blocksHtml}</div>
       <div class="save-bar">
@@ -1116,7 +1116,7 @@ const App = {
       const key = block.dataset.key;
       const title = block.querySelector('.block-title').value.trim() || '(untitled)';
       const el = block.querySelector('.edit-content');
-      const content = el.querySelector('[style]') ? el.innerHTML : el.innerText.trim();
+      const content = el.querySelector('[style], font') ? el.innerHTML : el.innerText.trim();
       items.push({ key, title, content });
     });
     State.setSectionEdits(State.activeSection, items);
