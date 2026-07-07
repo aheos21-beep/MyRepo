@@ -437,6 +437,38 @@
   .perm-row .drag-handle { cursor: grab; }
   .perm-row.dragging { opacity: 0.35; border-style: dashed; }
   .perm-row.drag-over { border-color: var(--accent); box-shadow: 0 0 0 2px #bfdbfe; }
+
+  /* MARK TOOLBAR */
+  .mark-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding: 8px 12px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    flex-wrap: wrap;
+  }
+  .mark-toolbar-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .btn-mark {
+    border: 1px solid;
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+    user-select: none;
+  }
+  .btn-mark-red { color: #dc2626; border-color: #fca5a5; background: #fff5f5; }
+  .btn-mark-red:hover { background: #fee2e2; }
+  .btn-mark-clear { color: var(--text-muted); border-color: var(--border); background: white; }
+  .btn-mark-clear:hover { background: var(--bg); }
 </style>
 </head>
 <body>
@@ -1038,6 +1070,11 @@ const App = {
       <div class="toolbar">
         <button class="btn btn-ghost" onclick="App.renderSubheadings()">← Back to Topics</button>
       </div>
+      <div class="mark-toolbar">
+        <span class="mark-toolbar-label">Review marks:</span>
+        <button class="btn-mark btn-mark-red" onpointerdown="event.preventDefault()" onclick="App.markRed()">● Mark Red</button>
+        <button class="btn-mark btn-mark-clear" onpointerdown="event.preventDefault()" onclick="App.clearMark()">✕ Clear Mark</button>
+      </div>
       <div class="edit-blocks" id="editBlocks">${blocksHtml}</div>
       <div class="save-bar">
         <button class="btn btn-ghost" onclick="App.renderSubheadings()">← Back</button>
@@ -1061,7 +1098,7 @@ const App = {
       <div class="edit-block-header">
         <input type="text" class="block-title" value="${escHtml(title)}" placeholder="Subheading title">
       </div>
-      <div class="edit-content" contenteditable="true">${escHtml(content)}</div>
+      <div class="edit-content" contenteditable="true">${isHtmlContent(content) ? content : escHtml(content)}</div>
     </div>`;
   },
 
@@ -1078,13 +1115,22 @@ const App = {
     blocks.forEach(block => {
       const key = block.dataset.key;
       const title = block.querySelector('.block-title').value.trim() || '(untitled)';
-      const content = block.querySelector('.edit-content').innerText.trim();
+      const el = block.querySelector('.edit-content');
+      const content = el.querySelector('[style]') ? el.innerHTML : el.innerText.trim();
       items.push({ key, title, content });
     });
     State.setSectionEdits(State.activeSection, items);
     this.renderNav();
     showToast('Changes saved!');
     setTimeout(() => App.renderSubheadings(), 600);
+  },
+
+  markRed() {
+    document.execCommand('foreColor', false, '#dc2626');
+  },
+
+  clearMark() {
+    document.execCommand('removeFormat', false, null);
   },
 
   showPublish() {
@@ -1114,7 +1160,8 @@ const App = {
         const e = edits[key];
         if (!e) return;
         docHTML += `<div class="doc-h2">${escHtml(e.title)}</div>`;
-        docHTML += `<div class="doc-body">${escHtml(e.content)}</div>`;
+        const bodyText = isHtmlContent(e.content) ? (() => { const d = document.createElement('div'); d.innerHTML = e.content; return d.innerText; })() : e.content;
+        docHTML += `<div class="doc-body">${escHtml(bodyText)}</div>`;
       });
     });
 
@@ -1432,6 +1479,9 @@ const App = {
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 function escHtml(str) {
   return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function isHtmlContent(str) {
+  return /<[a-z]/i.test(str || '');
 }
 // Produces a safely-quoted JS string literal for use inside a double-quoted HTML attribute
 function jsStr(val) {
