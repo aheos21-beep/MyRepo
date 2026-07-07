@@ -197,7 +197,8 @@ function wire(){
 fetch("data.json?t="+Date.now()).then(r=>{if(!r.ok)throw 0;return r.json()}).then(d=>{
   DATA=d;
   const dt=new Date(d.updated);
-  $("stamp").innerHTML=`${d.count} stocks · updated <b>${dt.toLocaleDateString("en-CA",{month:"short",day:"numeric"})}</b> · auto-refreshes weekdays after close${d.dead?.length?` · <b>${d.dead.length} dead tickers</b>`:""}`;
+  const dateStr=dt.toLocaleDateString("en-CA",{month:"short",day:"numeric"});
+  $("stamp").innerHTML=`${d.count} stocks${d.dead?.length?` - ${d.dead.length} dead`:""} / <b>${dateStr}</b> / Auto Weekdays`;
   [...new Set(d.stocks.map(s=>s.sector).filter(Boolean))].sort().forEach(s=>{
     const o=document.createElement("option");o.value=o.textContent=s;$("sector").appendChild(o);
   });
