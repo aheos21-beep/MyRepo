@@ -70,6 +70,8 @@ html, body {
 
 .tagline { font-size: 0.7rem; color: var(--muted); margin-top: 1px; }
 
+.refresh-label { font-size: 0.75rem; color: var(--muted); flex-shrink: 0; }
+
 .header-meta {
   display: flex;
   flex-direction: column;

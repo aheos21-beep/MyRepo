@@ -197,11 +197,9 @@ function startCountdown() {
   const el = document.getElementById('countdown');
   const tick = () => {
     const diff = nextRefreshTime() - Date.now();
-    if (diff <= 0) { el.textContent = 'now'; return; }
+    if (diff <= 0) { el.textContent = 'today'; return; }
     const d = Math.floor(diff / 86_400_000);
-    const h = Math.floor((diff % 86_400_000) / 3_600_000);
-    const m = Math.floor((diff % 3_600_000) / 60_000);
-    el.textContent = d > 0 ? `${d}d ${pad(h)}h ${pad(m)}m` : `${pad(h)}h ${pad(m)}m`;
+    el.textContent = d === 1 ? '1 day' : `${d} days`;
   };
   tick();
   setInterval(tick, 60_000);
@@ -213,7 +211,8 @@ function setLastUpdated(iso) {
   const el = document.getElementById('last-updated');
   try {
     const d = new Date(iso);
-    el.textContent = `Updated: ${d.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}`;
+    const dateStr = d.toLocaleDateString(undefined, { dateStyle: 'medium' });
+    el.innerHTML = `Updated: <strong style="color:var(--green)">${dateStr}</strong>`;
   } catch { el.textContent = `Updated: ${iso}`; }
 }
 
