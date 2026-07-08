@@ -18,7 +18,8 @@ body{background:var(--bg);color:var(--text);font:400 15px/1.45 "IBM Plex Sans",s
 header{padding:18px 0 10px;display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 14px}
 h1{font:700 24px "Chakra Petch";letter-spacing:.04em}
 h1 span{color:var(--cyan)}
-.stamp{font:400 13px "IBM Plex Mono";color:var(--muted);margin-left:auto;text-align:right}
+.stamp{font:400 13px "IBM Plex Mono";color:var(--muted)}
+#stamp{margin-left:auto;text-align:right}
 .stamp b{color:var(--amber);font-weight:500}
 .controls{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 4px}
 input[type=search],select{background:var(--surface);border:1px solid var(--line);color:var(--text);
@@ -81,6 +82,7 @@ tr.detail .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,
 <div class="wrap">
 <header>
   <h1>STOCK<span>_</span>SCREENER</h1>
+  <div class="stamp countStamp" id="countStamp"></div>
   <div class="stamp" id="stamp">loading…</div>
 </header>
 
@@ -217,7 +219,8 @@ fetch("data.json?t="+Date.now()).then(r=>{if(!r.ok)throw 0;return r.json()}).the
   DATA=d;
   const dt=new Date(d.updated);
   const dateStr=dt.toLocaleDateString("en-CA",{month:"short",day:"numeric"});
-  $("stamp").innerHTML=`${d.count} stocks${d.dead?.length?` - ${d.dead.length} dead`:""} / <b>${dateStr}</b> / Auto Weekdays`;
+  $("countStamp").textContent=`${d.count} stocks${d.dead?.length?` - ${d.dead.length} dead`:""}`;
+  $("stamp").innerHTML=`<b>${dateStr}</b> / Auto Weekdays`;
   [...new Set(d.stocks.map(s=>s.sector).filter(Boolean))].sort().forEach(s=>{
     const o=document.createElement("option");o.value=o.textContent=s;$("sector").appendChild(o);
   });
