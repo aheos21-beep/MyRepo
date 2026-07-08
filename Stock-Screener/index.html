@@ -129,10 +129,10 @@ function stability(s){
   return 40*b+35*p+25*m;
 }
 const SIG_META={
-  buy:{label:"BUY",cls:"sig-buy",tip:"Immediate technical buy — bullish 50/200d trend, RSI recovering from a pullback"},
-  potential:{label:"WATCH",cls:"sig-potential",tip:"Potential buy — trend or momentum lean bullish but not both aligned"},
-  neutral:{label:"FLAT",cls:"sig-neutral",tip:"Neutral — no clear trend or momentum edge"},
-  sell:{label:"SELL",cls:"sig-sell",tip:"Sell signal — bearish 50/200d trend (death cross)"},
+  buy:{label:"BUY",cls:"sig-buy",tip:"Immediate buy — bullish 50/200d trend, RSI genuinely recovering off a pullback"},
+  potential:{label:"WATCH",cls:"sig-potential",tip:"Potential buy — bullish trend without a clean entry yet, or a downtrend where momentum has already turned up (possible early reversal)"},
+  neutral:{label:"FLAT",cls:"sig-neutral",tip:"Neutral — no clear trend/momentum edge, or a downtrend that's deeply oversold (bounce risk — not a confident sell)"},
+  sell:{label:"SELL",cls:"sig-sell",tip:"Sell — confirmed downtrend (death cross) with momentum still weak"},
   unknown:{label:"N/A",cls:"sig-unknown",tip:"Insufficient price history for a reliable trend read"},
 };
 const sigMeta=r=>SIG_META[r.signal]||SIG_META.unknown;

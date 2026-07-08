@@ -43,8 +43,13 @@ FIELDS = ["shortName","sector","currentPrice","regularMarketPrice","dividendRate
           "dividendYield","trailingEps","trailingPE","beta","marketCap",
           "fiftyTwoWeekHigh","targetMeanPrice","numberOfAnalystOpinions","payoutRatio"]
 
+def _rsi14(closes):
+    d = closes.diff()
+    gain, loss = d.clip(lower=0).tail(14).mean(), (-d.clip(upper=0)).tail(14).mean()
+    return 50.0 if gain == 0 and loss == 0 else 100.0 if loss == 0 else 100 - 100 / (1 + gain / loss)
+
 def technical_signal(ticker):
-    """SMA50/200 trend regime + RSI(14) timing -> buy/potential/neutral/sell.
+    """SMA50/200 trend regime + RSI(14) momentum -> buy/potential/neutral/sell.
     Needs 200+ daily closes; thinly-traded/newly-listed names fall back to 'unknown'."""
     try:
         closes = ticker.history(period="1y", interval="1d", auto_adjust=True)["Close"].dropna()
@@ -53,19 +58,24 @@ def technical_signal(ticker):
     if len(closes) < 200:
         return "unknown", None
     price, sma50, sma200 = closes.iloc[-1], closes.tail(50).mean(), closes.tail(200).mean()
-    delta = closes.diff()
-    gain, loss = delta.clip(lower=0).tail(14).mean(), (-delta.clip(upper=0)).tail(14).mean()
-    rsi = 50.0 if gain == 0 and loss == 0 else 100.0 if loss == 0 else 100 - 100 / (1 + gain / loss)
+    rsi = _rsi14(closes)
+    recovering = rsi > _rsi14(closes.iloc[:-5]) + 2  # RSI a week ago, +2pt noise floor
     # 0.25% band on the 50/200 spread so noise on a genuinely flat series can't flip bull/bear
     band = 0.0025
     bull = price > sma50 and sma50 > sma200 * (1 + band)
     bear = price < sma50 and sma50 < sma200 * (1 - band)
-    if bear:
-        signal = "sell"
-    elif bull:
-        signal = "buy" if 30 <= rsi <= 50 else "potential"
+    if bull:
+        # buy = actually recovering off a dip, not just sitting at a middling RSI level
+        signal = "buy" if 20 <= rsi <= 50 and recovering else "potential"
+    elif bear:
+        if rsi >= 50:
+            signal = "potential"  # trend still bearish but momentum already turned up - possible early reversal
+        elif rsi < 25:
+            signal = "neutral"   # deep oversold in a downtrend carries real bounce risk - not a confident sell
+        else:
+            signal = "sell"      # confirmed downtrend, momentum still weak
     else:
-        signal = "potential" if rsi < 50 else "neutral"
+        signal = "potential" if recovering else "neutral"
     return signal, round(rsi, 1)
 
 def fetch(sym):
