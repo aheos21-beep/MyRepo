@@ -129,11 +129,11 @@ function stability(s){
   return 40*b+35*p+25*m;
 }
 const SIG_META={
-  buy:{label:"BUY",cls:"sig-buy",tip:"Immediate buy — bullish 50/200d trend, RSI genuinely recovering off a pullback"},
-  potential:{label:"WATCH",cls:"sig-potential",tip:"Potential buy — bullish trend without a clean entry yet, or a downtrend where momentum has already turned up (possible early reversal)"},
-  neutral:{label:"FLAT",cls:"sig-neutral",tip:"Neutral — no clear trend/momentum edge, or a downtrend that's deeply oversold (bounce risk — not a confident sell)"},
-  sell:{label:"SELL",cls:"sig-sell",tip:"Sell — confirmed downtrend (death cross) with momentum still weak"},
-  unknown:{label:"N/A",cls:"sig-unknown",tip:"Insufficient price history for a reliable trend read"},
+  buy:{label:"BUY",cls:"sig-buy",tip:"Near its 52wk low with the short-term (20d) trend just turning up — a base-breakout setup"},
+  potential:{label:"WATCH",cls:"sig-potential",tip:"Momentum improving but not near the 52wk low (less discounted), or bottoming near lows but not confirmed turning up yet"},
+  neutral:{label:"FLAT",cls:"sig-neutral",tip:"No clear edge — mid-range, or near lows but still falling with no confirmed turn"},
+  sell:{label:"SELL",cls:"sig-sell",tip:"Near its 52wk high and the short-term trend is rolling over — topping out"},
+  unknown:{label:"N/A",cls:"sig-unknown",tip:"Insufficient price history or 52wk range data for a reliable read"},
 };
 const sigMeta=r=>SIG_META[r.signal]||SIG_META.unknown;
 function compute(){
@@ -184,7 +184,7 @@ function render(){
         <div>Payout <b>${r.payout!=null?fmt(r.payout*100,0)+"%":"—"}</b></div>
         <div>EPS <b>${fmt(r.eps,2)}</b></div><div>P/E <b>${fmt(r.pe)}</b></div>
         <div>Beta <b>${fmt(r.beta,2)}</b></div><div>Mkt cap <b>${mc(r.mcap)}</b></div>
-        <div>52wk high <b>${fmt(r.hi52,2)}</b></div>
+        <div>52wk high <b>${fmt(r.hi52,2)}</b></div><div>52wk low <b>${fmt(r.lo52,2)}</b></div>
         <div>Analyst target <b>${fmt(r.target,2)}</b> (${r.analysts||0} analysts)</div>
         <div>RSI(14) <b>${fmt(r.rsi,1)}</b></div>
       </div></td></tr>`;

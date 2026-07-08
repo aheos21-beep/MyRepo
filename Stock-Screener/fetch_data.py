@@ -48,35 +48,33 @@ def _rsi14(closes):
     gain, loss = d.clip(lower=0).tail(14).mean(), (-d.clip(upper=0)).tail(14).mean()
     return 50.0 if gain == 0 and loss == 0 else 100.0 if loss == 0 else 100 - 100 / (1 + gain / loss)
 
-def technical_signal(ticker):
-    """SMA50/200 trend regime + RSI(14) momentum -> buy/potential/neutral/sell.
-    Needs 200+ daily closes; thinly-traded/newly-listed names fall back to 'unknown'."""
+def technical_signal(ticker, hi52, lo52):
+    """Base-breakout screen: near the 52wk low with the short-term (20d) trend turning up.
+    Deliberately not a continuation-trend follower, so it won't flag stocks already
+    extended near their highs. Needs 200+ daily closes and a valid 52wk range;
+    otherwise falls back to 'unknown'."""
     try:
         closes = ticker.history(period="1y", interval="1d", auto_adjust=True)["Close"].dropna()
     except Exception:
         return "unknown", None
-    if len(closes) < 200:
+    if len(closes) < 200 or not hi52 or not lo52 or hi52 <= lo52:
         return "unknown", None
-    price, sma50, sma200 = closes.iloc[-1], closes.tail(50).mean(), closes.tail(200).mean()
-    rsi = _rsi14(closes)
-    recovering = rsi > _rsi14(closes.iloc[:-5]) + 2  # RSI a week ago, +2pt noise floor
-    # 0.25% band on the 50/200 spread so noise on a genuinely flat series can't flip bull/bear
-    band = 0.0025
-    bull = price > sma50 and sma50 > sma200 * (1 + band)
-    bear = price < sma50 and sma50 < sma200 * (1 - band)
-    if bull:
-        # buy = actually recovering off a dip, not just sitting at a middling RSI level
-        signal = "buy" if 20 <= rsi <= 50 and recovering else "potential"
-    elif bear:
-        if rsi >= 50:
-            signal = "potential"  # trend still bearish but momentum already turned up - possible early reversal
-        elif rsi < 25:
-            signal = "neutral"   # deep oversold in a downtrend carries real bounce risk - not a confident sell
-        else:
-            signal = "sell"      # confirmed downtrend, momentum still weak
+    price = closes.iloc[-1]
+    pct_range = (price - lo52) / (hi52 - lo52)  # 0 = at 52wk low, 1 = at 52wk high
+    sma20, sma20_prev = closes.tail(20).mean(), closes.iloc[:-10].tail(20).mean()
+    band = 0.01  # 1% slope band so a flat SMA20 isn't called turning up/over from noise
+    turning_up = price > sma20 and sma20 > sma20_prev * (1 + band)
+    rolling_over = price < sma20 and sma20 < sma20_prev * (1 - band)
+    near_low, near_high = pct_range <= 0.40, pct_range >= 0.65
+    if near_low and turning_up:
+        signal = "buy"        # near the 52wk low, short-term trend just turned up - the setup we want
+    elif near_high and rolling_over:
+        signal = "sell"       # near the 52wk high and starting to roll over - topping out
+    elif turning_up or (near_low and not rolling_over):
+        signal = "potential"  # improving momentum off the lows, or bottoming near lows but not confirmed yet
     else:
-        signal = "potential" if recovering else "neutral"
-    return signal, round(rsi, 1)
+        signal = "neutral"
+    return signal, round(_rsi14(closes), 1)
 
 def fetch(sym):
     for attempt in range(3):
@@ -91,7 +89,8 @@ def fetch(sym):
             if yld is None:
                 dy = info.get("dividendYield")
                 if dy: yld = round(dy * 100, 2) if dy < 0.5 else round(dy, 2)
-            signal, rsi = technical_signal(t)
+            hi52, lo52 = info.get("fiftyTwoWeekHigh"), info.get("fiftyTwoWeekLow")
+            signal, rsi = technical_signal(t, hi52, lo52)
             return {
                 "sym": sym.replace(".TO",""),
                 "name": info.get("shortName",""),
@@ -103,7 +102,8 @@ def fetch(sym):
                 "pe": info.get("trailingPE"),
                 "beta": info.get("beta"),
                 "mcap": info.get("marketCap"),
-                "hi52": info.get("fiftyTwoWeekHigh"),
+                "hi52": hi52,
+                "lo52": lo52,
                 "target": info.get("targetMeanPrice"),
                 "analysts": info.get("numberOfAnalystOpinions"),
                 "payout": info.get("payoutRatio"),
