@@ -9,7 +9,7 @@
 <style>
 :root{
   --bg:#0A0E14; --surface:#111826; --line:#1C2636; --text:#E6EDF3; --muted:#7A8AA0;
-  --cyan:#00E5C7; --pink:#FF4D7E; --amber:#FFB84D;
+  --cyan:#00E5C7; --pink:#FF4D7E; --amber:#FFB84D; --green:#3DFF88;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -54,6 +54,12 @@ tr.row:hover td{background:#141d2e}
   vertical-align:middle;margin-left:6px}
 .scorebar i{display:block;height:100%;background:var(--cyan)}
 .fail .scorebar i{background:var(--pink)}
+.sig{display:inline-block;font:600 10px "IBM Plex Mono";letter-spacing:.06em;padding:3px 7px;border-radius:4px}
+.sig-buy{background:rgba(61,255,136,.15);color:var(--green)}
+.sig-potential{background:rgba(255,184,77,.15);color:var(--amber)}
+.sig-neutral{background:rgba(122,138,160,.15);color:var(--muted)}
+.sig-sell{background:rgba(255,77,126,.15);color:var(--pink)}
+.sig-unknown{color:var(--muted);opacity:.45}
 tr.gate td{border:none;padding:14px 6px 6px;text-align:center;color:var(--pink);
   font:600 11px "Chakra Petch";letter-spacing:.35em;text-transform:uppercase;
   text-shadow:0 0 12px rgba(255,77,126,.8);background:
@@ -122,13 +128,22 @@ function stability(s){
   const m=(s.mcap)?Math.min(s.mcap/1e10,1):0.5;
   return 40*b+35*p+25*m;
 }
+const SIG_META={
+  buy:{label:"BUY",cls:"sig-buy",tip:"Immediate technical buy — bullish 50/200d trend, RSI recovering from a pullback"},
+  potential:{label:"WATCH",cls:"sig-potential",tip:"Potential buy — trend or momentum lean bullish but not both aligned"},
+  neutral:{label:"FLAT",cls:"sig-neutral",tip:"Neutral — no clear trend or momentum edge"},
+  sell:{label:"SELL",cls:"sig-sell",tip:"Sell signal — bearish 50/200d trend (death cross)"},
+  unknown:{label:"N/A",cls:"sig-unknown",tip:"Insufficient price history for a reliable trend read"},
+};
+const sigMeta=r=>SIG_META[r.signal]||SIG_META.unknown;
 function compute(){
   const gw=S.gw/100, sw=1-gw;
+  const sigRank={buy:3,potential:2,neutral:1,sell:0,unknown:-1};
   return DATA.stocks.map(s=>{
     const g=growth(s,S.cap), st=stability(s);
     const score=(g.v==null)?st*sw:gw*g.v+sw*st;
     return {...s, g:g.v, er:g.er, proxy:g.proxy, st, score,
-            pass:(s.yield??0)>=S.gate};
+            pass:(s.yield??0)>=S.gate, sigRank:sigRank[s.signal]??-1};
   });
 }
 const fmt=(n,d=1)=>n==null?"—":n.toLocaleString("en-CA",{maximumFractionDigits:d,minimumFractionDigits:d});
@@ -145,16 +160,18 @@ function render(){
     const x=a[sortKey]??-1e9,y=b[sortKey]??-1e9;
     return (x<y?-1:x>y?1:0)*sortDir;
   });
-  const cols=[["sym","TICKER"],["price","PRICE"],["yield","YIELD%"],["er","TGT UP%"],
+  const cols=[["sym","TICKER"],["sigRank","SIGNAL"],["price","PRICE"],["yield","YIELD%"],["er","TGT UP%"],
               ["g","GROWTH","hideMob"],["st","STABLE","hideMob"],["score","SCORE"]];
   let h="<table><thead><tr>"+cols.map(([k,l,c])=>
     `<th class="${c||""}" data-k="${k}">${l}${k===sortKey?`<span class="arr"> ${sortDir<0?"▼":"▲"}</span>`:""}</th>`
   ).join("")+"</tr></thead><tbody>";
   let gateDrawn=false;
   for(const r of rows){
-    if(!r.pass&&!gateDrawn){h+=`<tr class="gate"><td colspan="7">◢ ${S.gate}% GATE — WATCHLIST BELOW ◣</td></tr>`;gateDrawn=true}
+    if(!r.pass&&!gateDrawn){h+=`<tr class="gate"><td colspan="8">◢ ${S.gate}% GATE — WATCHLIST BELOW ◣</td></tr>`;gateDrawn=true}
+    const sm=sigMeta(r);
     h+=`<tr class="row ${r.pass?"pass":"fail"}" data-s="${r.sym}">
       <td><span class="tk">${r.sym}</span><span class="nm">${r.name||""}</span></td>
+      <td><span class="sig ${sm.cls}" title="${sm.tip}">${sm.label}</span></td>
       <td>${fmt(r.price,2)}</td>
       <td class="yld">${fmt(r.yield)}</td>
       <td class="up ${r.er!=null&&r.er<0?"neg":""}">${r.er!=null?fmt(r.er):'<span class="prox">≈proxy</span>'}</td>
@@ -162,13 +179,14 @@ function render(){
       <td class="hideMob">${fmt(r.st,0)}</td>
       <td><b>${fmt(r.score)}</b><span class="scorebar"><i style="width:${Math.min(r.score,100)}%"></i></span></td></tr>`;
     if(openSym===r.sym){
-      h+=`<tr class="detail"><td colspan="7"><div class="grid">
+      h+=`<tr class="detail"><td colspan="8"><div class="grid">
         <div>Sector <b>${r.sector}</b></div><div>Div/yr <b>$${fmt(r.divRate,2)}</b></div>
         <div>Payout <b>${r.payout!=null?fmt(r.payout*100,0)+"%":"—"}</b></div>
         <div>EPS <b>${fmt(r.eps,2)}</b></div><div>P/E <b>${fmt(r.pe)}</b></div>
         <div>Beta <b>${fmt(r.beta,2)}</b></div><div>Mkt cap <b>${mc(r.mcap)}</b></div>
         <div>52wk high <b>${fmt(r.hi52,2)}</b></div>
         <div>Analyst target <b>${fmt(r.target,2)}</b> (${r.analysts||0} analysts)</div>
+        <div>RSI(14) <b>${fmt(r.rsi,1)}</b></div>
       </div></td></tr>`;
     }
   }

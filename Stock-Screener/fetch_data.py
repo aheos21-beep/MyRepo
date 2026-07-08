@@ -43,10 +43,36 @@ FIELDS = ["shortName","sector","currentPrice","regularMarketPrice","dividendRate
           "dividendYield","trailingEps","trailingPE","beta","marketCap",
           "fiftyTwoWeekHigh","targetMeanPrice","numberOfAnalystOpinions","payoutRatio"]
 
+def technical_signal(ticker):
+    """SMA50/200 trend regime + RSI(14) timing -> buy/potential/neutral/sell.
+    Needs 200+ daily closes; thinly-traded/newly-listed names fall back to 'unknown'."""
+    try:
+        closes = ticker.history(period="1y", interval="1d", auto_adjust=True)["Close"].dropna()
+    except Exception:
+        return "unknown", None
+    if len(closes) < 200:
+        return "unknown", None
+    price, sma50, sma200 = closes.iloc[-1], closes.tail(50).mean(), closes.tail(200).mean()
+    delta = closes.diff()
+    gain, loss = delta.clip(lower=0).tail(14).mean(), (-delta.clip(upper=0)).tail(14).mean()
+    rsi = 50.0 if gain == 0 and loss == 0 else 100.0 if loss == 0 else 100 - 100 / (1 + gain / loss)
+    # 0.25% band on the 50/200 spread so noise on a genuinely flat series can't flip bull/bear
+    band = 0.0025
+    bull = price > sma50 and sma50 > sma200 * (1 + band)
+    bear = price < sma50 and sma50 < sma200 * (1 - band)
+    if bear:
+        signal = "sell"
+    elif bull:
+        signal = "buy" if 30 <= rsi <= 50 else "potential"
+    else:
+        signal = "potential" if rsi < 50 else "neutral"
+    return signal, round(rsi, 1)
+
 def fetch(sym):
     for attempt in range(3):
         try:
-            info = yf.Ticker(sym).info
+            t = yf.Ticker(sym)
+            info = t.info
             price = info.get("currentPrice") or info.get("regularMarketPrice")
             if not price:
                 raise ValueError("no price")
@@ -55,6 +81,7 @@ def fetch(sym):
             if yld is None:
                 dy = info.get("dividendYield")
                 if dy: yld = round(dy * 100, 2) if dy < 0.5 else round(dy, 2)
+            signal, rsi = technical_signal(t)
             return {
                 "sym": sym.replace(".TO",""),
                 "name": info.get("shortName",""),
@@ -70,6 +97,8 @@ def fetch(sym):
                 "target": info.get("targetMeanPrice"),
                 "analysts": info.get("numberOfAnalystOpinions"),
                 "payout": info.get("payoutRatio"),
+                "signal": signal,
+                "rsi": rsi,
             }
         except Exception as e:
             if attempt == 2:
