@@ -97,7 +97,7 @@ tr.detail .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,
     <input type="range" id="gate" min="2" max="7" step="0.25" value="4"></div>
   <div><label>GROWTH WEIGHT %<output id="oGw">70</output></label>
     <input type="range" id="gw" min="0" max="100" step="5" value="70"></div>
-  <div><label>UPSIDE CAP % (full marks)<output id="oCap">30</output></label>
+  <div><label>Required 1 yr ROR %<output id="oCap">30</output></label>
     <input type="range" id="cap" min="10" max="60" step="5" value="30"></div>
 </div>
 
@@ -162,7 +162,7 @@ function render(){
     const x=a[sortKey]??-1e9,y=b[sortKey]??-1e9;
     return (x<y?-1:x>y?1:0)*sortDir;
   });
-  const cols=[["sym","TICKER"],["sigRank","SIGNAL"],["price","PRICE"],["yield","YIELD%"],["er","TGT UP%"],
+  const cols=[["sym","TICKER"],["sigRank","SIGNAL"],["price","PRICE"],["yield","YIELD%"],["er","ROR (1Yr)"],
               ["g","GROWTH","hideMob"],["st","STABLE","hideMob"],["score","SCORE"]];
   let h="<table><thead><tr>"+cols.map(([k,l,c])=>
     `<th class="${c||""}" data-k="${k}">${l}${k===sortKey?`<span class="arr"> ${sortDir<0?"▼":"▲"}</span>`:""}</th>`
