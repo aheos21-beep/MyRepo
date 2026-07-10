@@ -95,8 +95,8 @@ tr.detail .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,
 <div class="panel" id="panel">
   <div><label>YIELD GATE %<output id="oGate">4.0</output></label>
     <input type="range" id="gate" min="2" max="7" step="0.25" value="4"></div>
-  <div><label>GROWTH WEIGHT %<output id="oGw">70</output></label>
-    <input type="range" id="gw" min="0" max="100" step="5" value="70"></div>
+  <div><label>GROWTH WEIGHT %<output id="oGw">65</output></label>
+    <input type="range" id="gw" min="0" max="100" step="5" value="65"></div>
   <div><label>Required 1 yr ROR %<output id="oCap">30</output></label>
     <input type="range" id="cap" min="10" max="60" step="5" value="30"></div>
 </div>
@@ -111,7 +111,7 @@ const $=id=>document.getElementById(id);
 const store={get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},
              set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 let DATA=null, sortKey="score", sortDir=-1, openSym=null;
-const S={gate:store.get("gate",4), gw:store.get("gw",70), cap:store.get("cap",30)};
+const S={gate:store.get("gate",4), gw:store.get("gw",65), cap:store.get("cap",30)};
 
 function growth(s,cap){
   // Primary: analyst consensus expected 1-yr return. Fallback: value+recovery proxy.
