@@ -1,26 +1,6 @@
 {
   "tools": [
     {
-      "name": "ChatGPT",
-      "model": "GPT-5",
-      "company": "OpenAI",
-      "url": "https://chat.openai.com",
-      "icon": "\ud83e\udd16",
-      "color": "#10a37f",
-      "cats": [
-        "\ud83d\udcbb Coding",
-        "\ud83d\udccb Instructions"
-      ],
-      "score": 83,
-      "benchmarks": {
-        "lmsys_elo": 1362,
-        "mmlu": 90.0,
-        "humaneval": 90.0,
-        "math": 85.0
-      },
-      "rank": 1
-    },
-    {
       "name": "Claude",
       "model": "Claude 4",
       "company": "Anthropic",
@@ -31,32 +11,52 @@
         "\ud83e\udde0 Reasoning",
         "\u270d\ufe0f Creative Writing"
       ],
-      "score": 82,
+      "score": 95,
       "benchmarks": {
-        "lmsys_elo": 1344,
-        "mmlu": 89.0,
-        "humaneval": 93.0,
+        "lmsys_elo": 1502.0,
+        "mmlu": 92.0,
+        "humaneval": 92.7,
         "math": 88.0
+      },
+      "rank": 1
+    },
+    {
+      "name": "ChatGPT",
+      "model": "GPT-5",
+      "company": "OpenAI",
+      "url": "https://chat.openai.com",
+      "icon": "\ud83e\udd16",
+      "color": "#10a37f",
+      "cats": [
+        "\ud83d\udcbb Coding",
+        "\ud83d\udccb Instructions"
+      ],
+      "score": 94,
+      "benchmarks": {
+        "lmsys_elo": 1484.0,
+        "mmlu": 92.4,
+        "humaneval": 90.2,
+        "math": 85.0
       },
       "rank": 2
     },
     {
-      "name": "Llama",
-      "model": "Llama 4",
-      "company": "Meta AI",
-      "url": "https://ai.meta.com/llama/",
-      "icon": "\ud83e\udd99",
-      "color": "#0668e1",
+      "name": "Gemini",
+      "model": "Gemini Ultra 2",
+      "company": "Google DeepMind",
+      "url": "https://gemini.google.com",
+      "icon": "\ud83d\udc8e",
+      "color": "#4285f4",
       "cats": [
-        "\ud83d\udcbb Coding",
-        "\ud83d\udd22 Math"
+        "\ud83d\udd22 Math",
+        "\ud83c\udf10 Multilingual"
       ],
-      "score": 75,
+      "score": 93,
       "benchmarks": {
-        "lmsys_elo": 1308,
-        "mmlu": 86.0,
-        "humaneval": 88.0,
-        "math": 80.0
+        "lmsys_elo": 1490.0,
+        "mmlu": 90.3,
+        "humaneval": 89.0,
+        "math": 82.9
       },
       "rank": 3
     },
@@ -71,35 +71,35 @@
         "\ud83d\udd22 Math",
         "\ud83d\udcbb Coding"
       ],
-      "score": 75,
+      "score": 79,
       "benchmarks": {
-        "lmsys_elo": 1293,
+        "lmsys_elo": 1340.0,
         "mmlu": 88.0,
-        "humaneval": 85.0,
+        "humaneval": 82.6,
         "math": 90.0
       },
       "rank": 4
     },
     {
-      "name": "Gemini",
-      "model": "Gemini Ultra 2",
-      "company": "Google DeepMind",
-      "url": "https://gemini.google.com",
-      "icon": "\ud83d\udc8e",
-      "color": "#4285f4",
+      "name": "Llama",
+      "model": "Llama 4",
+      "company": "Meta AI",
+      "url": "https://ai.meta.com/llama/",
+      "icon": "\ud83e\udd99",
+      "color": "#0668e1",
       "cats": [
-        "\ud83d\udd22 Math",
-        "\ud83c\udf10 Multilingual"
+        "\ud83d\udcbb Coding",
+        "\ud83d\udd22 Math"
       ],
-      "score": 74,
+      "score": 72,
       "benchmarks": {
-        "lmsys_elo": 1302,
-        "mmlu": 87.0,
-        "humaneval": 86.0,
-        "math": 83.0
+        "lmsys_elo": 1291.0,
+        "mmlu": 87.3,
+        "humaneval": 89.0,
+        "math": 73.8
       },
       "rank": 5
     }
   ],
-  "last_updated": "2026-07-06T03:01:24.808799+00:00"
+  "last_updated": "2026-07-15T10:30:58.025898+00:00"
 }
