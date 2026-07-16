@@ -1,4 +1,5 @@
-.claude/
+.claude/*
+!.claude/skills/
 ai-tools-ranking/
 __pycache__/
 *.pyc

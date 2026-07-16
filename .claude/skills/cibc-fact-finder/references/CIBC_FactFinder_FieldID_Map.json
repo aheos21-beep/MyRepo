@@ -1,0 +1,4563 @@
+{
+  "metadata": {
+    "source_pdf": "_Fact_Finder___Notes___.pdf",
+    "total_fields": 325,
+    "pages": 7,
+    "coordinate_system": "PDF points, y=0 at bottom of page",
+    "checkbox_checked_value": "/Yes",
+    "checkbox_unchecked_value": "/Off",
+    "notes": "This file maps every fillable field ID to its semantic meaning and position. Use this to build field_values.json without re-inspecting the PDF each time."
+  },
+  "fields": {
+    "Text4.0": {
+      "field_id": "Text4.0",
+      "page": 1,
+      "type": "text",
+      "rect": [
+        312.811,
+        168.327,
+        557.763,
+        190.781
+      ],
+      "semantic": "cover_client_name",
+      "label": "Client full name (Prepared for)",
+      "section": "Cover"
+    },
+    "Text4.1": {
+      "field_id": "Text4.1",
+      "page": 1,
+      "type": "text",
+      "rect": [
+        312.811,
+        78.5113,
+        557.763,
+        100.965
+      ],
+      "semantic": "cover_date",
+      "label": "Date of questionnaire (DD/MM/YYYY)",
+      "section": "Cover"
+    },
+    "Text4.2": {
+      "field_id": "Text4.2",
+      "page": 1,
+      "type": "text",
+      "rect": [
+        312.811,
+        54.0162,
+        557.763,
+        76.47
+      ],
+      "semantic": "cover_date_secondary",
+      "label": "Secondary date line on cover (usually blank)",
+      "section": "Cover"
+    },
+    "Text52.0": {
+      "field_id": "Text52.0",
+      "page": 2,
+      "type": "text",
+      "rect": [
+        82.1247,
+        357.408,
+        557.982,
+        373.117
+      ],
+      "semantic": "client_name",
+      "label": "Client full legal name",
+      "section": "Personal - Client"
+    },
+    "Date of birth": {
+      "field_id": "Date of birth",
+      "page": 2,
+      "type": "text",
+      "rect": [
+        111.6,
+        337.92,
+        558.12,
+        356.04
+      ],
+      "semantic": "client_dob",
+      "label": "Client date of birth DD/MM/YYYY",
+      "section": "Personal - Client"
+    },
+    "Citizenship": {
+      "field_id": "Citizenship",
+      "page": 2,
+      "type": "text",
+      "rect": [
+        103.68,
+        318.48,
+        558.12,
+        336.48
+      ],
+      "semantic": "client_citizenship",
+      "label": "Client citizenship",
+      "section": "Personal - Client"
+    },
+    "Country of residence for income tax purposes": {
+      "field_id": "Country of residence for income tax purposes",
+      "page": 2,
+      "type": "text",
+      "rect": [
+        252.36,
+        299.04,
+        558.12,
+        317.16
+      ],
+      "semantic": "client_country_of_residence",
+      "label": "Client country of residence for tax",
+      "section": "Personal - Client"
+    },
+    "Occupation": {
+      "field_id": "Occupation",
+      "page": 2,
+      "type": "text",
+      "rect": [
+        105.48,
+        279.6,
+        558.12,
+        297.72
+      ],
+      "semantic": "client_occupation",
+      "label": "Client occupation",
+      "section": "Personal - Client"
+    },
+    "Employer": {
+      "field_id": "Employer",
+      "page": 2,
+      "type": "text",
+      "rect": [
+        97.92,
+        260.16,
+        558.12,
+        278.28
+      ],
+      "semantic": "client_employer",
+      "label": "Client employer name",
+      "section": "Personal - Client"
+    },
+    "Employment income": {
+      "field_id": "Employment income",
+      "page": 2,
+      "type": "text",
+      "rect": [
+        145.44,
+        241.44,
+        558.12,
+        259.56
+      ],
+      "semantic": "client_employment_income",
+      "label": "Client annual employment income",
+      "section": "Personal - Client"
+    },
+    "Other income sources": {
+      "field_id": "Other income sources",
+      "page": 2,
+      "type": "text",
+      "rect": [
+        150.84,
+        222.6,
+        558.12,
+        240.72
+      ],
+      "semantic": "client_other_income",
+      "label": "Client other income sources",
+      "section": "Personal - Client"
+    },
+    "Name": {
+      "field_id": "Name",
+      "page": 2,
+      "type": "text",
+      "rect": [
+        83.28,
+        179.52,
+        558.12,
+        194.88
+      ],
+      "semantic": "spouse_name",
+      "label": "Spouse full legal name",
+      "section": "Personal - Spouse"
+    },
+    "Date of birth_2": {
+      "field_id": "Date of birth_2",
+      "page": 2,
+      "type": "text",
+      "rect": [
+        111.6,
+        160.08,
+        558.12,
+        178.2
+      ],
+      "semantic": "spouse_dob",
+      "label": "Spouse date of birth DD/MM/YYYY",
+      "section": "Personal - Spouse"
+    },
+    "Citizenship_2": {
+      "field_id": "Citizenship_2",
+      "page": 2,
+      "type": "text",
+      "rect": [
+        103.68,
+        140.64,
+        558.12,
+        158.76
+      ],
+      "semantic": "spouse_citizenship",
+      "label": "Spouse citizenship",
+      "section": "Personal - Spouse"
+    },
+    "Country of residence for income tax purposes_2": {
+      "field_id": "Country of residence for income tax purposes_2",
+      "page": 2,
+      "type": "text",
+      "rect": [
+        252.36,
+        120.48,
+        558.12,
+        138.6
+      ],
+      "semantic": "spouse_country_of_residence",
+      "label": "Spouse country of residence for tax",
+      "section": "Personal - Spouse"
+    },
+    "Occupation_2": {
+      "field_id": "Occupation_2",
+      "page": 2,
+      "type": "text",
+      "rect": [
+        105.48,
+        101.64,
+        558.12,
+        119.76
+      ],
+      "semantic": "spouse_occupation",
+      "label": "Spouse occupation",
+      "section": "Personal - Spouse"
+    },
+    "Employer_2": {
+      "field_id": "Employer_2",
+      "page": 2,
+      "type": "text",
+      "rect": [
+        97.92,
+        82.2,
+        558.12,
+        100.32
+      ],
+      "semantic": "spouse_employer",
+      "label": "Spouse employer name",
+      "section": "Personal - Spouse"
+    },
+    "Employment income_2": {
+      "field_id": "Employment income_2",
+      "page": 2,
+      "type": "text",
+      "rect": [
+        145.44,
+        63.48,
+        558.12,
+        81.6
+      ],
+      "semantic": "spouse_employment_income",
+      "label": "Spouse annual employment income",
+      "section": "Personal - Spouse"
+    },
+    "Other income sources_2": {
+      "field_id": "Other income sources_2",
+      "page": 2,
+      "type": "text",
+      "rect": [
+        150.84,
+        44.76,
+        558.12,
+        62.88
+      ],
+      "semantic": "spouse_other_income",
+      "label": "Spouse other income sources",
+      "section": "Personal - Spouse"
+    },
+    "Check Box53.0": {
+      "field_id": "Check Box53.0",
+      "page": 3,
+      "type": "checkbox",
+      "rect": [
+        55.2306,
+        675.611,
+        61.776,
+        682.484
+      ],
+      "semantic": "expense_monthly_checkbox",
+      "label": "Monthly expenses checkbox",
+      "section": "Lifestyle"
+    },
+    "Check Box53.1": {
+      "field_id": "Check Box53.1",
+      "page": 3,
+      "type": "checkbox",
+      "rect": [
+        123.521,
+        675.611,
+        130.066,
+        682.484
+      ],
+      "semantic": "expense_annual_checkbox",
+      "label": "Annual expenses checkbox",
+      "section": "Lifestyle"
+    },
+    "Monthly or  Annual aftertax expenses": {
+      "field_id": "Monthly or  Annual aftertax expenses",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        253.361,
+        673.56,
+        558.041,
+        690.6
+      ],
+      "semantic": "lifestyle_expenses_amount",
+      "label": "Monthly or annual after-tax expenses amount",
+      "section": "Lifestyle"
+    },
+    "Check Box54.2": {
+      "field_id": "Check Box54.2",
+      "page": 3,
+      "type": "checkbox",
+      "rect": [
+        156.576,
+        630.665,
+        163.558,
+        637.865
+      ],
+      "semantic": "marital_status_commonlaw",
+      "label": "Common-law checkbox",
+      "section": "Marital Status"
+    },
+    "Check Box54.0": {
+      "field_id": "Check Box54.0",
+      "page": 3,
+      "type": "checkbox",
+      "rect": [
+        54.9034,
+        630.447,
+        61.8852,
+        637.647
+      ],
+      "semantic": "marital_status_single",
+      "label": "Single checkbox",
+      "section": "Marital Status"
+    },
+    "Check Box54.1": {
+      "field_id": "Check Box54.1",
+      "page": 3,
+      "type": "checkbox",
+      "rect": [
+        101.812,
+        630.447,
+        108.794,
+        637.647
+      ],
+      "semantic": "marital_status_married",
+      "label": "Married checkbox",
+      "section": "Marital Status"
+    },
+    "Check Box54.3": {
+      "field_id": "Check Box54.3",
+      "page": 3,
+      "type": "checkbox",
+      "rect": [
+        234.249,
+        630.447,
+        241.23,
+        637.647
+      ],
+      "semantic": "marital_status_separated",
+      "label": "Separated checkbox",
+      "section": "Marital Status"
+    },
+    "Check Box54.4": {
+      "field_id": "Check Box54.4",
+      "page": 3,
+      "type": "checkbox",
+      "rect": [
+        299.485,
+        630.447,
+        306.467,
+        637.647
+      ],
+      "semantic": "marital_status_divorced",
+      "label": "Divorced checkbox",
+      "section": "Marital Status"
+    },
+    "Check Box54.5": {
+      "field_id": "Check Box54.5",
+      "page": 3,
+      "type": "checkbox",
+      "rect": [
+        357.521,
+        630.447,
+        364.503,
+        637.647
+      ],
+      "semantic": "marital_status_widowed",
+      "label": "Widowed checkbox",
+      "section": "Marital Status"
+    },
+    "Married    Commonlaw  Separated": {
+      "field_id": "Married    Commonlaw  Separated",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        144.641,
+        609.24,
+        558.041,
+        626.28
+      ],
+      "semantic": "date_of_marriage",
+      "label": "Date of marriage(s)",
+      "section": "Marital Status"
+    },
+    "OF RESIDENCE 1": {
+      "field_id": "OF RESIDENCE 1",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        53.9215,
+        502.44,
+        179.561,
+        519.48
+      ],
+      "semantic": "family_1_name_province",
+      "label": "Family member 1: Name and province of residence",
+      "section": "Family"
+    },
+    "1": {
+      "field_id": "1",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        180.401,
+        502.44,
+        305.561,
+        519.48
+      ],
+      "semantic": "family_1_relationship",
+      "label": "Family member 1: Relationship",
+      "section": "Family"
+    },
+    "1_2": {
+      "field_id": "1_2",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        306.401,
+        502.44,
+        431.561,
+        519.48
+      ],
+      "semantic": "family_1_marital_status",
+      "label": "Family member 1: Marital status",
+      "section": "Family"
+    },
+    "DDMMYYYY 1": {
+      "field_id": "DDMMYYYY 1",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        432.401,
+        502.44,
+        558.041,
+        519.48
+      ],
+      "semantic": "family_1_dob",
+      "label": "Family member 1: Date of birth DD/MM/YYYY",
+      "section": "Family"
+    },
+    "OF RESIDENCE 2": {
+      "field_id": "OF RESIDENCE 2",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        53.9215,
+        484.8,
+        179.561,
+        501.84
+      ],
+      "semantic": "family_2_name_province",
+      "label": "Family member 2: Name and province",
+      "section": "Family"
+    },
+    "2": {
+      "field_id": "2",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        180.401,
+        484.8,
+        305.561,
+        501.84
+      ],
+      "semantic": "family_2_relationship",
+      "label": "Family member 2: Relationship",
+      "section": "Family"
+    },
+    "2_2": {
+      "field_id": "2_2",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        306.401,
+        484.8,
+        431.561,
+        501.84
+      ],
+      "semantic": "family_2_marital_status",
+      "label": "Family member 2: Marital status",
+      "section": "Family"
+    },
+    "DDMMYYYY 2": {
+      "field_id": "DDMMYYYY 2",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        432.401,
+        484.8,
+        558.041,
+        501.84
+      ],
+      "semantic": "family_2_dob",
+      "label": "Family member 2: DOB",
+      "section": "Family"
+    },
+    "OF RESIDENCE 3": {
+      "field_id": "OF RESIDENCE 3",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        53.9215,
+        467.16,
+        179.561,
+        484.2
+      ],
+      "semantic": "family_3_name_province",
+      "label": "Family member 3: Name and province",
+      "section": "Family"
+    },
+    "3": {
+      "field_id": "3",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        180.401,
+        467.16,
+        305.561,
+        484.2
+      ],
+      "semantic": "family_3_relationship",
+      "label": "Family member 3: Relationship",
+      "section": "Family"
+    },
+    "3_2": {
+      "field_id": "3_2",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        306.401,
+        467.16,
+        431.561,
+        484.2
+      ],
+      "semantic": "family_3_marital_status",
+      "label": "Family member 3: Marital status",
+      "section": "Family"
+    },
+    "DDMMYYYY 3": {
+      "field_id": "DDMMYYYY 3",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        432.401,
+        467.16,
+        558.041,
+        484.2
+      ],
+      "semantic": "family_3_dob",
+      "label": "Family member 3: DOB",
+      "section": "Family"
+    },
+    "OF RESIDENCE 4": {
+      "field_id": "OF RESIDENCE 4",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        53.9215,
+        449.52,
+        179.561,
+        466.56
+      ],
+      "semantic": "family_4_name_province",
+      "label": "Family member 4: Name and province",
+      "section": "Family"
+    },
+    "4": {
+      "field_id": "4",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        180.401,
+        449.52,
+        305.561,
+        466.56
+      ],
+      "semantic": "family_4_relationship",
+      "label": "Family member 4: Relationship",
+      "section": "Family"
+    },
+    "4_2": {
+      "field_id": "4_2",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        306.401,
+        449.52,
+        431.561,
+        466.56
+      ],
+      "semantic": "family_4_marital_status",
+      "label": "Family member 4: Marital status",
+      "section": "Family"
+    },
+    "DDMMYYYY 4": {
+      "field_id": "DDMMYYYY 4",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        432.401,
+        449.52,
+        558.041,
+        466.56
+      ],
+      "semantic": "family_4_dob",
+      "label": "Family member 4: DOB",
+      "section": "Family"
+    },
+    "OF RESIDENCE 5": {
+      "field_id": "OF RESIDENCE 5",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        53.9215,
+        431.88,
+        179.561,
+        448.92
+      ],
+      "semantic": "family_5_name_province",
+      "label": "Family member 5: Name and province",
+      "section": "Family"
+    },
+    "5": {
+      "field_id": "5",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        180.401,
+        431.88,
+        305.561,
+        448.92
+      ],
+      "semantic": "family_5_relationship",
+      "label": "Family member 5: Relationship",
+      "section": "Family"
+    },
+    "5_2": {
+      "field_id": "5_2",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        306.401,
+        431.88,
+        431.561,
+        448.92
+      ],
+      "semantic": "family_5_marital_status",
+      "label": "Family member 5: Marital status",
+      "section": "Family"
+    },
+    "DDMMYYYY 5": {
+      "field_id": "DDMMYYYY 5",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        432.401,
+        431.88,
+        558.041,
+        448.92
+      ],
+      "semantic": "family_5_dob",
+      "label": "Family member 5: DOB",
+      "section": "Family"
+    },
+    "OF RESIDENCE 6.0": {
+      "field_id": "OF RESIDENCE 6.0",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        53.5945,
+        414.446,
+        179.267,
+        431.464
+      ],
+      "semantic": "family_6_name_province",
+      "label": "Family member 6: Name and province",
+      "section": "Family"
+    },
+    "6.0": {
+      "field_id": "6.0",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        180.576,
+        414.446,
+        305.595,
+        431.464
+      ],
+      "semantic": "family_6_relationship",
+      "label": "Family member 6: Relationship",
+      "section": "Family"
+    },
+    "6_2.0": {
+      "field_id": "6_2.0",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        306.25,
+        414.446,
+        431.268,
+        431.464
+      ],
+      "semantic": "family_6_marital_status",
+      "label": "Family member 6: Marital status",
+      "section": "Family"
+    },
+    "DDMMYYYY 6.0": {
+      "field_id": "DDMMYYYY 6.0",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        432.577,
+        414.446,
+        558.251,
+        431.464
+      ],
+      "semantic": "family_6_dob",
+      "label": "Family member 6: DOB",
+      "section": "Family"
+    },
+    "OF RESIDENCE 6.1": {
+      "field_id": "OF RESIDENCE 6.1",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        53.5945,
+        396.118,
+        179.267,
+        413.137
+      ],
+      "semantic": "family_7_name_province",
+      "label": "Family member 7: Name and province",
+      "section": "Family"
+    },
+    "6.1": {
+      "field_id": "6.1",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        180.576,
+        396.118,
+        305.595,
+        413.137
+      ],
+      "semantic": "family_7_relationship",
+      "label": "Family member 7: Relationship",
+      "section": "Family"
+    },
+    "6_2.1": {
+      "field_id": "6_2.1",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        306.25,
+        396.118,
+        431.268,
+        413.137
+      ],
+      "semantic": "family_7_marital_status",
+      "label": "Family member 7: Marital status",
+      "section": "Family"
+    },
+    "DDMMYYYY 6.1": {
+      "field_id": "DDMMYYYY 6.1",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        432.577,
+        396.118,
+        558.251,
+        413.137
+      ],
+      "semantic": "family_7_dob",
+      "label": "Family member 7: DOB",
+      "section": "Family"
+    },
+    "GOAL 1": {
+      "field_id": "GOAL 1",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        53.9215,
+        263.52,
+        179.561,
+        280.56
+      ],
+      "semantic": "goal_1_description",
+      "label": "Goal 1: Description",
+      "section": "Goals"
+    },
+    "TIME HORIZON 1": {
+      "field_id": "TIME HORIZON 1",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        180.401,
+        263.52,
+        305.561,
+        280.56
+      ],
+      "semantic": "goal_1_time_horizon",
+      "label": "Goal 1: Time horizon",
+      "section": "Goals"
+    },
+    "CONSIDERATIONS 1": {
+      "field_id": "CONSIDERATIONS 1",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        306.401,
+        263.52,
+        431.561,
+        280.56
+      ],
+      "semantic": "goal_1_considerations",
+      "label": "Goal 1: Considerations",
+      "section": "Goals"
+    },
+    "PRIORITY 1": {
+      "field_id": "PRIORITY 1",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        432.401,
+        263.52,
+        558.041,
+        280.56
+      ],
+      "semantic": "goal_1_priority",
+      "label": "Goal 1: Priority",
+      "section": "Goals"
+    },
+    "GOAL 2": {
+      "field_id": "GOAL 2",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        53.9215,
+        245.88,
+        179.561,
+        262.92
+      ],
+      "semantic": "goal_2_description",
+      "label": "Goal 2: Description",
+      "section": "Goals"
+    },
+    "TIME HORIZON 2": {
+      "field_id": "TIME HORIZON 2",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        180.401,
+        245.88,
+        305.561,
+        262.92
+      ],
+      "semantic": "goal_2_time_horizon",
+      "label": "Goal 2: Time horizon",
+      "section": "Goals"
+    },
+    "CONSIDERATIONS 2": {
+      "field_id": "CONSIDERATIONS 2",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        306.401,
+        245.88,
+        431.561,
+        262.92
+      ],
+      "semantic": "goal_2_considerations",
+      "label": "Goal 2: Considerations",
+      "section": "Goals"
+    },
+    "PRIORITY 2": {
+      "field_id": "PRIORITY 2",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        432.401,
+        245.88,
+        558.041,
+        262.92
+      ],
+      "semantic": "goal_2_priority",
+      "label": "Goal 2: Priority",
+      "section": "Goals"
+    },
+    "GOAL 3": {
+      "field_id": "GOAL 3",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        53.9215,
+        228.24,
+        179.561,
+        245.28
+      ],
+      "semantic": "goal_3_description",
+      "label": "Goal 3: Description",
+      "section": "Goals"
+    },
+    "TIME HORIZON 3": {
+      "field_id": "TIME HORIZON 3",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        180.401,
+        228.24,
+        305.561,
+        245.28
+      ],
+      "semantic": "goal_3_time_horizon",
+      "label": "Goal 3: Time horizon",
+      "section": "Goals"
+    },
+    "CONSIDERATIONS 3": {
+      "field_id": "CONSIDERATIONS 3",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        306.401,
+        228.24,
+        431.561,
+        245.28
+      ],
+      "semantic": "goal_3_considerations",
+      "label": "Goal 3: Considerations",
+      "section": "Goals"
+    },
+    "PRIORITY 3": {
+      "field_id": "PRIORITY 3",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        432.401,
+        228.24,
+        558.041,
+        245.28
+      ],
+      "semantic": "goal_3_priority",
+      "label": "Goal 3: Priority",
+      "section": "Goals"
+    },
+    "GOAL 4": {
+      "field_id": "GOAL 4",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        53.9215,
+        210.6,
+        179.561,
+        227.64
+      ],
+      "semantic": "goal_4_description",
+      "label": "Goal 4: Description",
+      "section": "Goals"
+    },
+    "TIME HORIZON 4": {
+      "field_id": "TIME HORIZON 4",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        180.401,
+        210.6,
+        305.561,
+        227.64
+      ],
+      "semantic": "goal_4_time_horizon",
+      "label": "Goal 4: Time horizon",
+      "section": "Goals"
+    },
+    "CONSIDERATIONS 4": {
+      "field_id": "CONSIDERATIONS 4",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        306.401,
+        210.6,
+        431.561,
+        227.64
+      ],
+      "semantic": "goal_4_considerations",
+      "label": "Goal 4: Considerations",
+      "section": "Goals"
+    },
+    "PRIORITY 4": {
+      "field_id": "PRIORITY 4",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        432.401,
+        210.6,
+        558.041,
+        227.64
+      ],
+      "semantic": "goal_4_priority",
+      "label": "Goal 4: Priority",
+      "section": "Goals"
+    },
+    "GOAL 5": {
+      "field_id": "GOAL 5",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        53.9215,
+        192.96,
+        179.561,
+        210.0
+      ],
+      "semantic": "goal_5_description",
+      "label": "Goal 5: Description",
+      "section": "Goals"
+    },
+    "TIME HORIZON 5": {
+      "field_id": "TIME HORIZON 5",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        180.401,
+        192.96,
+        305.561,
+        210.0
+      ],
+      "semantic": "goal_5_time_horizon",
+      "label": "Goal 5: Time horizon",
+      "section": "Goals"
+    },
+    "CONSIDERATIONS 5": {
+      "field_id": "CONSIDERATIONS 5",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        306.401,
+        192.96,
+        431.561,
+        210.0
+      ],
+      "semantic": "goal_5_considerations",
+      "label": "Goal 5: Considerations",
+      "section": "Goals"
+    },
+    "PRIORITY 5": {
+      "field_id": "PRIORITY 5",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        432.401,
+        192.96,
+        558.041,
+        210.0
+      ],
+      "semantic": "goal_5_priority",
+      "label": "Goal 5: Priority",
+      "section": "Goals"
+    },
+    "GOAL 6.0": {
+      "field_id": "GOAL 6.0",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        53.5945,
+        175.535,
+        179.267,
+        192.554
+      ],
+      "semantic": "goal_6_description",
+      "label": "Goal 6: Description",
+      "section": "Goals"
+    },
+    "TIME HORIZON 6.0": {
+      "field_id": "TIME HORIZON 6.0",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        180.576,
+        175.535,
+        305.595,
+        192.554
+      ],
+      "semantic": "goal_6_time_horizon",
+      "label": "Goal 6: Time horizon",
+      "section": "Goals"
+    },
+    "CONSIDERATIONS 6.0": {
+      "field_id": "CONSIDERATIONS 6.0",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        306.25,
+        175.535,
+        431.268,
+        192.554
+      ],
+      "semantic": "goal_6_considerations",
+      "label": "Goal 6: Considerations",
+      "section": "Goals"
+    },
+    "PRIORITY 6.0": {
+      "field_id": "PRIORITY 6.0",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        432.577,
+        175.535,
+        558.251,
+        192.554
+      ],
+      "semantic": "goal_6_priority",
+      "label": "Goal 6: Priority",
+      "section": "Goals"
+    },
+    "GOAL 6.1": {
+      "field_id": "GOAL 6.1",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        53.5945,
+        157.208,
+        179.267,
+        174.226
+      ],
+      "semantic": "goal_7_description",
+      "label": "Goal 7: Description",
+      "section": "Goals"
+    },
+    "TIME HORIZON 6.1": {
+      "field_id": "TIME HORIZON 6.1",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        180.576,
+        157.208,
+        305.595,
+        174.226
+      ],
+      "semantic": "goal_7_time_horizon",
+      "label": "Goal 7: Time horizon",
+      "section": "Goals"
+    },
+    "CONSIDERATIONS 6.1": {
+      "field_id": "CONSIDERATIONS 6.1",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        306.25,
+        157.208,
+        431.268,
+        174.226
+      ],
+      "semantic": "goal_7_considerations",
+      "label": "Goal 7: Considerations",
+      "section": "Goals"
+    },
+    "PRIORITY 6.1": {
+      "field_id": "PRIORITY 6.1",
+      "page": 3,
+      "type": "text",
+      "rect": [
+        432.577,
+        157.208,
+        558.251,
+        174.226
+      ],
+      "semantic": "goal_7_priority",
+      "label": "Goal 7: Priority",
+      "section": "Goals"
+    },
+    "Text55.0": {
+      "field_id": "Text55.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        53.9974,
+        617.614,
+        232.141,
+        632.734
+      ],
+      "semantic": "bank_row1_description",
+      "label": "Bank Accounts row 1: Description",
+      "section": "Assets - Bank Accounts"
+    },
+    "Text56.0.0": {
+      "field_id": "Text56.0.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        233.505,
+        617.614,
+        312.853,
+        632.734
+      ],
+      "semantic": "bank_row1_self",
+      "label": "Bank Accounts row 1: Self FMV",
+      "section": "Assets - Bank Accounts"
+    },
+    "Text56.0.1": {
+      "field_id": "Text56.0.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        315.054,
+        617.614,
+        394.401,
+        632.734
+      ],
+      "semantic": "bank_row1_spouse",
+      "label": "Bank Accounts row 1: Spouse FMV",
+      "section": "Assets - Bank Accounts"
+    },
+    "Text56.0.2": {
+      "field_id": "Text56.0.2",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        396.184,
+        617.614,
+        474.696,
+        632.734
+      ],
+      "semantic": "bank_row1_joint_spouse",
+      "label": "Bank Accounts row 1: Joint with Spouse FMV",
+      "section": "Assets - Bank Accounts"
+    },
+    "Text56.0.3": {
+      "field_id": "Text56.0.3",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        477.122,
+        617.614,
+        557.306,
+        632.734
+      ],
+      "semantic": "bank_row1_joint_other",
+      "label": "Bank Accounts row 1: Joint with Other FMV",
+      "section": "Assets - Bank Accounts"
+    },
+    "Text55.1.0.0": {
+      "field_id": "Text55.1.0.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        54.1158,
+        601.784,
+        231.956,
+        616.904
+      ],
+      "semantic": "bank_row2_description",
+      "label": "Bank Accounts row 2: Description",
+      "section": "Assets - Bank Accounts"
+    },
+    "Text56.1.0.0": {
+      "field_id": "Text56.1.0.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        233.858,
+        601.784,
+        312.281,
+        616.904
+      ],
+      "semantic": "bank_row2_self",
+      "label": "Bank Accounts row 2: Self FMV",
+      "section": "Assets - Bank Accounts"
+    },
+    "Text56.1.1.0": {
+      "field_id": "Text56.1.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        315.107,
+        601.784,
+        394.238,
+        616.904
+      ],
+      "semantic": "bank_row2_spouse",
+      "label": "Bank Accounts row 2: Spouse FMV",
+      "section": "Assets - Bank Accounts"
+    },
+    "Text56.1.2.0": {
+      "field_id": "Text56.1.2.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        396.357,
+        601.784,
+        474.074,
+        616.904
+      ],
+      "semantic": "bank_row2_joint_spouse",
+      "label": "Bank Accounts row 2: Joint with Spouse FMV",
+      "section": "Assets - Bank Accounts"
+    },
+    "Text56.1.3.0": {
+      "field_id": "Text56.1.3.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        476.9,
+        601.784,
+        557.444,
+        616.904
+      ],
+      "semantic": "bank_row2_joint_other",
+      "label": "Bank Accounts row 2: Joint with Other FMV",
+      "section": "Assets - Bank Accounts"
+    },
+    "Text55.1.0.1.0": {
+      "field_id": "Text55.1.0.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        54.2151,
+        585.913,
+        231.804,
+        600.857
+      ],
+      "semantic": "bank_row3_description",
+      "label": "Bank Accounts row 3: Description",
+      "section": "Assets - Bank Accounts"
+    },
+    "Text56.1.0.1.0": {
+      "field_id": "Text56.1.0.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        233.89,
+        585.913,
+        312.432,
+        600.857
+      ],
+      "semantic": "bank_row3_self",
+      "label": "Bank Accounts row 3: Self FMV",
+      "section": "Assets - Bank Accounts"
+    },
+    "Text56.1.1.1.0": {
+      "field_id": "Text56.1.1.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        315.212,
+        585.913,
+        394.102,
+        600.857
+      ],
+      "semantic": "bank_row3_spouse",
+      "label": "Bank Accounts row 3: Spouse FMV",
+      "section": "Assets - Bank Accounts"
+    },
+    "Text56.1.2.1.0": {
+      "field_id": "Text56.1.2.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        396.187,
+        585.913,
+        474.035,
+        600.857
+      ],
+      "semantic": "bank_row3_joint_spouse",
+      "label": "Bank Accounts row 3: Joint with Spouse FMV",
+      "section": "Assets - Bank Accounts"
+    },
+    "Text56.1.3.1.0": {
+      "field_id": "Text56.1.3.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        476.815,
+        585.913,
+        557.443,
+        600.857
+      ],
+      "semantic": "bank_row3_joint_other",
+      "label": "Bank Accounts row 3: Joint with Other FMV",
+      "section": "Assets - Bank Accounts"
+    },
+    "Text55.1.0.1.1": {
+      "field_id": "Text55.1.0.1.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        54.2151,
+        570.274,
+        231.804,
+        585.218
+      ],
+      "semantic": "bank_row4_description",
+      "label": "Bank Accounts row 4: Description (extra row)",
+      "section": "Assets - Bank Accounts"
+    },
+    "Text56.1.0.1.1": {
+      "field_id": "Text56.1.0.1.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        233.89,
+        570.274,
+        312.432,
+        585.218
+      ],
+      "semantic": "bank_row4_self",
+      "label": "Bank Accounts row 4: Self FMV",
+      "section": "Assets - Bank Accounts"
+    },
+    "Text56.1.1.1.1": {
+      "field_id": "Text56.1.1.1.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        315.212,
+        570.274,
+        394.102,
+        585.218
+      ],
+      "semantic": "bank_row4_spouse",
+      "label": "Bank Accounts row 4: Spouse FMV",
+      "section": "Assets - Bank Accounts"
+    },
+    "Text56.1.2.1.1": {
+      "field_id": "Text56.1.2.1.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        396.187,
+        570.274,
+        474.035,
+        585.218
+      ],
+      "semantic": "bank_row4_joint_spouse",
+      "label": "Bank Accounts row 4: Joint with Spouse FMV",
+      "section": "Assets - Bank Accounts"
+    },
+    "Text56.1.3.1.1": {
+      "field_id": "Text56.1.3.1.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        476.815,
+        570.274,
+        557.443,
+        585.218
+      ],
+      "semantic": "bank_row4_joint_other",
+      "label": "Bank Accounts row 4: Joint with Other FMV",
+      "section": "Assets - Bank Accounts"
+    },
+    "Text56.2.0": {
+      "field_id": "Text56.2.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        233.505,
+        554.575,
+        312.435,
+        569.695
+      ],
+      "semantic": "bank_total_self",
+      "label": "Bank Accounts Total: Self",
+      "section": "Assets - Bank Accounts"
+    },
+    "Text56.2.1": {
+      "field_id": "Text56.2.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        315.054,
+        554.575,
+        393.565,
+        569.695
+      ],
+      "semantic": "bank_total_spouse",
+      "label": "Bank Accounts Total: Spouse",
+      "section": "Assets - Bank Accounts"
+    },
+    "Text56.2.2": {
+      "field_id": "Text56.2.2",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        396.184,
+        554.575,
+        474.278,
+        569.695
+      ],
+      "semantic": "bank_total_joint_spouse",
+      "label": "Bank Accounts Total: Joint with Spouse",
+      "section": "Assets - Bank Accounts"
+    },
+    "Text56.2.3": {
+      "field_id": "Text56.2.3",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        477.122,
+        554.575,
+        557.724,
+        569.695
+      ],
+      "semantic": "bank_total_joint_other",
+      "label": "Bank Accounts Total: Joint with Other",
+      "section": "Assets - Bank Accounts"
+    },
+    "Text55.2": {
+      "field_id": "Text55.2",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        53.4454,
+        522.149,
+        231.285,
+        537.269
+      ],
+      "semantic": "nonreg_row1_description",
+      "label": "Non-Reg/TFSA row 1: Description",
+      "section": "Assets - Non-Reg/TFSA"
+    },
+    "Text56.3.0": {
+      "field_id": "Text56.3.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        233.923,
+        522.149,
+        312.853,
+        537.269
+      ],
+      "semantic": "nonreg_row1_self",
+      "label": "Non-Reg/TFSA row 1: Self FMV",
+      "section": "Assets - Non-Reg/TFSA"
+    },
+    "Text56.3.1": {
+      "field_id": "Text56.3.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        315.054,
+        522.149,
+        394.401,
+        537.269
+      ],
+      "semantic": "nonreg_row1_spouse",
+      "label": "Non-Reg/TFSA row 1: Spouse FMV",
+      "section": "Assets - Non-Reg/TFSA"
+    },
+    "Text56.3.2": {
+      "field_id": "Text56.3.2",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        396.184,
+        522.149,
+        475.114,
+        537.269
+      ],
+      "semantic": "nonreg_row1_joint_spouse",
+      "label": "Non-Reg/TFSA row 1: Joint with Spouse FMV",
+      "section": "Assets - Non-Reg/TFSA"
+    },
+    "Text56.3.3": {
+      "field_id": "Text56.3.3",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        477.54,
+        522.149,
+        558.142,
+        537.269
+      ],
+      "semantic": "nonreg_row1_joint_other",
+      "label": "Non-Reg/TFSA row 1: Joint with Other FMV",
+      "section": "Assets - Non-Reg/TFSA"
+    },
+    "Text55.3.0": {
+      "field_id": "Text55.3.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        53.4321,
+        506.415,
+        231.272,
+        521.535
+      ],
+      "semantic": "nonreg_row2_description",
+      "label": "Non-Reg/TFSA row 2: Description",
+      "section": "Assets - Non-Reg/TFSA"
+    },
+    "Text56.4.0.0": {
+      "field_id": "Text56.4.0.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        233.858,
+        506.415,
+        312.988,
+        521.535
+      ],
+      "semantic": "nonreg_row2_self",
+      "label": "Non-Reg/TFSA row 2: Self FMV",
+      "section": "Assets - Non-Reg/TFSA"
+    },
+    "Text56.4.1.0": {
+      "field_id": "Text56.4.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        315.107,
+        506.415,
+        394.238,
+        521.535
+      ],
+      "semantic": "nonreg_row2_spouse",
+      "label": "Non-Reg/TFSA row 2: Spouse FMV",
+      "section": "Assets - Non-Reg/TFSA"
+    },
+    "Text56.4.2.0": {
+      "field_id": "Text56.4.2.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        396.357,
+        506.415,
+        474.781,
+        521.535
+      ],
+      "semantic": "nonreg_row2_joint_spouse",
+      "label": "Non-Reg/TFSA row 2: Joint with Spouse FMV",
+      "section": "Assets - Non-Reg/TFSA"
+    },
+    "Text56.4.3.0": {
+      "field_id": "Text56.4.3.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        477.607,
+        506.415,
+        557.444,
+        521.535
+      ],
+      "semantic": "nonreg_row2_joint_other",
+      "label": "Non-Reg/TFSA row 2: Joint with Other FMV",
+      "section": "Assets - Non-Reg/TFSA"
+    },
+    "Text55.3.1.0": {
+      "field_id": "Text55.3.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        53.5201,
+        490.689,
+        231.109,
+        505.98
+      ],
+      "semantic": "nonreg_row3_description",
+      "label": "Non-Reg/TFSA row 3: Description",
+      "section": "Assets - Non-Reg/TFSA"
+    },
+    "Text56.4.0.1.0": {
+      "field_id": "Text56.4.0.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        233.89,
+        490.689,
+        313.127,
+        505.98
+      ],
+      "semantic": "nonreg_row3_self",
+      "label": "Non-Reg/TFSA row 3: Self FMV",
+      "section": "Assets - Non-Reg/TFSA"
+    },
+    "Text56.4.1.1.0": {
+      "field_id": "Text56.4.1.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        315.212,
+        490.689,
+        394.102,
+        505.98
+      ],
+      "semantic": "nonreg_row3_spouse",
+      "label": "Non-Reg/TFSA row 3: Spouse FMV",
+      "section": "Assets - Non-Reg/TFSA"
+    },
+    "Text56.4.2.1.0": {
+      "field_id": "Text56.4.2.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        396.187,
+        490.689,
+        474.73,
+        505.98
+      ],
+      "semantic": "nonreg_row3_joint_spouse",
+      "label": "Non-Reg/TFSA row 3: Joint with Spouse FMV",
+      "section": "Assets - Non-Reg/TFSA"
+    },
+    "Text56.4.3.1.0": {
+      "field_id": "Text56.4.3.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        477.51,
+        490.689,
+        557.443,
+        505.98
+      ],
+      "semantic": "nonreg_row3_joint_other",
+      "label": "Non-Reg/TFSA row 3: Joint with Other FMV",
+      "section": "Assets - Non-Reg/TFSA"
+    },
+    "Text55.3.1.1": {
+      "field_id": "Text55.3.1.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        53.5201,
+        474.703,
+        231.109,
+        489.994
+      ],
+      "semantic": "nonreg_row4_description",
+      "label": "Non-Reg/TFSA row 4: Description (extra row)",
+      "section": "Assets - Non-Reg/TFSA"
+    },
+    "Text56.4.0.1.1": {
+      "field_id": "Text56.4.0.1.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        233.89,
+        474.703,
+        313.127,
+        489.994
+      ],
+      "semantic": "nonreg_row4_self",
+      "label": "Non-Reg/TFSA row 4: Self FMV",
+      "section": "Assets - Non-Reg/TFSA"
+    },
+    "Text56.4.1.1.1": {
+      "field_id": "Text56.4.1.1.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        315.212,
+        474.703,
+        394.102,
+        489.994
+      ],
+      "semantic": "nonreg_row4_spouse",
+      "label": "Non-Reg/TFSA row 4: Spouse FMV",
+      "section": "Assets - Non-Reg/TFSA"
+    },
+    "Text56.4.2.1.1": {
+      "field_id": "Text56.4.2.1.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        396.187,
+        474.703,
+        474.73,
+        489.994
+      ],
+      "semantic": "nonreg_row4_joint_spouse",
+      "label": "Non-Reg/TFSA row 4: Joint with Spouse FMV",
+      "section": "Assets - Non-Reg/TFSA"
+    },
+    "Text56.4.3.1.1": {
+      "field_id": "Text56.4.3.1.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        477.51,
+        474.703,
+        557.443,
+        489.994
+      ],
+      "semantic": "nonreg_row4_joint_other",
+      "label": "Non-Reg/TFSA row 4: Joint with Other FMV",
+      "section": "Assets - Non-Reg/TFSA"
+    },
+    "Text56.5.0": {
+      "field_id": "Text56.5.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        233.923,
+        459.759,
+        312.853,
+        474.879
+      ],
+      "semantic": "nonreg_total_self",
+      "label": "Non-Reg/TFSA Total: Self",
+      "section": "Assets - Non-Reg/TFSA"
+    },
+    "Text56.5.1": {
+      "field_id": "Text56.5.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        315.054,
+        459.759,
+        394.401,
+        474.879
+      ],
+      "semantic": "nonreg_total_spouse",
+      "label": "Non-Reg/TFSA Total: Spouse",
+      "section": "Assets - Non-Reg/TFSA"
+    },
+    "Text56.5.2": {
+      "field_id": "Text56.5.2",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        396.184,
+        459.759,
+        475.114,
+        474.879
+      ],
+      "semantic": "nonreg_total_joint_spouse",
+      "label": "Non-Reg/TFSA Total: Joint with Spouse",
+      "section": "Assets - Non-Reg/TFSA"
+    },
+    "Text56.5.3": {
+      "field_id": "Text56.5.3",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        477.54,
+        459.759,
+        557.306,
+        474.879
+      ],
+      "semantic": "nonreg_total_joint_other",
+      "label": "Non-Reg/TFSA Total: Joint with Other",
+      "section": "Assets - Non-Reg/TFSA"
+    },
+    "Text55.4": {
+      "field_id": "Text55.4",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        54.4176,
+        427.935,
+        232.258,
+        443.055
+      ],
+      "semantic": "rrsp_row1_description",
+      "label": "RRSP/RRIF row 1: Description",
+      "section": "Assets - RRSP/RRIF"
+    },
+    "Text56.6.0": {
+      "field_id": "Text56.6.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        232.669,
+        427.935,
+        312.017,
+        443.055
+      ],
+      "semantic": "rrsp_row1_self",
+      "label": "RRSP/RRIF row 1: Self FMV",
+      "section": "Assets - RRSP/RRIF"
+    },
+    "Text56.6.1": {
+      "field_id": "Text56.6.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        315.054,
+        427.935,
+        394.401,
+        443.055
+      ],
+      "semantic": "rrsp_row1_spouse",
+      "label": "RRSP/RRIF row 1: Spouse FMV",
+      "section": "Assets - RRSP/RRIF"
+    },
+    "Text56.6.2": {
+      "field_id": "Text56.6.2",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        395.766,
+        427.935,
+        474.696,
+        443.055
+      ],
+      "semantic": "rrsp_row1_joint_spouse",
+      "label": "RRSP/RRIF row 1: Joint with Spouse FMV",
+      "section": "Assets - RRSP/RRIF"
+    },
+    "Text56.6.3": {
+      "field_id": "Text56.6.3",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        477.54,
+        427.935,
+        558.142,
+        443.055
+      ],
+      "semantic": "rrsp_row1_joint_other",
+      "label": "RRSP/RRIF row 1: Joint with Other FMV",
+      "section": "Assets - RRSP/RRIF"
+    },
+    "Text55.5.0": {
+      "field_id": "Text55.5.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        54.1158,
+        412.1,
+        231.956,
+        427.22
+      ],
+      "semantic": "rrsp_row2_description",
+      "label": "RRSP/RRIF row 2: Description",
+      "section": "Assets - RRSP/RRIF"
+    },
+    "Text56.7.0.0": {
+      "field_id": "Text56.7.0.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        233.151,
+        412.1,
+        312.281,
+        427.22
+      ],
+      "semantic": "rrsp_row2_self",
+      "label": "RRSP/RRIF row 2: Self FMV",
+      "section": "Assets - RRSP/RRIF"
+    },
+    "Text56.7.1.0": {
+      "field_id": "Text56.7.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        315.814,
+        412.1,
+        394.238,
+        427.22
+      ],
+      "semantic": "rrsp_row2_spouse",
+      "label": "RRSP/RRIF row 2: Spouse FMV",
+      "section": "Assets - RRSP/RRIF"
+    },
+    "Text56.7.2.0": {
+      "field_id": "Text56.7.2.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        395.651,
+        412.1,
+        474.781,
+        427.22
+      ],
+      "semantic": "rrsp_row2_joint_spouse",
+      "label": "RRSP/RRIF row 2: Joint with Spouse FMV",
+      "section": "Assets - RRSP/RRIF"
+    },
+    "Text56.7.3.0": {
+      "field_id": "Text56.7.3.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        477.607,
+        412.1,
+        558.15,
+        427.22
+      ],
+      "semantic": "rrsp_row2_joint_other",
+      "label": "RRSP/RRIF row 2: Joint with Other FMV",
+      "section": "Assets - RRSP/RRIF"
+    },
+    "Text55.5.1.0": {
+      "field_id": "Text55.5.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        54.2151,
+        396.508,
+        231.804,
+        411.452
+      ],
+      "semantic": "rrsp_row3_description",
+      "label": "RRSP/RRIF row 3: Description",
+      "section": "Assets - RRSP/RRIF"
+    },
+    "Text56.7.0.1.0": {
+      "field_id": "Text56.7.0.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        233.195,
+        396.508,
+        312.432,
+        411.452
+      ],
+      "semantic": "rrsp_row3_self",
+      "label": "RRSP/RRIF row 3: Self FMV",
+      "section": "Assets - RRSP/RRIF"
+    },
+    "Text56.7.1.1.0": {
+      "field_id": "Text56.7.1.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        315.907,
+        396.508,
+        394.102,
+        411.452
+      ],
+      "semantic": "rrsp_row3_spouse",
+      "label": "RRSP/RRIF row 3: Spouse FMV",
+      "section": "Assets - RRSP/RRIF"
+    },
+    "Text56.7.2.1.0": {
+      "field_id": "Text56.7.2.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        395.492,
+        396.508,
+        474.73,
+        411.452
+      ],
+      "semantic": "rrsp_row3_joint_spouse",
+      "label": "RRSP/RRIF row 3: Joint with Spouse FMV",
+      "section": "Assets - RRSP/RRIF"
+    },
+    "Text56.7.3.1.0": {
+      "field_id": "Text56.7.3.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        477.51,
+        396.508,
+        558.138,
+        411.452
+      ],
+      "semantic": "rrsp_row3_joint_other",
+      "label": "RRSP/RRIF row 3: Joint with Other FMV",
+      "section": "Assets - RRSP/RRIF"
+    },
+    "Text55.5.1.1": {
+      "field_id": "Text55.5.1.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        54.2151,
+        380.869,
+        231.804,
+        395.813
+      ],
+      "semantic": "rrsp_row4_description",
+      "label": "RRSP/RRIF row 4: Description (extra row)",
+      "section": "Assets - RRSP/RRIF"
+    },
+    "Text56.7.0.1.1": {
+      "field_id": "Text56.7.0.1.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        233.195,
+        380.869,
+        312.432,
+        395.813
+      ],
+      "semantic": "rrsp_row4_self",
+      "label": "RRSP/RRIF row 4: Self FMV",
+      "section": "Assets - RRSP/RRIF"
+    },
+    "Text56.7.1.1.1": {
+      "field_id": "Text56.7.1.1.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        315.907,
+        380.869,
+        394.102,
+        395.813
+      ],
+      "semantic": "rrsp_row4_spouse",
+      "label": "RRSP/RRIF row 4: Spouse FMV",
+      "section": "Assets - RRSP/RRIF"
+    },
+    "Text56.7.2.1.1": {
+      "field_id": "Text56.7.2.1.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        395.492,
+        380.869,
+        474.73,
+        395.813
+      ],
+      "semantic": "rrsp_row4_joint_spouse",
+      "label": "RRSP/RRIF row 4: Joint with Spouse FMV",
+      "section": "Assets - RRSP/RRIF"
+    },
+    "Text56.7.3.1.1": {
+      "field_id": "Text56.7.3.1.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        477.51,
+        380.869,
+        558.138,
+        395.813
+      ],
+      "semantic": "rrsp_row4_joint_other",
+      "label": "RRSP/RRIF row 4: Joint with Other FMV",
+      "section": "Assets - RRSP/RRIF"
+    },
+    "Text56.8.0": {
+      "field_id": "Text56.8.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        233.505,
+        364.628,
+        312.017,
+        379.748
+      ],
+      "semantic": "rrsp_total_self",
+      "label": "RRSP/RRIF Total: Self",
+      "section": "Assets - RRSP/RRIF"
+    },
+    "Text56.8.1": {
+      "field_id": "Text56.8.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        315.472,
+        364.628,
+        394.401,
+        379.748
+      ],
+      "semantic": "rrsp_total_spouse",
+      "label": "RRSP/RRIF Total: Spouse",
+      "section": "Assets - RRSP/RRIF"
+    },
+    "Text56.8.2": {
+      "field_id": "Text56.8.2",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        396.184,
+        364.628,
+        474.696,
+        379.748
+      ],
+      "semantic": "rrsp_total_joint_spouse",
+      "label": "RRSP/RRIF Total: Joint with Spouse",
+      "section": "Assets - RRSP/RRIF"
+    },
+    "Text56.8.3": {
+      "field_id": "Text56.8.3",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        477.54,
+        364.628,
+        558.142,
+        379.748
+      ],
+      "semantic": "rrsp_total_joint_other",
+      "label": "RRSP/RRIF Total: Joint with Other",
+      "section": "Assets - RRSP/RRIF"
+    },
+    "Text55.6": {
+      "field_id": "Text55.6",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        53.9996,
+        332.773,
+        231.84,
+        347.893
+      ],
+      "semantic": "pension_row1_description",
+      "label": "Pension/Annuity row 1: Description",
+      "section": "Assets - Pension/Annuity"
+    },
+    "Text56.9.0": {
+      "field_id": "Text56.9.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        233.923,
+        332.773,
+        312.435,
+        347.893
+      ],
+      "semantic": "pension_row1_self",
+      "label": "Pension/Annuity row 1: Self value",
+      "section": "Assets - Pension/Annuity"
+    },
+    "Text56.9.1": {
+      "field_id": "Text56.9.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        315.472,
+        332.773,
+        394.819,
+        347.893
+      ],
+      "semantic": "pension_row1_spouse",
+      "label": "Pension/Annuity row 1: Spouse value",
+      "section": "Assets - Pension/Annuity"
+    },
+    "Text56.9.2": {
+      "field_id": "Text56.9.2",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        396.602,
+        332.773,
+        475.532,
+        347.893
+      ],
+      "semantic": "pension_row1_joint_spouse",
+      "label": "Pension/Annuity row 1: Joint with Spouse",
+      "section": "Assets - Pension/Annuity"
+    },
+    "Text56.9.3": {
+      "field_id": "Text56.9.3",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        477.54,
+        332.773,
+        557.306,
+        347.893
+      ],
+      "semantic": "pension_row1_joint_other",
+      "label": "Pension/Annuity row 1: Joint with Other",
+      "section": "Assets - Pension/Annuity"
+    },
+    "Text55.7.0": {
+      "field_id": "Text55.7.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        54.1158,
+        317.079,
+        231.956,
+        332.199
+      ],
+      "semantic": "pension_row2_description",
+      "label": "Pension/Annuity row 2: Description",
+      "section": "Assets - Pension/Annuity"
+    },
+    "Text56.10.0.0": {
+      "field_id": "Text56.10.0.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        234.564,
+        317.079,
+        312.281,
+        332.199
+      ],
+      "semantic": "pension_row2_self",
+      "label": "Pension/Annuity row 2: Self value",
+      "section": "Assets - Pension/Annuity"
+    },
+    "Text56.10.1.0": {
+      "field_id": "Text56.10.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        315.107,
+        317.079,
+        394.944,
+        332.199
+      ],
+      "semantic": "pension_row2_spouse",
+      "label": "Pension/Annuity row 2: Spouse value",
+      "section": "Assets - Pension/Annuity"
+    },
+    "Text56.10.2.0": {
+      "field_id": "Text56.10.2.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        396.357,
+        317.079,
+        475.487,
+        332.199
+      ],
+      "semantic": "pension_row2_joint_spouse",
+      "label": "Pension/Annuity row 2: Joint with Spouse",
+      "section": "Assets - Pension/Annuity"
+    },
+    "Text56.10.3.0": {
+      "field_id": "Text56.10.3.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        477.607,
+        317.079,
+        557.444,
+        332.199
+      ],
+      "semantic": "pension_row2_joint_other",
+      "label": "Pension/Annuity row 2: Joint with Other",
+      "section": "Assets - Pension/Annuity"
+    },
+    "Text55.7.1.0": {
+      "field_id": "Text55.7.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        54.2151,
+        300.936,
+        231.804,
+        316.228
+      ],
+      "semantic": "pension_row3_description",
+      "label": "Pension/Annuity row 3: Description",
+      "section": "Assets - Pension/Annuity"
+    },
+    "Text56.10.0.1.0": {
+      "field_id": "Text56.10.0.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        234.585,
+        300.936,
+        312.432,
+        316.228
+      ],
+      "semantic": "pension_row3_self",
+      "label": "Pension/Annuity row 3: Self value",
+      "section": "Assets - Pension/Annuity"
+    },
+    "Text56.10.1.1.0": {
+      "field_id": "Text56.10.1.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        315.212,
+        300.936,
+        394.797,
+        316.228
+      ],
+      "semantic": "pension_row3_spouse",
+      "label": "Pension/Annuity row 3: Spouse value",
+      "section": "Assets - Pension/Annuity"
+    },
+    "Text56.10.2.1.0": {
+      "field_id": "Text56.10.2.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        396.187,
+        300.936,
+        475.425,
+        316.228
+      ],
+      "semantic": "pension_row3_joint_spouse",
+      "label": "Pension/Annuity row 3: Joint with Spouse",
+      "section": "Assets - Pension/Annuity"
+    },
+    "Text56.10.3.1.0": {
+      "field_id": "Text56.10.3.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        477.51,
+        300.936,
+        557.443,
+        316.228
+      ],
+      "semantic": "pension_row3_joint_other",
+      "label": "Pension/Annuity row 3: Joint with Other",
+      "section": "Assets - Pension/Annuity"
+    },
+    "Text55.7.1.1": {
+      "field_id": "Text55.7.1.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        54.2151,
+        284.95,
+        231.804,
+        300.241
+      ],
+      "semantic": "pension_row4_description",
+      "label": "Pension/Annuity row 4: Description (extra)",
+      "section": "Assets - Pension/Annuity"
+    },
+    "Text56.10.0.1.1": {
+      "field_id": "Text56.10.0.1.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        234.585,
+        284.95,
+        312.432,
+        300.241
+      ],
+      "semantic": "pension_row4_self",
+      "label": "Pension/Annuity row 4: Self value",
+      "section": "Assets - Pension/Annuity"
+    },
+    "Text56.10.1.1.1": {
+      "field_id": "Text56.10.1.1.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        315.212,
+        284.95,
+        394.797,
+        300.241
+      ],
+      "semantic": "pension_row4_spouse",
+      "label": "Pension/Annuity row 4: Spouse value",
+      "section": "Assets - Pension/Annuity"
+    },
+    "Text56.10.2.1.1": {
+      "field_id": "Text56.10.2.1.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        396.187,
+        284.95,
+        475.425,
+        300.241
+      ],
+      "semantic": "pension_row4_joint_spouse",
+      "label": "Pension/Annuity row 4: Joint with Spouse",
+      "section": "Assets - Pension/Annuity"
+    },
+    "Text56.10.3.1.1": {
+      "field_id": "Text56.10.3.1.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        477.51,
+        284.95,
+        557.443,
+        300.241
+      ],
+      "semantic": "pension_row4_joint_other",
+      "label": "Pension/Annuity row 4: Joint with Other",
+      "section": "Assets - Pension/Annuity"
+    },
+    "Text56.11.0": {
+      "field_id": "Text56.11.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        233.923,
+        269.381,
+        312.435,
+        284.501
+      ],
+      "semantic": "pension_total_self",
+      "label": "Pension/Annuity Total: Self",
+      "section": "Assets - Pension/Annuity"
+    },
+    "Text56.11.1": {
+      "field_id": "Text56.11.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        314.636,
+        269.381,
+        394.819,
+        284.501
+      ],
+      "semantic": "pension_total_spouse",
+      "label": "Pension/Annuity Total: Spouse",
+      "section": "Assets - Pension/Annuity"
+    },
+    "Text56.11.2": {
+      "field_id": "Text56.11.2",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        396.602,
+        269.381,
+        475.532,
+        284.501
+      ],
+      "semantic": "pension_total_joint_spouse",
+      "label": "Pension/Annuity Total: Joint with Spouse",
+      "section": "Assets - Pension/Annuity"
+    },
+    "Text56.11.3": {
+      "field_id": "Text56.11.3",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        477.54,
+        269.381,
+        557.306,
+        284.501
+      ],
+      "semantic": "pension_total_joint_other",
+      "label": "Pension/Annuity Total: Joint with Other",
+      "section": "Assets - Pension/Annuity"
+    },
+    "Text55.8": {
+      "field_id": "Text55.8",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        53.4454,
+        237.716,
+        231.285,
+        252.836
+      ],
+      "semantic": "realestate_row1_description",
+      "label": "Real Estate row 1: Description",
+      "section": "Assets - Real Estate"
+    },
+    "Text56.12.0": {
+      "field_id": "Text56.12.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        232.669,
+        237.716,
+        312.017,
+        252.836
+      ],
+      "semantic": "realestate_row1_self",
+      "label": "Real Estate row 1: Self FMV",
+      "section": "Assets - Real Estate"
+    },
+    "Text56.12.1": {
+      "field_id": "Text56.12.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        314.636,
+        237.716,
+        394.401,
+        252.836
+      ],
+      "semantic": "realestate_row1_spouse",
+      "label": "Real Estate row 1: Spouse FMV",
+      "section": "Assets - Real Estate"
+    },
+    "Text56.12.2": {
+      "field_id": "Text56.12.2",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        395.766,
+        237.716,
+        474.696,
+        252.836
+      ],
+      "semantic": "realestate_row1_joint_spouse",
+      "label": "Real Estate row 1: Joint with Spouse FMV",
+      "section": "Assets - Real Estate"
+    },
+    "Text56.12.3": {
+      "field_id": "Text56.12.3",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        477.958,
+        237.716,
+        557.724,
+        252.836
+      ],
+      "semantic": "realestate_row1_joint_other",
+      "label": "Real Estate row 1: Joint with Other FMV",
+      "section": "Assets - Real Estate"
+    },
+    "Text55.9.0": {
+      "field_id": "Text55.9.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        53.4321,
+        221.711,
+        231.272,
+        236.831
+      ],
+      "semantic": "realestate_row2_description",
+      "label": "Real Estate row 2: Description",
+      "section": "Assets - Real Estate"
+    },
+    "Text56.13.0.0": {
+      "field_id": "Text56.13.0.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        232.445,
+        221.711,
+        312.281,
+        236.831
+      ],
+      "semantic": "realestate_row2_self",
+      "label": "Real Estate row 2: Self FMV",
+      "section": "Assets - Real Estate"
+    },
+    "Text56.13.1.0": {
+      "field_id": "Text56.13.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        314.401,
+        221.711,
+        394.238,
+        236.831
+      ],
+      "semantic": "realestate_row2_spouse",
+      "label": "Real Estate row 2: Spouse FMV",
+      "section": "Assets - Real Estate"
+    },
+    "Text56.13.2.0": {
+      "field_id": "Text56.13.2.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        396.357,
+        221.711,
+        474.781,
+        236.831
+      ],
+      "semantic": "realestate_row2_joint_spouse",
+      "label": "Real Estate row 2: Joint with Spouse FMV",
+      "section": "Assets - Real Estate"
+    },
+    "Text56.13.3.0": {
+      "field_id": "Text56.13.3.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        477.607,
+        221.711,
+        557.444,
+        236.831
+      ],
+      "semantic": "realestate_row2_joint_other",
+      "label": "Real Estate row 2: Joint with Other FMV",
+      "section": "Assets - Real Estate"
+    },
+    "Text55.9.1.0": {
+      "field_id": "Text55.9.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        53.5201,
+        205.712,
+        231.109,
+        220.656
+      ],
+      "semantic": "realestate_row3_description",
+      "label": "Real Estate row 3: Description",
+      "section": "Assets - Real Estate"
+    },
+    "Text56.13.0.1.0": {
+      "field_id": "Text56.13.0.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        232.499,
+        205.712,
+        312.432,
+        220.656
+      ],
+      "semantic": "realestate_row3_self",
+      "label": "Real Estate row 3: Self FMV",
+      "section": "Assets - Real Estate"
+    },
+    "Text56.13.1.1.0": {
+      "field_id": "Text56.13.1.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        314.517,
+        205.712,
+        394.102,
+        220.656
+      ],
+      "semantic": "realestate_row3_spouse",
+      "label": "Real Estate row 3: Spouse FMV",
+      "section": "Assets - Real Estate"
+    },
+    "Text56.13.2.1.0": {
+      "field_id": "Text56.13.2.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        396.187,
+        205.712,
+        474.73,
+        220.656
+      ],
+      "semantic": "realestate_row3_joint_spouse",
+      "label": "Real Estate row 3: Joint with Spouse FMV",
+      "section": "Assets - Real Estate"
+    },
+    "Text56.13.3.1.0": {
+      "field_id": "Text56.13.3.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        477.51,
+        205.712,
+        557.443,
+        220.656
+      ],
+      "semantic": "realestate_row3_joint_other",
+      "label": "Real Estate row 3: Joint with Other FMV",
+      "section": "Assets - Real Estate"
+    },
+    "Text55.9.1.1": {
+      "field_id": "Text55.9.1.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        53.5201,
+        190.073,
+        231.109,
+        205.017
+      ],
+      "semantic": "realestate_row4_description",
+      "label": "Real Estate row 4: Description (extra)",
+      "section": "Assets - Real Estate"
+    },
+    "Text56.13.0.1.1": {
+      "field_id": "Text56.13.0.1.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        232.499,
+        190.073,
+        312.432,
+        205.017
+      ],
+      "semantic": "realestate_row4_self",
+      "label": "Real Estate row 4: Self FMV",
+      "section": "Assets - Real Estate"
+    },
+    "Text56.13.1.1.1": {
+      "field_id": "Text56.13.1.1.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        314.517,
+        190.073,
+        394.102,
+        205.017
+      ],
+      "semantic": "realestate_row4_spouse",
+      "label": "Real Estate row 4: Spouse FMV",
+      "section": "Assets - Real Estate"
+    },
+    "Text56.13.2.1.1": {
+      "field_id": "Text56.13.2.1.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        396.187,
+        190.073,
+        474.73,
+        205.017
+      ],
+      "semantic": "realestate_row4_joint_spouse",
+      "label": "Real Estate row 4: Joint with Spouse FMV",
+      "section": "Assets - Real Estate"
+    },
+    "Text56.13.3.1.1": {
+      "field_id": "Text56.13.3.1.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        477.51,
+        190.073,
+        557.443,
+        205.017
+      ],
+      "semantic": "realestate_row4_joint_other",
+      "label": "Real Estate row 4: Joint with Other FMV",
+      "section": "Assets - Real Estate"
+    },
+    "Text56.14.0": {
+      "field_id": "Text56.14.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        233.087,
+        174.566,
+        312.017,
+        189.686
+      ],
+      "semantic": "realestate_total_self",
+      "label": "Real Estate Total: Self",
+      "section": "Assets - Real Estate"
+    },
+    "Text56.14.1": {
+      "field_id": "Text56.14.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        314.636,
+        174.566,
+        394.401,
+        189.686
+      ],
+      "semantic": "realestate_total_spouse",
+      "label": "Real Estate Total: Spouse",
+      "section": "Assets - Real Estate"
+    },
+    "Text56.14.2": {
+      "field_id": "Text56.14.2",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        396.602,
+        174.566,
+        474.696,
+        189.686
+      ],
+      "semantic": "realestate_total_joint_spouse",
+      "label": "Real Estate Total: Joint with Spouse",
+      "section": "Assets - Real Estate"
+    },
+    "Text56.14.3": {
+      "field_id": "Text56.14.3",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        477.958,
+        174.566,
+        557.724,
+        189.686
+      ],
+      "semantic": "realestate_total_joint_other",
+      "label": "Real Estate Total: Joint with Other",
+      "section": "Assets - Real Estate"
+    },
+    "Text55.10": {
+      "field_id": "Text55.10",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        52.6094,
+        142.545,
+        230.449,
+        157.665
+      ],
+      "semantic": "personalprop_row1_description",
+      "label": "Personal Property row 1: Description",
+      "section": "Assets - Personal Property"
+    },
+    "Text56.15.0": {
+      "field_id": "Text56.15.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        232.669,
+        142.545,
+        312.017,
+        157.665
+      ],
+      "semantic": "personalprop_row1_self",
+      "label": "Personal Property row 1: Self value",
+      "section": "Assets - Personal Property"
+    },
+    "Text56.15.1": {
+      "field_id": "Text56.15.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        315.054,
+        142.545,
+        394.401,
+        157.665
+      ],
+      "semantic": "personalprop_row1_spouse",
+      "label": "Personal Property row 1: Spouse value",
+      "section": "Assets - Personal Property"
+    },
+    "Text56.15.2": {
+      "field_id": "Text56.15.2",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        395.766,
+        142.545,
+        475.114,
+        157.665
+      ],
+      "semantic": "personalprop_row1_joint_spouse",
+      "label": "Personal Property row 1: Joint with Spouse",
+      "section": "Assets - Personal Property"
+    },
+    "Text56.15.3": {
+      "field_id": "Text56.15.3",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        477.54,
+        142.545,
+        557.306,
+        157.665
+      ],
+      "semantic": "personalprop_row1_joint_other",
+      "label": "Personal Property row 1: Joint with Other",
+      "section": "Assets - Personal Property"
+    },
+    "Text55.11.0": {
+      "field_id": "Text55.11.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        52.7256,
+        126.701,
+        230.566,
+        141.821
+      ],
+      "semantic": "personalprop_row2_description",
+      "label": "Personal Property row 2: Description",
+      "section": "Assets - Personal Property"
+    },
+    "Text56.16.0.0": {
+      "field_id": "Text56.16.0.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        232.445,
+        126.701,
+        312.281,
+        141.821
+      ],
+      "semantic": "personalprop_row2_self",
+      "label": "Personal Property row 2: Self value",
+      "section": "Assets - Personal Property"
+    },
+    "Text56.16.1.0": {
+      "field_id": "Text56.16.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        315.814,
+        126.701,
+        394.238,
+        141.821
+      ],
+      "semantic": "personalprop_row2_spouse",
+      "label": "Personal Property row 2: Spouse value",
+      "section": "Assets - Personal Property"
+    },
+    "Text56.16.2.0": {
+      "field_id": "Text56.16.2.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        396.357,
+        126.701,
+        474.781,
+        141.821
+      ],
+      "semantic": "personalprop_row2_joint_spouse",
+      "label": "Personal Property row 2: Joint with Spouse",
+      "section": "Assets - Personal Property"
+    },
+    "Text56.16.3.0": {
+      "field_id": "Text56.16.3.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        477.607,
+        126.701,
+        557.444,
+        141.821
+      ],
+      "semantic": "personalprop_row2_joint_other",
+      "label": "Personal Property row 2: Joint with Other",
+      "section": "Assets - Personal Property"
+    },
+    "Text55.11.1.0": {
+      "field_id": "Text55.11.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        52.825,
+        110.836,
+        230.414,
+        126.127
+      ],
+      "semantic": "personalprop_row3_description",
+      "label": "Personal Property row 3: Description",
+      "section": "Assets - Personal Property"
+    },
+    "Text56.16.0.1.0": {
+      "field_id": "Text56.16.0.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        232.499,
+        110.836,
+        312.432,
+        126.127
+      ],
+      "semantic": "personalprop_row3_self",
+      "label": "Personal Property row 3: Self value",
+      "section": "Assets - Personal Property"
+    },
+    "Text56.16.1.1.0": {
+      "field_id": "Text56.16.1.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        315.907,
+        110.836,
+        394.102,
+        126.127
+      ],
+      "semantic": "personalprop_row3_spouse",
+      "label": "Personal Property row 3: Spouse value",
+      "section": "Assets - Personal Property"
+    },
+    "Text56.16.2.1.0": {
+      "field_id": "Text56.16.2.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        396.187,
+        110.836,
+        474.73,
+        126.127
+      ],
+      "semantic": "personalprop_row3_joint_spouse",
+      "label": "Personal Property row 3: Joint with Spouse",
+      "section": "Assets - Personal Property"
+    },
+    "Text56.16.3.1.0": {
+      "field_id": "Text56.16.3.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        477.51,
+        110.836,
+        557.443,
+        126.127
+      ],
+      "semantic": "personalprop_row3_joint_other",
+      "label": "Personal Property row 3: Joint with Other",
+      "section": "Assets - Personal Property"
+    },
+    "Text55.11.1.1": {
+      "field_id": "Text55.11.1.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        52.825,
+        94.8491,
+        230.414,
+        110.141
+      ],
+      "semantic": "personalprop_row4_description",
+      "label": "Personal Property row 4: Description (extra)",
+      "section": "Assets - Personal Property"
+    },
+    "Text56.16.0.1.1": {
+      "field_id": "Text56.16.0.1.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        232.499,
+        94.8491,
+        312.432,
+        110.141
+      ],
+      "semantic": "personalprop_row4_self",
+      "label": "Personal Property row 4: Self value",
+      "section": "Assets - Personal Property"
+    },
+    "Text56.16.1.1.1": {
+      "field_id": "Text56.16.1.1.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        315.907,
+        94.8491,
+        394.102,
+        110.141
+      ],
+      "semantic": "personalprop_row4_spouse",
+      "label": "Personal Property row 4: Spouse value",
+      "section": "Assets - Personal Property"
+    },
+    "Text56.16.2.1.1": {
+      "field_id": "Text56.16.2.1.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        396.187,
+        94.8491,
+        474.73,
+        110.141
+      ],
+      "semantic": "personalprop_row4_joint_spouse",
+      "label": "Personal Property row 4: Joint with Spouse",
+      "section": "Assets - Personal Property"
+    },
+    "Text56.16.3.1.1": {
+      "field_id": "Text56.16.3.1.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        477.51,
+        94.8491,
+        557.443,
+        110.141
+      ],
+      "semantic": "personalprop_row4_joint_other",
+      "label": "Personal Property row 4: Joint with Other",
+      "section": "Assets - Personal Property"
+    },
+    "Text56.17.1": {
+      "field_id": "Text56.17.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        314.472,
+        79.8204,
+        394.392,
+        94.9404
+      ],
+      "semantic": "total_assets_by_ownership_spouse",
+      "label": "Total Assets by Ownership: Spouse (dark row)",
+      "section": "Assets - Totals"
+    },
+    "Text56.17.0": {
+      "field_id": "Text56.17.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        232.087,
+        79.4023,
+        312.007,
+        94.5222
+      ],
+      "semantic": "total_assets_by_ownership_self",
+      "label": "Total Assets by Ownership: Self (dark row)",
+      "section": "Assets - Totals"
+    },
+    "Text56.17.3": {
+      "field_id": "Text56.17.3",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        477.263,
+        79.0236,
+        557.183,
+        94.1436
+      ],
+      "semantic": "total_assets_by_ownership_joint_other",
+      "label": "Total Assets by Ownership: Joint Other (dark row)",
+      "section": "Assets - Totals"
+    },
+    "Text56.17.2": {
+      "field_id": "Text56.17.2",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        395.766,
+        78.9843,
+        475.686,
+        94.1042
+      ],
+      "semantic": "total_assets_by_ownership_joint_spouse",
+      "label": "Total Assets by Ownership: Joint Spouse (dark row)",
+      "section": "Assets - Totals"
+    },
+    "Text56.18.0.0": {
+      "field_id": "Text56.18.0.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        232.33,
+        63.4915,
+        312.25,
+        78.6115
+      ],
+      "semantic": "total_assets_amount",
+      "label": "Total Assets: Grand total (single value)",
+      "section": "Assets - Totals"
+    },
+    "Text56.18.1": {
+      "field_id": "Text56.18.1",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        314.472,
+        63.3708,
+        394.392,
+        78.4908
+      ],
+      "semantic": "UNMAPPED",
+      "label": "Unmapped field on page 4",
+      "section": "Unknown"
+    },
+    "Text56.18.3": {
+      "field_id": "Text56.18.3",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        477.681,
+        63.3708,
+        557.601,
+        78.4908
+      ],
+      "semantic": "UNMAPPED",
+      "label": "Unmapped field on page 4",
+      "section": "Unknown"
+    },
+    "Text56.18.2": {
+      "field_id": "Text56.18.2",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        396.118,
+        63.0233,
+        476.038,
+        78.1433
+      ],
+      "semantic": "UNMAPPED",
+      "label": "Unmapped field on page 4",
+      "section": "Unknown"
+    },
+    "Text56.18.0.1.0": {
+      "field_id": "Text56.18.0.1.0",
+      "page": 4,
+      "type": "text",
+      "rect": [
+        232.957,
+        46.7504,
+        558.266,
+        61.8704
+      ],
+      "semantic": "total_assets_grand_total",
+      "label": "Total Assets: Grand total (second field)",
+      "section": "Assets - Totals"
+    },
+    "Text57.0": {
+      "field_id": "Text57.0",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        53.4884,
+        698.836,
+        248.588,
+        717.936
+      ],
+      "semantic": "liability_row1_description",
+      "label": "Liabilities row 1: Description",
+      "section": "Liabilities"
+    },
+    "Text58.0.0": {
+      "field_id": "Text58.0.0",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        248.123,
+        698.836,
+        325.209,
+        717.254
+      ],
+      "semantic": "liability_row1_self",
+      "label": "Liabilities row 1: Self balance",
+      "section": "Liabilities"
+    },
+    "Text58.0.1": {
+      "field_id": "Text58.0.1",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        326.572,
+        698.836,
+        403.658,
+        717.254
+      ],
+      "semantic": "liability_row1_spouse",
+      "label": "Liabilities row 1: Spouse balance",
+      "section": "Liabilities"
+    },
+    "Text58.0.2": {
+      "field_id": "Text58.0.2",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        405.022,
+        698.836,
+        482.107,
+        717.254
+      ],
+      "semantic": "liability_row1_joint_spouse",
+      "label": "Liabilities row 1: Joint with Spouse",
+      "section": "Liabilities"
+    },
+    "Text58.0.3": {
+      "field_id": "Text58.0.3",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        483.936,
+        698.836,
+        558.294,
+        717.254
+      ],
+      "semantic": "liability_row1_joint_other",
+      "label": "Liabilities row 1: Joint with Other",
+      "section": "Liabilities"
+    },
+    "Text57.1": {
+      "field_id": "Text57.1",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        53.4884,
+        680.053,
+        248.588,
+        699.154
+      ],
+      "semantic": "liability_row2_description",
+      "label": "Liabilities row 2: Description",
+      "section": "Liabilities"
+    },
+    "Text58.1.0": {
+      "field_id": "Text58.1.0",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        248.123,
+        679.053,
+        325.209,
+        697.47
+      ],
+      "semantic": "liability_row2_self",
+      "label": "Liabilities row 2: Self balance",
+      "section": "Liabilities"
+    },
+    "Text58.1.1": {
+      "field_id": "Text58.1.1",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        326.572,
+        679.053,
+        403.658,
+        697.47
+      ],
+      "semantic": "liability_row2_spouse",
+      "label": "Liabilities row 2: Spouse balance",
+      "section": "Liabilities"
+    },
+    "Text58.1.2": {
+      "field_id": "Text58.1.2",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        405.022,
+        679.053,
+        482.107,
+        697.47
+      ],
+      "semantic": "liability_row2_joint_spouse",
+      "label": "Liabilities row 2: Joint with Spouse",
+      "section": "Liabilities"
+    },
+    "Text58.1.3": {
+      "field_id": "Text58.1.3",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        483.936,
+        679.053,
+        558.294,
+        697.47
+      ],
+      "semantic": "liability_row2_joint_other",
+      "label": "Liabilities row 2: Joint with Other",
+      "section": "Liabilities"
+    },
+    "Text57.2": {
+      "field_id": "Text57.2",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        53.4884,
+        659.906,
+        248.588,
+        679.006
+      ],
+      "semantic": "liability_row3_description",
+      "label": "Liabilities row 3: Description",
+      "section": "Liabilities"
+    },
+    "Text58.2.0": {
+      "field_id": "Text58.2.0",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        248.123,
+        659.27,
+        325.209,
+        677.688
+      ],
+      "semantic": "liability_row3_self",
+      "label": "Liabilities row 3: Self balance",
+      "section": "Liabilities"
+    },
+    "Text58.2.1": {
+      "field_id": "Text58.2.1",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        326.572,
+        659.27,
+        403.658,
+        677.688
+      ],
+      "semantic": "liability_row3_spouse",
+      "label": "Liabilities row 3: Spouse balance",
+      "section": "Liabilities"
+    },
+    "Text58.2.2": {
+      "field_id": "Text58.2.2",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        405.022,
+        659.27,
+        482.107,
+        677.688
+      ],
+      "semantic": "liability_row3_joint_spouse",
+      "label": "Liabilities row 3: Joint with Spouse",
+      "section": "Liabilities"
+    },
+    "Text58.2.3": {
+      "field_id": "Text58.2.3",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        483.936,
+        659.27,
+        558.294,
+        677.688
+      ],
+      "semantic": "liability_row3_joint_other",
+      "label": "Liabilities row 3: Joint with Other",
+      "section": "Liabilities"
+    },
+    "Text58.3.1": {
+      "field_id": "Text58.3.1",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        326.572,
+        641.174,
+        403.658,
+        659.592
+      ],
+      "semantic": "liabilities_total_spouse",
+      "label": "Liabilities Total: Spouse",
+      "section": "Liabilities"
+    },
+    "Text58.3.2": {
+      "field_id": "Text58.3.2",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        405.022,
+        641.174,
+        482.107,
+        659.592
+      ],
+      "semantic": "liabilities_total_joint_spouse",
+      "label": "Liabilities Total: Joint with Spouse",
+      "section": "Liabilities"
+    },
+    "Text58.3.3": {
+      "field_id": "Text58.3.3",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        483.936,
+        641.174,
+        558.294,
+        659.592
+      ],
+      "semantic": "liabilities_total_joint_other",
+      "label": "Liabilities Total: Joint with Other",
+      "section": "Liabilities"
+    },
+    "Text58.3.0.0": {
+      "field_id": "Text58.3.0.0",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        248.259,
+        640.999,
+        325.125,
+        659.529
+      ],
+      "semantic": "liabilities_total_self",
+      "label": "Liabilities Total: Self",
+      "section": "Liabilities"
+    },
+    "Text56.18.0.1.1": {
+      "field_id": "Text56.18.0.1.1",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        249.975,
+        621.33,
+        556.988,
+        640.312
+      ],
+      "semantic": "total_liabilities_grand",
+      "label": "Total Liabilities: Grand total",
+      "section": "Liabilities"
+    },
+    "Text58.5.3.1": {
+      "field_id": "Text58.5.3.1",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        481.979,
+        550.765,
+        556.139,
+        568.294
+      ],
+      "semantic": "business_row1_pct_spouse",
+      "label": "Business Interest row 1: Spouse % ownership",
+      "section": "Business Interests"
+    },
+    "Text58.5.0": {
+      "field_id": "Text58.5.0",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        250.067,
+        550.672,
+        306.227,
+        568.294
+      ],
+      "semantic": "business_row1_name",
+      "label": "Business Interest row 1: Name of business",
+      "section": "Business Interests"
+    },
+    "Text58.5.3.0": {
+      "field_id": "Text58.5.3.0",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        424.611,
+        549.968,
+        480.385,
+        568.294
+      ],
+      "semantic": "business_row1_pct_self",
+      "label": "Business Interest row 1: Self % ownership",
+      "section": "Business Interests"
+    },
+    "Text58.5.1": {
+      "field_id": "Text58.5.1",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        308.598,
+        549.875,
+        364.757,
+        568.294
+      ],
+      "semantic": "business_row1_fmv",
+      "label": "Business Interest row 1: Fair Market Value",
+      "section": "Business Interests"
+    },
+    "Text58.5.2": {
+      "field_id": "Text58.5.2",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        366.33,
+        549.875,
+        422.49,
+        568.294
+      ],
+      "semantic": "business_row1_acb",
+      "label": "Business Interest row 1: Adjusted Cost Base",
+      "section": "Business Interests"
+    },
+    "Text57.4": {
+      "field_id": "Text57.4",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        53.3119,
+        549.193,
+        248.412,
+        568.294
+      ],
+      "semantic": "business_total_fmv",
+      "label": "Total Fair Market Value of all Businesses",
+      "section": "Business Interests"
+    },
+    "Text57.5.0": {
+      "field_id": "Text57.5.0",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        53.3119,
+        532.642,
+        248.522,
+        551.765
+      ],
+      "semantic": "total_family_net_worth",
+      "label": "Total Family Net Worth (total assets minus liabilities)",
+      "section": "Business Interests"
+    },
+    "Text58.6.0": {
+      "field_id": "Text58.6.0",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        250.067,
+        532.642,
+        306.227,
+        551.061
+      ],
+      "semantic": "business_row2_fmv",
+      "label": "Business Interest row 2: Fair Market Value",
+      "section": "Business Interests"
+    },
+    "Text58.6.1": {
+      "field_id": "Text58.6.1",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        308.598,
+        532.642,
+        364.757,
+        551.061
+      ],
+      "semantic": "business_row2_acb",
+      "label": "Business Interest row 2: Adjusted Cost Base",
+      "section": "Business Interests"
+    },
+    "Text58.6.2": {
+      "field_id": "Text58.6.2",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        366.33,
+        532.642,
+        422.49,
+        551.061
+      ],
+      "semantic": "business_row2_pct_self",
+      "label": "Business Interest row 2: Self % ownership",
+      "section": "Business Interests"
+    },
+    "Text58.6.3.0": {
+      "field_id": "Text58.6.3.0",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        424.611,
+        532.642,
+        480.385,
+        550.968
+      ],
+      "semantic": "business_row2_pct_spouse",
+      "label": "Business Interest row 2: Spouse % ownership",
+      "section": "Business Interests"
+    },
+    "Text58.6.3.1": {
+      "field_id": "Text58.6.3.1",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        481.979,
+        532.642,
+        556.139,
+        550.968
+      ],
+      "semantic": "business_row2_pct_other",
+      "label": "Business Interest row 2: Other % ownership",
+      "section": "Business Interests"
+    },
+    "Text57.5.1": {
+      "field_id": "Text57.5.1",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        53.3119,
+        512.926,
+        248.522,
+        532.048
+      ],
+      "semantic": "business_row2_name",
+      "label": "Business Interest row 2: Name of business",
+      "section": "Business Interests"
+    },
+    "Text58.7.0": {
+      "field_id": "Text58.7.0",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        250.067,
+        512.926,
+        306.227,
+        531.345
+      ],
+      "semantic": "UNMAPPED",
+      "label": "Unmapped field on page 5",
+      "section": "Unknown"
+    },
+    "Text58.7.1": {
+      "field_id": "Text58.7.1",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        308.598,
+        512.926,
+        364.757,
+        531.345
+      ],
+      "semantic": "UNMAPPED",
+      "label": "Unmapped field on page 5",
+      "section": "Unknown"
+    },
+    "Text58.7.2": {
+      "field_id": "Text58.7.2",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        367.012,
+        512.926,
+        423.172,
+        531.345
+      ],
+      "semantic": "UNMAPPED",
+      "label": "Unmapped field on page 5",
+      "section": "Unknown"
+    },
+    "Text58.7.3.0": {
+      "field_id": "Text58.7.3.0",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        424.611,
+        512.926,
+        480.385,
+        531.252
+      ],
+      "semantic": "UNMAPPED",
+      "label": "Unmapped field on page 5",
+      "section": "Unknown"
+    },
+    "Text58.7.3.1": {
+      "field_id": "Text58.7.3.1",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        481.979,
+        512.926,
+        556.139,
+        531.252
+      ],
+      "semantic": "UNMAPPED",
+      "label": "Unmapped field on page 5",
+      "section": "Unknown"
+    },
+    "Text59.1": {
+      "field_id": "Text59.1",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        250.067,
+        494.071,
+        306.227,
+        513.057
+      ],
+      "semantic": "business_corp_private_label",
+      "label": "Corporation Private text field",
+      "section": "Business Specifics"
+    },
+    "Text59.2": {
+      "field_id": "Text59.2",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        248.746,
+        474.4,
+        557.769,
+        494.183
+      ],
+      "semantic": "business_corp_public_label",
+      "label": "Corporation Public text field",
+      "section": "Business Specifics"
+    },
+    "Check Box63.0": {
+      "field_id": "Check Box63.0",
+      "page": 5,
+      "type": "checkbox",
+      "rect": [
+        157.398,
+        437.137,
+        164.496,
+        444.235
+      ],
+      "semantic": "biz_structure_sole_prop",
+      "label": "Business: Sole Proprietorship checkbox",
+      "section": "Business Specifics"
+    },
+    "Check Box63.1": {
+      "field_id": "Check Box63.1",
+      "page": 5,
+      "type": "checkbox",
+      "rect": [
+        262.039,
+        437.137,
+        269.137,
+        444.235
+      ],
+      "semantic": "biz_structure_partnership",
+      "label": "Business: Partnership checkbox",
+      "section": "Business Specifics"
+    },
+    "Check Box63.2": {
+      "field_id": "Check Box63.2",
+      "page": 5,
+      "type": "checkbox",
+      "rect": [
+        333.789,
+        437.137,
+        340.887,
+        444.235
+      ],
+      "semantic": "biz_structure_corp_private",
+      "label": "Business: Corporation Private checkbox",
+      "section": "Business Specifics"
+    },
+    "Text62.1": {
+      "field_id": "Text62.1",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        494.028,
+        435.144,
+        517.222,
+        448.105
+      ],
+      "semantic": "business_nature",
+      "label": "Nature of business",
+      "section": "Business Specifics"
+    },
+    "Text62.0": {
+      "field_id": "Text62.0",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        434.82,
+        434.727,
+        458.015,
+        447.688
+      ],
+      "semantic": "business_address",
+      "label": "Business address",
+      "section": "Business Specifics"
+    },
+    "Text59.3": {
+      "field_id": "Text59.3",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        250.864,
+        414.001,
+        559.888,
+        433.784
+      ],
+      "semantic": "business_place_of_incorp",
+      "label": "Place of incorporation",
+      "section": "Business Specifics"
+    },
+    "Text59.4.0": {
+      "field_id": "Text59.4.0",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        250.913,
+        393.002,
+        560.065,
+        412.922
+      ],
+      "semantic": "business_notes_line1",
+      "label": "Business notes line 1",
+      "section": "Business Specifics"
+    },
+    "Text59.4.1": {
+      "field_id": "Text59.4.1",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        250.913,
+        373.879,
+        560.065,
+        393.799
+      ],
+      "semantic": "business_notes_line2",
+      "label": "Business notes line 2",
+      "section": "Business Specifics"
+    },
+    "Text59.5": {
+      "field_id": "Text59.5",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        250.067,
+        332.577,
+        559.091,
+        375.553
+      ],
+      "semantic": "UNMAPPED",
+      "label": "Unmapped field on page 5",
+      "section": "Unknown"
+    },
+    "Text61.0.0": {
+      "field_id": "Text61.0.0",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        249.952,
+        261.631,
+        325.552,
+        280.732
+      ],
+      "semantic": "indiv_ins_row1_self",
+      "label": "Individual Life Insurance row 1: Self death benefit",
+      "section": "Individual Life Insurance"
+    },
+    "Text61.0.1": {
+      "field_id": "Text61.0.1",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        327.463,
+        261.631,
+        403.064,
+        280.732
+      ],
+      "semantic": "indiv_ins_row1_spouse",
+      "label": "Individual Life Insurance row 1: Spouse death benefit",
+      "section": "Individual Life Insurance"
+    },
+    "Text61.0.2.0": {
+      "field_id": "Text61.0.2.0",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        404.692,
+        260.737,
+        480.385,
+        280.656
+      ],
+      "semantic": "indiv_ins_row1_joint",
+      "label": "Individual Life Insurance row 1: Joint policy amount",
+      "section": "Individual Life Insurance"
+    },
+    "Text61.0.2.1": {
+      "field_id": "Text61.0.2.1",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        481.979,
+        260.737,
+        557.674,
+        280.656
+      ],
+      "semantic": "indiv_ins_row1_beneficiary",
+      "label": "Individual Life Insurance row 1: Beneficiary",
+      "section": "Individual Life Insurance"
+    },
+    "Text60.0": {
+      "field_id": "Text60.0",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        54.2852,
+        260.73,
+        250.067,
+        280.513
+      ],
+      "semantic": "indiv_ins_row1_issuer",
+      "label": "Individual Life Insurance row 1: Issuer/type/policy#",
+      "section": "Individual Life Insurance"
+    },
+    "Text61.1.2.0": {
+      "field_id": "Text61.1.2.0",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        404.692,
+        241.614,
+        480.385,
+        259.94
+      ],
+      "semantic": "indiv_ins_row2_joint",
+      "label": "Individual Life Insurance row 2: Joint policy amount",
+      "section": "Individual Life Insurance"
+    },
+    "Text61.1.2.1": {
+      "field_id": "Text61.1.2.1",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        481.979,
+        241.614,
+        557.674,
+        259.94
+      ],
+      "semantic": "indiv_ins_row2_beneficiary",
+      "label": "Individual Life Insurance row 2: Beneficiary",
+      "section": "Individual Life Insurance"
+    },
+    "Text60.1": {
+      "field_id": "Text60.1",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        54.2852,
+        241.583,
+        250.067,
+        261.366
+      ],
+      "semantic": "indiv_ins_row2_issuer",
+      "label": "Individual Life Insurance row 2: Issuer/type/policy#",
+      "section": "Individual Life Insurance"
+    },
+    "Text61.1.0": {
+      "field_id": "Text61.1.0",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        249.952,
+        241.166,
+        325.552,
+        260.267
+      ],
+      "semantic": "indiv_ins_row2_self",
+      "label": "Individual Life Insurance row 2: Self death benefit",
+      "section": "Individual Life Insurance"
+    },
+    "Text61.1.1": {
+      "field_id": "Text61.1.1",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        327.463,
+        241.166,
+        403.064,
+        260.267
+      ],
+      "semantic": "indiv_ins_row2_spouse",
+      "label": "Individual Life Insurance row 2: Spouse death benefit",
+      "section": "Individual Life Insurance"
+    },
+    "Text61.2.2.0": {
+      "field_id": "Text61.2.2.0",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        404.692,
+        221.694,
+        480.385,
+        240.817
+      ],
+      "semantic": "indiv_ins_row3_joint",
+      "label": "Individual Life Insurance row 3: Joint policy amount",
+      "section": "Individual Life Insurance"
+    },
+    "Text61.2.2.1": {
+      "field_id": "Text61.2.2.1",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        481.979,
+        221.694,
+        557.674,
+        240.817
+      ],
+      "semantic": "indiv_ins_row3_beneficiary",
+      "label": "Individual Life Insurance row 3: Beneficiary",
+      "section": "Individual Life Insurance"
+    },
+    "Text60.2": {
+      "field_id": "Text60.2",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        54.2852,
+        221.435,
+        250.067,
+        241.218
+      ],
+      "semantic": "indiv_ins_row3_issuer",
+      "label": "Individual Life Insurance row 3: Issuer/type/policy#",
+      "section": "Individual Life Insurance"
+    },
+    "Text61.2.0": {
+      "field_id": "Text61.2.0",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        249.952,
+        220.701,
+        325.552,
+        239.802
+      ],
+      "semantic": "indiv_ins_row3_self",
+      "label": "Individual Life Insurance row 3: Self death benefit",
+      "section": "Individual Life Insurance"
+    },
+    "Text61.2.1": {
+      "field_id": "Text61.2.1",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        327.463,
+        220.701,
+        403.064,
+        239.802
+      ],
+      "semantic": "indiv_ins_row3_spouse",
+      "label": "Individual Life Insurance row 3: Spouse death benefit",
+      "section": "Individual Life Insurance"
+    },
+    "Text61.3.2.0": {
+      "field_id": "Text61.3.2.0",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        404.692,
+        203.368,
+        480.385,
+        222.491
+      ],
+      "semantic": "indiv_ins_total_estate_joint",
+      "label": "Individual Life Insurance: Total payable to estate (Joint)",
+      "section": "Individual Life Insurance"
+    },
+    "Text61.3.2.1": {
+      "field_id": "Text61.3.2.1",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        481.979,
+        203.368,
+        557.674,
+        222.491
+      ],
+      "semantic": "indiv_ins_total_estate_beneficiary",
+      "label": "Individual Life Insurance: Total payable to estate (Beneficiary)",
+      "section": "Individual Life Insurance"
+    },
+    "Text61.3.0": {
+      "field_id": "Text61.3.0",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        249.952,
+        202.236,
+        325.552,
+        221.337
+      ],
+      "semantic": "indiv_ins_total_estate_self",
+      "label": "Individual Life Insurance: Total payable to estate (Self)",
+      "section": "Individual Life Insurance"
+    },
+    "Text61.3.1": {
+      "field_id": "Text61.3.1",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        327.463,
+        202.236,
+        403.064,
+        221.337
+      ],
+      "semantic": "indiv_ins_total_estate_spouse",
+      "label": "Individual Life Insurance: Total payable to estate (Spouse)",
+      "section": "Individual Life Insurance"
+    },
+    "Text61.4.0": {
+      "field_id": "Text61.4.0",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        249.952,
+        183.771,
+        325.552,
+        202.871
+      ],
+      "semantic": "indiv_ins_total_beneficiaries_self",
+      "label": "Individual Life Insurance: Total for all beneficiaries (Self)",
+      "section": "Individual Life Insurance"
+    },
+    "Text61.4.1": {
+      "field_id": "Text61.4.1",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        327.463,
+        183.771,
+        403.064,
+        202.871
+      ],
+      "semantic": "indiv_ins_total_beneficiaries_spouse",
+      "label": "Individual Life Insurance: Total for all beneficiaries (Spouse)",
+      "section": "Individual Life Insurance"
+    },
+    "Text61.4.2.0": {
+      "field_id": "Text61.4.2.0",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        404.692,
+        183.771,
+        480.385,
+        204.487
+      ],
+      "semantic": "indiv_ins_total_beneficiaries_joint",
+      "label": "Individual Life Insurance: Total for all beneficiaries (Joint)",
+      "section": "Individual Life Insurance"
+    },
+    "Text61.4.2.1": {
+      "field_id": "Text61.4.2.1",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        481.979,
+        183.771,
+        557.674,
+        204.487
+      ],
+      "semantic": "indiv_ins_total_beneficiaries_name",
+      "label": "Individual Life Insurance: Total for all beneficiaries (Name)",
+      "section": "Individual Life Insurance"
+    },
+    "Text61.5.0": {
+      "field_id": "Text61.5.0",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        248.562,
+        112.058,
+        350.205,
+        131.158
+      ],
+      "semantic": "group_ins_row1_self",
+      "label": "Group Life Insurance row 1: Self coverage",
+      "section": "Group Life Insurance"
+    },
+    "Text61.5.1": {
+      "field_id": "Text61.5.1",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        351.57,
+        112.058,
+        453.213,
+        131.158
+      ],
+      "semantic": "group_ins_row1_spouse",
+      "label": "Group Life Insurance row 1: Spouse coverage",
+      "section": "Group Life Insurance"
+    },
+    "Text61.5.2": {
+      "field_id": "Text61.5.2",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        454.577,
+        112.058,
+        556.221,
+        131.158
+      ],
+      "semantic": "group_ins_row1_beneficiary",
+      "label": "Group Life Insurance row 1: Beneficiary",
+      "section": "Group Life Insurance"
+    },
+    "Text60.3": {
+      "field_id": "Text60.3",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        51.7803,
+        111.647,
+        247.562,
+        131.43
+      ],
+      "semantic": "group_ins_row1_issuer",
+      "label": "Group Life Insurance row 1: Issuer/type/policy#",
+      "section": "Group Life Insurance"
+    },
+    "Text61.6.0": {
+      "field_id": "Text61.6.0",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        248.562,
+        92.5934,
+        350.205,
+        111.693
+      ],
+      "semantic": "group_ins_row2_self",
+      "label": "Group Life Insurance row 2: Self coverage",
+      "section": "Group Life Insurance"
+    },
+    "Text61.6.1": {
+      "field_id": "Text61.6.1",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        351.57,
+        92.5934,
+        453.213,
+        111.693
+      ],
+      "semantic": "group_ins_row2_spouse",
+      "label": "Group Life Insurance row 2: Spouse coverage",
+      "section": "Group Life Insurance"
+    },
+    "Text61.6.2": {
+      "field_id": "Text61.6.2",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        454.577,
+        92.5934,
+        556.221,
+        111.693
+      ],
+      "semantic": "group_ins_row2_beneficiary",
+      "label": "Group Life Insurance row 2: Beneficiary",
+      "section": "Group Life Insurance"
+    },
+    "Text60.4": {
+      "field_id": "Text60.4",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        51.7803,
+        92.5004,
+        247.562,
+        112.283
+      ],
+      "semantic": "group_ins_row2_issuer",
+      "label": "Group Life Insurance row 2: Issuer/type/policy#",
+      "section": "Group Life Insurance"
+    },
+    "Text61.7.0": {
+      "field_id": "Text61.7.0",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        248.562,
+        74.1279,
+        350.205,
+        93.2284
+      ],
+      "semantic": "group_ins_row3_self",
+      "label": "Group Life Insurance row 3: Self coverage",
+      "section": "Group Life Insurance"
+    },
+    "Text61.7.1": {
+      "field_id": "Text61.7.1",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        351.57,
+        74.1279,
+        453.213,
+        93.2284
+      ],
+      "semantic": "group_ins_row3_spouse",
+      "label": "Group Life Insurance row 3: Spouse coverage",
+      "section": "Group Life Insurance"
+    },
+    "Text61.7.2": {
+      "field_id": "Text61.7.2",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        454.577,
+        74.1279,
+        556.221,
+        93.2284
+      ],
+      "semantic": "group_ins_row3_beneficiary",
+      "label": "Group Life Insurance row 3: Beneficiary",
+      "section": "Group Life Insurance"
+    },
+    "Text60.5": {
+      "field_id": "Text60.5",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        51.7803,
+        72.3527,
+        247.562,
+        92.1354
+      ],
+      "semantic": "group_ins_row3_issuer",
+      "label": "Group Life Insurance row 3: Issuer/type/policy#",
+      "section": "Group Life Insurance"
+    },
+    "Text61.8.0": {
+      "field_id": "Text61.8.0",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        248.562,
+        54.6628,
+        350.205,
+        73.7636
+      ],
+      "semantic": "group_ins_total_estate_self",
+      "label": "Group Life Insurance: Total payable to estate (Self)",
+      "section": "Group Life Insurance"
+    },
+    "Text61.8.1": {
+      "field_id": "Text61.8.1",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        351.57,
+        54.6628,
+        453.213,
+        73.7636
+      ],
+      "semantic": "group_ins_total_estate_spouse",
+      "label": "Group Life Insurance: Total payable to estate (Spouse)",
+      "section": "Group Life Insurance"
+    },
+    "Text61.8.2": {
+      "field_id": "Text61.8.2",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        454.577,
+        54.6628,
+        556.221,
+        73.7636
+      ],
+      "semantic": "group_ins_total_estate_beneficiary",
+      "label": "Group Life Insurance: Total payable to estate (Beneficiary)",
+      "section": "Group Life Insurance"
+    },
+    "Text61.9.0": {
+      "field_id": "Text61.9.0",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        248.562,
+        34.1978,
+        350.205,
+        53.2985
+      ],
+      "semantic": "group_ins_total_beneficiaries_self",
+      "label": "Group Life Insurance: Total for all beneficiaries (Self)",
+      "section": "Group Life Insurance"
+    },
+    "Text61.9.1": {
+      "field_id": "Text61.9.1",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        351.57,
+        34.1978,
+        453.213,
+        53.2985
+      ],
+      "semantic": "group_ins_total_beneficiaries_spouse",
+      "label": "Group Life Insurance: Total for all beneficiaries (Spouse)",
+      "section": "Group Life Insurance"
+    },
+    "Text61.9.2": {
+      "field_id": "Text61.9.2",
+      "page": 5,
+      "type": "text",
+      "rect": [
+        454.577,
+        34.1978,
+        556.221,
+        53.2985
+      ],
+      "semantic": "group_ins_total_beneficiaries_beneficiary",
+      "label": "Group Life Insurance: Total for all beneficiaries (Beneficiary)",
+      "section": "Group Life Insurance"
+    },
+    "Text51.0": {
+      "field_id": "Text51.0",
+      "page": 6,
+      "type": "text",
+      "rect": [
+        53.4866,
+        46.8308,
+        558.359,
+        672.39
+      ],
+      "semantic": "notes_general",
+      "label": "Notes page: Advisor notes, planning gaps, estate details",
+      "section": "Notes"
+    }
+  }
+}
