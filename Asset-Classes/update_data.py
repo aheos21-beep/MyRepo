@@ -9,7 +9,9 @@ projections are grounded in real, current search results rather than the
 model's training data alone. The projection itself is returned via a forced
 tool call (not parsed from free text) so an uncertain model can't skip the
 structured answer in favor of a prose caveat. The real pages found during
-research are collected into data["sources"] as an appendix for the UI.
+research are collected into data["sources"] as an appendix for the UI, and
+the run's exact metered cost (from each response's usage object) is stored
+in data["lastRunCostUsd"].
 """
 import json
 import os
@@ -22,6 +24,15 @@ DATA_PATH = Path(__file__).parent / "data.json"
 HISTORY_PATH = Path(__file__).parent / "history.json"
 MAX_HISTORY_MONTHS = 12
 SEARCHES_PER_ASSET = 4
+
+# Claude Haiku 4.5 pricing (USD per token), from https://platform.claude.com/docs/en/about-claude/pricing
+# NOTE: model_id is auto-selected as "latest Haiku" below — if a future Haiku
+# version changes pricing, update these rates to match.
+PRICE_PER_INPUT_TOKEN = 1.00 / 1_000_000
+PRICE_PER_OUTPUT_TOKEN = 5.00 / 1_000_000
+PRICE_PER_CACHE_WRITE_TOKEN = 1.25 / 1_000_000  # 5-minute cache write rate
+PRICE_PER_CACHE_READ_TOKEN = 0.10 / 1_000_000
+PRICE_PER_SEARCH = 10.00 / 1_000
 
 # Forces structured output instead of relying on the model to follow a
 # "return only JSON" text instruction — which it may ignore in favor of
@@ -97,9 +108,21 @@ def load_history():
     return {"history": []}
 
 
+def usage_cost(usage):
+    """Convert an Anthropic API response's usage object into a USD cost."""
+    cost = usage.input_tokens * PRICE_PER_INPUT_TOKEN
+    cost += usage.output_tokens * PRICE_PER_OUTPUT_TOKEN
+    cost += (usage.cache_creation_input_tokens or 0) * PRICE_PER_CACHE_WRITE_TOKEN
+    cost += (usage.cache_read_input_tokens or 0) * PRICE_PER_CACHE_READ_TOKEN
+    if usage.server_tool_use:
+        cost += usage.server_tool_use.web_search_requests * PRICE_PER_SEARCH
+    return cost
+
+
 def research_asset(client, model_id, asset, today):
     """Search the web for one asset's current analyst consensus and return
-    (r, why, sources), where sources are the real pages found during research."""
+    (r, why, sources, cost_usd), where sources are the real pages found
+    during research and cost_usd is this call's real, metered API cost."""
     hint = SOURCE_HINTS.get(asset["id"], "")
     prompt = f"""Today is {today}, which is after your training cutoff — you cannot know current market conditions or analyst forecasts from memory alone.
 
@@ -150,7 +173,7 @@ Once you've searched enough to form a view, call submit_projection with your ans
                     seen_urls.add(result.url)
                     sources.append({"title": result.title, "url": result.url})
 
-    return r, why, sources
+    return r, why, sources, usage_cost(response.usage)
 
 
 def main():
@@ -169,10 +192,12 @@ def main():
     updated_assets = []
     all_sources = []
     seen_source_urls = set()
+    total_cost_usd = 0.0
 
     for asset in data["assets"]:
         print(f"Researching {asset['name']}...")
-        r, why, sources = research_asset(client, model_id, asset, today)
+        r, why, sources, cost_usd = research_asset(client, model_id, asset, today)
+        total_cost_usd += cost_usd
 
         updated = dict(asset)
         updated["r"] = r
@@ -209,6 +234,7 @@ def main():
     data["assets"] = updated_assets
     data["updated"] = today
     data["sources"] = all_sources
+    data["lastRunCostUsd"] = round(total_cost_usd, 2)
 
     with open(DATA_PATH, "w") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
@@ -219,7 +245,10 @@ def main():
     with open(HISTORY_PATH, "w") as f:
         json.dump(history, f, indent=2, ensure_ascii=False)
 
-    print(f"data.json updated — {len(updated_assets)} assets, {len(all_sources)} sources, date: {today}")
+    print(
+        f"data.json updated — {len(updated_assets)} assets, {len(all_sources)} sources, "
+        f"cost ${total_cost_usd:.4f}, date: {today}"
+    )
 
 
 if __name__ == "__main__":
