@@ -28,6 +28,35 @@
         "cad-re": 23,
         "palladium": 24
       }
+    },
+    {
+      "date": "2026-07-17",
+      "ranks": {
+        "eth": 1,
+        "silver": 2,
+        "btc": 3,
+        "gold": 4,
+        "us-tech": 5,
+        "em": 6,
+        "natgas": 7,
+        "uranium": 8,
+        "lithium": 9,
+        "us-div": 10,
+        "intl-div": 11,
+        "cad-reit": 12,
+        "us-re": 13,
+        "cad-div": 14,
+        "lumber": 15,
+        "potash": 16,
+        "cad-hy": 17,
+        "palladium": 18,
+        "copper": 19,
+        "wheat": 20,
+        "cad-bond": 21,
+        "hisa": 22,
+        "cad-re": 23,
+        "oil": 24
+      }
     }
   ]
 }

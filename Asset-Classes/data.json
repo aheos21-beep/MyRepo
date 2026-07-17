@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-01",
+  "updated": "2026-07-17",
   "assets": [
     {
       "id": "cad-div",
@@ -7,19 +7,19 @@
       "cat": "Equity",
       "color": "#58a6ff",
       "r": [
+        6.5,
         5.5,
-        5.5,
-        5.5
+        5.0
       ],
       "d": [
+        6.5,
         5.5,
-        5.5,
-        5.5
+        5.0
       ],
       "why": [
-        "RBC/Scotiabank Jul 2026: TSX consolidating after 2025 rally; BoC at 2.25% supports rate-sensitive dividend payers; dividend yield 4-5% anchors total return; Dogs of TSX screen 5-8%; modest multiple normalization.",
-        "BoC hold stabilizes financing costs; bank dividend growth 3-5%; ENB/TRP/BNS payout growth sustains income floor; trade clarity improving; domestic consumption remains a drag on capital appreciation.",
-        "Tariff risk fades into 2028; dividend compounding drives returns; pipeline/utility yields 5-7% provide reliable income floor; limited multiple expansion assumed at stretched valuations."
+        "Globe and Mail (June 30, 2026): 23% earnings growth expected over next 12 months for S&P/TSX; elevated valuations moderate price gains despite strong earnings",
+        "RBC/Digrin (July 2026): Dividend growth averaging 7.57% annually with 2.36% yield; mature equity income returning to normalized 5-7% dividend growth trajectory",
+        "Motley Fool Canada (April 2026): utilities like Fortis expecting 5% annual cash flow growth and infrastructure companies targeting mid-single-digit returns in normalized rate environment"
       ],
       "posChange": "same"
     },
@@ -29,21 +29,21 @@
       "cat": "Equity",
       "color": "#3fb950",
       "r": [
-        5.5,
-        5.5,
-        5.0
+        9.0,
+        8.5,
+        6.5
       ],
       "d": [
-        5.5,
-        5.5,
-        5.0
+        9.0,
+        8.5,
+        6.5
       ],
       "why": [
-        "BofA/Morgan Stanley Jul 2026: S&P 500 targets ~7,200-7,400; dividend payers add ~2% yield for ~5-6% total return; narrow breadth keeps defensives attractive; conservative income tilt.",
-        "Earnings growth moderates; dividend aristocrats outperform in slower-growth regime; ~21x forward P/E stretched; ~2% yield provides floor; modest upside into 2027.",
-        "Dividend growth normalizes; income floor dominates; ~19-21x forward P/E range; stable total return into 2028 as growth moderates to sustainable pace."
+        "Goldman Sachs (May 2026): 6% S&P 500 price target + 6% dividend growth + ~2% yield = ~9-10% total return in 2026",
+        "Morgan Stanley (May 2026): 12% earnings growth + 2% dividend yield projecting ~8-9% total return 2027",
+        "Goldman Sachs 10-year modal forecast (Nov 2025): 7.7% annualized returns with moderation as valuations stabilize by 2028"
       ],
-      "posChange": "same"
+      "posChange": "up"
     },
     {
       "id": "gold",
@@ -51,21 +51,21 @@
       "cat": "Commodity",
       "color": "#f0c040",
       "r": [
-        5.5,
-        3.0,
-        2.0
+        18.1,
+        13.8,
+        8.4
       ],
       "d": [
-        5.5,
-        3.0,
-        2.0
+        18.1,
+        13.8,
+        8.4
       ],
       "why": [
-        "WGC/JPMorgan/Goldman Jul 2026: JPM ~$5,055 and Goldman ~$4,900 year-end targets; central-bank buying ~580 tonnes/quarter sustains demand floor; record highs challenged; correction risk elevated after extended rally.",
-        "WGC: consolidation around $4,750-$4,950; USD stabilization and profit-taking cap gains; structural EM central-bank bid provides support; volatility increases as technicals reset.",
-        "Bull-run consolidation 2028; equilibrium ~$3,950-$4,450 as macro uncertainty eases; central-bank accumulation moderates but provides structural floor; long-term support intact."
+        "Goldman Sachs $4,900, JPMorgan $4,500 Q4 2026 targets; base midpoint $4,700 implies +18.1% from $3,980 spot (July 2026)",
+        "Goldman Sachs $5,400-5,600 & JPMorgan $5,400 EOY 2027 targets; consensus $5,350 implies +13.8% from $4,700 base",
+        "Extended forecasts 2028 range $5,500-6,500; structural central bank buying supports $5,800 estimate, implying +8.4% from $5,350 base"
       ],
-      "posChange": "same"
+      "posChange": "up"
     },
     {
       "id": "btc",
@@ -73,21 +73,21 @@
       "cat": "Crypto",
       "color": "#f97316",
       "r": [
-        18.0,
-        13.0,
+        20.0,
+        12.5,
         10.0
       ],
       "d": [
-        18.0,
-        13.0,
+        20.0,
+        12.5,
         10.0
       ],
       "why": [
-        "Bitwise/Standard Chartered/JPMorgan Jul 2026: Bitwise ~$195K, JPM ~$165K year-end targets; ETF demand absorbs new supply; corporate treasury accumulation broadens; consensus ~+16-20% but moderation from Q2 peaks.",
-        "Post-halving consolidation; sustained ETF institutional flows; improving global regulatory clarity; Bitwise $195K+ into 2027; volatility gradually compressing as adoption matures.",
-        "Maturing asset class 2028; returns normalizing toward equities-plus; structural ETF and treasury demand intact; halving-cycle tailwind fading; ~9-11% normalized growth expected."
+        "20.0%: Standard Chartered (Dec 2025) projects $150K by end-2026 vs. ~$65K current; mid-range Bernstein/Bitwise targets $150-200K",
+        "12.5%: Bernstein $200K (2027 cycle peak) and Standard Chartered $225K imply moderate acceleration with maturing ETF demand",
+        "10.0%: Standard Chartered $300K (2028) implies deceleration; JPMorgan long-term thesis ($266K+) suggests 2028 still early in institutional adoption curve"
       ],
-      "posChange": "same"
+      "posChange": "down"
     },
     {
       "id": "eth",
@@ -95,19 +95,19 @@
       "cat": "Crypto",
       "color": "#a371f7",
       "r": [
-        25.0,
-        14.0,
-        11.0
+        100,
+        80,
+        45
       ],
       "d": [
-        25.0,
-        14.0,
-        11.0
+        100,
+        80,
+        45
       ],
       "why": [
-        "Standard Chartered/Bitwise Jul 2026: ETH target ~$7,200; staking yield ~4% income floor; spot-ETF inflows supportive; L2 ecosystem growth accelerating; consolidation after Q2 highs with modest upside.",
-        "L2 scaling deepens; staking lock-up tightens float; institutional adoption broadens; ~4% staking yield attractive; Bitwise sees ETH/BTC ratio recovery into 2027 at slower pace.",
-        "Returns normalizing 2028; L2 competition compresses upside; staking yield ~4% floor; ecosystem expansion sustains structural bid; ~11-13% normalized return range."
+        "Standard Chartered Jan 2026: $15,000 target 2027; current $1.6K base yields ~100% for institutional adoption recovery",
+        "Standard Chartered Jan 2026: $22,000 target 2028; layered growth from stablecoin/RWA expansion; ~80% normalized",
+        "Standard Chartered Jan 2026: $30,000+ 2029 target; structural tokenization tailwinds; 45% accounts for consolidation risk"
       ],
       "posChange": "same"
     },
@@ -117,19 +117,19 @@
       "cat": "Equity",
       "color": "#06b6d4",
       "r": [
-        6.5,
-        6.0,
+        8.5,
+        7.0,
         6.0
       ],
       "d": [
-        6.5,
-        6.0,
+        8.5,
+        7.0,
         6.0
       ],
       "why": [
-        "RBC Capital Markets Jul 2026: FFOPU growth 4-6%; ~5% distribution + modest NAV recovery = high-single-digit return; BoC at 2.25% stabilizes financing; minimal multiple expansion assumed.",
-        "BoC hold steadies REIT financing costs; seniors housing occupancy near record; industrials solid; distribution growth resumes across sub-sectors into 2027; cap-rate compression supports valuations.",
-        "Income-driven returns stabilize 2028; office headwinds priced; cap-rate normalization benefits quality REITs; distribution yield floor ~5%; modest NAV support."
+        "RBC 2026 base case: high-single-digit returns (8-9%) from 4-6% FFOPU growth + 7% NAV gains + 5% dividend (Pammi Bir, Dec 2025)",
+        "RBC 2027 outlook: 11% earnings CAGR through 2027 for seniors housing and steady industrial growth support 7% total return as rate environment stabilizes (RBC, June 2026)",
+        "2028 moderation to 6% as supply-demand dynamics normalize and sector reaches mature growth; reflects reasonable leverage and low-to-high-single-digit NAV growth trajectory (RBC, April 2026)"
       ],
       "posChange": "same"
     },
@@ -139,19 +139,19 @@
       "cat": "Real Estate",
       "color": "#ec4899",
       "r": [
-        2.0,
-        2.5,
-        3.0
+        1.1,
+        1.1,
+        0.9
       ],
       "d": [
-        2.0,
-        2.5,
-        3.0
+        1.1,
+        1.1,
+        0.9
       ],
       "why": [
-        "CREA Jul 2026: national avg price ~+2% as sales stabilize; high inventory in Ontario/BC; BoC at 2.25% improves affordability; mortgage renewals at higher rates still a drag; supply remains elevated.",
-        "CREA: ~+2.5% in 2027; pent-up demand releases as rates hold low; Prairie/Alberta markets outperform; Vancouver/Toronto condo overhang persists; inventory levels normalize gradually.",
-        "Modest recovery 2028; supply-demand rebalancing; population growth underpins prices; condo oversupply fades gradually; affordability slowly improves; price appreciation accelerates."
+        "CREA July 15, 2026 forecast: 1.1% price growth in 2026 (published 2 days ago)",
+        "CREA July 15, 2026 forecast: 1.1% price growth in 2027 (published 2 days ago)",
+        "Derived from CREA's stated policy that gains remain below 2% inflation target; BoC expects ~2% inflation in 2028, supporting subdued ~0.9% home price growth"
       ],
       "posChange": "same"
     },
@@ -161,21 +161,21 @@
       "cat": "Real Estate",
       "color": "#e05c5c",
       "r": [
-        8.0,
-        7.5,
-        7.0
+        5.8,
+        6.3,
+        5.8
       ],
       "d": [
-        8.0,
-        7.5,
-        7.0
+        5.8,
+        6.3,
+        5.8
       ],
       "why": [
-        "CBRE Jul 2026: CRE investment volumes +15-16%; cap-rate compression 5-15bps; data centre, industrial and multifamily lead; majority of investors raising allocations; momentum intact.",
-        "CBRE: 10-yr Treasury settling ~3.5%; cap-rate compression aids quality assets; office stress largely priced; living and healthcare sectors outperform; ample liquidity supports valuations.",
-        "Continued recovery 2028; data centre and senior housing structural demand; selective gateway office recovery; income-driven returns dominate; cap-rates stabilize at lower equilibrium."
+        "CBRE Capital Markets outlook Feb 2026: 5-15 bps cap compression + income-driven returns; multifamily averaging 5.6% cap rate Q1 2026 (Rentana June 2026)",
+        "Cushman & Wakefield Jan 2026: Rent growth forecast to strengthen to 5% by 2027; modest cap compression continues with improving fundamentals",
+        "Cohen & Steers Dec 2025: 2026 shows muted asset value growth with income driving returns; normalized 5.5% yield + moderate property appreciation"
       ],
-      "posChange": "same"
+      "posChange": "down"
     },
     {
       "id": "cad-bond",
@@ -183,21 +183,21 @@
       "cat": "Fixed Income",
       "color": "#84cc16",
       "r": [
-        3.5,
-        3.5,
-        3.5
+        2.5,
+        2.8,
+        3.2
       ],
       "d": [
-        3.5,
-        3.5,
-        3.5
+        2.5,
+        2.8,
+        3.2
       ],
       "why": [
-        "RBC Jul 2026: BoC at 2.25% terminal; 1-yr GIC ~3.60%, 5-yr ~4.05%; steeper curve improves duration risk/reward; coupon income ~3.5% dominates total return; capital appreciation minimal.",
-        "RBC: BoC hold confirmed; coupon income leads; government bonds preferred over corporate credit; modest price drag on longer duration persists; curve normalization in progress.",
-        "Rates settle at higher neutral 2028; 5-yr GoC yields ~3.25-3.5%; duration risk fades; income dominates; curve normalization complete; returns anchored to coupon."
+        "RBC (July 2026): 10Y GoC yield ~3.6% by end 2026; modest coupons offset by rising yield headwinds",
+        "Scotiabank (July 2026): GoC 5Y yield forecast to 3.25% by Q4 2026, rate hikes to 3.0% by Q1 2027; coupons ~3.2% with stabilizing prices",
+        "BoC (July 2026): GDP growth 1.8% in 2028, core inflation near target; yields likely stable, full coupon benefit realized"
       ],
-      "posChange": "same"
+      "posChange": "down"
     },
     {
       "id": "cad-hy",
@@ -205,19 +205,19 @@
       "cat": "Fixed Income",
       "color": "#a78bfa",
       "r": [
-        4.5,
-        4.0,
-        4.0
+        5.2,
+        4.8,
+        4.5
       ],
       "d": [
-        4.5,
-        4.0,
-        4.0
+        5.2,
+        4.8,
+        4.5
       ],
       "why": [
-        "RBC Jul 2026: HY spreads near historic lows ~270bps OAS; all-in yield ~5-6% attractive; spread-widening risk elevated; carry-driven return with limited tightening; credit cycle maturing.",
-        "RBC cautious: credit cycle matures; modest default uptick as BoC normalizes; leveraged issuers face refinancing pressure; spread compression stalls; selective quality focus necessary.",
-        "Stabilization 2028; carry dominates total return; selective high-quality HY outperforms; income floor buffers volatility; default cycle moderates; spreads widen modestly."
+        "Year 1: 5.2% - BlackRock's 5.7% HY forecast moderated for tight Canadian spreads noted by RBC (Dec 2025) and current elevated yield environment providing near-term income support.",
+        "Year 2: 4.8% - Mid-range of J.P. Morgan's 6.1% longer-term HY view and Vanguard's 4.3-5.3% range, reflecting stabilization after near-term carry exhaustion and potential spread widening as RBC warned (June 2026).",
+        "Year 3: 4.5% - Conservative anchor reflecting RBC's cautious stance on Canadian credit (June 2026) and normalized carry yield as elevated rate environment moderates; aligns with long-term fixed-income yield-return correlation."
       ],
       "posChange": "same"
     },
@@ -227,21 +227,21 @@
       "cat": "Equity",
       "color": "#0ea5e9",
       "r": [
-        10.0,
+        17.0,
         9.5,
-        8.5
+        8.0
       ],
       "d": [
-        10.0,
+        17.0,
         9.5,
-        8.5
+        8.0
       ],
       "why": [
-        "Goldman/Morgan Stanley Jul 2026: Goldman S&P ~8,000, MS ~8,300 mid-2027; AI capex ~$670B drives ~38-40% of EPS growth; S&P EPS ~$342 +22%; tech leads with moderation risk evident.",
-        "Goldman 2027 EPS ~$355 (+8%); AI monetization ROI improving; enterprise adoption deepens; ~20x forward P/E supported by infrastructure spend; growth rate moderating as baselines rise.",
-        "Growth normalizing 2028; AI tailwind shifts from buildout to monetization; ~19-20x P/E range; EPS growth sustains returns despite compression risk; returns moderate toward market."
+        "Goldman Sachs, Morgan Stanley, Deutsche Bank consensus: 17% S&P 500 return in 2026 (May-July 2026 reports)",
+        "Morgan Stanley mid-2027 target of 8,300 from ~7,550 implies ~10% appreciation; earnings growth decelerates to 12% in 2027 (Morgan Stanley, May 2026)",
+        "Morgan Stanley projects 13% earnings growth for 2028 with stable 20-21x valuation multiples; deceleration reflects normalized growth post-AI capex cycle (Morgan Stanley, May 2026)"
       ],
-      "posChange": "same"
+      "posChange": "down"
     },
     {
       "id": "hisa",
@@ -249,21 +249,21 @@
       "cat": "Cash",
       "color": "#94a3b8",
       "r": [
-        3.5,
-        3.4,
-        3.3
+        2.0,
+        2.4,
+        2.4
       ],
       "d": [
-        3.5,
-        3.4,
-        3.3
+        2.0,
+        2.4,
+        2.4
       ],
       "why": [
-        "BoC at 2.25% Jul 2026; best 1-yr GIC ~3.60%, 5-yr ~4.05%; HISA tracks overnight rate; easing cycle likely complete; capital preservation with reliable income; rates sticky.",
-        "GIC rates stable with BoC hold; HISA income modest but reliable; gradual normalization possible 2027; income floor steadier than 2025 lows; competition keeps yields near policy rate.",
-        "HISA remains low-risk income anchor through 2028; rates track BoC neutral path; capital preservation with modest, stable return; liquidity premium intact."
+        "BoC holds 2.25% through 2026, mainstream HISA non-promotional rates averaging 1.5-2.2% per NerdWallet/RateHub July 15, 2026",
+        "Consensus BoC rate rises to ~2.75% by end-2027 (RBC 3.25%, Scotiabank 3%, CIBC 2.75%, BMO/TD 2.25%), pushing HISA spreads to 2.25-2.75%; using mid-consensus, National Bank July 2026 forecast",
+        "BoC policy rate stabilizes 2.75-3.0% in 2028; HISA rates flatten at 2.25-2.50% range as deposit competition normalizes, per True North Mortgage July 2026 outlook"
       ],
-      "posChange": "same"
+      "posChange": "down"
     },
     {
       "id": "intl-div",
@@ -271,19 +271,19 @@
       "cat": "Equity",
       "color": "#fbbf24",
       "r": [
-        7.0,
-        6.5,
-        6.0
+        8.5,
+        7.5,
+        7.0
       ],
       "d": [
-        7.0,
-        6.5,
-        6.0
+        8.5,
+        7.5,
+        7.0
       ],
       "why": [
-        "Jul 2026 consensus: EAFE benefiting from USD moderation; European/Japan dividend yield ~3-4%; valuation discount to S&P 500 attractive; moderate recovery underway after sideways 2025.",
-        "EAFE earnings momentum builds; valuation gap narrows gradually; ~3-4% dividend yield floor; global growth improving as trade headwinds ease; structural catch-up narrative intact.",
-        "Structural underperformance vs North America persists 2028; dividend income the primary return driver; EAFE discount provides value buffer; modest multiple expansion fades."
+        "Goldman Sachs forecasts global equities 11% for 2026, with international diversification benefiting from weaker USD and earnings growth; EAFE dividend stocks likely trail global slightly at ~8.5% (GS, Jan 2026)",
+        "Goldman Sachs 10-year Europe forecast 7.1% with dividends/shareholder returns as half the return; moderate pullback in year 2 as valuations stabilize suggests ~7.5% (GS, Nov 2025)",
+        "Long-term Goldman Sachs Europe baseline 7.1% with 'half earnings, half shareholder return' reflects normalized trend; EAFE dividend-focused returns converge to this as growth moderates (GS, Nov 2025)"
       ],
       "posChange": "same"
     },
@@ -293,21 +293,21 @@
       "cat": "Equity",
       "color": "#fb7185",
       "r": [
-        9.0,
-        8.0,
-        7.0
+        16.0,
+        10.0,
+        8.0
       ],
       "d": [
-        9.0,
-        8.0,
-        7.0
+        16.0,
+        10.0,
+        8.0
       ],
       "why": [
-        "Jul 2026 consensus: EM offers relative value; India/SEA domestic demand strong; Korea/Taiwan AI supply-chain beneficiaries; China recovery uncertain; ~7-10% blended return possible.",
-        "EM GDP outpaces DM by 2-3%; Asia ex-Japan growth robust; supply-chain diversification gains; EM-to-DM discount narrows on earnings re-rating; China policy clarity improves gradually.",
-        "Returns moderate 2028 as valuation gap closes; China policy uncertainty the key risk; ~3% dividend yield provides partial income floor; structural growth premium persists."
+        "Goldman Sachs Research explicitly forecasts 16% EM returns for 2026, December 2025",
+        "Moderating earnings growth and fading currency tailwinds post-2026; normalize toward 10% supported by still-above-trend EM GDP growth (4%+)",
+        "Further normalization toward historical average; maturation of AI cycle tailwinds and normalization of macro conditions limit upside"
       ],
-      "posChange": "same"
+      "posChange": "up"
     },
     {
       "id": "silver",
@@ -315,21 +315,21 @@
       "cat": "Commodity",
       "color": "#cbd5e1",
       "r": [
-        14.0,
-        7.0,
-        4.0
+        41.4,
+        9.8,
+        18.6
       ],
       "d": [
-        14.0,
-        7.0,
-        4.0
+        41.4,
+        9.8,
+        18.6
       ],
       "why": [
-        "JPMorgan/Goldman Jul 2026: JPM ~$79/oz avg, Goldman ~$83-98/oz; solar PV + EV industrial demand plus gold correlation; gold/silver ratio compression supports upside; momentum elevated but moderating.",
-        "JPMorgan ~$82/oz avg 2027; solar PV demand at record highs; ETF inflows continue; physical-tightness narrative supports the bid; lags gold bull as industrial edge gradually fades.",
-        "Gold bull moderates 2028; solar+EV industrial demand sustains a floor; returns compress toward industrial-commodity norms; industrial cycle slowdown a headwind."
+        "J.P. Morgan average forecast of $81/oz for 2026 (vs. $57.48 current), implying 40.8% return; forecast published Feb 2026",
+        "J.P. Morgan $85/oz 2027 average with year-end implication of $95/oz (4.9% from $91 2027 entry), split with structural deficit thesis from Silver Institute via GoldSilver April 2026",
+        "LongForecast projects $98-103 opening 2028 reaching $132 year-end (18-20% range), supported by CoinPriceForecast $176-212 range suggesting $100+ conservative entry; published May-June 2026"
       ],
-      "posChange": "same"
+      "posChange": "up"
     },
     {
       "id": "palladium",
@@ -338,20 +338,20 @@
       "color": "#c084fc",
       "r": [
         4.0,
-        0.5,
-        -6.0
+        10.0,
+        0.0
       ],
       "d": [
         4.0,
-        0.5,
-        -6.0
+        10.0,
+        0.0
       ],
       "why": [
-        "LBMA Jul 2026: ~$1,750/oz avg; BofA ~$1,730, TD ~$1,820; ~85% surge over past 18 months; hybrid demand + Russia supply shortfall; most analysts cautious near-term as cycle timing uncertain.",
-        "Hybrid vehicle production sustains near-term demand; Russia supply discipline persists; gradual EV penetration begins to erode autocatalyst demand; peak cycle likely approached in 2026.",
-        "EV share rising post-2027; ICE production plateaus and autocatalyst demand destruction accelerates; prices moderate from elevated levels; structural headwinds mount sharply."
+        "2026: LBMA consensus $1,740/oz avg (51% vs 2025), BofA $1,725, TD $1,819; near-term support from Russian supply risks & hybrid vehicle demand per TD Securities Jan 2026",
+        "2027: WalletInvestor $2,368 y/e (47.4% gain), WPIC deficits persist through 2027, hybrid/autocat demand resilient; TD Securities noted PGMs lead in 2026-27",
+        "2028: WPIC projects surplus emergence from 2028f, EV adoption 22-25% (J2T Jan 26), recycling growth to 3.5-3.8M oz offsets mine supply; Long Forecast $1,668 implies price pressure"
       ],
-      "posChange": "same"
+      "posChange": "up"
     },
     {
       "id": "oil",
@@ -359,21 +359,21 @@
       "cat": "Commodity",
       "color": "#78350f",
       "r": [
-        4.0,
-        3.0,
-        3.0
+        -22.0,
+        7.0,
+        4.0
       ],
       "d": [
-        4.0,
-        3.0,
-        3.0
+        -22.0,
+        7.0,
+        4.0
       ],
       "why": [
-        "Goldman/JPMorgan Jul 2026: Goldman ~$85 Brent, JPMorgan ~$58 Brent; midpoint ~$68-72; OPEC+ supply management caps downside; AI/data-centre power adds modest demand; stable outlook.",
-        "EIA: gradual demand growth; OPEC+ discipline the swing factor; $65-75/bbl Brent most likely; energy transition tempers long-run upside; supply flexibility intact.",
-        "Modest recovery 2028; transition moderates demand growth; OPEC discipline key; $65-75/bbl range; geopolitical premium partly embedded; structural decline gradual."
+        "EIA July 2026 STEO forecasts 2027 average ~$64/bbl; Goldman Sachs June 2026 reset points to $75 Brent equilibrium by 2027, implying ~22% decline from current ~$90 spot as Hormuz disruption normalizes",
+        "Goldman Sachs June 2026 outlook shows $75–$80/bbl 2027 average with structural oversupply moderating; modest rebound from 2027 lows drives ~7% recovery in Year 2",
+        "Goldman Sachs Projects Brent/WTI gradually recovering to $80/$76 by late 2028 per their 2026 Outlooks; structural demand growth and supply constraints support ~4% annualized gain in Year 3"
       ],
-      "posChange": "same"
+      "posChange": "down"
     },
     {
       "id": "natgas",
@@ -381,21 +381,21 @@
       "cat": "Commodity",
       "color": "#60a5fa",
       "r": [
-        10.0,
-        8.0,
-        6.0
+        28.8,
+        -5.1,
+        7.4
       ],
       "d": [
-        10.0,
-        8.0,
-        6.0
+        28.8,
+        -5.1,
+        7.4
       ],
       "why": [
-        "JPMorgan/EIA Jul 2026: LNG exports +9%; AI data-centre power demand adds a structural floor; Henry Hub recovering; European demand support; ~+8-12% consensus; supply deficit widening.",
-        "EIA: demand outpaces supply 2027; LNG exports +11%; Golden Pass capacity ramps; storage drawdown supports a mild price uplift; tight fundamentals persist.",
-        "Post-LNG-boom normalization 2028; prices settle ~$3.90-$4.10/MMBtu; AI power demand structural floor; supply-demand broadly balanced; volatility moderates."
+        "EIA July 2026 STEO projects Henry Hub $3.67/MMBtu in 2026, +28.8% from $2.85 mid-year baseline; tight balances from new LNG exports",
+        "EIA July 2026 STEO projects $3.49/MMBtu in 2027, -5.1% from 2026 as record production and above-average inventory offset demand growth",
+        "Consensus 2028: S&P Global $3.50, BMI/Fitch $4.00; midpoint $3.75 = +7.4% as LNG terminals reach full capacity and demand-supply tightens"
       ],
-      "posChange": "same"
+      "posChange": "up"
     },
     {
       "id": "uranium",
@@ -403,21 +403,21 @@
       "cat": "Commodity",
       "color": "#4ade80",
       "r": [
-        11.0,
-        9.5,
-        7.5
+        12.5,
+        10.0,
+        8.0
       ],
       "d": [
-        11.0,
-        9.5,
-        7.5
+        12.5,
+        10.0,
+        8.0
       ],
       "why": [
-        "Sprott Jul 2026: spot >$86/lb; most investors target $100-120/lb; AI data-centre nuclear buildout accelerating demand; US policy support; supply deficit deepening significantly.",
-        "IAEA: nuclear demand on track to double by 2040; AI+data-centre demand continues into 2027; long-term contracting tightens; mine fundamentals improve; price floor rising.",
-        "Sustained demand from AI energy + climate mandates 2028; supply under-delivery persists; decade-long mine lead times constrain response; structural bull intact; returns normalize."
+        "Sprott forward curves and analyst consensus target $90-100/lb from current $85.45, implying ~12% Year 1 return (Sprott, July 2026)",
+        "Long-term contract prices at $94/lb with structural supply deficit driving sustained momentum; analyst Huhn projects $100+ by mid-2026 (INN/Uranium Insider, March-June 2026)",
+        "Continued supply constraints and AI-driven nuclear demand support elevated prices through 2028-2029; long-term targets of $125-150/lb suggest 8% annualized growth by Year 3 (Uranium Insider, Dec 2025)"
       ],
-      "posChange": "same"
+      "posChange": "down"
     },
     {
       "id": "copper",
@@ -425,21 +425,21 @@
       "cat": "Commodity",
       "color": "#b45309",
       "r": [
-        13.0,
-        7.5,
-        7.5
+        1.7,
+        -2.2,
+        11.1
       ],
       "d": [
-        13.0,
-        7.5,
-        7.5
+        1.7,
+        -2.2,
+        11.1
       ],
       "why": [
-        "TD Securities/Goldman Jul 2026: TD ~$13,100/t target; electrification + AI grid buildout drives structural demand; supply deficit deepening; ~+11-14% expected; momentum strong.",
-        "Goldman: prices stable H2 2026 as tariff front-running normalizes; long-term floor ~$10,750/t; EV+data-centre+grid demand continues into 2027; supply growth lagging.",
-        "Structural deficit deepens 2028; energy transition + AI infrastructure sustains imbalance; floor ~$10,000/t; long-run supply constraint persists; returns moderate as recognition spreads."
+        "Goldman Sachs June 2026: $13,800/t average for 2027, modest 1.7% gain from ~$13,566 spot reflects near-term tariff and demand headwinds",
+        "Bloomberg consensus and BMI project ~$13,500/t for 2028, implying -2.2% decline as initial supply deficit eases and Chinese demand remains soft",
+        "Supply deficit becomes structural; BMI and Jefferies project $15,000+/t by 2029-30 on electrification demand, implying +11.1% recovery driven by energy transition acceleration"
       ],
-      "posChange": "same"
+      "posChange": "down"
     },
     {
       "id": "lithium",
@@ -447,21 +447,21 @@
       "cat": "Commodity",
       "color": "#38bdf8",
       "r": [
-        1.0,
-        9.0,
-        12.0
+        15.0,
+        8.0,
+        5.0
       ],
       "d": [
-        1.0,
-        9.0,
-        12.0
+        15.0,
+        8.0,
+        5.0
       ],
       "why": [
-        "Goldman Jul 2026: ~$8,950/t avg; oversupply easing as low prices force capacity deferrals; EV adoption recovering in China; surplus narrowing; cyclical trough likely reached.",
-        "Goldman: ~$9,200/t 2027; supply discipline firms; China EV demand accelerating; energy storage absorbing more surplus; deficits possible from 2028; price recovery accelerating.",
-        "Goldman: ~$9,600/t by 2028; grid storage + next-gen batteries lift demand; Wood Mackenzie sees structural deficit building; recovery underway; fundamentals inflecting positive."
+        "Year 1 (2026): +15% reflects Q1 rally to $26k+ from ~$8.9k base; supply tightness with UBS expecting near-deficit; Goldman Sachs Sept 2025 note",
+        "Year 2 (2027): +8% as supply returns per UBS but deficits loom; Wood Mackenzie forecasts peak oversupply in 2027 then shift to deficit; moderation from year 1 peak",
+        "Year 3 (2028): +5% reflects structural supply deficit emergence (Wood Mackenzie), sustained ESS demand growth, and normalization after near-term volatility; below earlier Goldman Sachs $17k target due to execution risks"
       ],
-      "posChange": "same"
+      "posChange": "up"
     },
     {
       "id": "wheat",
@@ -469,21 +469,21 @@
       "cat": "Commodity",
       "color": "#d97706",
       "r": [
-        3.0,
-        3.0,
-        3.0
+        4.0,
+        2.8,
+        2.5
       ],
       "d": [
-        3.0,
-        3.0,
-        3.0
+        4.0,
+        2.8,
+        2.5
       ],
       "why": [
-        "USDA/World Bank Jul 2026: adequate global supplies keep prices modest; Russia/Ukraine supply risk maintains a geopolitical premium; flat to +3% expected; normalization underway.",
-        "World Bank: moderate price stability 2027; climate-driven yield variability adds risk premium; population-driven demand steady; Black Sea risks persist; supply recovery gradual.",
-        "Stable demand from population growth + biofuel mandates 2028; supply-demand broadly balanced; improving Black Sea access caps upside; prices range-bound."
+        "World Bank April 2026 Commodity Outlook: $253→$263/mt projects 4.0% Y1 growth on tight supplies",
+        "World Bank April 2026: $263→$260/mt implies 2.8% Y2 growth amid supply recovery pressure",
+        "Analyst consensus (LiteFinance June 2026) suggests stabilization post-2027 downtrend; estimated 2.5% Y3 growth as global inventories normalize"
       ],
-      "posChange": "same"
+      "posChange": "up"
     },
     {
       "id": "potash",
@@ -491,19 +491,19 @@
       "cat": "Commodity",
       "color": "#a3e635",
       "r": [
-        5.0,
-        4.0,
-        4.0
+        6.5,
+        4.5,
+        4.8
       ],
       "d": [
-        5.0,
-        4.0,
-        4.0
+        6.5,
+        4.5,
+        4.8
       ],
       "why": [
-        "Procurement Resource Jul 2026: US potash ~$400/MT trending higher; firm spring planting demand; tight global supply; consensus ~+5%; structural tightness developing.",
-        "Steady global agricultural demand; supply discipline from major producers; seasonal application supports prices; stabilizing at higher levels; supply growth constrained.",
-        "Demand floor from global agriculture 2028; supply growth slows; EU restrictions on Belarusian potash support prices; affordability improves; prices stabilize at elevated plateau."
+        "World Bank May 2026: MOP prices projected +12% in 2026 on firm demand, tight supply, geopolitical risk premiums",
+        "World Bank May 2026: MOP prices forecast -6% in 2027 as new capacity comes online, moderating from 2026 spike",
+        "Consensus CAGR 4.8-5.5% long-term (FactMr, Precedence, Fortune 2026) implies 2028 normalization to ~4.8% as supply-demand balances"
       ],
       "posChange": "same"
     },
@@ -513,21 +513,3431 @@
       "cat": "Commodity",
       "color": "#65a30d",
       "r": [
-        5.0,
+        4.5,
         7.0,
-        6.0
+        5.0
       ],
       "d": [
-        5.0,
+        4.5,
         7.0,
-        6.0
+        5.0
       ],
       "why": [
-        "Jul 2026: lumber ~$590/MBF; analysts forecast $585-650 range; H2 2026 recovery expected; housing-starts revival drives demand; Canadian tariff uncertainty a headwind; inventory normalizing.",
-        "ERA: housing starts rise as rate normalization unlocks demand; Canadian mill closures tighten supply; Fastmarkets sees +6-8% annual price gains into 2027; structural tightening evident.",
-        "Housing rebound lifts lumber toward $605/MBF by 2028; Canadian sawmill tightness a structural constraint; US production partly offsets; supply-demand favorable."
+        "Gordian Q2 2026 data shows 4.21% YoY price growth, Fastbull May 2026 notes continued upside through year-end",
+        "Farm Credit East March 2026 expects 2027 demand surge (+5.6% housing starts, +2.8% consumption) to push prices higher despite tariff relief",
+        "Walletinvestor June 2028 forecast of ~$625/mbf implies moderate 5% annualized growth from mid-2026 levels as market normalizes"
       ],
-      "posChange": "same"
+      "posChange": "down"
+    }
+  ],
+  "sources": [
+    {
+      "title": "DIVERSIFIED ROYALTY CORP (DIV.CA) Forecast, Price Target & Analyst Ratings",
+      "url": "https://www.chartmill.com/stock/quote/DIV.CA/analyst-ratings",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "Cadre Dividend 2026 & forecast 2027 2028 2029 | ex-day",
+      "url": "https://stocksguide.com/en/dividends/Cadre-US12763L1052",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "Top 10 Canadian Dividend Stocks To Buy - May 2026",
+      "url": "https://milliondollarjourney.com/top-10-canadian-dividend-growth-stocks.htm",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "3 Canadian Dividend Stocks On The TSX Yielding Up To 13.8%",
+      "url": "https://finance.yahoo.com/news/3-canadian-dividend-stocks-tsx-123213603.html",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "10 Top-Performing Canadian Dividend Stocks | Morningstar Canada",
+      "url": "https://global.morningstar.com/en-ca/stocks/10-top-performing-canadian-dividend-stocks",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "Dividend Investing: Top Canadian Dividend Stocks of 2026 | The Motley Fool Canada",
+      "url": "https://www.fool.ca/investing/dividend-investing-canada/",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "3 Dividend Stocks for March 2026 | Morningstar",
+      "url": "https://www.morningstar.com/stocks/3-dividend-stocks-march-2026-2",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "TD Q Canadian Dividend ETF Stock Forecast: up to $35.41! - TQCD Stock Price Prediction, Long-Term & Short-Term Share Revenue Prognosis with Smart Technical Analysis - WalletInvestor.com",
+      "url": "https://walletinvestor.com/tose-stock-forecast/tqcd-stock-prediction",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "CADL Forecast, Price Target & Analyst Ratings | ChartMill.com",
+      "url": "https://www.chartmill.com/stock/quote/CADL/analyst-ratings",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "The 10 Best Dividend Stocks for 2026 | Morningstar",
+      "url": "https://www.morningstar.com/stocks/10-best-dividend-stocks",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "JPMorgan Chase unveils $50 billion buyback, Goldman Sachs raises dividend after Fed stress test",
+      "url": "https://www.cnbc.com/2026/06/24/jpmorgan-goldman-sachs-fed-stress-test.html",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "RBC raises JPMorgan stock price target to $370 on strong results By Investing.com",
+      "url": "https://www.investing.com/news/analyst-ratings/rbc-raises-jpmorgan-stock-price-target-to-370-on-strong-results-93CH-4793778",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "Mid-Year Outlook 2026 Promise and Pressure",
+      "url": "https://www.jpmorgan.com/content/dam/jpmorgan/documents/wealth-management/mid-year-outlook-2026.pdf",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "View RBC Share Information",
+      "url": "https://www.rbc.com/investor-relations/share-information.html",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "JPMorgan and Goldman raise dividends after Fed stress tests",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/jpmorgan-goldman-raise-dividends-fed-204752975.html",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "Top TSX Dividend Stocks To Consider In May 2026",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/top-tsx-dividend-stocks-consider-123146635.html",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "Goldman Sachs Group (SET:GSUS06) Stock Forecast & Analyst Predictions - Simply Wall St",
+      "url": "https://simplywall.st/stocks/th/diversified-financials/set-gsus06/goldman-sachs-group-shares/future",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "JPMorgan Chase & Co. (JPM) Stock Forecast",
+      "url": "https://tickeron.com/ticker/JPM/forecasts-predictions/",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "JPMorgan Chase (NYSE:JPM.PRC) Stock Forecast & Analyst Predictions - Simply Wall St",
+      "url": "https://simplywall.st/stocks/us/banks/nyse-jpm.prc/jpmorgan-chase/future",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "Royal Bank of Canada dividends | Digrin",
+      "url": "https://www.digrin.com/stocks/detail/RY.TO/",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "Dividend Stocks 2026 Canada Sectors + 2025 Figures",
+      "url": "https://www.questrade.com/learning/dividend-stocks-canada-2026",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "Market Call: Ryan Bushell's outlook on Canadian Dividend Stocks (June 22, 2026) - YouTube",
+      "url": "https://www.youtube.com/watch?v=XQQia2Tbrmo",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "Ryan Bushell's Market Outlook: Canadian Dividend Stocks – BNN Bloomberg",
+      "url": "https://www.bnnbloomberg.ca/video/shows/market-call/2026/06/22/ryan-bushells-market-outlook-canadian-dividend-stocks/",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "Why 2026 Could Be a Massive Year for Canadian Dividend Stocks",
+      "url": "https://ca.finance.yahoo.com/news/why-2026-could-massive-canadian-004500809.html",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "Canadian dividend stocks most likely to thrive regardless of the tariff climate - The Globe and Mail",
+      "url": "https://www.theglobeandmail.com/investing/investment-ideas/number-cruncher/article-canadian-dividend-stocks-most-likely-to-thrive-regardless-of-the/",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "Top 15 Best Dividend Stocks in Canada for 2026 - Straight.com",
+      "url": "https://www.straight.com/guides/finance/best-dividend-stocks-in-canada/",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "Top Canadian Dividend Stocks to Buy on a Pullback",
+      "url": "https://ca.finance.yahoo.com/news/top-canadian-dividend-stocks-buy-204000721.html",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "3 TSX Dividend Stocks Yielding Up To 6.8%",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/3-tsx-dividend-stocks-yielding-123206767.html",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "TSX FORECAST 2026, 2027, 2028-2030 - Long Forecast",
+      "url": "https://longforecast.com/tsx",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "TSX Dividend Stocks | Payout Dates, Yields & History",
+      "url": "https://dividendhistory.org/tsx/",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "S&P/TSX Composite Dividend Index | S&P Dow Jones Indices",
+      "url": "https://www.spglobal.com/spdji/en/indices/dividends-factors/sp-tsx-composite-dividend-index/",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "S&P/TSX Composite Dividend Index - Live Performance & Histo…",
+      "url": "https://ycharts.com/indices/%5ESPTSXCD",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "TSX:XEI Dividend History, Dates & Yield",
+      "url": "https://stockanalysis.com/quote/tsx/XEI/dividend/",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "Analysts’ forecast returns, recommendations and yields for all stocks in the S&P/TSX Composite Index - The Globe and Mail",
+      "url": "https://www.theglobeandmail.com/investing/markets/inside-the-market/article-analysts-forecast-returns-recommendations-and-yields-for-all-stocks-in-67/",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "TSX:THE Dividend History, Dates & Yield",
+      "url": "https://stockanalysis.com/quote/tsx/THE/dividend/",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "TSX Ex-Dividend Dates & Calendar | Canadian Dividend Stocks",
+      "url": "https://tsx.exdividend.ca/",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "iShares S&P/TSX Composite High Dividend Index ETF (TSX:XEI) Stock Price & Overview",
+      "url": "https://stockanalysis.com/quote/tsx/XEI/",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "Top TSX Dividend Stocks To Consider In May 2026",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/top-tsx-dividend-stocks-consider-123159652.html",
+      "assetId": "cad-div",
+      "assetName": "CAD Dividend Stocks"
+    },
+    {
+      "title": "The S&P 500 Is Expected to Rally 12% This Year | Goldman Sachs",
+      "url": "https://www.goldmansachs.com/insights/articles/the-sp-500-expected-to-rally-12-this-year",
+      "assetId": "us-div",
+      "assetName": "US Dividend Stocks"
+    },
+    {
+      "title": "Global Stocks Are Projected to Return 11% in the Next 12 Months | Goldman Sachs",
+      "url": "https://www.goldmansachs.com/insights/articles/global-stocks-are-projected-to-return-11-percent-in-next-12-months",
+      "assetId": "us-div",
+      "assetName": "US Dividend Stocks"
+    },
+    {
+      "title": "The S&P 500 Is Forecast to Climb as Earnings Growth Powers Stocks Higher | Goldman Sachs",
+      "url": "https://www.goldmansachs.com/insights/articles/s-and-p-500-forecast-to-climb-as-earnings-growth-powers-stocks-higher",
+      "assetId": "us-div",
+      "assetName": "US Dividend Stocks"
+    },
+    {
+      "title": "Building Long-Term Returns: Our 10-Year Forecasts",
+      "url": "https://www.gspublishing.com/content/research/en/reports/2025/11/12/0c292cc7-ce42-4fba-a026-744231e9f4f4.html",
+      "assetId": "us-div",
+      "assetName": "US Dividend Stocks"
+    },
+    {
+      "title": "Goldman Sachs doubles down on bold S&P 500 forecast",
+      "url": "https://finance.yahoo.com/news/goldman-sachs-doubles-down-bold-153300685.html",
+      "assetId": "us-div",
+      "assetName": "US Dividend Stocks"
+    },
+    {
+      "title": "Goldman Sachs Predicts Positive Global Stock Returns by 2026",
+      "url": "https://www.gurufocus.com/news/4079160/goldman-sachs-predicts-positive-global-stock-returns-by-2026",
+      "assetId": "us-div",
+      "assetName": "US Dividend Stocks"
+    },
+    {
+      "title": "Goldman Sachs Reveals Sectors With Top 2026 Payouts: 5 Strong Buys",
+      "url": "https://finance.yahoo.com/news/goldman-sachs-reveals-sectors-top-161643735.html",
+      "assetId": "us-div",
+      "assetName": "US Dividend Stocks"
+    },
+    {
+      "title": "Goldman Sachs Sees S&P 500 at 8000 Year-End: 5 of Its Top Picks Pay Big Passive Income Dividends - 24/7 Wall St.",
+      "url": "https://247wallst.com/investing/2026/06/05/goldman-sachs-sees-sp-500-at-8000-year-end-5-of-their-top-picks-pay-big-passive-income-dividends/",
+      "assetId": "us-div",
+      "assetName": "US Dividend Stocks"
+    },
+    {
+      "title": "The S&P 500 is expected to return 10% in 2025 | Goldman Sachs",
+      "url": "https://www.goldmansachs.com/insights/articles/the-s-and-p-500-is-forecast-to-return-10-percent-in-2025",
+      "assetId": "us-div",
+      "assetName": "US Dividend Stocks"
+    },
+    {
+      "title": "Goldman Sachs' Top 5 Dividend Stock Picks for 2024",
+      "url": "https://www.smallworldfs.com/blog/2026/06/06/top-5-dividend-stocks-goldman-sachs-picks-following-s-and-p-500-forecast-increase/",
+      "assetId": "us-div",
+      "assetName": "US Dividend Stocks"
+    },
+    {
+      "title": "JPMorgan Chase & Co. (JPM) Stock Dividend Estimates & Revisions | Seeking Alpha",
+      "url": "https://seekingalpha.com/symbol/JPM/dividends/estimates",
+      "assetId": "us-div",
+      "assetName": "US Dividend Stocks"
+    },
+    {
+      "title": "JPM: Dividend Date & History for JPMorgan Chase & Co - Dividend.com",
+      "url": "https://www.dividend.com/stocks/financials/banking/diversified-banks/jpm-jp-morgan-chase/",
+      "assetId": "us-div",
+      "assetName": "US Dividend Stocks"
+    },
+    {
+      "title": "JPMorgan Chase (JPM) Stock Dividend History & Growth - 2026",
+      "url": "https://stockinvest.us/dividends/JPM",
+      "assetId": "us-div",
+      "assetName": "US Dividend Stocks"
+    },
+    {
+      "title": "Forecast for JPMorgan Chase & Co: JPM Stock Rate Predictions for 2026, 2027, 2028–2030, 2040 and Beyond | LiteFinance",
+      "url": "https://www.litefinance.org/blog/analysts-opinions/jpm-stock-forecast-and-price-prediction/",
+      "assetId": "us-div",
+      "assetName": "US Dividend Stocks"
+    },
+    {
+      "title": "JPMorgan Chase & Co. (JPM) Dividend History, Dates & Yield",
+      "url": "https://stockanalysis.com/stocks/jpm/dividend/",
+      "assetId": "us-div",
+      "assetName": "US Dividend Stocks"
+    },
+    {
+      "title": "JPMorgan Clears Stress Test and Lifts Payout",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/jpmorgan-clears-stress-test-lifts-145706714.html",
+      "assetId": "us-div",
+      "assetName": "US Dividend Stocks"
+    },
+    {
+      "title": "JPM's $50B Buyback Plan & Dividend Boost: What it Means for the Stock",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/jpms-50b-buyback-plan-dividend-121900176.html",
+      "assetId": "us-div",
+      "assetName": "US Dividend Stocks"
+    },
+    {
+      "title": "JPMorgan Chase & Co. (JPM) Dividend Yield 2026, Date & History $JPM",
+      "url": "https://www.marketbeat.com/stocks/NYSE/JPM/dividend/",
+      "assetId": "us-div",
+      "assetName": "US Dividend Stocks"
+    },
+    {
+      "title": "Its Dividend Looks Secure, But Don’t Chase JPM Stock After Q2 Earnings. Here’s Why.",
+      "url": "https://www.barchart.com/story/news/3305149/its-dividend-looks-secure-but-dont-chase-jpm-stock-after-q2-earnings-heres-why",
+      "assetId": "us-div",
+      "assetName": "US Dividend Stocks"
+    },
+    {
+      "title": "JPM Dividend Information JPMorgan Chase | Market Chameleon",
+      "url": "https://marketchameleon.com/Overview/JPM/Dividends/",
+      "assetId": "us-div",
+      "assetName": "US Dividend Stocks"
+    },
+    {
+      "title": "2026 Outlooks: Market and Economic Forecasts | Morgan Stanley",
+      "url": "https://www.morganstanley.com/Themes/outlooks",
+      "assetId": "us-div",
+      "assetName": "US Dividend Stocks"
+    },
+    {
+      "title": "Morgan Stanley Dividend 2026 & forecast 2027 2028 2029 | ex-day",
+      "url": "https://stocksguide.com/en/dividends/Morgan-Stanley-US6174464486",
+      "assetId": "us-div",
+      "assetName": "US Dividend Stocks"
+    },
+    {
+      "title": "2026 Midyear Investment Outlook: Constructive, Not Complacent | Morgan Stanley",
+      "url": "https://www.morganstanley.com/insights/articles/investment-outlook-midyear-2026",
+      "assetId": "us-div",
+      "assetName": "US Dividend Stocks"
+    },
+    {
+      "title": "Wall Street's 2026 forecasts are rolling in — and some see the S&P 500 hitting 8,000",
+      "url": "https://finance.yahoo.com/news/wall-streets-2026-forecasts-are-rolling-in--and-some-see-the-sp-500-hitting-8000-110002501.html",
+      "assetId": "us-div",
+      "assetName": "US Dividend Stocks"
+    },
+    {
+      "title": "Investment Outlook 2026: U.S. Stock Market to Guide Growth | Morgan Stanley",
+      "url": "https://www.morganstanley.com/insights/articles/stock-market-investment-outlook-2026",
+      "assetId": "us-div",
+      "assetName": "US Dividend Stocks"
+    },
+    {
+      "title": "JP Morgan resets S&P 500 price target for rest of 2026",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/jp-morgan-resets-p-500-180018842.html",
+      "assetId": "us-div",
+      "assetName": "US Dividend Stocks"
+    },
+    {
+      "title": "Wall Street's 2026 outlook for stocks 🔭 - by Sam Ro, CFA",
+      "url": "https://www.tker.co/p/wall-street-2026-stock-market-outlook",
+      "assetId": "us-div",
+      "assetName": "US Dividend Stocks"
+    },
+    {
+      "title": "Gold Price Forecast & Predictions for 2026, 2027, 2028–2030, 2040 and Beyond | LiteFinance",
+      "url": "https://www.litefinance.org/blog/analysts-opinions/gold-price-prediction-forecast/",
+      "assetId": "gold",
+      "assetName": "Gold"
+    },
+    {
+      "title": "GOLD PRICE FORECAST 2026, 2027, 2028 AND 2029 - Long Forecast",
+      "url": "https://longforecast.com/gold-price-today-forecast-2017-2018-2019-2020-2021-ounce-gram",
+      "assetId": "gold",
+      "assetName": "Gold"
+    },
+    {
+      "title": "Gold Price Predictions for 2026 and 2027 I J.P. Morgan Global Research",
+      "url": "https://www.jpmorgan.com/insights/global-research/commodities/gold-prices",
+      "assetId": "gold",
+      "assetName": "Gold"
+    },
+    {
+      "title": "Gold Price Forecast 2026: What the Major Banks Are Predicting Now",
+      "url": "https://goldsilver.com/industry-news/article/gold-price-forecast-2026-2027-key-predictions-from-top-analysts/",
+      "assetId": "gold",
+      "assetName": "Gold"
+    },
+    {
+      "title": "Analytical Gold Price Predictions for 2026, 2027, and Beyond | Market Pulse",
+      "url": "https://fxopen.com/blog/en/analytical-gold-price-predictions-for-2026-2027-and-beyond/",
+      "assetId": "gold",
+      "assetName": "Gold"
+    },
+    {
+      "title": "Gold Price Forecast 2026 & 2027: Analyst Predictions",
+      "url": "https://goldpricetools.com/guides/gold-price-prediction-2026",
+      "assetId": "gold",
+      "assetName": "Gold"
+    },
+    {
+      "title": "Gold Price Forecast 2026 | Expert Predictions & Analysis | MintBuilder",
+      "url": "https://mintbuilder.com/gold-price-forecast",
+      "assetId": "gold",
+      "assetName": "Gold"
+    },
+    {
+      "title": "A Gold Price Prediction for 2026 2027 2028 - 2030 - InvestingHaven",
+      "url": "https://investinghaven.com/forecasts/gold-price-prediction/",
+      "assetId": "gold",
+      "assetName": "Gold"
+    },
+    {
+      "title": "Gold Price Prediction 2026–2030: XAU USD Forecast & Analysis | Just2Trade",
+      "url": "https://j2t.com/solutions/blogview/gold-price-prediction/",
+      "assetId": "gold",
+      "assetName": "Gold"
+    },
+    {
+      "title": "Gold price forecast for 2026, 2030, and 2040 | GoldRepublic",
+      "url": "https://www.goldrepublic.com/en-us/gold-price/forecast",
+      "assetId": "gold",
+      "assetName": "Gold"
+    },
+    {
+      "title": "Outlook | World Gold Council",
+      "url": "https://www.gold.org/goldhub/research/gold-demand-trends/gold-demand-trends-q1-2026/outlook",
+      "assetId": "gold",
+      "assetName": "Gold"
+    },
+    {
+      "title": "Gold Outlook 2026: Push ahead or pull back | World Gold Council",
+      "url": "https://www.gold.org/goldhub/research/gold-outlook-2026",
+      "assetId": "gold",
+      "assetName": "Gold"
+    },
+    {
+      "title": "Gold Mid-Year Outlook 2026: Point break | World Gold Council",
+      "url": "https://www.gold.org/goldhub/research/gold-mid-year-outlook-2026",
+      "assetId": "gold",
+      "assetName": "Gold"
+    },
+    {
+      "title": "Gold Price Forecast 2026–2027: Bank Targets & Risks",
+      "url": "https://goldenarkreserve.com/insights/gold-price-forecast-2026-2027/",
+      "assetId": "gold",
+      "assetName": "Gold"
+    },
+    {
+      "title": "Page 1 Information Classification: General July 2026 Monthly Gold Monitor",
+      "url": "https://www.ssga.com/library-content/products/fund-docs/etfs/us/insights-investment-ideas/monthly-gold-monitor.pdf",
+      "assetId": "gold",
+      "assetName": "Gold"
+    },
+    {
+      "title": "Gold and silver to hit new highs in 2026, but the rally ends in 2027, says World Bank | Kitco News",
+      "url": "https://www.kitco.com/news/article/2025-10-30/gold-and-silver-hit-new-highs-2026-rally-ends-2027-says-world-bank",
+      "assetId": "gold",
+      "assetName": "Gold"
+    },
+    {
+      "title": "GOLDMAN SACHS STOCK PRICE PREDICTION 2026, 2027, 2028-2030 - Long Forecast",
+      "url": "https://longforecast.com/gs-stock",
+      "assetId": "gold",
+      "assetName": "Gold"
+    },
+    {
+      "title": "Gold Price Forecast 2026: Bank Targets & 2030 Outlook",
+      "url": "https://myinvestacademy.com/precious-metals/gold/price-forecast/",
+      "assetId": "gold",
+      "assetName": "Gold"
+    },
+    {
+      "title": "Goldman Sachs Reduced Its Gold Price Target for the End of 2026",
+      "url": "https://finance.yahoo.com/markets/commodities/articles/goldman-sachs-reduced-gold-price-115703189.html",
+      "assetId": "gold",
+      "assetName": "Gold"
+    },
+    {
+      "title": "Gold Price Forecast 2027",
+      "url": "https://www.bullionstar.com/blogs/gold-silver-101/gold-price-forecast-2027/",
+      "assetId": "gold",
+      "assetName": "Gold"
+    },
+    {
+      "title": "Gold Forecast &amp; Price Prediction for H2 2026: $4,000 Retest or Recovery to $4,900?",
+      "url": "https://naga.com/en/news-and-analysis/articles/gold-price-prediction",
+      "assetId": "gold",
+      "assetName": "Gold"
+    },
+    {
+      "title": "Gold Price Outlook July 2026: The Price Fell. Case Intact.",
+      "url": "https://goldsilver.com/industry-news/article/gold-price-outlook-july-2026/",
+      "assetId": "gold",
+      "assetName": "Gold"
+    },
+    {
+      "title": "Bitcoin (BTC) Price Prediction 2026, 2027-2030",
+      "url": "https://coinpedia.org/price-prediction/bitcoin-price-prediction/",
+      "assetId": "btc",
+      "assetName": "Bitcoin (BTC)"
+    },
+    {
+      "title": "Bitcoin (BTC) Price Prediction 2026, 2027-2030 | CoinCodex",
+      "url": "https://coincodex.com/crypto/bitcoin/price-prediction/",
+      "assetId": "btc",
+      "assetName": "Bitcoin (BTC)"
+    },
+    {
+      "title": "Bitcoin (BTC) Price Prediction 2026 2027 2028 - 2030 - InvestingHaven",
+      "url": "https://investinghaven.com/bitcoin-btc-price-predictions/",
+      "assetId": "btc",
+      "assetName": "Bitcoin (BTC)"
+    },
+    {
+      "title": "Bitcoin (BTC) Price Prediction 2026 2027 2028 - 2040",
+      "url": "https://changelly.com/blog/bitcoin-price-prediction/",
+      "assetId": "btc",
+      "assetName": "Bitcoin (BTC)"
+    },
+    {
+      "title": "Bitcoin Price Prediction 2026, 2027, 2030, 2040, 2050 - XS",
+      "url": "https://www.xs.com/en/blog/bitcoin-price-prediction/",
+      "assetId": "btc",
+      "assetName": "Bitcoin (BTC)"
+    },
+    {
+      "title": "Bitcoin Price Prediction | Forecast BTC price in 2026, 2027, 2030 & beyond",
+      "url": "https://www.kraken.com/price-prediction/bitcoin",
+      "assetId": "btc",
+      "assetName": "Bitcoin (BTC)"
+    },
+    {
+      "title": "Bitcoin (BTC) Price Prediction & Forecast 2026, 2027, 2028-2030 | Binance",
+      "url": "https://www.binance.com/en/price-prediction/bitcoin",
+      "assetId": "btc",
+      "assetName": "Bitcoin (BTC)"
+    },
+    {
+      "title": "Bitcoin (BTC) Price Prediction 2026, 2027 - 2030",
+      "url": "https://cryptonews.com/price-predictions/bitcoin-price-prediction/",
+      "assetId": "btc",
+      "assetName": "Bitcoin (BTC)"
+    },
+    {
+      "title": "Bitcoin (BTC) Price Prediction 2026, 2027 & 2030 | Data-Backed Forecast",
+      "url": "https://cryptoofficiel.com/price-prediction/bitcoin/",
+      "assetId": "btc",
+      "assetName": "Bitcoin (BTC)"
+    },
+    {
+      "title": "Bitcoin (BTC) Price Prediction: Daily, Weekly 2026 - 2040",
+      "url": "https://coindcx.com/blog/price-predictions/bitcoin-price-weekly/",
+      "assetId": "btc",
+      "assetName": "Bitcoin (BTC)"
+    },
+    {
+      "title": "JPMorgan Keeps Bitcoin Bull Case: $266,000 Remains The Target — TradingView News",
+      "url": "https://www.tradingview.com/news/newsbtc:c4fe79be8094b:0-jpmorgan-keeps-bitcoin-bull-case-266-000-remains-the-target/",
+      "assetId": "btc",
+      "assetName": "Bitcoin (BTC)"
+    },
+    {
+      "title": "JPMorgan Just Called The Bitcoin Price Bottom—Predicts Massive $28.3 Trillion Gold Challenge In 2026",
+      "url": "https://www.forbes.com/sites/digital-assets/2025/11/15/jpmorgan-just-called-the-bitcoin-price-bottom-predicts-massive-283-trillion-gold-challenge-in-2026/",
+      "assetId": "btc",
+      "assetName": "Bitcoin (BTC)"
+    },
+    {
+      "title": "JPMorgan turns bullish on crypto in 2026 despite crash",
+      "url": "https://finance.yahoo.com/news/jpmorgan-turns-bullish-crypto-2026-013000421.html",
+      "assetId": "btc",
+      "assetName": "Bitcoin (BTC)"
+    },
+    {
+      "title": "Bitcoin Price To $266,000? JPMorgan Sees BTC More Attractive Than Gold Long Term",
+      "url": "https://finance.yahoo.com/news/bitcoin-price-266-000-jpmorgan-123718896.html",
+      "assetId": "btc",
+      "assetName": "Bitcoin (BTC)"
+    },
+    {
+      "title": "JPMorgan Forecasts Bitcoin Bottom, Anticipates $28.3 Trillion Challenge To Gold By 2026",
+      "url": "https://finance.yahoo.com/news/jpmorgan-forecasts-bitcoin-bottom-anticipates-183113549.html",
+      "assetId": "btc",
+      "assetName": "Bitcoin (BTC)"
+    },
+    {
+      "title": "Not $100K or $200K: This is the new price target for Bitcoin according to JPMorgan analysts",
+      "url": "https://news.bit2me.com/en/JPMorgan's-new-bitcoin-price-target",
+      "assetId": "btc",
+      "assetName": "Bitcoin (BTC)"
+    },
+    {
+      "title": "JPMorgan reveals new Bitcoin target amid market pullback",
+      "url": "https://finance.yahoo.com/news/jpmorgan-reveals-bitcoin-target-amid-182535064.html",
+      "assetId": "btc",
+      "assetName": "Bitcoin (BTC)"
+    },
+    {
+      "title": "JPMorgan revisits Bitcoin forecast after crash - TheStreet Crypto: Bitcoin and cryptocurrency news, advice, analysis and more",
+      "url": "https://www.thestreet.com/crypto/markets/jpmorgan-revisits-bitcoin-forecast-after-crash",
+      "assetId": "btc",
+      "assetName": "Bitcoin (BTC)"
+    },
+    {
+      "title": "JPMorgan says bitcoin could reach $266,000 ‘long term’ as it looks more attractive than gold",
+      "url": "https://finance.yahoo.com/news/jpmorgan-says-bitcoin-could-reach-190708601.html",
+      "assetId": "btc",
+      "assetName": "Bitcoin (BTC)"
+    },
+    {
+      "title": "JPMorgan Bitcoin Price Prediction: $170k Target",
+      "url": "https://ventureburn.com/jpmorgan-believes-bitcoin-could-hit-170000-but-everything-hinges-on-market-stability/",
+      "assetId": "btc",
+      "assetName": "Bitcoin (BTC)"
+    },
+    {
+      "title": "Bitcoin (BTC) Price Prediction: Standard Chartered Holds $100,000 and Maps a $500,000 Path by 2028",
+      "url": "https://www.openpr.com/news/4556497/bitcoin-btc-price-prediction-standard-chartered-holds",
+      "assetId": "btc",
+      "assetName": "Bitcoin (BTC)"
+    },
+    {
+      "title": "Standard Chartered says bitcoin price could reach $500,000 by 2028 | The Block",
+      "url": "https://www.theblock.co/post/338999/standard-chartered-bitcoin-price-500000-2028",
+      "assetId": "btc",
+      "assetName": "Bitcoin (BTC)"
+    },
+    {
+      "title": "Bitcoin to $500,000? Here’s when to expect the price to hit the new record",
+      "url": "https://finance.yahoo.com/news/bitcoin-500-000-expect-price-164545497.html",
+      "assetId": "btc",
+      "assetName": "Bitcoin (BTC)"
+    },
+    {
+      "title": "Bitcoin To $500,000: Standard Chartered Doubles Down On 2028 Target",
+      "url": "https://www.newsbtc.com/news/bitcoin/bitcoin-to-500000-standard-chartered-2028-target/",
+      "assetId": "btc",
+      "assetName": "Bitcoin (BTC)"
+    },
+    {
+      "title": "Bitcoin price prediction by Standard Chartered: From $500,000 to new reality",
+      "url": "https://tradersunion.com/news/editors-picks/show/1957419-bitcoin-price-standard-chartered/",
+      "assetId": "btc",
+      "assetName": "Bitcoin (BTC)"
+    },
+    {
+      "title": "170-year-old bank slashes Bitcoin price prediction by half - TheStreet Crypto: Bitcoin and cryptocurrency news, advice, analysis and more",
+      "url": "https://www.thestreet.com/crypto/trading/170-year-old-bank-slashes-bitcoin-price-prediction-by-half",
+      "assetId": "btc",
+      "assetName": "Bitcoin (BTC)"
+    },
+    {
+      "title": "Standard Chartered Predicts Bitcoin at $500K by 2028",
+      "url": "https://beincrypto.com/standard-chartered-bitcoin-prediction-2028/",
+      "assetId": "btc",
+      "assetName": "Bitcoin (BTC)"
+    },
+    {
+      "title": "Bullish: Standard Chartered Sets $500,000 Bitcoin (BTC) Price Target - Blockonomi",
+      "url": "https://blockonomi.com/bullish-standard-chartered-sets-500000-bitcoin-btc-price-target/",
+      "assetId": "btc",
+      "assetName": "Bitcoin (BTC)"
+    },
+    {
+      "title": "Standard Chartered Predicts Bitcoin to Hit $500,000 by 2028, Citing Increased Government Holdings in Strategy Before Trump Leaves Office - \"The Defiant\"",
+      "url": "https://thedefiant.io/news/markets/standard-chartered-predicts-bitcoin-to-hit-500000-2028-citing-increased-holdings-b50df802",
+      "assetId": "btc",
+      "assetName": "Bitcoin (BTC)"
+    },
+    {
+      "title": "'The Pace Will Be Slower Than Expected': Standard Chartered Lowers Bitcoin Price Forecasts",
+      "url": "https://finance.yahoo.com/news/pace-slower-expected-standard-chartered-170107409.html",
+      "assetId": "btc",
+      "assetName": "Bitcoin (BTC)"
+    },
+    {
+      "title": "Ethereum Price Forecast & Predictions for 2026, 2027, 2028–2030, 2040 and Beyond | LiteFinance",
+      "url": "https://www.litefinance.org/blog/analysts-opinions/ethereum-price-prediction-forecast/",
+      "assetId": "eth",
+      "assetName": "Ethereum (ETH)"
+    },
+    {
+      "title": "Ethereum Analyst ratings price targets 2026",
+      "url": "https://bitcoinfoundation.org/news/ethereum/ethereum-price-prediction-2026/",
+      "assetId": "eth",
+      "assetName": "Ethereum (ETH)"
+    },
+    {
+      "title": "Ethereum (ETH) Price Prediction 2026, 2027-2030 | CoinCodex",
+      "url": "https://coincodex.com/crypto/ethereum/price-prediction/",
+      "assetId": "eth",
+      "assetName": "Ethereum (ETH)"
+    },
+    {
+      "title": "Ethereum (ETH) Price Prediction 2026 2027 2028 - 2040",
+      "url": "https://changelly.com/blog/ethereum-eth-price-predictions/",
+      "assetId": "eth",
+      "assetName": "Ethereum (ETH)"
+    },
+    {
+      "title": "Ethereum (ETH) Price Prediction 2026: Expert Forecasts and Analysis | CoinGecko",
+      "url": "https://www.coingecko.com/learn/ethereum-eth-price-predictions-expert-forecasts",
+      "assetId": "eth",
+      "assetName": "Ethereum (ETH)"
+    },
+    {
+      "title": "Ethereum Price Prediction: down to $1,613.39? - ETH Forecast, Long-Term & Short-Term Price Prognosis - WalletInvestor.com",
+      "url": "https://walletinvestor.com/forecast/ethereum-prediction",
+      "assetId": "eth",
+      "assetName": "Ethereum (ETH)"
+    },
+    {
+      "title": "Ethereum (ETH) Price Prediction: 2025, 2026, 2030 • Benzinga",
+      "url": "https://www.benzinga.com/money/ethereum-eth-price-predictions",
+      "assetId": "eth",
+      "assetName": "Ethereum (ETH)"
+    },
+    {
+      "title": "Ethereum (ETH) Price Prediction & Forecast 2026, 2027, 2028-2030 | Binance",
+      "url": "https://www.binance.com/en/price-prediction/ethereum",
+      "assetId": "eth",
+      "assetName": "Ethereum (ETH)"
+    },
+    {
+      "title": "Ethereum Price Prediction 2026-2036 | ETH Forecast up to 2036",
+      "url": "https://finst.com/en/crypto/ethereum/prediction",
+      "assetId": "eth",
+      "assetName": "Ethereum (ETH)"
+    },
+    {
+      "title": "How High Will Ethereum Go? Price Predictions for 2026-2030",
+      "url": "https://www.mexc.com/learn/article/how-high-will-ethereum-go-price-predictions-for-2026-2030/1",
+      "assetId": "eth",
+      "assetName": "Ethereum (ETH)"
+    },
+    {
+      "title": "ETH Price Target Raised to $7500 by Standard Chartered",
+      "url": "https://coinmarketcap.com/academy/article/eth-price-target-raised-to-dollar7500-by-standard-chartered",
+      "assetId": "eth",
+      "assetName": "Ethereum (ETH)"
+    },
+    {
+      "title": "Ethereum Could Soar to $25,000 by 2028: Standard Chartered",
+      "url": "https://finance.yahoo.com/news/ethereum-could-soar-25-000-134143910.html",
+      "assetId": "eth",
+      "assetName": "Ethereum (ETH)"
+    },
+    {
+      "title": "Standard Chartered analysts raise Ethereum year-end price target to $7,500 amid corporate treasury and spot ETF demand | The Block",
+      "url": "https://www.theblock.co/post/366734/standard-chartered-analysts-raise-ethereum-year-end-price-target",
+      "assetId": "eth",
+      "assetName": "Ethereum (ETH)"
+    },
+    {
+      "title": "Standard Chartered says '2026 will be the year of Ethereum' as bank backs ETH outperformance | The Block",
+      "url": "https://www.theblock.co/post/385097/standard-chartered-says-2026-will-be-the-year-of-ethereum",
+      "assetId": "eth",
+      "assetName": "Ethereum (ETH)"
+    },
+    {
+      "title": "Standard Chartered lifts Ethereum call to $7500, arguing ...",
+      "url": "https://www.mitrade.com/insights/crypto-analysis/eth/insights-ethusd-gen-20260115",
+      "assetId": "eth",
+      "assetName": "Ethereum (ETH)"
+    },
+    {
+      "title": "Ethereum Falls to $2,000 But New Price Prediction Targets $7,500 by End-2026",
+      "url": "https://www.financemagnates.com/trending/ethereum-falls-to-2000-but-new-price-prediction-targets-7500-by-end-2026/",
+      "assetId": "eth",
+      "assetName": "Ethereum (ETH)"
+    },
+    {
+      "title": "Standard Chartered Says '2026 Will Be The Year Of Ethereum' As It Predicts 'ETH Outperformance'",
+      "url": "https://finance.yahoo.com/news/standard-chartered-says-2026-ethereum-192131962.html",
+      "assetId": "eth",
+      "assetName": "Ethereum (ETH)"
+    },
+    {
+      "title": "Ethereum News Today: Standard Chartered upgrades Ethereum price target to $7,500 near term",
+      "url": "https://www.ainvest.com/news/ethereum-news-today-standard-chartered-upgrades-ethereum-price-target-7-500-term-2508/",
+      "assetId": "eth",
+      "assetName": "Ethereum (ETH)"
+    },
+    {
+      "title": "Ethereum (ETH) Price Prediction: Standard Chartered Eyes $7,500 Year-End as Ruvi (RUVI) Opens Phase 4",
+      "url": "https://www.openpr.com/news/4554598/ethereum-eth-price-prediction-standard-chartered-eyes",
+      "assetId": "eth",
+      "assetName": "Ethereum (ETH)"
+    },
+    {
+      "title": "Ethereum News Today: Standard Chartered Lifts Ethereum 2025 Target to $7,500 on Strong Institutional Demand",
+      "url": "https://www.ainvest.com/news/ethereum-news-today-standard-chartered-lifts-ethereum-2025-target-7-500-strong-institutional-demand-2508/",
+      "assetId": "eth",
+      "assetName": "Ethereum (ETH)"
+    },
+    {
+      "title": "Ethereum price prediction 2026, 2027, 2028-2032",
+      "url": "https://www.cryptopolitan.com/ethereum-price-prediction/",
+      "assetId": "eth",
+      "assetName": "Ethereum (ETH)"
+    },
+    {
+      "title": "BITQ - Bitwise Crypto Industry Innovators Etf Stock Price Forecast 2025, 2026, 2030 to 2050 - StockScan",
+      "url": "https://stockscan.io/stocks/BITQ/forecast",
+      "assetId": "eth",
+      "assetName": "Ethereum (ETH)"
+    },
+    {
+      "title": "Ethereum (ETH) Price Prediction - Forecast 2026 2027 2028 - 2030 - InvestingHaven",
+      "url": "https://investinghaven.com/ethereum-eth-price-predictions/",
+      "assetId": "eth",
+      "assetName": "Ethereum (ETH)"
+    },
+    {
+      "title": "ETHEREUM PRICE PREDICTION 2026, 2027 - 2030 - 2035",
+      "url": "https://coinpriceforecast.com/ethereum-forecast-2020-2025-2030",
+      "assetId": "eth",
+      "assetName": "Ethereum (ETH)"
+    },
+    {
+      "title": "Ethereum (ETH) Price Prediction [2026, 2027, 2030, 2040] and more | Coinbase",
+      "url": "https://www.coinbase.com/price-prediction/ethereum",
+      "assetId": "eth",
+      "assetName": "Ethereum (ETH)"
+    },
+    {
+      "title": "Ethereum Price Prediction up to $2,334.65 by 2026 - ETH Forecast 2026 - 2030",
+      "url": "https://coindataflow.com/en/prediction/ethereum",
+      "assetId": "eth",
+      "assetName": "Ethereum (ETH)"
+    },
+    {
+      "title": "The case for real estate in 2026 | RBCCM",
+      "url": "https://www.rbccm.com/en/insights/2026/03/the-case-for-real-estate",
+      "assetId": "cad-reit",
+      "assetName": "Canadian REITs"
+    },
+    {
+      "title": "Market Factors: RBC’s outlook for REITs in 2026 and its top picks - The Globe and Mail",
+      "url": "https://www.theglobeandmail.com/investing/investment-ideas/article-market-factors-rbcs-outlook-for-reits-in-2026-and-its-top-picks/",
+      "assetId": "cad-reit",
+      "assetName": "Canadian REITs"
+    },
+    {
+      "title": "Conquering Canada's REIT Landscape: Top Picks for 2026 [Updated] | Coldwell Banker Horizon Realty",
+      "url": "https://www.kelownarealestate.com/blog-posts/conquering-canadas-reit-landscape-top-picks-for-2024",
+      "assetId": "cad-reit",
+      "assetName": "Canadian REITs"
+    },
+    {
+      "title": "RBC analyst ranks REIT sectors and reveals top picks - The Globe and Mail",
+      "url": "https://www.theglobeandmail.com/investing/markets/inside-the-market/article-rbc-analyst-ranks-reit-sectors-and-reveals-top-picks/",
+      "assetId": "cad-reit",
+      "assetName": "Canadian REITs"
+    },
+    {
+      "title": "RBC's Q2 Earnings and the Attractive Valuation of Canadian REITs in a Volatile Macro Environment: Strategic Entry Points in Defensive Sectors Amid RBC-Driven Market Optimism",
+      "url": "https://www.ainvest.com/news/rbc-q2-earnings-attractive-valuation-canadian-reits-volatile-macro-environment-strategic-entry-points-defensive-sectors-rbc-driven-market-optimism-2508/",
+      "assetId": "cad-reit",
+      "assetName": "Canadian REITs"
+    },
+    {
+      "title": "Barlow’s Research Roundup: RBC analyst’s top picks, favoured sectors in REITs - The Globe and Mail",
+      "url": "https://www.theglobeandmail.com/investing/markets/inside-the-market/article-barlows-research-roundup-rbc-analysts-top-picks-favoured-sectors-in/",
+      "assetId": "cad-reit",
+      "assetName": "Canadian REITs"
+    },
+    {
+      "title": "Canadian Commercial Real Estate Outlook, 2026",
+      "url": "https://www.jll.com/en-ca/insights/market-outlook/canadian-commercial-real-estate-outlook",
+      "assetId": "cad-reit",
+      "assetName": "Canadian REITs"
+    },
+    {
+      "title": "2026 Outlook | RBC Capital Markets",
+      "url": "https://www.rbccm.com/en/insights/outlook-2026",
+      "assetId": "cad-reit",
+      "assetName": "Canadian REITs"
+    },
+    {
+      "title": "Canadian REITs: A year of ups, downs and major deals • RENX - Real Estate News Exchange • Real Estate News Exchange",
+      "url": "https://renx.ca/canadian-reit-performance-year-ups-downs-major-deals",
+      "assetId": "cad-reit",
+      "assetName": "Canadian REITs"
+    },
+    {
+      "title": "Global Insight 2026 Outlook: Canada",
+      "url": "https://www.rbcwealthmanagement.com/en-asia/insights/global-insight-2026-outlook-canada",
+      "assetId": "cad-reit",
+      "assetName": "Canadian REITs"
+    },
+    {
+      "title": "Canadian (TSX) REITS Industry Analysis",
+      "url": "https://simplywall.st/markets/ca/real-estate/reits",
+      "assetId": "cad-reit",
+      "assetName": "Canadian REITs"
+    },
+    {
+      "title": "CI Canadian REIT Stock Forecast: down to 15.774 CAD? - RIT Stock Price Prediction, Long-Term & Short-Term Share Revenue Prognosis with Smart Technical Analysis",
+      "url": "https://walletinvestor.com/tose-stock-forecast/rit-stock-prediction",
+      "assetId": "cad-reit",
+      "assetName": "Canadian REITs"
+    },
+    {
+      "title": "The Canadian Real Estate Stocks That Look Poised for a Stronger 2026 | The Motley Fool Canada",
+      "url": "https://www.fool.ca/2026/05/31/the-canadian-real-estate-stocks-that-look-poised-for-a-stronger-2026/",
+      "assetId": "cad-reit",
+      "assetName": "Canadian REITs"
+    },
+    {
+      "title": "TD Economics - Provincial Resale Market Outlook: Flickers in Ontario and B.C., Cooling Elsewhere",
+      "url": "https://economics.td.com/ca-provincial-housing-outlook",
+      "assetId": "cad-reit",
+      "assetName": "Canadian REITs"
+    },
+    {
+      "title": "Top Canadian REITS of 2026 | The Motley Fool Canada",
+      "url": "https://www.fool.ca/investing/top-canadian-reits-to-invest-in/",
+      "assetId": "cad-reit",
+      "assetName": "Canadian REITs"
+    },
+    {
+      "title": "CI Canadian REIT ETF (RIT.TO) Performance History - Yahoo Finance",
+      "url": "https://ca.finance.yahoo.com/quote/RIT.TO/performance/",
+      "assetId": "cad-reit",
+      "assetName": "Canadian REITs"
+    },
+    {
+      "title": "3 Top Canadian REITs for Monthly Income in 2026",
+      "url": "https://ca.finance.yahoo.com/news/3-top-canadian-reits-monthly-212000884.html",
+      "assetId": "cad-reit",
+      "assetName": "Canadian REITs"
+    },
+    {
+      "title": "Outlook for Real Estate in a Post-COVID World | Transcript",
+      "url": "https://www.rbccm.com/en/insights/transcripts/canadian-reits-reocs.page",
+      "assetId": "cad-reit",
+      "assetName": "Canadian REITs"
+    },
+    {
+      "title": "Barlow’s Research Roundup: RBC analyst’s top picks in REITs after meetings with U.S. investors - The Globe and Mail",
+      "url": "https://www.theglobeandmail.com/investing/markets/inside-the-market/article-barlows-research-roundup-rbc-analysts-top-picks-in-reits-after/",
+      "assetId": "cad-reit",
+      "assetName": "Canadian REITs"
+    },
+    {
+      "title": "Barlow’s Research Roundup: Top REIT picks, earnings preview from a RBC analyst - The Globe and Mail",
+      "url": "https://www.theglobeandmail.com/investing/markets/inside-the-market/article-barlows-research-roundup-top-reit-picks-earnings-preview-from-a-rbc/",
+      "assetId": "cad-reit",
+      "assetName": "Canadian REITs"
+    },
+    {
+      "title": "Barlow’s Research Roundup: Profit review, top picks in REITs from a RBC analyst - The Globe and Mail",
+      "url": "https://www.theglobeandmail.com/investing/markets/inside-the-market/article-barlows-research-roundup-profit-review-top-picks-in-reits-from-a-rbc/",
+      "assetId": "cad-reit",
+      "assetName": "Canadian REITs"
+    },
+    {
+      "title": "CREA Downgrades Resale Housing Market Forecast",
+      "url": "https://www.crea.ca/housing-market-stats/canadian-housing-market-stats/quarterly-forecasts/",
+      "assetId": "cad-re",
+      "assetName": "Canadian Real Estate"
+    },
+    {
+      "title": "CREA | CREA Updates Resale Housing Market Forecast for 2026 and 2027",
+      "url": "https://www.crea.ca/media-hub/news/crea-downgrades-resale-housing-market-forecast-amid-tariff-uncertainty-and-economic-uncertainty/",
+      "assetId": "cad-re",
+      "assetName": "Canadian Real Estate"
+    },
+    {
+      "title": "CREA Revises Resale Housing Market Forecast",
+      "url": "https://www.bnnbloomberg.ca/press-releases/2026/07/15/crea-revises-resale-housing-market-forecast/",
+      "assetId": "cad-re",
+      "assetName": "Canadian Real Estate"
+    },
+    {
+      "title": "CREA Revises Resale Housing Market Forecast",
+      "url": "https://www.globenewswire.com/news-release/2026/07/15/3327509/0/en/CREA-Revises-Resale-Housing-Market-Forecast.html",
+      "assetId": "cad-re",
+      "assetName": "Canadian Real Estate"
+    },
+    {
+      "title": "CREA Revises Resale Housing Market Forecast",
+      "url": "https://finance.yahoo.com/real-estate/articles/crea-revises-resale-housing-market-090200712.html",
+      "assetId": "cad-re",
+      "assetName": "Canadian Real Estate"
+    },
+    {
+      "title": "CREA 2026 Housing Forecast: What It Means for Buyers",
+      "url": "https://pegasuslending.com/blog/crea-2026-housing-forecast-canada/",
+      "assetId": "cad-re",
+      "assetName": "Canadian Real Estate"
+    },
+    {
+      "title": "Pent-up demand to drive Canada's housing recovery in 2026 and 2027: forecast | Daily Hive | Urbanized",
+      "url": "https://dailyhive.com/vancouver/canada-home-sales-forecast-crea-2026-2027",
+      "assetId": "cad-re",
+      "assetName": "Canadian Real Estate"
+    },
+    {
+      "title": "Here’s what the CREA now estimates the average Canadian home will sell for",
+      "url": "https://www.bnnbloomberg.ca/business/real-estate/2026/04/16/crea-lowers-home-sales-forecast-for-2026-amid-shaky-economic-start-to-year/",
+      "assetId": "cad-re",
+      "assetName": "Canadian Real Estate"
+    },
+    {
+      "title": "CREA now expects home sales decline in 2026 as it lowers forecast again - CMT News",
+      "url": "https://www.canadianmortgagetrends.com/2026/07/crea-now-expects-home-sales-decline-in-2026-as-it-lowers-forecast-again/",
+      "assetId": "cad-re",
+      "assetName": "Canadian Real Estate"
+    },
+    {
+      "title": "Canada Mortgage Rate Forecast 2026 to 2028 | Will Rates Go Up or Down? — Mortgage Sandbox",
+      "url": "https://www.mortgagesandbox.com/mortgage-interest-rate-forecast",
+      "assetId": "cad-re",
+      "assetName": "Canadian Real Estate"
+    },
+    {
+      "title": "Mortgage Rates Forecast Canada 2026-2030 - nesto.ca",
+      "url": "https://www.nesto.ca/mortgage-basics/mortgage-rates-forecast-canada/",
+      "assetId": "cad-re",
+      "assetName": "Canadian Real Estate"
+    },
+    {
+      "title": "Canada Mortgage Interest Rate Forecast: 2026-2031",
+      "url": "https://wowa.ca/interest-rate-forecast",
+      "assetId": "cad-re",
+      "assetName": "Canadian Real Estate"
+    },
+    {
+      "title": "CANADA INTEREST RATE TODAY AND FORECAST 2026, 2027, 2028",
+      "url": "https://cadtod.com/boc-rate",
+      "assetId": "cad-re",
+      "assetName": "Canadian Real Estate"
+    },
+    {
+      "title": "Policy interest rate - Bank of Canada",
+      "url": "https://www.bankofcanada.ca/core-functions/monetary-policy/key-interest-rate/",
+      "assetId": "cad-re",
+      "assetName": "Canadian Real Estate"
+    },
+    {
+      "title": "Bank of Canada holds interest rate again amid signs of economic recovery",
+      "url": "https://realeconomy.rsmus.com/bank-of-canada-holds-interest-rate-again-amid-signs-of-economic-recovery/",
+      "assetId": "cad-re",
+      "assetName": "Canadian Real Estate"
+    },
+    {
+      "title": "BOC INTEREST RATE FORECAST 2026, 2027, 2028",
+      "url": "https://30rates.com/boc-rate",
+      "assetId": "cad-re",
+      "assetName": "Canadian Real Estate"
+    },
+    {
+      "title": "Bank of Canada maintains the policy rate at 2¼% - Bank of Canada",
+      "url": "https://www.bankofcanada.ca/2026/07/fad-press-release-2026-07-15/",
+      "assetId": "cad-re",
+      "assetName": "Canadian Real Estate"
+    },
+    {
+      "title": "Text of the Bank of Canada's latest interest rate decision",
+      "url": "https://www.bnnbloomberg.ca/business/economics/2026/07/15/text-of-the-bank-of-canadas-latest-interest-rate-decision/",
+      "assetId": "cad-re",
+      "assetName": "Canadian Real Estate"
+    },
+    {
+      "title": "Bank of Canada holds interest rates steady and expects economic growth to recover in the second half",
+      "url": "https://www.economies.com/forex/usd-cad-news/bank-of-canada-holds-interest-rates-steady-and-expects-economic-growth-to-recover-in-the-second-half-49292",
+      "assetId": "cad-re",
+      "assetName": "Canadian Real Estate"
+    },
+    {
+      "title": "U.S. Real Estate Market Outlook 2026 | CBRE",
+      "url": "https://www.cbre.com/insights/books/us-real-estate-market-outlook-2026",
+      "assetId": "us-re",
+      "assetName": "US Real Estate"
+    },
+    {
+      "title": "U.S. Real Estate Market Outlook 2026 - Capital Markets",
+      "url": "https://www.cbre.com/insights/books/us-real-estate-market-outlook-2026/capital-markets",
+      "assetId": "us-re",
+      "assetName": "US Real Estate"
+    },
+    {
+      "title": "Exclusive: What's in CBRE's Forecast for 2026 - Commercial Property Executive",
+      "url": "https://www.commercialsearch.com/news/qa-whats-in-cbres-forecast-for-2026/",
+      "assetId": "us-re",
+      "assetName": "US Real Estate"
+    },
+    {
+      "title": "Fortune Will Favor the Bold | CBRE",
+      "url": "https://www.cbre.com/insights/articles/fortune-will-favor-the-bold",
+      "assetId": "us-re",
+      "assetName": "US Real Estate"
+    },
+    {
+      "title": "Greater Los Angeles 2026 U.S. Real Estate Market Outlook | CBRE",
+      "url": "https://www.cbre.com/insights/reports/greater-los-angeles-2026-u-s-real-estate-market-outlook",
+      "assetId": "us-re",
+      "assetName": "US Real Estate"
+    },
+    {
+      "title": "U.S. Real Estate Market Outlook 2026 - Local Markets",
+      "url": "https://www.cbre.com/insights/books/us-real-estate-market-outlook-2026/local-markets",
+      "assetId": "us-re",
+      "assetName": "US Real Estate"
+    },
+    {
+      "title": "Q2 2026 Commercial Real Estate Outlook with Henry Chin (BONUS EPISODE) | CBRE",
+      "url": "https://www.cbre.com/insights/podcasts/2026-bonus-ep-q2-commercial-real-estate-outlook-with-dr-henry-chin",
+      "assetId": "us-re",
+      "assetName": "US Real Estate"
+    },
+    {
+      "title": "U.S. Real Estate Market Outlook 2026 - Office",
+      "url": "https://www.cbre.com/insights/books/us-real-estate-market-outlook-2026/office",
+      "assetId": "us-re",
+      "assetName": "US Real Estate"
+    },
+    {
+      "title": "2026 North American Investor Intentions Survey | CBRE",
+      "url": "https://www.cbre.com/insights/reports/2026-north-american-investor-intentions-survey",
+      "assetId": "us-re",
+      "assetName": "US Real Estate"
+    },
+    {
+      "title": "U.S. Real Estate Market Outlook 2026 - Event Recording",
+      "url": "https://www.cbre.com/insights/books/us-real-estate-market-outlook-2026/event-recording",
+      "assetId": "us-re",
+      "assetName": "US Real Estate"
+    },
+    {
+      "title": "​United States Outlook 2026 | US | Cushman & Wakefield",
+      "url": "https://www.cushmanwakefield.com/en/united-states/insights/united-states-outlook",
+      "assetId": "us-re",
+      "assetName": "US Real Estate"
+    },
+    {
+      "title": "Here’s what to expect for commercial real estate in 2026",
+      "url": "https://www.cnbc.com/2025/12/30/commercial-real-estate-2026-what-to-expect.html",
+      "assetId": "us-re",
+      "assetName": "US Real Estate"
+    },
+    {
+      "title": "2026 Commercial Real Estate Trends",
+      "url": "https://www.jpmorgan.com/insights/real-estate/commercial-real-estate/commercial-real-estate-trends",
+      "assetId": "us-re",
+      "assetName": "US Real Estate"
+    },
+    {
+      "title": "U.S. Commercial Real Estate in 2026: A Sector-by-Sector… | Newmark",
+      "url": "https://www.nmrk.com/insights/thought-leadership/u-s-commercial-real-estate-in-2026-a-sector-by-sector-outlook",
+      "assetId": "us-re",
+      "assetName": "US Real Estate"
+    },
+    {
+      "title": "2026 commercial real estate outlook | Deloitte Insights",
+      "url": "https://www.deloitte.com/us/en/insights/industry/financial-services/commercial-real-estate-outlook.html",
+      "assetId": "us-re",
+      "assetName": "US Real Estate"
+    },
+    {
+      "title": "U.S. commercial real estate cap rates forecast 2026| Statista",
+      "url": "https://www.statista.com/statistics/245008/us-commercial-property-cap-rates/",
+      "assetId": "us-re",
+      "assetName": "US Real Estate"
+    },
+    {
+      "title": "Commercial Real Estate Outlook for 2026",
+      "url": "https://www.pbmares.com/commercial-real-estate-outlook-for-2026/",
+      "assetId": "us-re",
+      "assetName": "US Real Estate"
+    },
+    {
+      "title": "A New Dawn in Real Estate: 2026 U.S. Commercial Real Estate Outlook | Markets Group",
+      "url": "https://www.marketsgroup.org/strategic-insights/a-new-dawn-in-real-estate-2026-u-s-commercial-real-estate-outlook",
+      "assetId": "us-re",
+      "assetName": "US Real Estate"
+    },
+    {
+      "title": "Cushman & Wakefield Forecasts U.S. CRE Market Shift “From Resilience to Optimism” in 2026 | US | Cushman & Wakefield",
+      "url": "https://www.cushmanwakefield.com/en/united-states/news/2026/01/forecasts-us-cre-market-shift-from-resilience-to-optimism-in-2026",
+      "assetId": "us-re",
+      "assetName": "US Real Estate"
+    },
+    {
+      "title": "Three data points driving our 2026 real estate outlook - Cohen & Steers",
+      "url": "https://www.cohenandsteers.com/insights/three-data-points-driving-our-2026-real-estate-outlook/",
+      "assetId": "us-re",
+      "assetName": "US Real Estate"
+    },
+    {
+      "title": "Cap Rate: What It Means for Real Estate Investors in 2026",
+      "url": "https://www.amerisave.com/glossary/cap-rate-what-it-means-for-real-estate-investors-in",
+      "assetId": "us-re",
+      "assetName": "US Real Estate"
+    },
+    {
+      "title": "Are Cap Rates Rising or Falling in 2026? What Real Estate Investors Should Know",
+      "url": "https://www.wexfordins.com/post/are-cap-rates-rising-or-falling-2026",
+      "assetId": "us-re",
+      "assetName": "US Real Estate"
+    },
+    {
+      "title": "The Factors Influencing Cap Rates in 2026 - Matthews",
+      "url": "https://www.matthews.com/insights/cap-rate-real-estate",
+      "assetId": "us-re",
+      "assetName": "US Real Estate"
+    },
+    {
+      "title": "Cap Rate Calculator + 2026 Guide: What's a Good Cap Rate? | Cauble Group — The Cauble Group",
+      "url": "https://www.tylercauble.com/blog/commercial-real-estate-cap-rates",
+      "assetId": "us-re",
+      "assetName": "US Real Estate"
+    },
+    {
+      "title": "Cap Rates: How They Work and Why They Matter in Multifamily",
+      "url": "https://origininvestments.com/a-deep-dive-into-real-estate-capitalization-rates/",
+      "assetId": "us-re",
+      "assetName": "US Real Estate"
+    },
+    {
+      "title": "What is a Good Cap Rate for a Multifamily Property in 2026?",
+      "url": "https://www.rentana.io/blog/what-is-a-good-cap-rate-for-a-multifamily-property",
+      "assetId": "us-re",
+      "assetName": "US Real Estate"
+    },
+    {
+      "title": "Cap Rates in 2026: What Investors Need to Know | Commercial Lending Solutions",
+      "url": "https://clscre.com/blog/cap-rates-2026-guide.html",
+      "assetId": "us-re",
+      "assetName": "US Real Estate"
+    },
+    {
+      "title": "Selected bond yields - Bank of Canada",
+      "url": "https://www.bankofcanada.ca/rates/interest-rates/canadian-bonds/",
+      "assetId": "cad-bond",
+      "assetName": "Canadian Bonds"
+    },
+    {
+      "title": "Monthly Fixed Income Monitor - June 2026",
+      "url": "https://www.nbc.ca/content/dam/bnc/taux-analyses/analyse-eco/mensuel/monthly-fixed-income-monitor.pdf",
+      "assetId": "cad-bond",
+      "assetName": "Canadian Bonds"
+    },
+    {
+      "title": "A Canadian Rates Outlook for 2026–27 | Post",
+      "url": "https://www.scotiabank.com/ca/en/about/economics/economics-publications/post.other-publications.capital-markets-special-reports.cmsr--december-9--2025-.html",
+      "assetId": "cad-bond",
+      "assetName": "Canadian Bonds"
+    },
+    {
+      "title": "Latest Forecast Tables - TD Economics - TD Bank",
+      "url": "https://economics.td.com/ca-forecast-tables",
+      "assetId": "cad-bond",
+      "assetName": "Canadian Bonds"
+    },
+    {
+      "title": "Canada Interest Rate Forecast 2026–2031: 6-Year Rate Projections | WealthNorth",
+      "url": "https://wealthnorth.ca/mortgages/rates/interest-rate-forecast-canada/",
+      "assetId": "cad-bond",
+      "assetName": "Canadian Bonds"
+    },
+    {
+      "title": "Interest Rates: Long-Term Government Bond Yields: 10-Year: Main (Including Benchmark) for Canada (IRLTLT01CAM156N) | FRED | St. Louis Fed",
+      "url": "https://fred.stlouisfed.org/series/IRLTLT01CAM156N",
+      "assetId": "cad-bond",
+      "assetName": "Canadian Bonds"
+    },
+    {
+      "title": "Global Insight 2026 Outlook: Canada",
+      "url": "https://www.rbcwealthmanagement.com/en-ca/insights/global-insight-2026-outlook-canada",
+      "assetId": "cad-bond",
+      "assetName": "Canadian Bonds"
+    },
+    {
+      "title": "Bond markets seeing the forest for the trees – RBC Wealth Management United Kingdom",
+      "url": "https://www.rbcwealthmanagement.com/en-uk/insights/bond-markets-seeing-the-forest-for-the-trees",
+      "assetId": "cad-bond",
+      "assetName": "Canadian Bonds"
+    },
+    {
+      "title": "Global Insight 2026 Outlook: United States",
+      "url": "https://www.rbcwealthmanagement.com/en-us/insights/global-insight-2026-outlook-united-states",
+      "assetId": "cad-bond",
+      "assetName": "Canadian Bonds"
+    },
+    {
+      "title": "Royal Bank of Canada Bonds — Corporate Bond Rates — TradingView",
+      "url": "https://www.tradingview.com/symbols/TSX-RY/bonds/",
+      "assetId": "cad-bond",
+      "assetName": "Canadian Bonds"
+    },
+    {
+      "title": "Royal Bank of Canada Stock Forecast: up to $210.00! - RY Stock Price Prediction, Long-Term & Short-Term Share Revenue Prognosis with Smart Technical Analysis - WalletInvestor.com",
+      "url": "https://walletinvestor.com/stock-forecast/ry-stock-prediction",
+      "assetId": "cad-bond",
+      "assetName": "Canadian Bonds"
+    },
+    {
+      "title": "Bond Rates - RBC Direct Investing",
+      "url": "https://www.rbcdirectinvesting.com/pricing/gic-bond-rates.html",
+      "assetId": "cad-bond",
+      "assetName": "Canadian Bonds"
+    },
+    {
+      "title": "Royal Bank of Canada (TSX:RY) Stock Forecast & Analyst Predictions - Simply Wall St",
+      "url": "https://simplywall.st/stocks/ca/banks/tsx-ry/royal-bank-of-canada-shares/future",
+      "assetId": "cad-bond",
+      "assetName": "Canadian Bonds"
+    },
+    {
+      "title": "Economic outlook 1 Important tailwinds ahead NEW YEAR 2026 Eric Lascelles",
+      "url": "https://www.rbcgam.com/documents/en/articles/economic-outlook-new-year-2026.pdf",
+      "assetId": "cad-bond",
+      "assetName": "Canadian Bonds"
+    },
+    {
+      "title": "Canadian Interest Rate Forecast 2026-2027 — BoC at 2.25%, Where Rates Go Next",
+      "url": "https://jeremykresky.com/rate-forecast",
+      "assetId": "cad-bond",
+      "assetName": "Canadian Bonds"
+    },
+    {
+      "title": "A Canadian Rates Outlook for 2026–27",
+      "url": "https://www.scotiabank.com/content/dam/scotiabank/sub-brands/scotiabank-economics/english/documents/capital-markets-special/cmsr20251209.pdf",
+      "assetId": "cad-bond",
+      "assetName": "Canadian Bonds"
+    },
+    {
+      "title": "Forecast Snapshot | Scotiabank Canada",
+      "url": "https://www.scotiabank.com/ca/en/about/economics/forecast-snapshot.html",
+      "assetId": "cad-bond",
+      "assetName": "Canadian Bonds"
+    },
+    {
+      "title": "Government Bond 10y Forecast 2026/2027",
+      "url": "https://tradingeconomics.com/forecast/government-bond-10y",
+      "assetId": "cad-bond",
+      "assetName": "Canadian Bonds"
+    },
+    {
+      "title": "Scotiabank sees Bank of Canada increasing before year's end | Canadian Mortgage Professional",
+      "url": "https://www.mpamag.com/ca/mortgage-industry/industry-trends/scotiabank-sees-bank-of-canada-increasing-before-years-end/582356",
+      "assetId": "cad-bond",
+      "assetName": "Canadian Bonds"
+    },
+    {
+      "title": "Global Insight 2026 Outlook: Canada",
+      "url": "https://www.rbcwealthmanagement.com/en-us/insights/global-insight-2026-outlook-canada",
+      "assetId": "cad-hy",
+      "assetName": "Canadian HY Bonds"
+    },
+    {
+      "title": "For Canadian Bond Investors, Will 2026 Bring More Gains? | Morningstar Canada",
+      "url": "https://global.morningstar.com/en-ca/bonds/canadian-bond-investors-will-2026-bring-more-gains",
+      "assetId": "cad-hy",
+      "assetName": "Canadian HY Bonds"
+    },
+    {
+      "title": "2026 Taxable Fixed Income Mid-Year Outlook | Charles Schwab",
+      "url": "https://www.schwab.com/learn/story/fixed-income-outlook",
+      "assetId": "cad-hy",
+      "assetName": "Canadian HY Bonds"
+    },
+    {
+      "title": "Experts Forecast Stock and Bond Returns: 2026 Edition | Morningstar Canada",
+      "url": "https://global.morningstar.com/en-ca/markets/experts-forecast-stock-bond-returns-2026-edition",
+      "assetId": "cad-hy",
+      "assetName": "Canadian HY Bonds"
+    },
+    {
+      "title": "2026 Fixed Income Outlook: Stay Calm and Keep Your Carry On | PineBridge Investments",
+      "url": "https://www.pinebridge.com/en/insights/2026-fixed-income-outlook",
+      "assetId": "cad-hy",
+      "assetName": "Canadian HY Bonds"
+    },
+    {
+      "title": "Bond market outlook June 2026 | Midyear outlook | Fidelity",
+      "url": "https://www.fidelity.com/learning-center/trading-investing/bond-market-outlook",
+      "assetId": "cad-hy",
+      "assetName": "Canadian HY Bonds"
+    },
+    {
+      "title": "Bond outlook: Strong yields offer upside as risks linger | Capital Group",
+      "url": "https://www.capitalgroup.com/individual/ca/en/insights/articles/2026-midyear-bond-outlook.html",
+      "assetId": "cad-hy",
+      "assetName": "Canadian HY Bonds"
+    },
+    {
+      "title": "RBCMHYBA Quote - RBC High Yield Bond Fund - Bloomberg",
+      "url": "https://www.bloomberg.com/quote/RBCMHYBA:CN",
+      "assetId": "cad-hy",
+      "assetName": "Canadian HY Bonds"
+    },
+    {
+      "title": "Bond markets seeing the forest for the trees",
+      "url": "https://www.rbcwealthmanagement.com/en-ca/insights/bond-markets-seeing-the-forest-for-the-trees",
+      "assetId": "cad-hy",
+      "assetName": "Canadian HY Bonds"
+    },
+    {
+      "title": "RBC Global Asset Management RBC High Yield Bond Fund Investment objective",
+      "url": "https://www.rbcgam.com/documents/fund-pages/monthly/rbf496_e.pdf",
+      "assetId": "cad-hy",
+      "assetName": "Canadian HY Bonds"
+    },
+    {
+      "title": "RBC Target 2026 Canadian Corporate Bond Index ETF Stock Analysis & Fair Value | RQO.TO Price, Financials & Forecast | FRC",
+      "url": "https://www.researchfrc.com/stocks/RQO.TO/rbc-target-2026-corporate-bond-index-etf",
+      "assetId": "cad-hy",
+      "assetName": "Canadian HY Bonds"
+    },
+    {
+      "title": "RBC Target 2026 Canadian Corporate Bond Index ETF - RQO",
+      "url": "https://www.rbcgam.com/en/ca/products/etfs/RQO/detail",
+      "assetId": "cad-hy",
+      "assetName": "Canadian HY Bonds"
+    },
+    {
+      "title": "Fixed Income and Currencies Outlook – Summer 2026",
+      "url": "https://www.rbcgam.com/en/ca/article/fixed-income-and-currencies-outlook-summer-2026/detail",
+      "assetId": "cad-hy",
+      "assetName": "Canadian HY Bonds"
+    },
+    {
+      "title": "RCDB Stock Price | RBC Canadian Discount Bond ETF - Investing.com",
+      "url": "https://www.investing.com/etfs/rbc-canadian-discount-bond",
+      "assetId": "cad-hy",
+      "assetName": "Canadian HY Bonds"
+    },
+    {
+      "title": "Top High-Yield Bonds List | Screener - Yahoo Finance",
+      "url": "https://ca.finance.yahoo.com/research-hub/screener/high_yield_bond/",
+      "assetId": "cad-hy",
+      "assetName": "Canadian HY Bonds"
+    },
+    {
+      "title": "Experts Forecast Stock and Bond Returns: 2026 Edition | Morningstar",
+      "url": "https://www.morningstar.com/markets/experts-forecast-stock-bond-returns-2026-edition",
+      "assetId": "cad-hy",
+      "assetName": "Canadian HY Bonds"
+    },
+    {
+      "title": "2026 Corporate Credit Outlook | Charles Schwab",
+      "url": "https://www.schwab.com/learn/story/corporate-bond-outlook",
+      "assetId": "cad-hy",
+      "assetName": "Canadian HY Bonds"
+    },
+    {
+      "title": "Active Fixed Income Perspectives Monthly Pulse: June 2026",
+      "url": "https://advisors.vanguard.com/insights/article/series/active-fixed-income-perspectives",
+      "assetId": "cad-hy",
+      "assetName": "Canadian HY Bonds"
+    },
+    {
+      "title": "US Stocks Are Forecast to Rise 6% in 2026 | Goldman Sachs",
+      "url": "https://www.goldmansachs.com/insights/articles/us-stocks-forecast-to-rise-in-2026",
+      "assetId": "us-tech",
+      "assetName": "US Tech Stocks"
+    },
+    {
+      "title": "Goldman Sachs Predicts S&P 500 to Hit 7,600 by 2026",
+      "url": "https://www.heygotrade.com/en/news/goldman-sachs-predicts-s-p-500-to-hit-7-600-by-2026",
+      "assetId": "us-tech",
+      "assetName": "US Tech Stocks"
+    },
+    {
+      "title": "Goldman Strategists Lift S&P 500 Target to 8,000 on Earnings",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/goldman-strategists-lift-p-500-080509731.html",
+      "assetId": "us-tech",
+      "assetName": "US Tech Stocks"
+    },
+    {
+      "title": "Goldman Sachs: S&P 500 projected to hit 7,600 by 2026 | IDNFinancials",
+      "url": "https://www.idnfinancials.com/news/62327/goldman-sachs-sp-500-projected-to-hit-7-600-by-2026",
+      "assetId": "us-tech",
+      "assetName": "US Tech Stocks"
+    },
+    {
+      "title": "Goldman Strategists Lift S&P 500 Target to 8,000 on AI, Earnings - Bloomberg",
+      "url": "https://www.bloomberg.com/news/articles/2026-05-27/goldman-strategists-lift-s-p-500-target-to-8-000-on-ai-earnings",
+      "assetId": "us-tech",
+      "assetName": "US Tech Stocks"
+    },
+    {
+      "title": "2026 Market Outlook Based On Valuations - RIA",
+      "url": "https://realinvestmentadvice.com/resources/blog/2026-market-outlook-based-on-valuations/",
+      "assetId": "us-tech",
+      "assetName": "US Tech Stocks"
+    },
+    {
+      "title": "An early sneak peek at Wall Street's 2028 outlook 🗓️",
+      "url": "https://www.tker.co/p/morgan-stanley-2028-sp500-eps-estimate",
+      "assetId": "us-tech",
+      "assetName": "US Tech Stocks"
+    },
+    {
+      "title": "MORGAN STANLEY STOCK FORECAST 2026, 2027 - 2030 - 2035",
+      "url": "https://coinpriceforecast.com/ms-stock",
+      "assetId": "us-tech",
+      "assetName": "US Tech Stocks"
+    },
+    {
+      "title": "Morgan Stanley Stock Forecast: down to $193.64? - MS Stock Price Prediction, Long-Term & Short-Term Share Revenue Prognosis with Smart Technical Analysis - WalletInvestor.com",
+      "url": "https://walletinvestor.com/stock-forecast/ms-stock-prediction",
+      "assetId": "us-tech",
+      "assetName": "US Tech Stocks"
+    },
+    {
+      "title": "Tickeron",
+      "url": "https://tickeron.com/ticker/MS/forecasts-predictions/",
+      "assetId": "us-tech",
+      "assetName": "US Tech Stocks"
+    },
+    {
+      "title": "Morgan Stanley (NYSE:MS) Stock Forecast & Analyst Predictions - Simply Wall St",
+      "url": "https://simplywall.st/stocks/us/diversified-financials/nyse-ms/morgan-stanley/future",
+      "assetId": "us-tech",
+      "assetName": "US Tech Stocks"
+    },
+    {
+      "title": "MORGAN STANLEY STOCK PRICE PREDICTION 2025, 2026, 2027-2029 - Long Forecast",
+      "url": "https://longforecast.com/ms-stock",
+      "assetId": "us-tech",
+      "assetName": "US Tech Stocks"
+    },
+    {
+      "title": "MS - Morgan Stanley Stock Price Forecast 2026, 2027, 2030 to 2050 - StockScan",
+      "url": "https://stockscan.io/stocks/MS/forecast",
+      "assetId": "us-tech",
+      "assetName": "US Tech Stocks"
+    },
+    {
+      "title": "Morgan Stanley MS Stock Forecast & Price Target",
+      "url": "https://finance.yahoo.com/research/stock-forecast/MS/",
+      "assetId": "us-tech",
+      "assetName": "US Tech Stocks"
+    },
+    {
+      "title": "Morgan Stanley Stock Prediction: Where Analysts See the Stock Going by 2027 | TIKR.com",
+      "url": "https://www.tikr.com/blog/morgan-stanley-stock-prediction-where-analysts-see-the-stock-going-by-2027",
+      "assetId": "us-tech",
+      "assetName": "US Tech Stocks"
+    },
+    {
+      "title": "S&P 500 Forecast & Predictions for 2026, 2027, 2028–2030, 2040 and Beyond | LiteFinance",
+      "url": "https://www.litefinance.org/blog/analysts-opinions/spx-forecast-price-prediction/",
+      "assetId": "us-tech",
+      "assetName": "US Tech Stocks"
+    },
+    {
+      "title": "The S&P 500 Just Had Its Best Quarter Since 2020. The Stock Market Will Make a Big Move Next if History Repeats.",
+      "url": "https://www.fool.com/investing/2026/07/02/sp-500-best-quarter-stock-market-big-move-next/",
+      "assetId": "us-tech",
+      "assetName": "US Tech Stocks"
+    },
+    {
+      "title": "S&P 500 FORECAST 2026, 2027, 2028-2030 - Long Forecast",
+      "url": "https://longforecast.com/sp-500-index-forecast-2017-2018-2019",
+      "assetId": "us-tech",
+      "assetName": "US Tech Stocks"
+    },
+    {
+      "title": "S&P 500 Earnings Outlook Hinges On Tech, Energy And The Fed",
+      "url": "https://www.forbes.com/sites/bill_stone/2026/07/05/sp-500-earnings-outlook-hinges-on-tech-energy-and-the-fed/",
+      "assetId": "us-tech",
+      "assetName": "US Tech Stocks"
+    },
+    {
+      "title": "Analysts’ forecast returns, recommendations and yields for all stocks in the S&P 500 - The Globe and Mail",
+      "url": "https://www.theglobeandmail.com/investing/markets/inside-the-market/article-analysts-forecast-returns-recommendations-and-yields-for-all-stocks-in-69/",
+      "assetId": "us-tech",
+      "assetName": "US Tech Stocks"
+    },
+    {
+      "title": "US - S&P 500 - Information Technology Sector - Forward PE Ratio | Series | MacroMicro",
+      "url": "https://en.macromicro.me/series/20517/s5inft-forward-pe-ratio",
+      "assetId": "us-tech",
+      "assetName": "US Tech Stocks"
+    },
+    {
+      "title": "Copyright © 2026 FactSet Research Systems Inc. All rights reserved.",
+      "url": "https://www.factset.com/earningsinsight",
+      "assetId": "us-tech",
+      "assetName": "US Tech Stocks"
+    },
+    {
+      "title": "S&P 500 Predictions 2026: 7,950 Is the Base Case, Not the Ceiling | EBC Financial Group",
+      "url": "https://www.ebc.com/forex/s-and-p-500-predictions-2026",
+      "assetId": "us-tech",
+      "assetName": "US Tech Stocks"
+    },
+    {
+      "title": "The S&P 500 Could Jump 18% Over the Next 1 Year. Here Are My Top Growth Stocks to Buy Before That Happens | The Motley Fool",
+      "url": "https://www.fool.com/investing/2026/07/11/the-sp-500-could-jump-18-over-the-next-1-year-here/",
+      "assetId": "us-tech",
+      "assetName": "US Tech Stocks"
+    },
+    {
+      "title": "Bank of Canada maintains policy rate at 2¼% - Bank of Canada",
+      "url": "https://www.bankofcanada.ca/2026/04/fad-press-release-2026-04-29/",
+      "assetId": "hisa",
+      "assetName": "HISA (Canada)"
+    },
+    {
+      "title": "Mortgage Rate Forecast (2026-2030) | True North Mortgage",
+      "url": "https://www.truenorthmortgage.ca/blog/mortgage-rate-forecast",
+      "assetId": "hisa",
+      "assetName": "HISA (Canada)"
+    },
+    {
+      "title": "Bank of Canada Policy Interest Rate Schedule 2026 - nesto.ca",
+      "url": "https://www.nesto.ca/mortgage-basics/bank-of-canada-interest-rate-schedule/",
+      "assetId": "hisa",
+      "assetName": "HISA (Canada)"
+    },
+    {
+      "title": "TD Economics - Long-Term Forecast",
+      "url": "https://economics.td.com/ca-long-term-forecast",
+      "assetId": "hisa",
+      "assetName": "HISA (Canada)"
+    },
+    {
+      "title": "Bank of Canada holds rates steady as economy shows improvement",
+      "url": "https://uk.finance.yahoo.com/news/bank-canada-holds-rates-steady-142612015.html",
+      "assetId": "hisa",
+      "assetName": "HISA (Canada)"
+    },
+    {
+      "title": "Perch | Canada Interest Rate Forecast 2026-2031",
+      "url": "https://myperch.io/canada-interest-rate-forecast/",
+      "assetId": "hisa",
+      "assetName": "HISA (Canada)"
+    },
+    {
+      "title": "Best High-Interest Savings Accounts in Canada for 2026 - NerdWallet Canada",
+      "url": "https://www.nerdwallet.com/ca/p/best/banking/best-high-interest-savings-accounts",
+      "assetId": "hisa",
+      "assetName": "HISA (Canada)"
+    },
+    {
+      "title": "Personal Accounts Interest Rates - RBC Royal Bank",
+      "url": "https://www.rbcroyalbank.com/rates/persacct.html",
+      "assetId": "hisa",
+      "assetName": "HISA (Canada)"
+    },
+    {
+      "title": "High Interest Savings Account - Earn More with RBC HISA offer | RBC Royal Bank of Canada",
+      "url": "https://www.rbcroyalbank.com/bank-accounts/savings-accounts/high-interest-savings-account.html",
+      "assetId": "hisa",
+      "assetName": "HISA (Canada)"
+    },
+    {
+      "title": "Best High Interest Savings Accounts in Canada 2026 | WOWA.ca",
+      "url": "https://wowa.ca/high-interest-savings-account-canada",
+      "assetId": "hisa",
+      "assetName": "HISA (Canada)"
+    },
+    {
+      "title": "HISA Rates - Canadian High Interest Savings ... - RiskingTime",
+      "url": "https://riskingtime.com/hisa-rates/",
+      "assetId": "hisa",
+      "assetName": "HISA (Canada)"
+    },
+    {
+      "title": "Best high interest savings accounts in Canada 2026 | Ratehub.ca",
+      "url": "https://www.ratehub.ca/savings-accounts/accounts/high-interest",
+      "assetId": "hisa",
+      "assetName": "HISA (Canada)"
+    },
+    {
+      "title": "Interest Rates as at: 29 Jun 2026 Fixed Term Deposits Canadian Dollar Euro",
+      "url": "https://www.rbcwealthmanagement.com/assets/wp-content/uploads/documents/bank-rates/RBCELRates.pdf",
+      "assetId": "hisa",
+      "assetName": "HISA (Canada)"
+    },
+    {
+      "title": "High-interest savings accounts in Canada | July 2026 | Milesopedia",
+      "url": "https://milesopedia.com/en/offers/bank-accounts/high-interest-savings-accounts-canada/",
+      "assetId": "hisa",
+      "assetName": "HISA (Canada)"
+    },
+    {
+      "title": "Best High Interest Saving Accounts Canada 2026",
+      "url": "https://milliondollarjourney.com/best-high-interest-savings-accounts-canada.htm",
+      "assetId": "hisa",
+      "assetName": "HISA (Canada)"
+    },
+    {
+      "title": "High Interest Savings Accounts (HISA) | Scotiabank Canada",
+      "url": "https://www.scotiabank.com/ca/en/personal/bank-accounts/savings-accounts/high-interest-savings-accounts.html",
+      "assetId": "hisa",
+      "assetName": "HISA (Canada)"
+    },
+    {
+      "title": "Bank of Canada expected to hold as debate shifts to timing of rate hikes - CMT News",
+      "url": "https://www.canadianmortgagetrends.com/2026/07/bank-of-canada-expected-to-hold-as-debate-shifts-to-timing-of-rate-hikes/",
+      "assetId": "hisa",
+      "assetName": "HISA (Canada)"
+    },
+    {
+      "title": "CMT News - Bank of Canada rate forecasts",
+      "url": "https://www.canadianmortgagetrends.com/big-bank-rate-forecasts/",
+      "assetId": "hisa",
+      "assetName": "HISA (Canada)"
+    },
+    {
+      "title": "BoC set to hold as inflation and growth concerns fade - RBC Economics",
+      "url": "https://www.rbc.com/en/economics/forward-guidance/forward-guidance-our-weekly-preview/",
+      "assetId": "hisa",
+      "assetName": "HISA (Canada)"
+    },
+    {
+      "title": "EFA - Ishares Msci Eafe Etf Stock Price Forecast 2025, 2026, 2030 to 2050 - StockScan",
+      "url": "https://stockscan.io/stocks/EFA/forecast",
+      "assetId": "intl-div",
+      "assetName": "Intl Dividend Stocks"
+    },
+    {
+      "title": "IEFA - iShares Core MSCI EAFE ETF Stock Price Forecast 2026, 2027, 2030 to 2050 - StockScan",
+      "url": "https://stockscan.io/stocks/IEFA/forecast",
+      "assetId": "intl-div",
+      "assetName": "Intl Dividend Stocks"
+    },
+    {
+      "title": "iShares MSCI EAFE Fund Forecast: up to $100.360! - EFA Fund Price Prediction, Long-Term & Short-Term Prognosis with Smart Technical Analysis",
+      "url": "https://walletinvestor.com/fund-forecast/efa-fund-prediction",
+      "assetId": "intl-div",
+      "assetName": "Intl Dividend Stocks"
+    },
+    {
+      "title": "iShares Core MSCI EAFE ETF ETF Forecast: up to $125.59! - IEFA ETF Price Prediction, Long-Term & Short-Term Share Revenue Prognosis with Smart Technical Analysis - WalletInvestor.com",
+      "url": "https://walletinvestor.com/fund-forecast/iefa-fund-prediction",
+      "assetId": "intl-div",
+      "assetName": "Intl Dividend Stocks"
+    },
+    {
+      "title": "MSCI EAFE Index Futures Price Forecast: up to $3111.187! - MFS Commodity Price Prediction, Long-Term & Short-Term Prognosis with Smart Technical Analysis",
+      "url": "https://walletinvestor.com/commodity-forecast/msci-eafe-index-futures-prediction",
+      "assetId": "intl-div",
+      "assetName": "Intl Dividend Stocks"
+    },
+    {
+      "title": "MSCI EAFE Index - MSCI",
+      "url": "https://www.msci.com/www/index-factsheets/msci-eafe-index/07146631",
+      "assetId": "intl-div",
+      "assetName": "Intl Dividend Stocks"
+    },
+    {
+      "title": "iShares Core MSCI EAFE ETF (IEFA) Stock Forecast: 1-Year Price Prediction & Outlook – Financhill",
+      "url": "https://financhill.com/stock-forecast/iefa-stock-prediction",
+      "assetId": "intl-div",
+      "assetName": "Intl Dividend Stocks"
+    },
+    {
+      "title": "iShares MSCI EAFE Value Fund Forecast: up to $71.791! - EFV Fund Price Prediction, Long-Term & Short-Term Prognosis with Smart Technical Analysis",
+      "url": "https://walletinvestor.com/fund-forecast/efv-fund-prediction",
+      "assetId": "intl-div",
+      "assetName": "Intl Dividend Stocks"
+    },
+    {
+      "title": "iShares MSCI EAFE ETF Insights 2026 | (BATS:EFAV)",
+      "url": "https://www.macroaxis.com/etf/EFAV/iShares-MSCI-EAFE",
+      "assetId": "intl-div",
+      "assetName": "Intl Dividend Stocks"
+    },
+    {
+      "title": "MSCI EAFE Growth Index - MSCI",
+      "url": "https://www.msci.com/www/fact-sheet/msci-eafe-growth-index/06568474",
+      "assetId": "intl-div",
+      "assetName": "Intl Dividend Stocks"
+    },
+    {
+      "title": "2026 Outlooks | Goldman Sachs",
+      "url": "https://www.goldmansachs.com/insights/outlooks/2026-outlooks",
+      "assetId": "intl-div",
+      "assetName": "Intl Dividend Stocks"
+    },
+    {
+      "title": "Global Equity Strategy 2026 Outlook: Tech Tonic — a Broadening Bull Market | Goldman Sachs",
+      "url": "https://www.goldmansachs.com/insights/goldman-sachs-research/equity-outlook-2026-tech-tonic-a-broadening-bull-market",
+      "assetId": "intl-div",
+      "assetName": "Intl Dividend Stocks"
+    },
+    {
+      "title": "2026 Year-Ahead Investment Outlook",
+      "url": "https://am.jpmorgan.com/content/dam/jpm-am-aem/global/en/2026%20Year-Ahead%20Investment%20Outlook.pdf",
+      "assetId": "intl-div",
+      "assetName": "Intl Dividend Stocks"
+    },
+    {
+      "title": "2026 Economic and Financial Market Outlook | Goldman Sachs",
+      "url": "https://pwm.gs.com/global/en-us/insights/markets-and-investing/market-insights/outlook",
+      "assetId": "intl-div",
+      "assetName": "Intl Dividend Stocks"
+    },
+    {
+      "title": "2026 Market Outlook | J.P. Morgan Global Research",
+      "url": "https://www.jpmorgan.com/insights/global-research/outlook/market-outlook",
+      "assetId": "intl-div",
+      "assetName": "Intl Dividend Stocks"
+    },
+    {
+      "title": "J.P.Morgan WEALTH MANAGEMENT Promise and Pressure OUTLOOK 2026",
+      "url": "https://www.jpmorgan.com/content/dam/jpmorgan/documents/wealth-management/outlook-2026.pdf",
+      "assetId": "intl-div",
+      "assetName": "Intl Dividend Stocks"
+    },
+    {
+      "title": "Goldman Sachs Global Investment Outlook 2026 Reflection",
+      "url": "https://unclestocknotes.substack.com/p/goldman-sachs-global-investment-outlook",
+      "assetId": "intl-div",
+      "assetName": "Intl Dividend Stocks"
+    },
+    {
+      "title": "Global Stocks Are Forecast to Return 7.7% Annually in Coming Decade | Goldman Sachs",
+      "url": "https://www.goldmansachs.com/insights/articles/global-stocks-are-forecast-to-return-7-point-7-percent-annually-in-coming-decade",
+      "assetId": "intl-div",
+      "assetName": "Intl Dividend Stocks"
+    },
+    {
+      "title": "What’s Next for Your Investments? 5 Key Predictions from Goldman Sachs’ 10-Year Forecast",
+      "url": "https://www.campaignforamillion.com/post/what-s-next-for-your-investments-5-key-predictions-from-goldman-sachs-10-year-forecast",
+      "assetId": "intl-div",
+      "assetName": "Intl Dividend Stocks"
+    },
+    {
+      "title": "Goldman’s 10-year forecast: Global stocks to deliver 7.7% annual gains",
+      "url": "https://finance.yahoo.com/news/goldman-10-forecast-global-stocks-115351991.html",
+      "assetId": "intl-div",
+      "assetName": "Intl Dividend Stocks"
+    },
+    {
+      "title": "Stock Market Forecasts 2026-2036: EM Beats US 13% to 6.5%",
+      "url": "https://8figures.com/blog/portfolio-allocations/where-will-the-best-stock-market-returns-come-from-over-the-next-decade-a-deep-dive-into-u-s-european-asian-and-emerging-markets",
+      "assetId": "intl-div",
+      "assetName": "Intl Dividend Stocks"
+    },
+    {
+      "title": "Goldman’s 10-year forecast: Global stocks to deliver 7.7% annual gains By Investing.com",
+      "url": "https://www.investing.com/news/stock-market-news/goldmans-10year-forecast-global-stocks-to-deliver-77-annual-gains-4350535",
+      "assetId": "intl-div",
+      "assetName": "Intl Dividend Stocks"
+    },
+    {
+      "title": "Global Strategy Paper Building Long-Term Returns Our 10- ...",
+      "url": "https://www.gspublishing.com/content/research/en/reports/2025/11/12/0c292cc7-ce42-4fba-a026-744231e9f4f4.pdf",
+      "assetId": "intl-div",
+      "assetName": "Intl Dividend Stocks"
+    },
+    {
+      "title": "Goldman Sachs reminds us that the next decade of stock market returns is hard to predict 😵‍💫",
+      "url": "https://www.tker.co/p/goldman-sachs-10-year-return-forecast-2025",
+      "assetId": "intl-div",
+      "assetName": "Intl Dividend Stocks"
+    },
+    {
+      "title": "Emerging Markets Outlook 2026 | Lazard Asset Management",
+      "url": "https://www.lazardassetmanagement.com/li/en_gb/research-insights/investment-insights/investment-research/emerging-markets-outlook-2026",
+      "assetId": "em",
+      "assetName": "Emerging Markets"
+    },
+    {
+      "title": "Emerging Market Equities Outlook Q1 2026 | State Street",
+      "url": "https://www.ssga.com/us/en/individual/insights/emerging-market-equities-outlook-q1-2026",
+      "assetId": "em",
+      "assetName": "Emerging Markets"
+    },
+    {
+      "title": "Emerging markets 2026: Can the rally keep rolling? | Capital Group",
+      "url": "https://www.capitalgroup.com/institutional/insights/articles/emerging-markets-2026-can-rally-keep-rolling.html",
+      "assetId": "em",
+      "assetName": "Emerging Markets"
+    },
+    {
+      "title": "MSCI Emerging Markets Index - MSCI",
+      "url": "https://www.msci.com/www/fact-sheet/msci-emerging-markets-index/07149641",
+      "assetId": "em",
+      "assetName": "Emerging Markets"
+    },
+    {
+      "title": "2026 Midyear investment outlook | Invesco US",
+      "url": "https://www.invesco.com/us/en/insights/global-investment-outlook.html",
+      "assetId": "em",
+      "assetName": "Emerging Markets"
+    },
+    {
+      "title": "5 Reasons Emerging Markets Could Continue Their Run in 2026",
+      "url": "https://www.lpl.com/research/weekly-market-commentary/five-reasons-run-in-emerging-markets-could-continue.html",
+      "assetId": "em",
+      "assetName": "Emerging Markets"
+    },
+    {
+      "title": "Emerging Markets Outlook 2026 | StartUs Insights",
+      "url": "https://www.startus-insights.com/innovators-guide/emerging-markets-outlook/",
+      "assetId": "em",
+      "assetName": "Emerging Markets"
+    },
+    {
+      "title": "The case for emerging markets is strengthening - J.P. Morgan Personal Investing",
+      "url": "https://www.personalinvesting.jpmorgan.com/guides/our-investment-outlook/emerging-markets",
+      "assetId": "em",
+      "assetName": "Emerging Markets"
+    },
+    {
+      "title": "Emerging Market outperformance: Just the start | December 2025 | en",
+      "url": "https://www.gam.com/en/our-thinking/outlook-2026/emerging-market-equity",
+      "assetId": "em",
+      "assetName": "Emerging Markets"
+    },
+    {
+      "title": "Why invest in emerging and frontier markets in 2026?",
+      "url": "https://www.eastcapital.com/media/0jahq4gx/east-capital-outlook-2026.pdf",
+      "assetId": "em",
+      "assetName": "Emerging Markets"
+    },
+    {
+      "title": "Goldman Sachs Asset Management Releases 2026 Investment Outlook - Goldman Sachs Asset Management",
+      "url": "https://am.gs.com/en-us/advisors/news/press-release/2025/goldman-sachs-asset-management-releases-2026-investment-outlook",
+      "assetId": "em",
+      "assetName": "Emerging Markets"
+    },
+    {
+      "title": "Market Pulse: 10 for 2026",
+      "url": "https://am.gs.com/cms-assets/gsam-app/documents/insights/en/2026/us-market-pulse_jan2026.pdf",
+      "assetId": "em",
+      "assetName": "Emerging Markets"
+    },
+    {
+      "title": "Emerging Markets Stocks Can Balance Volatility from the AI Trade | Goldman Sachs",
+      "url": "https://www.goldmansachs.com/insights/articles/emerging-markets-stocks-can-balance-volatility-from-the-ai-trade",
+      "assetId": "em",
+      "assetName": "Emerging Markets"
+    },
+    {
+      "title": "Investment Outlook for Public Markets in 2026 - Goldman Sachs Asset Management",
+      "url": "https://am.gs.com/en-us/advisors/insights/article/investment-outlook/public-markets-2026",
+      "assetId": "em",
+      "assetName": "Emerging Markets"
+    },
+    {
+      "title": "Daan Struyven +1(212)357-4172 | daan.struyven@gs.com Goldman Sachs & Co. LLC",
+      "url": "https://www.goldmansachs.com/pdfs/insights/goldman-sachs-research/2026-outlooks/CommoditiesOutlook2026.pdf",
+      "assetId": "em",
+      "assetName": "Emerging Markets"
+    },
+    {
+      "title": "The Goldman Sachs Group (GS) Stock Forecast & Price Targets",
+      "url": "https://stockanalysis.com/stocks/gs/forecast/",
+      "assetId": "em",
+      "assetName": "Emerging Markets"
+    },
+    {
+      "title": "Goldman Sachs Stock Forecast & GS Price Target 2026 from analysts",
+      "url": "https://stocksguide.com/en/forecast/Goldman-Sachs-US38141G1040",
+      "assetId": "em",
+      "assetName": "Emerging Markets"
+    },
+    {
+      "title": "2026 mid-year outlooks and forecasts",
+      "url": "https://www.jpmorgan.com/insights/markets-and-economy/outlook/predictions-and-forecasts",
+      "assetId": "em",
+      "assetName": "Emerging Markets"
+    },
+    {
+      "title": "Long-Term Capital Market Assumptions | J.P. Morgan Asset Management",
+      "url": "https://am.jpmorgan.com/us/en/asset-management/institutional/insights/portfolio-insights/ltcma/",
+      "assetId": "em",
+      "assetName": "Emerging Markets"
+    },
+    {
+      "title": "After the rate cut: Investing beyond U.S. markets | J.P. Morgan Private Bank Asia",
+      "url": "https://privatebank.jpmorgan.com/apac/en/insights/markets-and-investing/tmt/after-the-rate-cut-investing-beyond-us-markets",
+      "assetId": "em",
+      "assetName": "Emerging Markets"
+    },
+    {
+      "title": "JMIEX JPMorgan Emerging Markets Equity L Forecast, ...",
+      "url": "https://tickeron.com/ticker/JMIEX/forecasts-predictions/",
+      "assetId": "em",
+      "assetName": "Emerging Markets"
+    },
+    {
+      "title": "2026 Year-Ahead Investment Outlook | J.P. Morgan Asset Management",
+      "url": "https://am.jpmorgan.com/us/en/asset-management/adv/insights/market-insights/investment-outlook/",
+      "assetId": "em",
+      "assetName": "Emerging Markets"
+    },
+    {
+      "title": "Outlook 2025 Building on Strength Easing global policy",
+      "url": "https://www.jpmorgan.com/content/dam/jpmorgan/documents/wealth-management/outlook-2025-building-on-strength.pdf",
+      "assetId": "em",
+      "assetName": "Emerging Markets"
+    },
+    {
+      "title": "Global Research & Market Insights from J.P. Morgan",
+      "url": "https://www.jpmorgan.com/insights/research",
+      "assetId": "em",
+      "assetName": "Emerging Markets"
+    },
+    {
+      "title": "SILVER PRICE FORECAST 2026, 2027, 2028 AND 2029 - Long Forecast",
+      "url": "https://longforecast.com/silver-price-today-forecast-2017-2018-2019-2020-2021-ounce-gram",
+      "assetId": "silver",
+      "assetName": "Silver"
+    },
+    {
+      "title": "Silver Price Forecast & Predictions for 2026, 2027–2030, 2040 and Beyond | LiteFinance",
+      "url": "https://www.litefinance.org/blog/analysts-opinions/silver-prices-forecast-and-predictions/",
+      "assetId": "silver",
+      "assetName": "Silver"
+    },
+    {
+      "title": "Silver Price Forecast & Predictions for 2026, 2027-2030 | CoinCodex",
+      "url": "https://coincodex.com/precious-metal/silver/forecast/",
+      "assetId": "silver",
+      "assetName": "Silver"
+    },
+    {
+      "title": "Silver Price Forecast 2026-2027: Bull Case, Bear Case, and Current Targets",
+      "url": "https://goldsilver.com/industry-news/article/silver-price-forecast-2026-2027-the-bull-case-and-bear-case-laid-out/",
+      "assetId": "silver",
+      "assetName": "Silver"
+    },
+    {
+      "title": "Silver Price Forecast 2026 | Expert Predictions | MintBuilder",
+      "url": "https://mintbuilder.com/silver-price-forecast",
+      "assetId": "silver",
+      "assetName": "Silver"
+    },
+    {
+      "title": "Silver Price Forecast 2026-2027: Predictions Per Ounce | Expert Analysis | Libertex.com",
+      "url": "https://libertex.com/blog/silver-price-forecast",
+      "assetId": "silver",
+      "assetName": "Silver"
+    },
+    {
+      "title": "Silver Price Forecasts 2026 | Scottsdale Bullion & Coin",
+      "url": "https://www.sbcgold.com/silver-price-forecasts/silver-price-forecast-2026/",
+      "assetId": "silver",
+      "assetName": "Silver"
+    },
+    {
+      "title": "Silver Price Prediction 2026–2027 | Bank Forecasts & Targets | MetalPrices.live",
+      "url": "https://metalprices.live/silver-price-prediction",
+      "assetId": "silver",
+      "assetName": "Silver"
+    },
+    {
+      "title": "Silver Price Forecast 2026-2030: Analysts Share Long-Term Targets | Canadian Mining Report",
+      "url": "https://www.canadianminingreport.com/blog/silver-price-forecast-2026-2030-analysts-share-long-term-targets",
+      "assetId": "silver",
+      "assetName": "Silver"
+    },
+    {
+      "title": "Silver Price Forecast 2026 & 2027: Outlook & Predictions",
+      "url": "https://metalcharts.org/guides/silver-price-forecast",
+      "assetId": "silver",
+      "assetName": "Silver"
+    },
+    {
+      "title": "JP Morgan: Gold Could Hit $5,400 by 2027",
+      "url": "https://goldsilver.com/industry-news/goldsilver-news/jp-morgan-gold-could-hit-5400-by-2027/",
+      "assetId": "silver",
+      "assetName": "Silver"
+    },
+    {
+      "title": "How Will Silver Prices Fare in 2026? I J.P. Morgan Global Research",
+      "url": "https://www.jpmorgan.com/insights/global-research/commodities/silver-prices",
+      "assetId": "silver",
+      "assetName": "Silver"
+    },
+    {
+      "title": "Higher Floor, Not a Bubble: J.P. Morgan Remains Constructive on Silver – with a Price Target of $85 USD | GOLDINVEST",
+      "url": "https://goldinvest.de/en/higher-floor-not-a-bubble-j-p-morgan-remains-constructive-on-silver-with-a-price-target-of-85-usd",
+      "assetId": "silver",
+      "assetName": "Silver"
+    },
+    {
+      "title": "Silver Price Predictions for the Next 5 Years: Data-Backed Scenarios",
+      "url": "https://goldsilver.com/industry-news/article/silver-price-predictions-next-5-years/",
+      "assetId": "silver",
+      "assetName": "Silver"
+    },
+    {
+      "title": "JPMorgan sees the writing on the wall for silver stock investors - TheStreet",
+      "url": "https://www.thestreet.com/investing/jpmorgan-cuts-silver-price-target-investors",
+      "assetId": "silver",
+      "assetName": "Silver"
+    },
+    {
+      "title": "Silver Price Predictions 2026: After a 144% Surge, What’s Next?",
+      "url": "https://goldsilver.com/industry-news/article/silver-price-forecast-predictions/",
+      "assetId": "silver",
+      "assetName": "Silver"
+    },
+    {
+      "title": "Silver Price Prediction 2026–2030: Forecast & Long-Term Outlook | Just2Trade",
+      "url": "https://j2t.com/solutions/blogview/silver-price-prediction/",
+      "assetId": "silver",
+      "assetName": "Silver"
+    },
+    {
+      "title": "Silver Price Forecast: down to $54.66? - SI Commodity Price Prediction, Long-Term & Short-Term Prognosis with Smart Technical Analysis - WalletInvestor.com",
+      "url": "https://walletinvestor.com/commodity-forecast/silver-prediction",
+      "assetId": "silver",
+      "assetName": "Silver"
+    },
+    {
+      "title": "SILVER PRICE PREDICTION 2026, 2027 - 2030 - 2035",
+      "url": "https://coinpriceforecast.com/silver",
+      "assetId": "silver",
+      "assetName": "Silver"
+    },
+    {
+      "title": "Silver Price Predictions 2025–2030: Growth or Pullback? | EBC Financial Group",
+      "url": "https://www.ebc.com/forex/silver-price-predictions-2025-2030-growth-or-pullback",
+      "assetId": "silver",
+      "assetName": "Silver"
+    },
+    {
+      "title": "A Silver Price Prediction For 2026 2027 2028 - 2030 - InvestingHaven",
+      "url": "https://investinghaven.com/forecasts/silver-price-prediction/",
+      "assetId": "silver",
+      "assetName": "Silver"
+    },
+    {
+      "title": "PALLADIUM PRICE FORECAST 2026, 2027, 2028 AND 2029 - Long Forecast",
+      "url": "https://longforecast.com/palladium",
+      "assetId": "palladium",
+      "assetName": "Palladium"
+    },
+    {
+      "title": "Palladium price forecast for 2026-2030 years. Palladium price prediction analysis for the next 5 years | Just2Trade",
+      "url": "https://j2t.com/solutions/blogview/palladium-price-forecast/",
+      "assetId": "palladium",
+      "assetName": "Palladium"
+    },
+    {
+      "title": "Palladium Price Forecast 2026, 2027 & 2030 | Libertex.com",
+      "url": "https://libertex.com/blog/palladium-price-forecast",
+      "assetId": "palladium",
+      "assetName": "Palladium"
+    },
+    {
+      "title": "Palladium Price Forecast: down to $1,528.33? - PA Commodity Price Prediction, Long-Term & Short-Term Prognosis with Smart Technical Analysis - WalletInvestor.com",
+      "url": "https://walletinvestor.com/commodity-forecast/palladium-prediction",
+      "assetId": "palladium",
+      "assetName": "Palladium"
+    },
+    {
+      "title": "PALLADIUM PRICE PREDICTION 2026, 2027-2037",
+      "url": "https://coinpriceforecast.com/palladium",
+      "assetId": "palladium",
+      "assetName": "Palladium"
+    },
+    {
+      "title": "PLATINUM PRICE FORECAST 2026, 2027, 2028 AND 2029 - Long Forecast",
+      "url": "https://longforecast.com/platinum",
+      "assetId": "palladium",
+      "assetName": "Palladium"
+    },
+    {
+      "title": "Palladium (PLLD) Price Prediction 2026, 2027-2030 | CoinCodex",
+      "url": "https://coincodex.com/crypto/palladium/price-prediction/",
+      "assetId": "palladium",
+      "assetName": "Palladium"
+    },
+    {
+      "title": "2 to 5 Year View - Supply & Demand - World Platinum Investment Council – WPIC®",
+      "url": "https://platinuminvestment.com/supply-and-demand/2-to-5-year-view",
+      "assetId": "palladium",
+      "assetName": "Palladium"
+    },
+    {
+      "title": "Precious Metal Price Forecasts 2026: Gold, Silver and more",
+      "url": "https://www.bullionvault.com/gold-news/infographics/ai-gold-precious-metal-price-forecasts",
+      "assetId": "palladium",
+      "assetName": "Palladium"
+    },
+    {
+      "title": "Palladium Price Forecast – Market Outlook & Future Trends | Capital.com",
+      "url": "https://capital.com/en-int/analysis/palladium-price-forecast-and-market-outlook",
+      "assetId": "palladium",
+      "assetName": "Palladium"
+    },
+    {
+      "title": "Debasement and Demand Send Commodities Roaring Higher | TD Securities",
+      "url": "https://www.tdsecurities.com/ca/en/debasement-trade-supply-side-commodities-higher",
+      "assetId": "palladium",
+      "assetName": "Palladium"
+    },
+    {
+      "title": "Significant 2026 platinum price rise forecast by Bank of America Securities",
+      "url": "https://www.miningweekly.com/article/significant-2026-platinum-price-rise-forecast-by-bank-of-america-securities-2026-01-12",
+      "assetId": "palladium",
+      "assetName": "Palladium"
+    },
+    {
+      "title": "BofA raises platinum and palladium price targets on continued rally By Investing.com",
+      "url": "https://uk.investing.com/news/analyst-ratings/bofa-raises-platinum-and-palladium-price-targets-on-continued-rally-93CH-4445744",
+      "assetId": "palladium",
+      "assetName": "Palladium"
+    },
+    {
+      "title": "Palladium climbs over 3% on 2026 demand outlook",
+      "url": "https://www.economies.com/commodities/palladium-news/palladium-climbs-over-3-on-2026-demand-outlook-48098",
+      "assetId": "palladium",
+      "assetName": "Palladium"
+    },
+    {
+      "title": "Gold up to $4,400, silver down to mid-$40s, but PGMs will lead the pack in 2026 – TD Securities | Kitco News",
+      "url": "https://www.kitco.com/news/article/2025-12-04/gold-4400-silver-down-mid-40s-pgms-will-lead-pack-2026-td-securities",
+      "assetId": "palladium",
+      "assetName": "Palladium"
+    },
+    {
+      "title": "Platinum, palladium extend losses as Bank of America maintains bullish year-end price outlook | Kitco News",
+      "url": "https://www.kitco.com/news/article/2026-06-09/platinum-palladium-extend-losses-bank-america-maintains-bullish-year-end",
+      "assetId": "palladium",
+      "assetName": "Palladium"
+    },
+    {
+      "title": "Bank of America Now Sees Platinum Hitting $3,000 an Ounce by Q4 2026 - Startup Fortune",
+      "url": "https://startupfortune.com/bank-of-america-now-sees-platinum-hitting-3000-an-ounce-by-q4-2026/",
+      "assetId": "palladium",
+      "assetName": "Palladium"
+    },
+    {
+      "title": "LBMA Platinum and Palladium Price Data",
+      "url": "https://www.lppm.com/data",
+      "assetId": "palladium",
+      "assetName": "Palladium"
+    },
+    {
+      "title": "LBMA Annual Precious Metals Forecast Survey | LBMA",
+      "url": "https://www.lbma.org.uk/prices-and-data/lbma-annual-precious-metals-forecast-survey",
+      "assetId": "palladium",
+      "assetName": "Palladium"
+    },
+    {
+      "title": "Palladium Price Forecast to Gain in 2026, Survey Finds",
+      "url": "https://www.devere-group.com/palladium-price-forecast-to-gain-in-2026-survey-finds/",
+      "assetId": "palladium",
+      "assetName": "Palladium"
+    },
+    {
+      "title": "Analysts forecasts | LBMA",
+      "url": "https://www.lbma.org.uk/forecast-survey-2026/analysts-forecasts",
+      "assetId": "palladium",
+      "assetName": "Palladium"
+    },
+    {
+      "title": "LBMA Platinum and Palladium Price Charts",
+      "url": "https://www.lppm.com/charts",
+      "assetId": "palladium",
+      "assetName": "Palladium"
+    },
+    {
+      "title": "LBMA Precious Metal Prices | LBMA",
+      "url": "https://www.lbma.org.uk/prices-and-data/lbma-precious-metal-prices",
+      "assetId": "palladium",
+      "assetName": "Palladium"
+    },
+    {
+      "title": "LBMA Precious Metals Analyst Survey sees silver well above $100, wide range for gold, new highs for PGMs | Kitco News",
+      "url": "https://www.kitco.com/news/article/2026-01-20/lbma-precious-metals-analyst-survey-sees-silver-well-above-100-wide-range",
+      "assetId": "palladium",
+      "assetName": "Palladium"
+    },
+    {
+      "title": "Palladium Consensus Forecast 2027 (annual average)",
+      "url": "https://cbonds.com/indexes/98828/",
+      "assetId": "palladium",
+      "assetName": "Palladium"
+    },
+    {
+      "title": "WTI Oil Price Forecast & Predictions for 2026, 2027, 2028–2030, 2040 and Beyond | LiteFinance",
+      "url": "https://www.litefinance.org/blog/analysts-opinions/oil-price-prediction-forecast/",
+      "assetId": "oil",
+      "assetName": "WTI Crude Oil"
+    },
+    {
+      "title": "OIL PRICE FORECAST 2026, 2027, 2028 AND 2029 - Long Forecast",
+      "url": "https://longforecast.com/oil-price-today-forecast-2017-2018-2019-2020-2021-brent-wti",
+      "assetId": "oil",
+      "assetName": "WTI Crude Oil"
+    },
+    {
+      "title": "Crude Oil Price Forecast for 2026, 2027, 2028–2030 and Beyond: WTI and Brent Outlook",
+      "url": "https://litefinancenig.com/crude-oil-price-forecast-for-2026-2027-2028-2030-and-beyond-wti-and-brent-outlook/",
+      "assetId": "oil",
+      "assetName": "WTI Crude Oil"
+    },
+    {
+      "title": "Short-Term Energy Outlook - U.S. Energy Information Administration (EIA)",
+      "url": "https://www.eia.gov/outlooks/steo/",
+      "assetId": "oil",
+      "assetName": "WTI Crude Oil"
+    },
+    {
+      "title": "Oil (USCrude) Price Forecast and Analysis for Today, Tomorrow, Next Week, and 30 Days | LiteFinance",
+      "url": "https://www.litefinance.org/blog/analysts-opinions/oil-price-prediction-forecast/daily-and-weekly/",
+      "assetId": "oil",
+      "assetName": "WTI Crude Oil"
+    },
+    {
+      "title": "WTI oil price forecast 2027| Statista",
+      "url": "https://www.statista.com/statistics/206764/forecast-for-west-texas-intermediate-crude-oil-prices/",
+      "assetId": "oil",
+      "assetName": "WTI Crude Oil"
+    },
+    {
+      "title": "Crude Oil Price Forecast for 2026, 2027, 2028–2030 and Beyond: WTI and Brent Outlook",
+      "url": "https://tradingrealworld.com/crude-oil-price-forecast/",
+      "assetId": "oil",
+      "assetName": "WTI Crude Oil"
+    },
+    {
+      "title": "Oil Price Forecast 2026: What Brent and WTI Could Do This Year",
+      "url": "https://financialdeepdive.com/energy/oil/oil-price-forecast-2026",
+      "assetId": "oil",
+      "assetName": "WTI Crude Oil"
+    },
+    {
+      "title": "Oil Price Forecast for 2026 | J.P. Morgan Global Research",
+      "url": "https://www.jpmorgan.com/insights/global-research/commodities/oil-prices",
+      "assetId": "oil",
+      "assetName": "WTI Crude Oil"
+    },
+    {
+      "title": "Oil Prices Forecast and Predictions 2026–2030: Crude Oil Price Outlook | Just2Trade",
+      "url": "https://j2t.com/solutions/blogview/oil-price-prediction/",
+      "assetId": "oil",
+      "assetName": "WTI Crude Oil"
+    },
+    {
+      "title": "Goldman Sachs quietly resets oil price forecast for 2027",
+      "url": "https://www.thestreet.com/economy/goldman-sachs-quietly-resets-oil-price-forecast-for-2027",
+      "assetId": "oil",
+      "assetName": "WTI Crude Oil"
+    },
+    {
+      "title": "Goldman Sachs quietly resets oil price forecast for 2027",
+      "url": "https://finance.yahoo.com/sectors/energy/articles/goldman-sachs-quietly-resets-oil-210300495.html",
+      "assetId": "oil",
+      "assetName": "WTI Crude Oil"
+    },
+    {
+      "title": "Goldman Sachs Lowers Oil Outlook as Strait of Hormuz Reopening Accelerates Supply Recovery",
+      "url": "https://finance.yahoo.com/energy/articles/goldman-sachs-lowers-oil-outlook-152132028.html",
+      "assetId": "oil",
+      "assetName": "WTI Crude Oil"
+    },
+    {
+      "title": "Goldman Sachs Cuts 2027 Oil Price Estimate on Demand Uncertainty | OilPrice.com",
+      "url": "https://oilprice.com/Latest-Energy-News/World-News/Goldman-Sachs-Cuts-2027-Oil-Price-Estimate-on-Demand-Uncertainty.html",
+      "assetId": "oil",
+      "assetName": "WTI Crude Oil"
+    },
+    {
+      "title": "Goldman Sachs reset oil price forecast for the rest of 2026 - TheStreet",
+      "url": "https://www.thestreet.com/investing/goldman-sachs-reset-oil-price-forecast-for-the-rest-of-2026",
+      "assetId": "oil",
+      "assetName": "WTI Crude Oil"
+    },
+    {
+      "title": "Goldman Sachs raises Q2 Brent oil price forecast by $10 to $76 a barrel By Reuters",
+      "url": "https://www.investing.com/news/commodities-news/goldman-sachs-raises-q2-brent-oil-price-forecast-by-10-to-76-a-barrel-4539911",
+      "assetId": "oil",
+      "assetName": "WTI Crude Oil"
+    },
+    {
+      "title": "Goldman Sachs Raises Oil Price Forecast Yet Again | OilPrice.com",
+      "url": "https://oilprice.com/Latest-Energy-News/World-News/Goldman-Sachs-Raises-Oil-Price-Forecast-Yet-Again.html",
+      "assetId": "oil",
+      "assetName": "WTI Crude Oil"
+    },
+    {
+      "title": "WTI OIL PRICE PREDICTION MODELING AND FORECASTING A Project Presented to the",
+      "url": "https://scholarworks.calstate.edu/downloads/xg94hr596",
+      "assetId": "oil",
+      "assetName": "WTI Crude Oil"
+    },
+    {
+      "title": "Analytical Brent and WTI Oil Price Forecast for 2026–2030 | Market Pulse",
+      "url": "https://fxopen.com/blog/en/analytical-brent-and-wti-oil-price-forecast/",
+      "assetId": "oil",
+      "assetName": "WTI Crude Oil"
+    },
+    {
+      "title": "WTI Crude Oil Price: Charts, Forecasts & News - FocusEconomics",
+      "url": "https://www.focus-economics.com/commodities/energy/wti-crude-oil/",
+      "assetId": "oil",
+      "assetName": "WTI Crude Oil"
+    },
+    {
+      "title": "USOIL (OIL(WTI)) Price Prediction | Forecast for 2026, 2027, 2028, 2030 & Beyond｜MEXC",
+      "url": "https://www.mexc.com/price-prediction/OIL(WTI)",
+      "assetId": "oil",
+      "assetName": "WTI Crude Oil"
+    },
+    {
+      "title": "Crude Oil Price Forecast | WTI",
+      "url": "https://www.forecasts.org/oil.htm",
+      "assetId": "oil",
+      "assetName": "WTI Crude Oil"
+    },
+    {
+      "title": "Short-Term Energy Outlook: Natural Gas",
+      "url": "https://www.eia.gov/outlooks/steo/report/natgas.php",
+      "assetId": "natgas",
+      "assetName": "Natural Gas"
+    },
+    {
+      "title": "We expect Henry Hub natural gas spot prices to fall slightly in 2026 before rising in 2027 - U.S. Energy Information Administration (EIA)",
+      "url": "https://www.eia.gov/todayinenergy/detail.php?id=67004",
+      "assetId": "natgas",
+      "assetName": "Natural Gas"
+    },
+    {
+      "title": "July 2026 Short-Term Energy Outlook",
+      "url": "https://www.eia.gov/outlooks/steo/pdf/steo_full.pdf",
+      "assetId": "natgas",
+      "assetName": "Natural Gas"
+    },
+    {
+      "title": "Analytical US Natural Gas Price Forecast: Outlook 2026–2030 | Market Pulse",
+      "url": "https://fxopen.com/blog/en/analytical-us-natural-gas-price-forecast/",
+      "assetId": "natgas",
+      "assetName": "Natural Gas"
+    },
+    {
+      "title": "EIA Sees Record Power Burn, Soaring LNG and yet Lower Natural Gas Prices in 2027",
+      "url": "https://naturalgasintel.com/news/eia-sees-record-power-burn-soaring-lng-and-yet-lower-natural-gas-prices-in-2027/",
+      "assetId": "natgas",
+      "assetName": "Natural Gas"
+    },
+    {
+      "title": "Analysis & Projections - U.S. Energy Information Administration (EIA)",
+      "url": "https://www.eia.gov/analysis/",
+      "assetId": "natgas",
+      "assetName": "Natural Gas"
+    },
+    {
+      "title": "USA EIA Raises Henry Hub Price Forecast for 2026, 2027 | Rigzone",
+      "url": "https://www.rigzone.com/news/usa_eia_raises_henry_hub_price_forecast_for_2026_2027-15-jul-2026-184139-article/?rss=true",
+      "assetId": "natgas",
+      "assetName": "Natural Gas"
+    },
+    {
+      "title": "Natural Gas Forecast &amp; Price Predictions 2026",
+      "url": "https://naga.com/en/news-and-analysis/articles/natural-gas-price-prediction",
+      "assetId": "natgas",
+      "assetName": "Natural Gas"
+    },
+    {
+      "title": "U.S. natural gas production to reach record highs in 2026 and 2027 - U.S. Energy Information Administration (EIA)",
+      "url": "https://www.eia.gov/todayinenergy/detail.php?id=67166",
+      "assetId": "natgas",
+      "assetName": "Natural Gas"
+    },
+    {
+      "title": "Liquefied natural gas outlook | J.P. Morgan Research",
+      "url": "https://www.jpmorgan.com/insights/global-research/commodities/liquefied-natural-gas",
+      "assetId": "natgas",
+      "assetName": "Natural Gas"
+    },
+    {
+      "title": "NATURAL GAS PRICE FORECAST 2026, 2027, 2028 AND 2029 - Long Forecast",
+      "url": "https://longforecast.com/natural-gas-forecast-2017-2018-2019",
+      "assetId": "natgas",
+      "assetName": "Natural Gas"
+    },
+    {
+      "title": "Natural Gas Price Forecast",
+      "url": "https://www.forecasts.org/natural-gas.htm",
+      "assetId": "natgas",
+      "assetName": "Natural Gas"
+    },
+    {
+      "title": "Natural Gas Price Forecast: down to $1.66? - NG Commodity Price Prediction, Long-Term & Short-Term Prognosis with Smart Technical Analysis - WalletInvestor.com",
+      "url": "https://walletinvestor.com/commodity-forecast/natural-gas-prediction",
+      "assetId": "natgas",
+      "assetName": "Natural Gas"
+    },
+    {
+      "title": "Commodities",
+      "url": "https://www.jpmorgan.com/insights/global-research/commodities",
+      "assetId": "natgas",
+      "assetName": "Natural Gas"
+    },
+    {
+      "title": "JPMorgan sees oil oversupply, gains in US natural gas in 2026 By Investing.com",
+      "url": "https://www.investing.com/news/stock-market-news/jpmorgan-sees-oil-oversupply-gains-in-us-natural-gas-in-2026-4396504",
+      "assetId": "natgas",
+      "assetName": "Natural Gas"
+    },
+    {
+      "title": "Natural gas - Price - Chart - Historical Data - News",
+      "url": "https://tradingeconomics.com/commodity/natural-gas",
+      "assetId": "natgas",
+      "assetName": "Natural Gas"
+    },
+    {
+      "title": "Natural Gas Price Forecasts Today: Expert Analysis & Predictions | FXEmpire",
+      "url": "https://www.fxempire.com/forecasts/natural-gas",
+      "assetId": "natgas",
+      "assetName": "Natural Gas"
+    },
+    {
+      "title": "Natural Gas Price Forecasts - Energy & Metals Consensus Forecasts",
+      "url": "https://www.consensuseconomics.com/publications/energy-and-metals-consensus-forecasts/natural-gas-price-forecasts/",
+      "assetId": "natgas",
+      "assetName": "Natural Gas"
+    },
+    {
+      "title": "Natural Gas Price Forecast: Price Outlook & Future Projections | Capital.com",
+      "url": "https://capital.com/en-int/analysis/natural-gas-prices-forecast-2030-2050",
+      "assetId": "natgas",
+      "assetName": "Natural Gas"
+    },
+    {
+      "title": "Natural Gas Market Prices, Data, and Analysis | S&P Global",
+      "url": "https://www.spglobal.com/energy/en/commodity/natural-gas",
+      "assetId": "natgas",
+      "assetName": "Natural Gas"
+    },
+    {
+      "title": "Natural Gas Forecast & Price Predictions for 2026, 2030 and Beyond | Just2Trade",
+      "url": "https://j2t.com/solutions/blogview/natural-gas-forecast/",
+      "assetId": "natgas",
+      "assetName": "Natural Gas"
+    },
+    {
+      "title": "Uranium Outlook 2026 | Precious Metals & Critical Materials ETFs",
+      "url": "https://sprottetfs.com/insights/uranium-outlook-2026/",
+      "assetId": "uranium",
+      "assetName": "Uranium"
+    },
+    {
+      "title": "Uranium Price Trends: Q2 2026 Review and Forecast | INN",
+      "url": "https://investingnews.com/uranium-forecast/",
+      "assetId": "uranium",
+      "assetName": "Uranium"
+    },
+    {
+      "title": "Uranium Outlook 2026 | Sprott",
+      "url": "https://sprott.com/insights/uranium-outlook-2026/",
+      "assetId": "uranium",
+      "assetName": "Uranium"
+    },
+    {
+      "title": "Will 2026 Be the Year of Uranium? | ETF Trends",
+      "url": "https://www.etftrends.com/gold-silver-investing-content-hub/2026-year-uranium/",
+      "assetId": "uranium",
+      "assetName": "Uranium"
+    },
+    {
+      "title": "Uranium Price Forecast & 2026 Market Outlook",
+      "url": "https://www.yellowcakeanalytics.com/learn/uranium-price-forecast-outlook",
+      "assetId": "uranium",
+      "assetName": "Uranium"
+    },
+    {
+      "title": "Uranium - Price - Chart - Historical Data - News",
+      "url": "https://tradingeconomics.com/commodity/uranium",
+      "assetId": "uranium",
+      "assetName": "Uranium"
+    },
+    {
+      "title": "Uranium Energy (NYSEAM:UEC) Stock Forecast & Analyst Predictions - Simply Wall St",
+      "url": "https://simplywall.st/stocks/us/energy/nysemkt-uec/uranium-energy/future",
+      "assetId": "uranium",
+      "assetName": "Uranium"
+    },
+    {
+      "title": "UEC : Uranium Energy stock forecast 2025 - 2026 - 2030 - 2035",
+      "url": "https://aipickup.com/stock-prediction/uec-stock-forecast",
+      "assetId": "uranium",
+      "assetName": "Uranium"
+    },
+    {
+      "title": "UxC: Uranium Market Outlook",
+      "url": "https://www.uxc.com/p/product/report/umo",
+      "assetId": "uranium",
+      "assetName": "Uranium"
+    },
+    {
+      "title": "Uranium Price Forecast: Top Trends for Uranium in 2026 – Trading Century",
+      "url": "https://tradingcentury.com/2025/12/15/uranium-price-forecast-top-trends-for-uranium-in-2026/",
+      "assetId": "uranium",
+      "assetName": "Uranium"
+    },
+    {
+      "title": "Analysis of Uranium Supply to 2050",
+      "url": "https://www-pub.iaea.org/MTCD/Publications/PDF/Pub1104_scr.pdf",
+      "assetId": "uranium",
+      "assetName": "Uranium"
+    },
+    {
+      "title": "Uranium Marketing Annual Report - U.S. Energy Information Administration (EIA)",
+      "url": "https://www.eia.gov/uranium/marketing/",
+      "assetId": "uranium",
+      "assetName": "Uranium"
+    },
+    {
+      "title": "XA0201911 IAEA-SM-362/2 Analysis of uranium supply to 2050 D.H. Underhill",
+      "url": "https://www.osti.gov/etdeweb/servlets/purl/20265789",
+      "assetId": "uranium",
+      "assetName": "Uranium"
+    },
+    {
+      "title": "Supply & Demand | Cameco",
+      "url": "https://www.cameco.com/invest/markets/supply-demand",
+      "assetId": "uranium",
+      "assetName": "Uranium"
+    },
+    {
+      "title": "Uranium Price: Charts, Forecasts & News - FocusEconomics",
+      "url": "https://www.focus-economics.com/commodities/energy/uranium/",
+      "assetId": "uranium",
+      "assetName": "Uranium"
+    },
+    {
+      "title": "Uranium Markets - World Nuclear Association",
+      "url": "https://world-nuclear.org/information-library/nuclear-fuel-cycle/uranium-resources/uranium-markets",
+      "assetId": "uranium",
+      "assetName": "Uranium"
+    },
+    {
+      "title": "Uranium Stocks Investment 2026: Nuclear Energy Renaissance & Price Forecast",
+      "url": "https://intellectia.ai/blog/uranium-stocks-investment-2026",
+      "assetId": "uranium",
+      "assetName": "Uranium"
+    },
+    {
+      "title": "Uranium prices reflect strong outlook, raise supply questions -- ANS / Nuclear Newswire",
+      "url": "https://www.ans.org/news/article-8000/uranium-prices-reflect-strong-outlook-raise-supply-questions/",
+      "assetId": "uranium",
+      "assetName": "Uranium"
+    },
+    {
+      "title": "UEC - Uranium Energy Corp Stock Price Forecast 2026, 2027, 2030 to 2050 - StockScan",
+      "url": "https://stockscan.io/stocks/UEC/forecast",
+      "assetId": "uranium",
+      "assetName": "Uranium"
+    },
+    {
+      "title": "Uranium Price Sensitivity | Cameco",
+      "url": "https://www.cameco.com/invest/markets/uranium-price-sensitivity",
+      "assetId": "uranium",
+      "assetName": "Uranium"
+    },
+    {
+      "title": "Uranium Prices Today 2026 | Live Spot Price, Chart & Nuclear Outlook",
+      "url": "https://carboncredits.com/uranium-prices-today/",
+      "assetId": "uranium",
+      "assetName": "Uranium"
+    },
+    {
+      "title": "Why Record-High Copper Prices Aren’t Forecast to Last | Goldman Sachs",
+      "url": "https://www.goldmansachs.com/insights/articles/why-record-high-copper-prices-arent-forecast-to-last",
+      "assetId": "copper",
+      "assetName": "Copper"
+    },
+    {
+      "title": "Goldman Sachs maintains 2026 copper price, surplus forecasts",
+      "url": "https://finance.yahoo.com/news/goldman-sachs-maintains-2026-copper-153156620.html",
+      "assetId": "copper",
+      "assetName": "Copper"
+    },
+    {
+      "title": "Goldman Sachs Raises Copper Price Forecast - The Globe and Mail",
+      "url": "https://www.theglobeandmail.com/investing/markets/markets-news/Yolowire/2328492/goldman-sachs-raises-copper-price-forecast/",
+      "assetId": "copper",
+      "assetName": "Copper"
+    },
+    {
+      "title": "Copper Prices Are Forecast to Decline Somewhat from Record Highs in 2026 | Goldman Sachs",
+      "url": "https://www.goldmansachs.com/insights/articles/copper-prices-forecast-to-decline-from-record-highs-in-2026",
+      "assetId": "copper",
+      "assetName": "Copper"
+    },
+    {
+      "title": "Goldman Sachs Raises Copper Price Forecast",
+      "url": "https://www.barchart.com/story/news/2328997/goldman-sachs-raises-copper-price-forecast",
+      "assetId": "copper",
+      "assetName": "Copper"
+    },
+    {
+      "title": "Copper Price Forecast – Market Outlook & Future Trends | Capital.com",
+      "url": "https://capital.com/en-int/analysis/copper-price-forecast",
+      "assetId": "copper",
+      "assetName": "Copper"
+    },
+    {
+      "title": "Goldman Sachs Increases Copper Price Forecasts for 2026-2027 Amid Supply Tightness - News and Statistics - IndexBox",
+      "url": "https://www.indexbox.io/blog/goldman-sachs-raises-copper-price-forecasts-for-2026-and-2027/",
+      "assetId": "copper",
+      "assetName": "Copper"
+    },
+    {
+      "title": "Goldman Copper Charts - by Robert Sinn - Goldfinger Capital",
+      "url": "https://robertsinn.substack.com/p/goldman-copper-charts",
+      "assetId": "copper",
+      "assetName": "Copper"
+    },
+    {
+      "title": "Goldman cuts copper forecast on soft demand, warns of potential price declines By Investing.com",
+      "url": "https://www.investing.com/news/commodities-news/goldman-cuts-copper-forecast-on-soft-demand-warns-of-potential-price-declines-4599698",
+      "assetId": "copper",
+      "assetName": "Copper"
+    },
+    {
+      "title": "Copper: Goldman Raises Price Targets on US Stockpiling | Scottsdale Mint",
+      "url": "https://www.scottsdalemint.com/articles/2026/copper-goldman-raises-price-targets-on-us-stockpiling/",
+      "assetId": "copper",
+      "assetName": "Copper"
+    },
+    {
+      "title": "Copper Complex copper Eleni Joannides, Research Director",
+      "url": "https://acoc.memberclicks.net/assets/Copper%20Outlook_Wood%20Mackenzie_November%202023.pdf",
+      "assetId": "copper",
+      "assetName": "Copper"
+    },
+    {
+      "title": "COPPER PRICE FORECAST 2026, 2027, 2028 AND 2029 - Long Forecast",
+      "url": "https://longforecast.com/copper",
+      "assetId": "copper",
+      "assetName": "Copper"
+    },
+    {
+      "title": "Copper Price Forecast: 2026 Mid-Year Outlook",
+      "url": "https://www.devere-group.com/copper-price-forecast-2026-mid-year-outlook/",
+      "assetId": "copper",
+      "assetName": "Copper"
+    },
+    {
+      "title": "Copper Prices Outlook | J.P. Morgan Global Research",
+      "url": "https://www.jpmorgan.com/insights/global-research/commodities/copper-outlook",
+      "assetId": "copper",
+      "assetName": "Copper"
+    },
+    {
+      "title": "Copper Prices & Market Forecasts | Benchmark Mineral Intelligence",
+      "url": "https://www.benchmarkminerals.com/copper",
+      "assetId": "copper",
+      "assetName": "Copper"
+    },
+    {
+      "title": "Copper Price Forecast: down to $4.95? - HG Commodity Price Prediction, Long-Term & Short-Term Prognosis with Smart Technical Analysis - WalletInvestor.com",
+      "url": "https://walletinvestor.com/commodity-forecast/copper-prediction",
+      "assetId": "copper",
+      "assetName": "Copper"
+    },
+    {
+      "title": "High-wire act: is soaring copper demand an obstacle to future growth? | Wood Mackenzie",
+      "url": "https://www.woodmac.com/horizons/soaring-copper-demand-obstacle-to-future-growth/",
+      "assetId": "copper",
+      "assetName": "Copper"
+    },
+    {
+      "title": "Copper - Price - Chart - Historical Data - News",
+      "url": "https://tradingeconomics.com/commodity/copper",
+      "assetId": "copper",
+      "assetName": "Copper"
+    },
+    {
+      "title": "Copper Price Forecast 2026–2030: Outlook, Analyst Consensus & Supply Deficit | Just2Trade",
+      "url": "https://j2t.com/solutions/blogview/copper-price-forecast/",
+      "assetId": "copper",
+      "assetName": "Copper"
+    },
+    {
+      "title": "BMI hikes copper price forecast 6.7% on supply deficits - The Northern Miner",
+      "url": "https://secure.northernminer.com/news/bmi-hikes-copper-price-forecast-6-7-on-supply-deficits/1003893099/",
+      "assetId": "copper",
+      "assetName": "Copper"
+    },
+    {
+      "title": "Copper Price Forecast 2026–2028: Copper Market Outlook & Investment 2026–2027 Project",
+      "url": "https://plisio.net/price-predictions/copper-price-prediction",
+      "assetId": "copper",
+      "assetName": "Copper"
+    },
+    {
+      "title": "COPPER (COPPER) Price Prediction 2026, 2027-2030 | CoinCodex",
+      "url": "https://coincodex.com/crypto/copper/price-prediction/",
+      "assetId": "copper",
+      "assetName": "Copper"
+    },
+    {
+      "title": "Goldman Sachs sees lithium prices declining in 2026 to $8,900 per metric ton — TradingView News",
+      "url": "https://www.tradingview.com/news/reuters.com,2025:newsml_FWN3V5149:0-goldman-sachs-sees-lithium-prices-declining-in-2026-to-8-900-per-metric-ton/",
+      "assetId": "lithium",
+      "assetName": "Lithium"
+    },
+    {
+      "title": "Goldman Sachs: Future Lithium Cycle to Be Demand-Driven, Expects Lithium Carbonate Prices to Peak in First Half of Year - Tiger Brokers",
+      "url": "https://www.itiger.com/news/1135331704",
+      "assetId": "lithium",
+      "assetName": "Lithium"
+    },
+    {
+      "title": "Lithium Price Forecast to Recover in 2026 as Demand Mounts - deVere Group",
+      "url": "https://www.devere-group.com/lithium-price-forecast-to-recover-in-2026-as-demand-mounts/",
+      "assetId": "lithium",
+      "assetName": "Lithium"
+    },
+    {
+      "title": "Goldman Sachs Lithium Price Forecasts to 2028 | PDF",
+      "url": "https://www.scribd.com/document/939400719/Here-s-the-lithium-price-forecast-through-to-2028",
+      "assetId": "lithium",
+      "assetName": "Lithium"
+    },
+    {
+      "title": "Lithium Price Forecast Through to 2028: Market Recovery Expectations",
+      "url": "https://discoveryalert.com.au/lithium-market-crisis-2025-prices-analysis/",
+      "assetId": "lithium",
+      "assetName": "Lithium"
+    },
+    {
+      "title": "Is lithium your next big opportunity given Goldman Sachs’ 2026 price decline forecast | AIME by AInvest",
+      "url": "https://www.ainvest.com/aime/share/lithium-big-opportunity-goldman-sachs-2026-price-decline-forecast-8dea1c/",
+      "assetId": "lithium",
+      "assetName": "Lithium"
+    },
+    {
+      "title": "Direct Lithium Extraction A potential game changing ...",
+      "url": "https://www.goldmansachs.com/pdfs/insights/pages/gs-research/direct-lithium-extraction/report.pdf",
+      "assetId": "lithium",
+      "assetName": "Lithium"
+    },
+    {
+      "title": "What will happen to lithium carbonate next? Goldman Sachs: Prices may fluctuate within a range until the supply-demand relationship tightens by mid-next year",
+      "url": "https://longbridge.com/en/news/266690914",
+      "assetId": "lithium",
+      "assetName": "Lithium"
+    },
+    {
+      "title": "The Greenflation Challenge II Raising battery price forecasts",
+      "url": "https://www.goldmansachs.com/pdfs/insights/pages/gs-research/batteries-the-greenflation-challenge-2/report.pdf",
+      "assetId": "lithium",
+      "assetName": "Lithium"
+    },
+    {
+      "title": "Lithium ETO 2026 | Wood Mackenzie",
+      "url": "https://www.woodmac.com/press-releases/lithium-eto-2026/",
+      "assetId": "lithium",
+      "assetName": "Lithium"
+    },
+    {
+      "title": "SunSirs: Supply Shortages Combined with Energy Storage Demand Drive a New Supercycle in the Global Lithium Market",
+      "url": "https://www.sunsirs.com/commodity-news/petail-31515.html",
+      "assetId": "lithium",
+      "assetName": "Lithium"
+    },
+    {
+      "title": "How will the lithium market rebalance? | Wood Mackenzie",
+      "url": "https://www.woodmac.com/news/opinion/lithium-market-rebalance/",
+      "assetId": "lithium",
+      "assetName": "Lithium"
+    },
+    {
+      "title": "The Key Themes Surrounding the Lithium Market in 2026",
+      "url": "https://www.azomining.com/Article.aspx?ArticleID=1938",
+      "assetId": "lithium",
+      "assetName": "Lithium"
+    },
+    {
+      "title": "Lithium Supply Deficit Forecast: Wood Mackenzie Warns of 2028 Crunch - News and Statistics - IndexBox",
+      "url": "https://www.indexbox.io/blog/wood-mackenzie-warns-of-looming-lithium-supply-crunch-by-2028/",
+      "assetId": "lithium",
+      "assetName": "Lithium"
+    },
+    {
+      "title": "Wood Mackenzie Warns of Lithium Supply Shortage by 2028",
+      "url": "https://e.ccement.com/news/content/62604495931066120.html",
+      "assetId": "lithium",
+      "assetName": "Lithium"
+    },
+    {
+      "title": "Lithium demand could exceed 13Mt by 2050 – WoodMac",
+      "url": "https://www.miningweekly.com/article/lithium-demand-could-exceed-13mt-by-2050-woodmac-2026-03-03",
+      "assetId": "lithium",
+      "assetName": "Lithium"
+    },
+    {
+      "title": "Lithium market volatility rises as supply surge faces the trade tension and deflationary pressure | Wood Mackenzie",
+      "url": "https://www.woodmac.com/press-releases/lithium-market-volatility-2025/",
+      "assetId": "lithium",
+      "assetName": "Lithium"
+    },
+    {
+      "title": "Lithium supply deficit could hit as early as 2028, Wood Mackenzie warns - F&L Asia",
+      "url": "https://www.fuelsandlubes.com/lithium-supply-deficit-could-hit-as-early-as-2028-wood-mackenzie-warns/",
+      "assetId": "lithium",
+      "assetName": "Lithium"
+    },
+    {
+      "title": "A tale of a looming surplus in the lithium industry: sticky supply to stay? | Wood Mackenzie",
+      "url": "https://www.woodmac.com/news/opinion/a-tale-of-a-looming-surplus-in-the-lithium-industry-sticky-supply-to-stay/",
+      "assetId": "lithium",
+      "assetName": "Lithium"
+    },
+    {
+      "title": "European Lithium Gains Momentum on Project Timelines and Sector Recovery",
+      "url": "https://www.ad-hoc-news.de/boerse/news/ueberblick/european-lithium-gains-momentum-on-project-timelines-and-sector-recovery/68465975",
+      "assetId": "lithium",
+      "assetName": "Lithium"
+    },
+    {
+      "title": "COMMODITIES 2026: Lithium carbonate surplus to narrow; energy storage to drive growth | S&P Global",
+      "url": "https://www.spglobal.com/energy/en/news-research/latest-news/metals/010926-commodities-2026-lithium-carbonate-surplus-to-narrow-energy-storage-to-drive-growth",
+      "assetId": "lithium",
+      "assetName": "Lithium"
+    },
+    {
+      "title": "Can lithium hit $30,000 in 2026? - The Oregon Group - Critical Minerals and Energy Intelligence",
+      "url": "https://theoregongroup.com/commodities/lithium/can-lithium-hit-30000-in-2026/",
+      "assetId": "lithium",
+      "assetName": "Lithium"
+    },
+    {
+      "title": "UBS sees deeper China lithium supply disruptions lifting prices By Investing.com",
+      "url": "https://www.investing.com/news/stock-market-news/ubs-sees-deeper-china-lithium-supply-disruptions-lifting-prices-93CH-4212168",
+      "assetId": "lithium",
+      "assetName": "Lithium"
+    },
+    {
+      "title": "Commodity...lithium Forecast 2026/2027",
+      "url": "https://tradingeconomics.com/forecast/commodity...lithium",
+      "assetId": "lithium",
+      "assetName": "Lithium"
+    },
+    {
+      "title": "Q1 2026 Lithium Market: Prices Double Amid Supply Strain",
+      "url": "https://investingnews.com/daily/resource-investing/battery-metals-investing/lithium-investing/lithium-forecast/",
+      "assetId": "lithium",
+      "assetName": "Lithium"
+    },
+    {
+      "title": "Lithium Was the Top Performing Commodity in H1 - USFunds",
+      "url": "https://www.usfunds.com/resource/lithium-was-the-top-performing-commodity-in-h1/",
+      "assetId": "lithium",
+      "assetName": "Lithium"
+    },
+    {
+      "title": "Lithium Was the Top Performing Commodity in H1 - U.S. Global Investors - Commentaries - Advisor Perspectives",
+      "url": "https://www.advisorperspectives.com/commentaries/2026/07/14/lithium-top-performing-commodity-h1",
+      "assetId": "lithium",
+      "assetName": "Lithium"
+    },
+    {
+      "title": "The 2026 Material Pivot: Why Morgan Stanley is Bullish on Lithium & Uranium",
+      "url": "https://unclestocknotes.substack.com/p/the-2026-material-pivot-why-morgan",
+      "assetId": "lithium",
+      "assetName": "Lithium"
+    },
+    {
+      "title": "Wheat Price Forecast & Prediction for 2026, 2027, 2028–2030, 2040 and Beyond | LiteFinance",
+      "url": "https://www.litefinance.org/blog/analysts-opinions/wheat-price-forecast-and-prediction/",
+      "assetId": "wheat",
+      "assetName": "Wheat"
+    },
+    {
+      "title": "ISSN: 1554-9089 World Agricultural Supply and Demand Estimates Office of the",
+      "url": "https://www.usda.gov/oce/commodity/wasde/wasde0526v2.pdf",
+      "assetId": "wheat",
+      "assetName": "Wheat"
+    },
+    {
+      "title": "Wheat - Market Outlook - Economic Research Service - USDA",
+      "url": "https://www.ers.usda.gov/topics/crops/wheat/market-outlook",
+      "assetId": "wheat",
+      "assetName": "Wheat"
+    },
+    {
+      "title": "Grains and Oilseeds Outlook Thursday, February 19, 2026",
+      "url": "https://www.usda.gov/sites/default/files/documents/2026AOF-grains-oilseeds-outlook.pdf",
+      "assetId": "wheat",
+      "assetName": "Wheat"
+    },
+    {
+      "title": "Approved by USDA’s World Agricultural Outlook Board Wheat Outlook: May 2026",
+      "url": "https://ers.usda.gov/sites/default/files/_laserfiche/outlooks/114142/WHS-26e.pdf?v=95396",
+      "assetId": "wheat",
+      "assetName": "Wheat"
+    },
+    {
+      "title": "Wheat Price Forecast 2026 - 2030: Wheat Market Outlook for 5,10 & 20 years | Just2Trade",
+      "url": "https://j2t.com/solutions/blogview/wheat-price-prediction/",
+      "assetId": "wheat",
+      "assetName": "Wheat"
+    },
+    {
+      "title": "Wheat Outlook: July 2026 | Economic Research Service - USDA",
+      "url": "https://www.ers.usda.gov/publications/115083",
+      "assetId": "wheat",
+      "assetName": "Wheat"
+    },
+    {
+      "title": "Wheat - Price - Chart - Historical Data - News",
+      "url": "https://tradingeconomics.com/commodity/wheat",
+      "assetId": "wheat",
+      "assetName": "Wheat"
+    },
+    {
+      "title": "Wheat Outlook: February 2026 | Economic Research Service",
+      "url": "https://www.ers.usda.gov/publications/pub-details?pubid=113792",
+      "assetId": "wheat",
+      "assetName": "Wheat"
+    },
+    {
+      "title": "Approved by USDA’s World Agricultural Outlook Board Wheat Outlook: June 2026",
+      "url": "https://www.ers.usda.gov/media/29224/whs-26f.pdf?v=97305",
+      "assetId": "wheat",
+      "assetName": "Wheat"
+    },
+    {
+      "title": "World Bank Forecast: Wheat prices to be $265 in 2025 and 2026 | BBM Magazine",
+      "url": "https://magazinebbm.com/blog/world-bank-forecast-wheat-prices-to-be-265-in-2025-and-2026-3567",
+      "assetId": "wheat",
+      "assetName": "Wheat"
+    },
+    {
+      "title": "IMF Primary Commodity Prices",
+      "url": "https://www.imf.org/en/research/commodity-prices",
+      "assetId": "wheat",
+      "assetName": "Wheat"
+    },
+    {
+      "title": "Commodity Markets Outlook A World Bank Group Report OCTOBER 2025 Apr Apr Oct",
+      "url": "https://documents1.worldbank.org/curated/en/099756111072525099/pdf/IDU-9eca2ce8-ced6-414a-9b1c-94554947d69a.pdf",
+      "assetId": "wheat",
+      "assetName": "Wheat"
+    },
+    {
+      "title": "Global commodity prices to rise 16% in 2026",
+      "url": "https://www.facebook.com/WorldBankAfrica/posts/%F0%9D%97%A1%F0%9D%97%98%F0%9D%97%AA-%F0%9D%97%A5%F0%9D%97%98%F0%9D%97%A3%F0%9D%97%A2%F0%9D%97%A5%F0%9D%97%A7-global-commodity-prices-are-forecast-to-rise-16-in-2026-driven-by-a-w/1393426046146394/",
+      "assetId": "wheat",
+      "assetName": "Wheat"
+    },
+    {
+      "title": "EXECUTIVE SUMMARY COMMODITY MARKETS OUTLOOK | APRIL 2026 12 Commodity Unit 2024",
+      "url": "https://thedocs.worldbank.org/en/doc/f3138644a1e8e2bb631399ae11d6c408-0050012026/related/CMO-April-2026-Forecasts.pdf",
+      "assetId": "wheat",
+      "assetName": "Wheat"
+    },
+    {
+      "title": "World Bank Food Security Update",
+      "url": "https://www.worldbank.org/en/topic/agriculture/brief/food-security-update",
+      "assetId": "wheat",
+      "assetName": "Wheat"
+    },
+    {
+      "title": "Price Forecasts - Commodity Markets",
+      "url": "https://www.worldbank.org/en/research/commodity-markets/price-forecasts",
+      "assetId": "wheat",
+      "assetName": "Wheat"
+    },
+    {
+      "title": "Commodity Markets",
+      "url": "https://www.worldbank.org/en/research/commodity-markets",
+      "assetId": "wheat",
+      "assetName": "Wheat"
+    },
+    {
+      "title": "Publication: Commodity Markets Outlook, April 2026",
+      "url": "https://openknowledge.worldbank.org/entities/publication/3ede6f8c-ba03-4176-867c-40e604698570",
+      "assetId": "wheat",
+      "assetName": "Wheat"
+    },
+    {
+      "title": "Commodity Markets Outlook -- April 2026",
+      "url": "https://openknowledge.worldbank.org/bitstreams/497b52a8-8294-4d4d-8c5f-d88fd6686f87/download",
+      "assetId": "wheat",
+      "assetName": "Wheat"
+    },
+    {
+      "title": "Commodity Markets Outlook, April 2026 (English)",
+      "url": "https://documents.worldbank.org/en/publication/documents-reports/documentdetail/099842304282633100",
+      "assetId": "wheat",
+      "assetName": "Wheat"
+    },
+    {
+      "title": "The Commodity Markets Outlook in eight charts",
+      "url": "https://blogs.worldbank.org/en/developmenttalk/the-commodity-markets-outlook-in-eight-charts3",
+      "assetId": "wheat",
+      "assetName": "Wheat"
+    },
+    {
+      "title": "Commodity Markets Outlook (April 2026)",
+      "url": "https://thedocs.worldbank.org/en/doc/f3138644a1e8e2bb631399ae11d6c408-0050012026/commodity-markets-outlook-april-2026",
+      "assetId": "wheat",
+      "assetName": "Wheat"
+    },
+    {
+      "title": "World Bank - Commodity Markets Outlook April 2026 - Knowledge for policy - European Commission",
+      "url": "https://knowledge4policy.ec.europa.eu/publication/world-bank-commodity-markets-outlook-april-2026_en",
+      "assetId": "wheat",
+      "assetName": "Wheat"
+    },
+    {
+      "title": "CMO-Pink-Sheet-April-2026.pdf",
+      "url": "https://thedocs.worldbank.org/en/doc/74e8be41ceb20fa0da750cda2f6b9e4e-0050012026/related/CMO-Pink-Sheet-April-2026.pdf",
+      "assetId": "wheat",
+      "assetName": "Wheat"
+    },
+    {
+      "title": "Potash Fertilizer Outlook Positive for 2026",
+      "url": "https://www.dtnpf.com/agriculture/web/ag/crops/article/2025/12/26/potash-fertilizer-outlook-positive",
+      "assetId": "potash",
+      "assetName": "Potash / Fertilizers"
+    },
+    {
+      "title": "Fertilizer markets soften but remain constrained by trade policies",
+      "url": "https://blogs.worldbank.org/en/opendata/fertilizer-markets-soften-but-remain-constrained-by-trade-polici",
+      "assetId": "potash",
+      "assetName": "Potash / Fertilizers"
+    },
+    {
+      "title": "Potash Price Trend 2026 | Latest Price & Forecast",
+      "url": "https://www.procurementresource.com/resource-center/potash-price-trends",
+      "assetId": "potash",
+      "assetName": "Potash / Fertilizers"
+    },
+    {
+      "title": "Potash Fertilizer Market Size & Share Outlook to 2031",
+      "url": "https://www.mordorintelligence.com/industry-reports/potash-fertilizer-market",
+      "assetId": "potash",
+      "assetName": "Potash / Fertilizers"
+    },
+    {
+      "title": "Potash Prices, Analytics & Forecasts | ICIS",
+      "url": "https://www.icis.com/explore/commodities/fertilizers/potash/",
+      "assetId": "potash",
+      "assetName": "Potash / Fertilizers"
+    },
+    {
+      "title": "Phosphate and Potash Prices on the Rise in Q1 2026: What's Driving the Increase?",
+      "url": "https://investingnews.com/agriculture-forecast/",
+      "assetId": "potash",
+      "assetName": "Potash / Fertilizers"
+    },
+    {
+      "title": "Fertilizer Outlook: Global Risks, Higher Costs, Tighter Margins | Farm Bureau Intel Markets | American Farm Bureau Federation",
+      "url": "https://www.fb.org/market-intel/fertilizer-outlook-global-risks-higher-costs-tighter-margins",
+      "assetId": "potash",
+      "assetName": "Potash / Fertilizers"
+    },
+    {
+      "title": "Potash Prices, Chart, Index, Trend and Forecast 2026",
+      "url": "https://www.imarcgroup.com/potash-pricing-report",
+      "assetId": "potash",
+      "assetName": "Potash / Fertilizers"
+    },
+    {
+      "title": "Fertilizer prices surge as Strait of Hormuz disruptions tighten supplies",
+      "url": "https://blogs.worldbank.org/en/opendata/fertilizer-prices-surge-as-strait-of-hormuz-disruptions-tighten-",
+      "assetId": "potash",
+      "assetName": "Potash / Fertilizers"
+    },
+    {
+      "title": "Potash Fertilizers Market Size & YoY Growth Rate, 2026-2033",
+      "url": "https://www.coherentmarketinsights.com/market-insight/potash-fertilizers-market-1398",
+      "assetId": "potash",
+      "assetName": "Potash / Fertilizers"
+    },
+    {
+      "title": "Fertilizer prices stable at onset of 2025 planting season, below highs of 2021 and 2022 | Economic Research Service",
+      "url": "https://ers.usda.gov/data-products/charts-of-note/111221",
+      "assetId": "potash",
+      "assetName": "Potash / Fertilizers"
+    },
+    {
+      "title": "Impacts and Repercussions of Price Increases on the Global Fertilizer Market | USDA Foreign Agricultural Service",
+      "url": "https://www.fas.usda.gov/data/impacts-and-repercussions-price-increases-global-fertilizer-market",
+      "assetId": "potash",
+      "assetName": "Potash / Fertilizers"
+    },
+    {
+      "title": "Drivers of Fertilizer Markets: Supply, Demand, and Prices",
+      "url": "https://ers.usda.gov/sites/default/files/_laserfiche/publications/113324/ERR-354.pdf?v=89250",
+      "assetId": "potash",
+      "assetName": "Potash / Fertilizers"
+    },
+    {
+      "title": "Fertilizer Prices by Region | Open Ag Transport Data",
+      "url": "https://agtransport.usda.gov/Fertilizer/Fertilizer-Prices-by-Region/8bgf-5mdv",
+      "assetId": "potash",
+      "assetName": "Potash / Fertilizers"
+    },
+    {
+      "title": "Potash Market | Global Market Analysis Report - 2036",
+      "url": "https://www.factmr.com/report/potash-market",
+      "assetId": "potash",
+      "assetName": "Potash / Fertilizers"
+    },
+    {
+      "title": "Potash Market Growing at 3.9% CAGR to Surpass $ 91.7 Bn",
+      "url": "https://www.vantagemarketresearch.com/potash-market",
+      "assetId": "potash",
+      "assetName": "Potash / Fertilizers"
+    },
+    {
+      "title": "Potash Mining & Trade Market Size | 2026-2035 Forecast Report",
+      "url": "https://www.gminsights.com/industry-analysis/potash-mining-and-trade-market",
+      "assetId": "potash",
+      "assetName": "Potash / Fertilizers"
+    },
+    {
+      "title": "Potash Market Size, Share, Trends & Growth Report, 2034",
+      "url": "https://www.fortunebusinessinsights.com/potash-market-116490",
+      "assetId": "potash",
+      "assetName": "Potash / Fertilizers"
+    },
+    {
+      "title": "Potash Market Size to to Hit USD 106.09 Bn by 2035",
+      "url": "https://www.precedenceresearch.com/potash-market",
+      "assetId": "potash",
+      "assetName": "Potash / Fertilizers"
+    },
+    {
+      "title": "Potash Market Size, Share & Global Forecast 2026-2035",
+      "url": "https://www.snsinsider.com/reports/potash-market-5732",
+      "assetId": "potash",
+      "assetName": "Potash / Fertilizers"
+    },
+    {
+      "title": "Potash Fertilizers Market Size, Share, Trends Analysis By 2035",
+      "url": "https://www.marketresearchfuture.com/reports/potash-fertilizers-market-5536",
+      "assetId": "potash",
+      "assetName": "Potash / Fertilizers"
+    },
+    {
+      "title": "Potash Market Size, Competitors, Trends & Forecast to 2030",
+      "url": "https://www.researchandmarkets.com/report/potassium-carbonate",
+      "assetId": "potash",
+      "assetName": "Potash / Fertilizers"
+    },
+    {
+      "title": "Lumber - Price - Chart - Historical Data - News",
+      "url": "https://tradingeconomics.com/commodity/lumber",
+      "assetId": "lumber",
+      "assetName": "Lumber"
+    },
+    {
+      "title": "When Will Lumber Prices Stabilize? Insights for 2025–2026",
+      "url": "https://www.lumbercapital.com/post/lumber-prices-2025-2026-what-s-driving-costs-right-now",
+      "assetId": "lumber",
+      "assetName": "Lumber"
+    },
+    {
+      "title": "What the Data Says: Lumber Price Updates | Gordian",
+      "url": "https://www.gordian.com/resources/lumber-price-updates/",
+      "assetId": "lumber",
+      "assetName": "Lumber"
+    },
+    {
+      "title": "Lumber Price Trend 2026: Up-to-Date Insights",
+      "url": "https://www.accio.com/business/lumber-price-trend",
+      "assetId": "lumber",
+      "assetName": "Lumber"
+    },
+    {
+      "title": "Framing Lumber Prices | NAHB",
+      "url": "https://www.nahb.org/news-and-economics/housing-economics/national-statistics/framing-lumber-prices",
+      "assetId": "lumber",
+      "assetName": "Lumber"
+    },
+    {
+      "title": "Quarterly Economic and Revenue Forecasts | Department of Natural Resources",
+      "url": "https://dnr.wa.gov/business-data-dashboards-and-reports/quarterly-economic-and-revenue-forecasts",
+      "assetId": "lumber",
+      "assetName": "Lumber"
+    },
+    {
+      "title": "Lumber Price Forecast: up to $401.786! - LB Commodity Price Prediction, Long-Term & Short-Term Prognosis with Smart Technical Analysis",
+      "url": "https://walletinvestor.com/commodity-forecast/lumber-prediction",
+      "assetId": "lumber",
+      "assetName": "Lumber"
+    },
+    {
+      "title": "Lumber Cost Trends: 2026 Price Forecast & Market Outlook - FastBull",
+      "url": "https://www.fastbull.com/newsdetail/lumber-cost-trends-2026-price-forecast--market-a956_0",
+      "assetId": "lumber",
+      "assetName": "Lumber"
+    },
+    {
+      "title": "Lumber Market Analysis 2026",
+      "url": "https://www.cognitivemarketresearch.com/lumber-market-report",
+      "assetId": "lumber",
+      "assetName": "Lumber"
+    },
+    {
+      "title": "Lumber Price Forecast, \"LB\" Commodity Predictons by days: 2027",
+      "url": "https://walletinvestor.com/commodity-forecast/lumber-prediction/data/1",
+      "assetId": "lumber",
+      "assetName": "Lumber"
+    },
+    {
+      "title": "Lumber Service - Forest Economic Advisors, LLC",
+      "url": "https://getfea.com/publication/lumber-service",
+      "assetId": "lumber",
+      "assetName": "Lumber"
+    },
+    {
+      "title": "Wood Markets Monthly - Forest Economic Advisors, LLC",
+      "url": "https://getfea.com/publication/wood-markets-monthly",
+      "assetId": "lumber",
+      "assetName": "Lumber"
+    },
+    {
+      "title": "Analysis you trust, Insights you can use - Forest Economic Advisors, LLC",
+      "url": "https://getfea.com/",
+      "assetId": "lumber",
+      "assetName": "Lumber"
+    },
+    {
+      "title": "Forest Economic Advisors, LLC | FEA: Analysis You Trust, Insights You Can Use",
+      "url": "https://www.getfea.com/lumber/lmst/weekly",
+      "assetId": "lumber",
+      "assetName": "Lumber"
+    },
+    {
+      "title": "PricePulse Roadmap - Forest Economic Advisors, LLC",
+      "url": "https://getfea.com/pricepulse/roadmap",
+      "assetId": "lumber",
+      "assetName": "Lumber"
+    },
+    {
+      "title": "Lumber price forecast",
+      "url": "https://www.fastmarkets.com/forest-products/wood-products/lumber-price-forecast/",
+      "assetId": "lumber",
+      "assetName": "Lumber"
+    },
+    {
+      "title": "Timber Service - Forest Economic Advisors, LLC",
+      "url": "https://getfea.com/publication/timber-service",
+      "assetId": "lumber",
+      "assetName": "Lumber"
+    },
+    {
+      "title": "Forest Products Forum - Forest Economic Advisors, LLC",
+      "url": "https://getfea.com/conference/forest-products-forum",
+      "assetId": "lumber",
+      "assetName": "Lumber"
+    },
+    {
+      "title": "Forest Products Industry Outlook: Softwood Markets Set to Stabilize in 2026",
+      "url": "https://www.farmcrediteast.com/en/resources/Industry-Trends-and-Outlooks/Reports/2603KEP_ForestProductsOutlook",
+      "assetId": "lumber",
+      "assetName": "Lumber"
+    },
+    {
+      "title": "Outlook for the North American Lumber Industry",
+      "url": "https://www.fastmarkets.com/uploads/2025/04/MWC-Master-Outlook-2025.pdf",
+      "assetId": "lumber",
+      "assetName": "Lumber"
+    },
+    {
+      "title": "US housing market analysis: Construction market and lumber prices mixed amid economic shifts - Fastmarkets",
+      "url": "https://www.fastmarkets.com/insights/us-housing-market-analysis-construction-lumber-price/",
+      "assetId": "lumber",
+      "assetName": "Lumber"
+    },
+    {
+      "title": "What Will Shape the Lumber Market in 2026? Trends, Risks & Opportunities | Trio Forest Products",
+      "url": "https://trioforest.com/what-will-shape-the-lumber-market-in-2026-trends-risks-opportunities/",
+      "assetId": "lumber",
+      "assetName": "Lumber"
+    },
+    {
+      "title": "Lumber prices: Five predictions for the housing and wood products markets in 2025 | 2025 preview - Fastmarkets",
+      "url": "https://www.fastmarkets.com/insights/lumber-prices-five-predictions-2025/",
+      "assetId": "lumber",
+      "assetName": "Lumber"
     }
   ]
 }
