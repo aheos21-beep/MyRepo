@@ -6,12 +6,13 @@ Requires: ANTHROPIC_API_KEY environment variable
 
 Each asset is researched individually with the web_search tool enabled, so
 projections are grounded in real, current search results rather than the
-model's training data alone. The actual pages Claude cited are collected
-into data["sources"] as an appendix for the UI.
+model's training data alone. The projection itself is returned via a forced
+tool call (not parsed from free text) so an uncertain model can't skip the
+structured answer in favor of a prose caveat. The real pages found during
+research are collected into data["sources"] as an appendix for the UI.
 """
 import json
 import os
-import re
 from datetime import date
 from pathlib import Path
 
@@ -21,6 +22,34 @@ DATA_PATH = Path(__file__).parent / "data.json"
 HISTORY_PATH = Path(__file__).parent / "history.json"
 MAX_HISTORY_MONTHS = 12
 SEARCHES_PER_ASSET = 4
+
+# Forces structured output instead of relying on the model to follow a
+# "return only JSON" text instruction — which it may ignore in favor of
+# hedging in prose when the data it found is incomplete.
+SUBMIT_TOOL = {
+    "name": "submit_projection",
+    "description": "Submit the researched 3-year forward return projection for this asset class, based on real web search results.",
+    "input_schema": {
+        "type": "object",
+        "properties": {
+            "r": {
+                "type": "array",
+                "items": {"type": "number"},
+                "minItems": 3,
+                "maxItems": 3,
+                "description": "Year 1, Year 2, Year 3 projected annual return percentages, e.g. 8.0 for +8.0%",
+            },
+            "why": {
+                "type": "array",
+                "items": {"type": "string"},
+                "minItems": 3,
+                "maxItems": 3,
+                "description": "One rationale per year (under 240 characters), naming the actual source/analyst and date found",
+            },
+        },
+        "required": ["r", "why"],
+    },
+}
 
 # Search hints per asset, steering the model toward real, checkable sources.
 SOURCE_HINTS = {
@@ -70,7 +99,7 @@ def load_history():
 
 def research_asset(client, model_id, asset, today):
     """Search the web for one asset's current analyst consensus and return
-    (r, why, sources), where sources are real pages Claude actually cited."""
+    (r, why, sources), where sources are the real pages found during research."""
     hint = SOURCE_HINTS.get(asset["id"], "")
     prompt = f"""Today is {today}, which is after your training cutoff — you cannot know current market conditions or analyst forecasts from memory alone.
 
@@ -83,49 +112,45 @@ Look for sources like: {hint}
 Current (soon to be replaced) projections for reference — update them based on what you actually find:
 Year 1: {asset['r'][0]}%, Year 2: {asset['r'][1]}%, Year 3: {asset['r'][2]}%
 
-Search for the latest available price targets, rate outlooks, or return forecasts. If exact 3-year figures aren't published, reasonably derive Year 2/Year 3 from the trend implied by what you find (e.g. a 12-month price target plus a stated longer-run view), and say so in the rationale.
+Search for the latest available price targets, rate outlooks, or return forecasts. If exact 3-year figures aren't published, reasonably derive Year 2/Year 3 from the trend implied by what you find (e.g. a 12-month price target plus a stated longer-run view) — do not withhold a projection just because the exact figure isn't published verbatim; give your best grounded estimate and explain the derivation in "why".
 
-Return ONLY a single JSON object, no markdown, no commentary, in exactly this shape:
-{{"r": [year1_pct, year2_pct, year3_pct], "why": ["reason for year 1 naming the source/analyst and date found", "reason for year 2", "reason for year 3"]}}
-
-Each "why" entry must be under 240 characters."""
+Once you've searched enough to form a view, call submit_projection with your answer."""
 
     response = client.messages.create(
         model=model_id,
-        max_tokens=2000,
-        tools=[{"type": "web_search_20250305", "name": "web_search", "max_uses": SEARCHES_PER_ASSET}],
+        max_tokens=3000,
+        tools=[
+            {"type": "web_search_20250305", "name": "web_search", "max_uses": SEARCHES_PER_ASSET},
+            SUBMIT_TOOL,
+        ],
+        # "any" forces a tool call every turn (search again, or submit) instead of
+        # letting the model end the turn with plain prose explaining uncertainty.
+        tool_choice={"type": "any", "disable_parallel_tool_use": True},
         messages=[{"role": "user", "content": prompt}],
     )
 
-    text_blocks = [b for b in response.content if b.type == "text"]
-    text = "".join(b.text for b in text_blocks).strip()
-    text = re.sub(r"^```[a-z]*\s*", "", text)
-    text = re.sub(r"\s*```$", "", text)
+    submission = next(
+        (b for b in response.content if b.type == "tool_use" and b.name == "submit_projection"),
+        None,
+    )
+    if submission is None:
+        raise ValueError(
+            f"Model never called submit_projection for {asset['id']} (stop_reason={response.stop_reason})"
+        )
 
-    match = re.search(r"\{.*\}", text, re.DOTALL)
-    if not match:
-        raise ValueError(f"No JSON object found in response for {asset['id']}: {text[:200]}")
-    parsed = json.loads(match.group(0))
+    r = submission.input["r"]
+    why = submission.input["why"]
 
-    # Prefer sources Claude actually cited in its answer; fall back to raw
-    # search results if citations weren't attached to the final text.
     sources = []
     seen_urls = set()
-    for b in text_blocks:
-        for citation in (b.citations or []):
-            if citation.type == "web_search_result_location" and citation.url not in seen_urls:
-                seen_urls.add(citation.url)
-                sources.append({"title": citation.title or citation.url, "url": citation.url})
+    for b in response.content:
+        if b.type == "web_search_tool_result" and isinstance(b.content, list):
+            for result in b.content:
+                if result.url not in seen_urls:
+                    seen_urls.add(result.url)
+                    sources.append({"title": result.title, "url": result.url})
 
-    if not sources:
-        for b in response.content:
-            if b.type == "web_search_tool_result" and isinstance(b.content, list):
-                for result in b.content:
-                    if result.url not in seen_urls:
-                        seen_urls.add(result.url)
-                        sources.append({"title": result.title, "url": result.url})
-
-    return parsed["r"], parsed["why"], sources
+    return r, why, sources
 
 
 def main():
