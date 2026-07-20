@@ -1059,7 +1059,7 @@ const App = {
       if (!base) return '';
       const displayTitle = saved ? saved.title : base.title;
       const displayContent = saved ? saved.content : base.content;
-      return App.buildEditBlock(key, displayTitle, displayContent, false);
+      return App.buildEditBlock(key, displayTitle, displayContent, false, !saved);
     }).join('');
 
     main.innerHTML = `
@@ -1067,6 +1067,7 @@ const App = {
         <h2>${section.icon} ${section.label}</h2>
         <p>Edit the content below. Changes are saved when you click <strong>Save Changes</strong>.</p>
       </div>
+      <div class="template-hint">Content starts marked <strong style="color:#dc2626">red</strong> for review — select and click <strong>Clear Mark</strong> as you confirm/edit each part.</div>
       <div class="toolbar">
         <button class="btn btn-ghost" onclick="App.renderSubheadings()">← Back to Topics</button>
       </div>
@@ -1083,7 +1084,8 @@ const App = {
   },
 
   // withControls = true adds drag handle, delete button (used in perm mode only)
-  buildEditBlock(key, title, content, withControls) {
+  // defaultRed = true wraps plain (never-edited) content in a red review span
+  buildEditBlock(key, title, content, withControls, defaultRed) {
     if (withControls) {
       return `<div class="edit-block" draggable="true" data-key="${escHtml(key)}">
         <div class="edit-block-header">
@@ -1094,11 +1096,19 @@ const App = {
         <div class="edit-content" contenteditable="true">${escHtml(content)}</div>
       </div>`;
     }
+    let bodyHtml;
+    if (isHtmlContent(content)) {
+      bodyHtml = content;
+    } else if (defaultRed && content) {
+      bodyHtml = `<span style="color:#dc2626">${escHtml(content)}</span>`;
+    } else {
+      bodyHtml = escHtml(content);
+    }
     return `<div class="edit-block" data-key="${escHtml(key)}">
       <div class="edit-block-header">
         <input type="text" class="block-title" value="${escHtml(title)}" placeholder="Subheading title">
       </div>
-      <div class="edit-content" contenteditable="true">${isHtmlContent(content) ? content : escHtml(content)}</div>
+      <div class="edit-content" contenteditable="true">${bodyHtml}</div>
     </div>`;
   },
 
