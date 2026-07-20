@@ -342,7 +342,9 @@
     body { background: white; }
     main { padding: 0; max-width: 100%; }
     .final-doc { border: none; padding: 20px; box-shadow: none; }
-    .final-doc .doc-h1 { page-break-before: auto; }
+    .final-doc .doc-h1 { page-break-before: always; break-before: page; }
+    .final-doc .doc-h1:first-child { page-break-before: avoid; break-before: avoid; }
+    .final-doc .doc-h2 { page-break-after: avoid; break-after: avoid; }
   }
 
   .empty-state {
