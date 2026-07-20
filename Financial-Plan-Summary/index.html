@@ -1214,6 +1214,16 @@ const App = {
   downloadWord() {
     const finalDoc = document.getElementById('finalDoc');
     if (!finalDoc) return;
+    // Word's HTML importer is unreliable with multi-class elements and CSS
+    // overrides, so the first heading's "stay on page one" exception is
+    // rewritten as a single self-contained inline style instead of relying
+    // on the doc-h1 + doc-h1-first class combination that works in browsers.
+    const clone = finalDoc.cloneNode(true);
+    const firstH1 = clone.querySelector('.doc-h1-first');
+    if (firstH1) {
+      firstH1.removeAttribute('class');
+      firstH1.setAttribute('style', 'font-size:14pt; font-weight:bold; color:#1a2744; text-transform:uppercase; letter-spacing:1pt; border-bottom:2pt solid #c9a84c; padding-bottom:4pt; margin-top:0; margin-bottom:12pt; mso-page-break-before:avoid; page-break-before:avoid;');
+    }
     const styles = `
       body { font-family: Calibri, 'Segoe UI', Arial, sans-serif; }
       .doc-title { text-align:center; font-size:20pt; font-weight:bold; color:#1a2744; margin-bottom:4pt; }
@@ -1229,7 +1239,7 @@ const App = {
 <head><meta charset="utf-8"><title>Financial Plan Summary</title>
 <!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]-->
 <style>${styles}</style>
-</head><body>${finalDoc.innerHTML}</body></html>`;
+</head><body>${clone.innerHTML}</body></html>`;
     const blob = new Blob(['﻿', html], { type: 'application/msword' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
