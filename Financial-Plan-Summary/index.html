@@ -344,7 +344,7 @@
     margin-top: 4px;
   }
   .final-doc .doc-spacer { line-height: 1.75; }
-  .final-doc .doc-h1:first-child { margin-top: 0; }
+  .final-doc .doc-h1-first { margin-top: 0; }
 
   /* PRINT */
   @media print {
@@ -353,7 +353,7 @@
     main { padding: 0; max-width: 100%; }
     .final-doc { border: none; padding: 20px; box-shadow: none; }
     .final-doc .doc-h1 { page-break-before: always; break-before: page; }
-    .final-doc .doc-h1:first-child { page-break-before: avoid; break-before: avoid; }
+    .final-doc .doc-h1-first { page-break-before: avoid; break-before: avoid; }
     .final-doc .doc-h2 { page-break-after: avoid; break-after: avoid; }
     .final-doc .doc-h2-line { page-break-after: avoid; break-after: avoid; }
   }
@@ -1173,12 +1173,14 @@ const App = {
 
     // Build document HTML using saved order
     let docHTML = '';
+    let isFirstH1 = true;
     SECTIONS.forEach(section => {
       const edits = State.getSectionEdits(section.id);
       const keys = State.getOrderedKeys(section.id);
       if (keys.length === 0) return;
 
-      docHTML += `<div class="doc-h1">${section.label}</div>`;
+      docHTML += `<div class="doc-h1${isFirstH1 ? ' doc-h1-first' : ''}">${section.label}</div>`;
+      isFirstH1 = false;
       keys.forEach(key => {
         const e = edits[key];
         if (!e) return;
@@ -1217,7 +1219,7 @@ const App = {
       .doc-title { text-align:center; font-size:20pt; font-weight:bold; color:#1a2744; margin-bottom:4pt; }
       .doc-date { text-align:center; font-size:11pt; color:#6b7280; margin-bottom:24pt; }
       .doc-h1 { font-size:14pt; font-weight:bold; color:#1a2744; text-transform:uppercase; letter-spacing:1pt; border-bottom:2pt solid #c9a84c; padding-bottom:4pt; margin-top:24pt; margin-bottom:12pt; mso-page-break-before:always; page-break-before:always; }
-      .doc-h1:first-child { mso-page-break-before:avoid; page-break-before:avoid; margin-top:0; }
+      .doc-h1-first { mso-page-break-before:avoid; page-break-before:avoid; margin-top:0; }
       .doc-h2 { font-size:12pt; font-weight:bold; color:#243560; margin-top:14pt; margin-bottom:0; }
       .doc-h2-line { font-size:11pt; color:#6b7280; margin:0; }
       .doc-body { font-size:11pt; color:#1e2535; white-space:pre-wrap; margin-top:3pt; }
