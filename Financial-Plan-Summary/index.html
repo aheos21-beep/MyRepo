@@ -334,6 +334,8 @@
     color: var(--text-muted);
     margin: 0;
     line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
   }
   .final-doc .doc-body {
     font-size: 0.875rem;
@@ -1180,7 +1182,7 @@ const App = {
       keys.forEach(key => {
         const e = edits[key];
         if (!e) return;
-        const dashLine = '-'.repeat(Math.max(e.title.length, 3));
+        const dashLine = '-'.repeat(dashCountForTitle(e.title));
         const bodyText = isHtmlContent(e.content) ? (() => { const d = document.createElement('div'); d.innerHTML = e.content; return d.innerText; })() : e.content;
         docHTML += `<div class="doc-h2">${escHtml(e.title)}</div>`;
         docHTML += `<div class="doc-h2-line">${dashLine}</div>`;
@@ -1506,6 +1508,30 @@ function escHtml(str) {
 }
 function isHtmlContent(str) {
   return /<[a-z]/i.test(str || '');
+}
+// Picks a dash count so the rendered .doc-h2-line visually spans the same
+// width as the title, since '-' glyphs are much narrower than the bold
+// heading font and a 1:1 character count renders far too short.
+function dashCountForTitle(title) {
+  if (!dashCountForTitle._titleEl) {
+    const wrap = document.createElement('div');
+    wrap.className = 'final-doc'; // .doc-h2/.doc-h2-line rules are scoped as descendants of .final-doc
+    wrap.style.cssText = 'position:absolute; visibility:hidden; white-space:nowrap; left:-9999px; top:-9999px;';
+    const t = document.createElement('span');
+    t.className = 'doc-h2';
+    const d = document.createElement('span');
+    d.className = 'doc-h2-line';
+    d.textContent = '-'.repeat(30); // longer reference run averages out per-glyph rounding error
+    wrap.appendChild(t);
+    wrap.appendChild(d);
+    document.body.appendChild(wrap);
+    dashCountForTitle._titleEl = t;
+    dashCountForTitle._dashEl = d;
+  }
+  dashCountForTitle._titleEl.textContent = title;
+  const targetWidth = dashCountForTitle._titleEl.offsetWidth;
+  const dashCharWidth = (dashCountForTitle._dashEl.offsetWidth || 180) / 30;
+  return Math.max(3, Math.round(targetWidth / dashCharWidth));
 }
 // Produces a safely-quoted JS string literal for use inside a double-quoted HTML attribute
 function jsStr(val) {
