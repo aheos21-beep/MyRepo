@@ -1209,42 +1209,90 @@ const App = {
       </div>`;
   },
 
-  // Builds a Word-compatible .doc file (HTML wrapped in Word's XML namespace) —
-  // no external library needed, works entirely client-side for GitHub Pages hosting.
-  downloadWord() {
-    const finalDoc = document.getElementById('finalDoc');
-    if (!finalDoc) return;
-    // Word's HTML importer is unreliable with multi-class elements and CSS
-    // overrides, so the first heading's "stay on page one" exception is
-    // rewritten as a single self-contained inline style instead of relying
-    // on the doc-h1 + doc-h1-first class combination that works in browsers.
-    const clone = finalDoc.cloneNode(true);
-    const firstH1 = clone.querySelector('.doc-h1-first');
-    if (firstH1) {
-      firstH1.removeAttribute('class');
-      firstH1.setAttribute('style', 'font-size:14pt; font-weight:bold; color:#1a2744; text-transform:uppercase; letter-spacing:1pt; border-bottom:2pt solid #c9a84c; padding-bottom:4pt; margin-top:0; margin-bottom:12pt; mso-page-break-before:avoid; page-break-before:avoid;');
+  // Lazily loads the vendored docx.js browser bundle (only fetched once, on
+  // first download, so it doesn't add to normal page load).
+  loadDocxLib() {
+    if (window.docx) return Promise.resolve(window.docx);
+    if (!App._docxLoadPromise) {
+      App._docxLoadPromise = new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'vendor/docx.iife.js';
+        script.onload = () => resolve(window.docx);
+        script.onerror = () => reject(new Error('Failed to load docx library'));
+        document.head.appendChild(script);
+      });
     }
-    const styles = `
-      body { font-family: Calibri, 'Segoe UI', Arial, sans-serif; }
-      .doc-title { text-align:center; font-size:20pt; font-weight:bold; color:#1a2744; margin-bottom:4pt; }
-      .doc-date { text-align:center; font-size:11pt; color:#6b7280; margin-bottom:24pt; }
-      .doc-h1 { font-size:14pt; font-weight:bold; color:#1a2744; text-transform:uppercase; letter-spacing:1pt; border-bottom:2pt solid #c9a84c; padding-bottom:4pt; margin-top:24pt; margin-bottom:12pt; mso-page-break-before:always; page-break-before:always; }
-      .doc-h1-first { mso-page-break-before:avoid; page-break-before:avoid; margin-top:0; }
-      .doc-h2 { font-size:12pt; font-weight:bold; color:#243560; margin-top:14pt; margin-bottom:0; }
-      .doc-h2-line { font-size:11pt; color:#6b7280; margin:0; }
-      .doc-body { font-size:11pt; color:#1e2535; white-space:pre-wrap; margin-top:3pt; }
-    `;
-    const html = `<!DOCTYPE html>
-<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-<head><meta charset="utf-8"><title>Financial Plan Summary</title>
-<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]-->
-<style>${styles}</style>
-</head><body>${clone.innerHTML}</body></html>`;
-    const blob = new Blob(['﻿', html], { type: 'application/msword' });
+    return App._docxLoadPromise;
+  },
+
+  // Generates a real Office Open XML .docx file (not an HTML trick) using the
+  // vendored docx.js library — entirely client-side, no server required.
+  async downloadWord() {
+    let lib;
+    try {
+      lib = await App.loadDocxLib();
+    } catch (e) {
+      showToast('Could not load the Word export library.', '#dc2626');
+      return;
+    }
+    const { Document, Packer, Paragraph, TextRun, AlignmentType, BorderStyle, UnderlineType } = lib;
+
+    const children = [];
+    children.push(new Paragraph({
+      alignment: AlignmentType.CENTER,
+      spacing: { after: 80 },
+      children: [new TextRun({ text: 'Financial Plan Summary', bold: true, size: 40, color: '1A2744' })]
+    }));
+    const today = new Date().toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' });
+    children.push(new Paragraph({
+      alignment: AlignmentType.CENTER,
+      spacing: { after: 480 },
+      children: [new TextRun({ text: `Prepared: ${today}`, size: 22, color: '6B7280' })]
+    }));
+
+    let isFirstSection = true;
+    SECTIONS.forEach(section => {
+      const edits = State.getSectionEdits(section.id);
+      const keys = State.getOrderedKeys(section.id);
+      if (keys.length === 0) return;
+
+      children.push(new Paragraph({
+        pageBreakBefore: !isFirstSection,
+        spacing: { before: isFirstSection ? 0 : 480, after: 240 },
+        border: { bottom: { color: 'C9A84C', space: 4, style: BorderStyle.SINGLE, size: 12 } },
+        children: [new TextRun({ text: section.label.toUpperCase(), bold: true, size: 28, color: '1A2744' })]
+      }));
+      isFirstSection = false;
+
+      keys.forEach(key => {
+        const e = edits[key];
+        if (!e) return;
+        const bodyText = isHtmlContent(e.content) ? (() => { const d = document.createElement('div'); d.innerHTML = e.content; return d.innerText; })() : e.content;
+
+        children.push(new Paragraph({
+          spacing: { before: 280, after: 60 },
+          children: [new TextRun({ text: e.title, bold: true, size: 24, color: '243560', underline: { type: UnderlineType.DASH, color: '6B7280' } })]
+        }));
+        bodyText.split('\n').forEach(line => {
+          children.push(new Paragraph({
+            spacing: { after: 0 },
+            children: [new TextRun({ text: line, size: 22, color: '1E2535' })]
+          }));
+        });
+      });
+    });
+
+    const doc = new Document({
+      creator: 'Financial Plan Summary',
+      title: 'Financial Plan Summary',
+      sections: [{ children }]
+    });
+
+    const blob = await Packer.toBlob(doc);
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `Financial-Plan-Summary-${new Date().toISOString().slice(0, 10)}.doc`;
+    a.download = `Financial-Plan-Summary-${new Date().toISOString().slice(0, 10)}.docx`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
