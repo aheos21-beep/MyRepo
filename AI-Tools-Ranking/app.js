@@ -14,6 +14,7 @@ async function loadAll() {
     renderRankings(rankData);
     renderChart(histData);
     setLastUpdated(rankData.last_updated);
+    setCost(rankData.api_cost);
   } catch (err) {
     console.error('Load failed:', err);
   }
@@ -207,13 +208,24 @@ function startCountdown() {
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
+function ordinalDay(n) {
+  const s = ['th','st','nd','rd'];
+  const v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+
 function setLastUpdated(iso) {
   const el = document.getElementById('last-updated');
   try {
     const d = new Date(iso);
-    const dateStr = d.toLocaleDateString(undefined, { dateStyle: 'medium' });
-    el.innerHTML = `Updated: <strong style="color:var(--green)">${dateStr}</strong>`;
-  } catch { el.textContent = `Updated: ${iso}`; }
+    const mon = d.toLocaleDateString('en-US', { month: 'short' });
+    el.textContent = `${mon} ${ordinalDay(d.getDate())}`;
+  } catch { el.textContent = '—'; }
+}
+
+function setCost(cost) {
+  const el = document.getElementById('api-cost');
+  if (el) el.textContent = cost || '—';
 }
 
 function esc(str) {

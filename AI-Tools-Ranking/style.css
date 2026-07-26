@@ -72,17 +72,31 @@ html, body {
 
 .refresh-label { font-size: 0.75rem; color: var(--muted); flex-shrink: 0; }
 
-.header-meta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 1px;
+.info-badge {
+  background: rgba(14,14,28,0.88);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 8px 14px;
+  display: grid;
+  grid-template-columns: max-content max-content;
+  gap: 4px 12px;
   flex-shrink: 0;
 }
 
-.last-updated { font-size: 0.7rem; color: var(--muted); }
-.next-refresh { font-size: 0.68rem; color: var(--muted); }
-.next-refresh strong { color: var(--green); }
+.badge-label {
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-weight: 400;
+  text-align: right;
+}
+
+.badge-value {
+  font-size: 0.72rem;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.badge-green { color: var(--green); }
 
 /* ── Main / Two-column layout ─────────────────────────── */
 main {

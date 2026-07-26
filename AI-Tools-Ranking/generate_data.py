@@ -125,15 +125,15 @@ def compute_composite(benchmarks: dict) -> float | None:
 
 # ── Claude API web search ──────────────────────────────────────────────────────
 
-def fetch_benchmarks_via_claude() -> dict | None:
+def fetch_benchmarks_via_claude() -> tuple[dict | None, str]:
     """
     Ask Claude to search for LMSYS ELO, MMLU, HumanEval, and MATH scores for each model.
-    Returns {model_display_name: {lmsys_elo, mmlu, humaneval, math}} or None on failure.
+    Returns ({model: benchmarks}, cost_string) or (None, "—") on failure.
     """
     api_key = os.getenv("ANTHROPIC_API_KEY")
     if not api_key:
         print("[claude] ANTHROPIC_API_KEY not set — skipping web search", file=sys.stderr)
-        return None
+        return None, "—"
 
     client = anthropic.Anthropic(api_key=api_key)
 
@@ -169,7 +169,13 @@ def fetch_benchmarks_via_claude() -> dict | None:
         )
     except Exception as exc:
         print(f"[claude] API call failed: {exc}", file=sys.stderr)
-        return None
+        return None, "—"
+
+    # Haiku 4.5 pricing: $1.00/1M input, $5.00/1M output
+    input_tokens  = getattr(response.usage, "input_tokens", 0)
+    output_tokens = getattr(response.usage, "output_tokens", 0)
+    cost = (input_tokens * 1.00 + output_tokens * 5.00) / 1_000_000
+    cost_str = f"${cost:.4f}"
 
     raw_text = "".join(
         block.text for block in response.content
@@ -178,12 +184,12 @@ def fetch_benchmarks_via_claude() -> dict | None:
 
     if not raw_text.strip():
         print("[claude] No text in response", file=sys.stderr)
-        return None
+        return None, cost_str
 
     json_match = re.search(r"\{[\s\S]+\}", raw_text)
     if not json_match:
         print(f"[claude] No JSON found: {raw_text[:300]}", file=sys.stderr)
-        return None
+        return None, cost_str
 
     try:
         data = json.loads(json_match.group())
@@ -199,11 +205,11 @@ def fetch_benchmarks_via_claude() -> dict | None:
             }
         if clean:
             print(f"[claude] Got benchmark data for: {list(clean.keys())}", file=sys.stderr)
-            return clean
+            return clean, cost_str
     except (json.JSONDecodeError, ValueError) as exc:
         print(f"[claude] Parse error: {exc} — raw: {raw_text[:300]}", file=sys.stderr)
 
-    return None
+    return None, cost_str
 
 # ── History management ─────────────────────────────────────────────────────────
 
@@ -270,10 +276,10 @@ def main():
 
     print(f"Using model: {CLAUDE_MODEL}")
     print("Fetching benchmark scores via Claude web search…")
-    all_benchmarks = fetch_benchmarks_via_claude()
+    all_benchmarks, api_cost = fetch_benchmarks_via_claude()
 
     if all_benchmarks:
-        print(f"  → Live data for {len(all_benchmarks)} models")
+        print(f"  → Live data for {len(all_benchmarks)} models — cost {api_cost}")
     else:
         print("  → Web search unavailable — using seeded base values", file=sys.stderr)
         all_benchmarks = {}
@@ -298,6 +304,7 @@ def main():
 
     print("Building rankings…")
     rankings = build_rankings(current_scores, current_benchmarks)
+    rankings["api_cost"] = api_cost
     (DOCS_DIR / "rankings.json").write_text(json.dumps(rankings, indent=2))
     print(f"  → {[(t['name'], t['score']) for t in rankings['tools']]}")
 
