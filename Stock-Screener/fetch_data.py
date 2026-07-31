@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Fetch TSX dividend universe data from Yahoo Finance -> Stock-Screener/data.json"""
 import json, time, datetime
+import numpy as np
+import pandas as pd
 import yfinance as yf
 
 SYMBOLS = [
@@ -45,39 +47,158 @@ FIELDS = ["shortName","sector","currentPrice","regularMarketPrice","dividendRate
           "fiftyTwoWeekHigh","targetMeanPrice","numberOfAnalystOpinions","payoutRatio"]
 
 def _rsi14(closes):
+    """Informational only - no longer drives the signal, kept for the detail panel."""
     d = closes.diff()
     gain, loss = d.clip(lower=0).tail(14).mean(), (-d.clip(upper=0)).tail(14).mean()
     return 50.0 if gain == 0 and loss == 0 else 100.0 if loss == 0 else 100 - 100 / (1 + gain / loss)
 
-def technical_signal(ticker, hi52, lo52):
-    """Base-breakout screen: near the 52wk low with the short-term (20d) trend turning up.
-    Deliberately not a continuation-trend follower, so it won't flag stocks already
-    extended near their highs. Needs 200+ daily closes and a valid 52wk range;
-    otherwise falls back to 'unknown'."""
+def _clamp(x, lo, hi):
+    return max(lo, min(hi, x))
+
+def _persistence_days(bullish):
+    """How many consecutive trading days (ending today) SMA50 has stayed above SMA200."""
+    days = 0
+    for v in bullish.iloc[::-1]:
+        if bool(v):
+            days += 1
+        else:
+            break
+    return days
+
+def _risk_adj_momentum(closes, window=200):
+    """200-day return divided by realized (annualized) volatility over the same window.
+    Tried ADX first; on realistic low-daily-vol blue-chip drift it read as noise (day-to-day
+    +DI/-DI is too short-memory to see a slow multi-month compounding trend, and on a pure
+    zero-drift random walk it frequently reads as strong purely by chance - both confirmed by
+    synthetic testing). This risk-adjusted-return measure directly asks 'is the move large
+    relative to the noise', which is the right question and held up correctly in testing."""
+    if len(closes) < window + 1:
+        return None
+    c = closes.tail(window + 1)
+    ret = c.iloc[-1] / c.iloc[0] - 1
+    daily_vol = c.pct_change().std()
+    if not daily_vol or pd.isna(daily_vol):
+        return 0.0
+    return float(ret / (daily_vol * (252 ** 0.5)))
+
+def trend_score(closes, highs, lows):
+    """0-100 spectrum: how established is the uptrend, not just 'is there one'.
+    Blends how long SMA50 has held above SMA200 (persistence) with risk-adjusted momentum
+    (200d return / realized vol), crediting strength only when momentum is actually positive."""
+    if len(closes) < 260:
+        return None, None, None
+    sma50, sma200 = closes.rolling(50).mean(), closes.rolling(200).mean()
+    days = _persistence_days(sma50 > sma200)
+    persistence = _clamp(days / 60 * 100, 0, 100)  # 60+ consecutive days = full marks
+    ram = _risk_adj_momentum(closes)
+    strength = _clamp(max(ram, 0) / 2.0 * 100, 0, 100) if ram is not None else 0.0  # ram >= 2.0 = full marks
+    score = round(0.6 * persistence + 0.4 * strength, 1)
+    return score, days, (round(ram, 2) if ram is not None else None)
+
+def headroom_score(price, hi3y, lo3y):
+    """0-100 spectrum: room below the 3yr high, not a hard 52wk-range cutoff."""
+    if not hi3y or not lo3y or hi3y <= lo3y:
+        return None
+    pct = _clamp((price - lo3y) / (hi3y - lo3y), 0, 1)
+    return round((1 - pct) * 100, 1)
+
+def fundamentals_score(trailing_eps, forward_eps, dividends):
+    """0-100 spectrum blending forward EPS growth with real (multi-year) dividend growth,
+    not just a dividend that hasn't been cut. Missing pieces default to a neutral 50,
+    not zero, so thin data doesn't masquerade as bad fundamentals."""
+    eps_score = 50.0
+    if trailing_eps and forward_eps is not None and trailing_eps > 0:
+        growth = (forward_eps - trailing_eps) / trailing_eps
+        eps_score = _clamp(max(growth, 0) / 0.15 * 100, 0, 100)  # 15%+ forward growth = full marks
+    div_score = 50.0
+    if dividends is not None and len(dividends):
+        tz = dividends.index.tz
+        now = pd.Timestamp.now(tz=tz) if tz else pd.Timestamp.now()
+        recent = dividends[dividends.index > now - pd.Timedelta(days=365)].sum()
+        older = dividends[(dividends.index <= now - pd.Timedelta(days=730)) &
+                           (dividends.index > now - pd.Timedelta(days=1095))].sum()
+        if older > 0:
+            growth = (recent - older) / older
+            div_score = _clamp(max(growth, 0) / 0.15 * 100, 0, 100)  # 15%+ cumulative growth = full marks
+    return round((eps_score + div_score) / 2, 1)
+
+def catalyst_score(next_earnings_date, today):
+    """0-100 spectrum on distance to the next known earnings date - the one dated catalyst
+    reliably available for free. Missing data (common for smaller TSX names) defaults to a
+    neutral 50 rather than 0, since that's a data-coverage gap, not evidence of no catalyst."""
+    if not next_earnings_date:
+        return 50.0
+    days_out = (next_earnings_date - today).days
+    if days_out < 0:
+        return 50.0  # stale calendar entry
+    if days_out <= 120:
+        return 100.0
+    return round(_clamp(100 - (days_out - 120) / 60 * 100, 0, 100), 1)
+
+def valuation_score(target, hi3y):
+    """0-100 spectrum: does the analyst target imply a valuation the stock has actually
+    reached before (within its 3yr range), or a fresh all-time-high re-rating."""
+    if not target or not hi3y:
+        return 50.0
+    if target <= hi3y:
+        return 100.0
+    overshoot = (target - hi3y) / hi3y
+    return round(_clamp(100 - overshoot / 0.20 * 100, 0, 100), 1)
+
+def _next_earnings_date(ticker, today):
     try:
-        closes = ticker.history(period="1y", interval="1d", auto_adjust=True)["Close"].dropna()
+        cal = ticker.calendar
+        raw = cal.get("Earnings Date") if isinstance(cal, dict) else None
+        if raw:
+            dates = [d for d in (raw if isinstance(raw, list) else [raw]) if d]
+            future = [d for d in dates if d >= today]
+            if future:
+                return min(future)
     except Exception:
-        return "unknown", None
-    if len(closes) < 200 or not hi52 or not lo52 or hi52 <= lo52:
-        return "unknown", None
-    price = closes.iloc[-1]
-    pct_range = (price - lo52) / (hi52 - lo52)  # 0 = at 52wk low, 1 = at 52wk high
-    sma20, sma20_prev = closes.tail(20).mean(), closes.iloc[:-10].tail(20).mean()
-    band = 0.01  # 1% slope band so a flat SMA20 isn't called turning up/over from noise
-    turning_up = price > sma20 and sma20 > sma20_prev * (1 + band)
-    rolling_over = price < sma20 and sma20 < sma20_prev * (1 - band)
-    near_low, near_high = pct_range <= 0.40, pct_range >= 0.65
-    if near_low and turning_up:
-        signal = "buy"        # near the 52wk low, short-term trend just turned up - the setup we want
-    elif near_high and rolling_over:
-        signal = "sell"       # near the 52wk high and starting to roll over - topping out
-    elif turning_up or (near_low and not rolling_over):
-        signal = "potential"  # improving momentum off the lows, or bottoming near lows but not confirmed yet
-    else:
+        pass
+    return None
+
+def assess(ticker, price, trailing_eps, forward_eps, target, today):
+    """Runs the full spectrum-scoring engine off one 3yr price-history pull.
+    Returns None fields (and 'unknown' signal) when there's too little history to trust."""
+    try:
+        hist = ticker.history(period="3y", interval="1d", auto_adjust=True)
+        closes, highs, lows = hist["Close"].dropna(), hist["High"].dropna(), hist["Low"].dropna()
+    except Exception:
+        closes = pd.Series(dtype=float)
+    if len(closes) < 260:
+        return {"signal": "unknown", "trend": None, "headroom": None, "fund": None,
+                "catalyst": None, "valuation": None, "hi3y": None, "lo3y": None,
+                "persistDays": None, "momentum": None, "rsi": None, "nextEarnings": None}
+    hi3y, lo3y = float(highs.tail(756).max()), float(lows.tail(756).min())
+    trend, persist_days, momentum = trend_score(closes, highs, lows)
+    headroom = headroom_score(price, hi3y, lo3y)
+    try:
+        dividends = ticker.dividends
+    except Exception:
+        dividends = None
+    fund = fundamentals_score(trailing_eps, forward_eps, dividends)
+    next_earn = _next_earnings_date(ticker, today)
+    catalyst = catalyst_score(next_earn, today)
+    valuation = valuation_score(target, hi3y)
+    combo = (trend + headroom) / 2 if trend is not None and headroom is not None else None
+    if combo is None:
+        signal = "unknown"
+    elif combo >= 70:
+        signal = "buy"
+    elif combo >= 45:
+        signal = "potential"
+    elif combo >= 25:
         signal = "neutral"
-    return signal, round(_rsi14(closes), 1)
+    else:
+        signal = "avoid"
+    return {"signal": signal, "trend": trend, "headroom": headroom, "fund": fund,
+            "catalyst": catalyst, "valuation": valuation, "hi3y": hi3y, "lo3y": lo3y,
+            "persistDays": persist_days, "momentum": momentum, "rsi": round(_rsi14(closes), 1),
+            "nextEarnings": next_earn.isoformat() if next_earn else None}
 
 def fetch(sym):
+    today = datetime.date.today()
     for attempt in range(3):
         try:
             t = yf.Ticker(sym)
@@ -91,7 +212,9 @@ def fetch(sym):
                 dy = info.get("dividendYield")
                 if dy: yld = round(dy * 100, 2) if dy < 0.5 else round(dy, 2)
             hi52, lo52 = info.get("fiftyTwoWeekHigh"), info.get("fiftyTwoWeekLow")
-            signal, rsi = technical_signal(t, hi52, lo52)
+            trailing_eps, forward_eps = info.get("trailingEps"), info.get("forwardEps")
+            target = info.get("targetMeanPrice")
+            a = assess(t, price, trailing_eps, forward_eps, target, today)
             return {
                 "sym": sym.replace(".TO",""),
                 "name": info.get("shortName",""),
@@ -99,17 +222,28 @@ def fetch(sym):
                 "price": round(price,2),
                 "yield": yld,
                 "divRate": rate,
-                "eps": info.get("trailingEps"),
+                "eps": trailing_eps,
+                "forwardEps": forward_eps,
                 "pe": info.get("trailingPE"),
                 "beta": info.get("beta"),
                 "mcap": info.get("marketCap"),
                 "hi52": hi52,
                 "lo52": lo52,
-                "target": info.get("targetMeanPrice"),
+                "target": target,
                 "analysts": info.get("numberOfAnalystOpinions"),
                 "payout": info.get("payoutRatio"),
-                "signal": signal,
-                "rsi": rsi,
+                "signal": a["signal"],
+                "trend": a["trend"],
+                "headroom": a["headroom"],
+                "fund": a["fund"],
+                "catalyst": a["catalyst"],
+                "valuation": a["valuation"],
+                "hi3y": a["hi3y"],
+                "lo3y": a["lo3y"],
+                "persistDays": a["persistDays"],
+                "momentum": a["momentum"],
+                "rsi": a["rsi"],
+                "nextEarnings": a["nextEarnings"],
             }
         except Exception as e:
             if attempt == 2:

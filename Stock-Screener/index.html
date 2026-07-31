@@ -59,7 +59,7 @@ tr.row:hover td{background:#141d2e}
 .sig-buy{background:rgba(61,255,136,.15);color:var(--green)}
 .sig-potential{background:rgba(255,184,77,.15);color:var(--amber)}
 .sig-neutral{background:rgba(122,138,160,.15);color:var(--muted)}
-.sig-sell{background:rgba(255,77,126,.15);color:var(--pink)}
+.sig-avoid{background:rgba(255,77,126,.15);color:var(--pink)}
 .sig-unknown{color:var(--muted);opacity:.45}
 tr.gate td{border:none;padding:14px 6px 6px;text-align:center;color:var(--pink);
   font:600 11px "Chakra Petch";letter-spacing:.35em;text-transform:uppercase;
@@ -68,8 +68,7 @@ tr.gate td{border:none;padding:14px 6px 6px;text-align:center;color:var(--pink);
 tr.detail td{background:#0D131E;font:400 12px "IBM Plex Mono";color:var(--muted);text-align:left;padding:10px 12px}
 tr.detail b{color:var(--text);font-weight:500}
 tr.detail .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:6px 16px}
-.hideMob{display:none}
-@media(min-width:700px){.hideMob{display:table-cell}.nm{max-width:240px}}
+@media(min-width:700px){.nm{max-width:240px}}
 .msg{padding:40px 12px;text-align:center;color:var(--muted);font:400 13px "IBM Plex Mono";line-height:1.8}
 .msg b{color:var(--pink)}
 @media(prefers-reduced-motion:no-preference){
@@ -95,10 +94,6 @@ tr.detail .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,
 <div class="panel" id="panel">
   <div><label>YIELD GATE %<output id="oGate">4.0</output></label>
     <input type="range" id="gate" min="2" max="7" step="0.25" value="4"></div>
-  <div><label>GROWTH WEIGHT %<output id="oGw">65</output></label>
-    <input type="range" id="gw" min="0" max="100" step="5" value="65"></div>
-  <div><label>Required 1 yr ROR %<output id="oCap">30</output></label>
-    <input type="range" id="cap" min="10" max="60" step="5" value="30"></div>
 </div>
 
 <div id="out"><div class="msg">Loading data.json…</div></div>
@@ -111,41 +106,28 @@ const $=id=>document.getElementById(id);
 const store={get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},
              set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 let DATA=null, sortKey="score", sortDir=-1, openSym=null;
-const S={gate:store.get("gate",4), gw:store.get("gw",65), cap:store.get("cap",30)};
+const S={gate:store.get("gate",4)};
 
-function growth(s,cap){
-  // Primary: analyst consensus expected 1-yr return. Fallback: value+recovery proxy.
-  if(s.target && s.analysts>=3 && s.price>0){
-    const er=(s.target-s.price)/s.price;
-    return {v:Math.min(Math.max(er,0)/(cap/100),1)*100, er:er*100, proxy:false};
-  }
-  let v=0, parts=0;
-  if(s.eps>0&&s.price>0){v+=Math.min((s.eps/s.price)/0.12,1)*50;parts++}
-  if(s.hi52&&s.price>0){v+=Math.min(Math.max((s.hi52-s.price)/s.price,0)/(cap/100),1)*50;parts++}
-  return {v:parts?v:null, er:null, proxy:true};
-}
-function stability(s){
-  const b=(s.beta!=null)?Math.min(Math.max((1.6-s.beta)/1.2,0),1):0.5;
-  const p=(s.payout!=null)?Math.min(Math.max((1.2-s.payout)/0.6,0),1):0.5;
-  const m=(s.mcap)?Math.min(s.mcap/1e10,1):0.5;
-  return 40*b+35*p+25*m;
+// Analyst-implied expected 1yr return - informational (ROR (1Yr) column), no longer feeds SCORE.
+function expectedReturn(s){
+  if(s.target && s.analysts>=3 && s.price>0) return (s.target-s.price)/s.price*100;
+  return null;
 }
 const SIG_META={
-  buy:{label:"BUY",cls:"sig-buy",tip:"Near its 52wk low with the short-term (20d) trend just turning up — a base-breakout setup"},
-  potential:{label:"WATCH",cls:"sig-potential",tip:"Momentum improving but not near the 52wk low (less discounted), or bottoming near lows but not confirmed turning up yet"},
-  neutral:{label:"FLAT",cls:"sig-neutral",tip:"No clear edge — mid-range, or near lows but still falling with no confirmed turn"},
-  sell:{label:"SELL",cls:"sig-sell",tip:"Near its 52wk high and the short-term trend is rolling over — topping out"},
-  unknown:{label:"N/A",cls:"sig-unknown",tip:"Insufficient price history or 52wk range data for a reliable read"},
+  buy:{label:"BUY",cls:"sig-buy",tip:"Confirmed uptrend (persistent SMA50>SMA200, positive risk-adjusted momentum) with real headroom below the 3yr high"},
+  potential:{label:"WATCH",cls:"sig-potential",tip:"Decent trend confirmation or headroom, but not both strongly aligned yet"},
+  neutral:{label:"FLAT",cls:"sig-neutral",tip:"Weak on both trend confirmation and headroom - no clear early-trend setup"},
+  avoid:{label:"AVOID",cls:"sig-avoid",tip:"No confirmed uptrend and/or already extended near its 3yr high - the setup this screen is built to exclude"},
+  unknown:{label:"N/A",cls:"sig-unknown",tip:"Insufficient price history (needs 260+ trading days) for a reliable read"},
 };
 const sigMeta=r=>SIG_META[r.signal]||SIG_META.unknown;
 function compute(){
-  const gw=S.gw/100, sw=1-gw;
-  const sigRank={buy:3,potential:2,neutral:1,sell:0,unknown:-1};
+  const sigRank={buy:4,potential:3,neutral:2,avoid:1,unknown:0};
   return DATA.stocks.map(s=>{
-    const g=growth(s,S.cap), st=stability(s);
-    const score=(g.v==null)?st*sw:gw*g.v+sw*st;
-    return {...s, g:g.v, er:g.er, proxy:g.proxy, st, score,
-            pass:(s.yield??0)>=S.gate, sigRank:sigRank[s.signal]??-1};
+    const parts=[s.trend,s.headroom,s.fund,s.catalyst,s.valuation].filter(v=>v!=null);
+    const score=parts.length?parts.reduce((a,b)=>a+b,0)/parts.length:null;
+    return {...s, er:expectedReturn(s), score,
+            pass:(s.yield??0)>=S.gate, sigRank:sigRank[s.signal]??0};
   });
 }
 const fmt=(n,d=1)=>n==null?"—":n.toLocaleString("en-CA",{maximumFractionDigits:d,minimumFractionDigits:d});
@@ -163,13 +145,13 @@ function render(){
     return (x<y?-1:x>y?1:0)*sortDir;
   });
   const cols=[["sym","TICKER"],["sigRank","SIGNAL"],["price","PRICE"],["yield","YIELD%"],["er","ROR (1Yr)"],
-              ["g","GROWTH","hideMob"],["st","STABLE","hideMob"],["score","SCORE"]];
+              ["score","SCORE"]];
   let h="<table><thead><tr>"+cols.map(([k,l,c])=>
     `<th class="${c||""}" data-k="${k}">${l}${k===sortKey?`<span class="arr"> ${sortDir<0?"▼":"▲"}</span>`:""}</th>`
   ).join("")+"</tr></thead><tbody>";
   let gateDrawn=false;
   for(const r of rows){
-    if(!r.pass&&!gateDrawn){h+=`<tr class="gate"><td colspan="8">◢ ${S.gate}% GATE — WATCHLIST BELOW ◣</td></tr>`;gateDrawn=true}
+    if(!r.pass&&!gateDrawn){h+=`<tr class="gate"><td colspan="6">◢ ${S.gate}% GATE — WATCHLIST BELOW ◣</td></tr>`;gateDrawn=true}
     const sm=sigMeta(r);
     h+=`<tr class="row ${r.pass?"pass":"fail"}" data-s="${r.sym}">
       <td><span class="tk">${r.sym}</span><span class="nm">${r.name||""}</span></td>
@@ -177,15 +159,21 @@ function render(){
       <td>${fmt(r.price,2)}</td>
       <td class="yld">${fmt(r.yield)}</td>
       <td class="up ${r.er!=null&&r.er<0?"neg":""}">${r.er!=null?fmt(r.er):'<span class="prox">≈proxy</span>'}</td>
-      <td class="hideMob">${fmt(r.g,0)}</td>
-      <td class="hideMob">${fmt(r.st,0)}</td>
-      <td><b>${fmt(r.score)}</b><span class="scorebar"><i style="width:${Math.min(r.score,100)}%"></i></span></td></tr>`;
+      <td><b>${fmt(r.score)}</b><span class="scorebar"><i style="width:${r.score!=null?Math.min(r.score,100):0}%"></i></span></td></tr>`;
     if(openSym===r.sym){
-      h+=`<tr class="detail"><td colspan="8"><div class="grid">
-        <div>Sector <b>${r.sector}</b></div><div>Div/yr <b>$${fmt(r.divRate,2)}</b></div>
+      h+=`<tr class="detail"><td colspan="6"><div class="grid">
+        <div>Trend <b>${fmt(r.trend,0)}</b> <span class="prox">${r.persistDays!=null?r.persistDays+"d, mom "+fmt(r.momentum,2):""}</span></div>
+        <div>Headroom <b>${fmt(r.headroom,0)}</b></div>
+        <div>Fundamentals <b>${fmt(r.fund,0)}</b></div>
+        <div>Catalyst <b>${fmt(r.catalyst,0)}</b> <span class="prox">${r.nextEarnings?"next earn. "+r.nextEarnings:""}</span></div>
+        <div>Valuation <b>${fmt(r.valuation,0)}</b></div>
+        <div>Sector <b>${r.sector}</b></div>
+        <div>Div/yr <b>$${fmt(r.divRate,2)}</b></div>
         <div>Payout <b>${r.payout!=null?fmt(r.payout*100,0)+"%":"—"}</b></div>
-        <div>EPS <b>${fmt(r.eps,2)}</b></div><div>P/E <b>${fmt(r.pe)}</b></div>
-        <div>Beta <b>${fmt(r.beta,2)}</b></div><div>Mkt cap <b>${mc(r.mcap)}</b></div>
+        <div>EPS <b>${fmt(r.eps,2)}</b></div><div>Fwd EPS <b>${fmt(r.forwardEps,2)}</b></div>
+        <div>P/E <b>${fmt(r.pe)}</b></div><div>Beta <b>${fmt(r.beta,2)}</b></div>
+        <div>Mkt cap <b>${mc(r.mcap)}</b></div>
+        <div>3yr high <b>${fmt(r.hi3y,2)}</b></div><div>3yr low <b>${fmt(r.lo3y,2)}</b></div>
         <div>52wk high <b>${fmt(r.hi52,2)}</b></div><div>52wk low <b>${fmt(r.lo52,2)}</b></div>
         <div>Analyst target <b>${fmt(r.target,2)}</b> (${r.analysts||0} analysts)</div>
         <div>RSI(14) <b>${fmt(r.rsi,1)}</b></div>
@@ -208,7 +196,7 @@ function render(){
 function wire(){
   $("gearBtn").onclick=()=>{const p=$("panel");p.classList.toggle("open");
     $("gearBtn").setAttribute("aria-expanded",p.classList.contains("open"))};
-  [["gate","oGate",1],["gw","oGw",0],["cap","oCap",0]].forEach(([id,o,d])=>{
+  [["gate","oGate",1]].forEach(([id,o,d])=>{
     const el=$(id);el.value=S[id];$(o).textContent=fmt(S[id],d);
     el.oninput=()=>{S[id]=+el.value;$(o).textContent=fmt(S[id],d);store.set(id,S[id]);render()};
   });
