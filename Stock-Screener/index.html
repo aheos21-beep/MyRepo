@@ -124,8 +124,14 @@ const sigMeta=r=>SIG_META[r.signal]||SIG_META.unknown;
 function compute(){
   const sigRank={buy:4,potential:3,neutral:2,avoid:1,unknown:0};
   return DATA.stocks.map(s=>{
-    const parts=[s.trend,s.headroom,s.fund,s.catalyst,s.valuation].filter(v=>v!=null);
-    const score=parts.length?parts.reduce((a,b)=>a+b,0)/parts.length:null;
+    // Geometric mean of trend, headroom, and the fund/catalyst/valuation average - trend
+    // and headroom are both required (a falling knife or an extended name near its highs
+    // pulls the whole score down hard), not just two of five averaged-in factors. Still a
+    // smooth spectrum (matches the derivation used for the SIGNAL badge, so they agree).
+    const others=[s.fund,s.catalyst,s.valuation].filter(v=>v!=null);
+    const avgOthers=others.length?others.reduce((a,b)=>a+b,0)/others.length:null;
+    const score=(s.trend==null||s.headroom==null||avgOthers==null)?null:
+      100*Math.cbrt((s.trend/100)*(s.headroom/100)*(avgOthers/100));
     return {...s, er:expectedReturn(s), score,
             pass:(s.yield??0)>=S.gate, sigRank:sigRank[s.signal]??0};
   });

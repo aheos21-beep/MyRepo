@@ -14,9 +14,15 @@ trend — early, but only once the trend is real, not a guess on an unconfirmed 
 - **YIELD GATE %** (default 4%, tunable in-app) is the *only* hard cutoff. Everything else
   is a 0–100 spectrum score, not a pass/fail filter — a stock doesn't vanish from the table
   for being weak on trend or headroom, it just scores lower.
-- **SCORE** = the plain average of five 0–100 components computed server-side in
-  `fetch_data.py` from a single 3-year daily price/dividend/fundamentals pull per ticker
-  (all free via `yfinance`, no paid data):
+- **SCORE** = `100 × cbrt(Trend/100 × Headroom/100 × avg(Fundamentals, Catalyst, Valuation)/100)`
+  — a geometric mean, computed server-side in `fetch_data.py` from a single 3-year daily
+  price/dividend/fundamentals pull per ticker (all free via `yfinance`, no paid data).
+  Trend and Headroom are each required, not just 2-of-5 averaged-in factors: a stock weak
+  on either one gets pulled down hard (a falling knife with great fundamentals, or an
+  extended name near its highs with a fresh earnings catalyst, both collapse toward 0)
+  while it's still a smooth spectrum, not a cutoff - this was a real bug caught by hand
+  (Telus scored 76 under a plain 5-way average despite zero confirmed trend, because
+  strong Headroom/Fundamentals/Catalyst/Valuation drowned out a Trend of 0).
   - **Trend** — how established the uptrend is: consecutive trading days SMA50 has held
     above SMA200 (persistence, capped at 60 days), blended with risk-adjusted momentum
     (200-day return ÷ realized volatility). Deliberately *not* ADX — synthetic testing
@@ -27,7 +33,9 @@ trend — early, but only once the trend is real, not a guess on an unconfirmed 
     meaningful sense). Near the 3yr low scores high, at/above the 3yr high scores 0.
   - **Fundamentals** — forward EPS growth vs. trailing EPS, blended with real dividend
     growth (trailing-12-month dividend total vs. the 12-month total from 2–3 years back,
-    from `yfinance` dividend history) — "growing," not just "hasn't been cut."
+    from `yfinance` dividend history) — "growing," not just "hasn't been cut." Discounted
+    by a stretched payout ratio (floor at 30% of the raw score above ~150% payout) - a
+    rebound in a name paying out well beyond its earnings isn't credible.
   - **Catalyst** — proximity to the next known earnings date (100 inside the ~4-month
     window, decaying to 0 further out). The one dated catalyst reliably free and
     automatable; regulatory decisions, in-service dates, etc. aren't in any free feed and
@@ -37,8 +45,9 @@ trend — early, but only once the trend is real, not a guess on an unconfirmed 
   - Missing data defaults to a neutral 50 for a component (not 0), so a data gap doesn't
     masquerade as a bad read. Needs 260+ trading days of history or the whole assessment
     falls back to "unknown" rather than guessing.
-- **SIGNAL badge** (BUY/WATCH/FLAT/AVOID/N/A) is a derived quick-glance category from the
-  Trend+Headroom blend — informational, not a separate cutoff.
+- **SIGNAL badge** (BUY/WATCH/FLAT/AVOID/N/A) is derived from the *same* geometric-mean
+  formula as SCORE (so they always agree) - thresholds calibrated against real output:
+  BUY ≥65 (≈top 3%), WATCH ≥45 (≈top 25%), FLAT ≥20 (≈top 75%), AVOID below.
 - **ROR (1Yr)** (analyst-implied expected return) is still shown for context but no longer
   feeds the score.
 - An empty or sparse "pass" list in a market that's run hard is an expected, acceptable

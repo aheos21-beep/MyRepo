@@ -102,10 +102,13 @@ def headroom_score(price, hi3y, lo3y):
     pct = _clamp((price - lo3y) / (hi3y - lo3y), 0, 1)
     return round((1 - pct) * 100, 1)
 
-def fundamentals_score(trailing_eps, forward_eps, dividends):
+def fundamentals_score(trailing_eps, forward_eps, dividends, payout):
     """0-100 spectrum blending forward EPS growth with real (multi-year) dividend growth,
     not just a dividend that hasn't been cut. Missing pieces default to a neutral 50,
-    not zero, so thin data doesn't masquerade as bad fundamentals."""
+    not zero, so thin data doesn't masquerade as bad fundamentals.
+    A stretched payout ratio discounts the whole score - a rebound in a name that's
+    paying out well beyond its earnings isn't credible 'fundamentals moving with price',
+    it's a dividend at risk regardless of what EPS growth estimates say."""
     eps_score = 50.0
     if trailing_eps and forward_eps is not None and trailing_eps > 0:
         growth = (forward_eps - trailing_eps) / trailing_eps
@@ -120,7 +123,8 @@ def fundamentals_score(trailing_eps, forward_eps, dividends):
         if older > 0:
             growth = (recent - older) / older
             div_score = _clamp(max(growth, 0) / 0.15 * 100, 0, 100)  # 15%+ cumulative growth = full marks
-    return round((eps_score + div_score) / 2, 1)
+    payout_factor = 1.0 if payout is None else _clamp(1 - max(payout - 0.75, 0) / 0.75, 0.3, 1.0)
+    return round((eps_score + div_score) / 2 * payout_factor, 1)
 
 def catalyst_score(next_earnings_date, today):
     """0-100 spectrum on distance to the next known earnings date - the one dated catalyst
@@ -158,7 +162,7 @@ def _next_earnings_date(ticker, today):
         pass
     return None
 
-def assess(ticker, price, trailing_eps, forward_eps, target, today):
+def assess(ticker, price, trailing_eps, forward_eps, target, payout, today):
     """Runs the full spectrum-scoring engine off one 3yr price-history pull.
     Returns None fields (and 'unknown' signal) when there's too little history to trust."""
     try:
@@ -177,18 +181,27 @@ def assess(ticker, price, trailing_eps, forward_eps, target, today):
         dividends = ticker.dividends
     except Exception:
         dividends = None
-    fund = fundamentals_score(trailing_eps, forward_eps, dividends)
+    fund = fundamentals_score(trailing_eps, forward_eps, dividends, payout)
     next_earn = _next_earnings_date(ticker, today)
     catalyst = catalyst_score(next_earn, today)
     valuation = valuation_score(target, hi3y)
-    combo = (trend + headroom) / 2 if trend is not None and headroom is not None else None
+    # Geometric mean of trend, headroom, and the fund/catalyst/valuation average - a stock
+    # weak on EITHER trend or headroom gets pulled down hard (both are required, not just
+    # averaged-in factors 1-of-5), while still being a smooth spectrum rather than a cutoff.
+    # Calibrated against real output: thresholds are approx. top-3% / top-25% / top-75%.
+    if trend is not None and headroom is not None:
+        others = [x for x in (fund, catalyst, valuation) if x is not None]
+        avg_others = sum(others) / len(others) if others else 50.0
+        combo = 100 * ((trend / 100) * (headroom / 100) * (avg_others / 100)) ** (1 / 3)
+    else:
+        combo = None
     if combo is None:
         signal = "unknown"
-    elif combo >= 70:
+    elif combo >= 65:
         signal = "buy"
     elif combo >= 45:
         signal = "potential"
-    elif combo >= 25:
+    elif combo >= 20:
         signal = "neutral"
     else:
         signal = "avoid"
@@ -214,7 +227,8 @@ def fetch(sym):
             hi52, lo52 = info.get("fiftyTwoWeekHigh"), info.get("fiftyTwoWeekLow")
             trailing_eps, forward_eps = info.get("trailingEps"), info.get("forwardEps")
             target = info.get("targetMeanPrice")
-            a = assess(t, price, trailing_eps, forward_eps, target, today)
+            payout = info.get("payoutRatio")
+            a = assess(t, price, trailing_eps, forward_eps, target, payout, today)
             return {
                 "sym": sym.replace(".TO",""),
                 "name": info.get("shortName",""),
@@ -231,7 +245,7 @@ def fetch(sym):
                 "lo52": lo52,
                 "target": target,
                 "analysts": info.get("numberOfAnalystOpinions"),
-                "payout": info.get("payoutRatio"),
+                "payout": payout,
                 "signal": a["signal"],
                 "trend": a["trend"],
                 "headroom": a["headroom"],
