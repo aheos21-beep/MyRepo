@@ -30,14 +30,20 @@ simple magnitude guardrail wouldn't catch. Two defenses:
     biggest driver of API cost for comparatively little accuracy benefit.
 
 The model is never asked to compute a percentage return. It reports only
-what it can actually read off a source — the current basis level, the
-absolute price/level target for each of the next three years, and any
-recurring income yield — and Python derives the year-over-year percentages
-from those. An earlier version asked the model for percentages directly and
-it returned Year 2/Year 3 as cumulative-from-today figures, which the
-dashboard then compounded a second time (ETH: a correct ~1,400% 3-year
-cumulative rendered as +77,248%). Verifying the basis did not catch that,
-because the basis was the one number that was already right.
+what it can actually read off a source — the current basis value, the
+absolute target for each of the next three years, whether those are price
+levels or interest rates (basisKind), and any recurring income yield — and
+Python derives the year-over-year percentages from those. An earlier version
+asked the model for percentages directly and it returned Year 2/Year 3 as
+cumulative-from-today figures, which the dashboard then compounded a second
+time (ETH: a correct ~1,400% 3-year cumulative rendered as +77,248%).
+Verifying the basis did not catch that, because the basis was the one number
+that was already right.
+
+basisKind exists because rate-quoted assets break the price-level math: a
+HISA whose rate goes 4.0% -> 4.5% earns 4.5% that year, not a 12.5%
+"capital gain" on the rate. For bonds the same mistake also flips the sign,
+since rising yields push prices down.
 
 To keep cost down, non-crypto assets are researched (and, for commodities,
 verified) in small batches grouped by category rather than one call per
@@ -93,6 +99,34 @@ PRICE_PER_SEARCH = 10.00 / 1_000
 # trusting the model to find and remember a price via search.
 CRYPTO_PRICE_IDS = {"btc": "bitcoin", "eth": "ethereum"}
 
+# Algorithmic "price prediction" content farms. These publish confident
+# multi-year numeric targets with no analyst behind them, and the model
+# cannot tell them apart from real research once they're in the result set.
+# A run that sourced a TSX target from longforecast/coinpriceforecast produced
+# a 48% single-year swing that no downstream check would have flagged as
+# implausible. Excluded at search time so they never enter the context.
+BLOCKED_SOURCE_DOMAINS = [
+    "longforecast.com",
+    "coinpriceforecast.com",
+    "walletinvestor.com",
+    "gov.capital",
+    "pricepredictions.com",
+    "digitalcoinprice.com",
+    "coincodex.com",
+    "30rates.com",
+    "traders-union.com",
+    "cryptopolitan.com",
+]
+
+
+def web_search_tool(max_uses):
+    return {
+        "type": "web_search_20250305",
+        "name": "web_search",
+        "max_uses": max_uses,
+        "blocked_domains": BLOCKED_SOURCE_DOMAINS,
+    }
+
 # Forces structured output instead of relying on the model to follow a
 # "return only JSON" text instruction — which it may ignore in favor of
 # hedging in prose when the data it found is incomplete.
@@ -110,26 +144,31 @@ SUBMIT_TOOL = {
                 "type": "string",
                 "description": "One short phrase describing exactly what basisValue represents and its unit, e.g. 'spot gold price per oz in USD' or 'BoC overnight policy rate, percent'",
             },
+            "basisKind": {
+                "type": "string",
+                "enum": ["price_level", "rate_percent"],
+                "description": "Use 'price_level' when basisValue is a price or index level that can appreciate (stocks, commodities, crypto, REITs, bond ETF prices). Use 'rate_percent' when basisValue is itself an interest rate or yield expressed in percent (savings accounts, GIC rates, policy rates) — for these the rate IS the annual return and there is no capital appreciation.",
+            },
             "targets": {
                 "type": "array",
                 "items": {"type": "number"},
                 "minItems": 3,
                 "maxItems": 3,
-                "description": "The projected ABSOLUTE level at the END of year 1, year 2, and year 3 — in the SAME UNITS as basisValue, never percentages. Each entry is a point-in-time level, not a change and not a cumulative total. Example: if the asset is at 100 today and is expected to reach 110, then 121, then 133, submit [110, 121, 133].",
+                "description": "The projected ABSOLUTE value at the END of year 1, year 2, and year 3 — in the SAME UNITS as basisValue, never percentages of change. For 'price_level' these are forecast price levels; for 'rate_percent' these are the forecast rates in percent. Each entry is a point-in-time value, not a change and not a cumulative total. Example (price_level): asset at 100 today expected to reach 110, then 121, then 133 -> submit [110, 121, 133].",
             },
             "incomeYieldPct": {
                 "type": "number",
-                "description": "Recurring annual income yield as a percent (dividends, coupons, distributions, staking), e.g. 4.5 for 4.5%. Use 0 if the asset pays no income. This is added on top of the level change.",
+                "description": "Recurring annual income yield as a percent (dividends, coupons, distributions, staking), e.g. 4.5 for 4.5%. Use 0 if the asset pays no income, and 0 when basisKind is 'rate_percent' (the rate already represents the income).",
             },
             "why": {
                 "type": "array",
                 "items": {"type": "string"},
                 "minItems": 3,
                 "maxItems": 3,
-                "description": "One rationale per year (under 240 characters), naming the actual source/analyst and date found, and stating the target level for that year",
+                "description": "One rationale per year (under 240 characters), naming the actual source/analyst and date found, and stating the target value for that year",
             },
         },
-        "required": ["basisValue", "basisDescription", "targets", "incomeYieldPct", "why"],
+        "required": ["basisValue", "basisDescription", "basisKind", "targets", "incomeYieldPct", "why"],
     },
 }
 
@@ -175,26 +214,31 @@ BATCH_SUBMIT_TOOL = {
                             "type": "string",
                             "description": "One short phrase describing exactly what basisValue represents and its unit",
                         },
+                        "basisKind": {
+                            "type": "string",
+                            "enum": ["price_level", "rate_percent"],
+                            "description": "Use 'price_level' when basisValue is a price or index level that can appreciate (stocks, commodities, REITs, bond ETF prices). Use 'rate_percent' when basisValue is itself an interest rate or yield expressed in percent (savings accounts, GIC rates, policy rates) — for these the rate IS the annual return and there is no capital appreciation.",
+                        },
                         "targets": {
                             "type": "array",
                             "items": {"type": "number"},
                             "minItems": 3,
                             "maxItems": 3,
-                            "description": "The projected ABSOLUTE level at the END of year 1, year 2, and year 3 — in the SAME UNITS as basisValue, never percentages. Each entry is a point-in-time level, not a change and not a cumulative total. Example: if the asset is at 100 today and is expected to reach 110, then 121, then 133, submit [110, 121, 133].",
+                            "description": "The projected ABSOLUTE value at the END of year 1, year 2, and year 3 — in the SAME UNITS as basisValue, never percentages of change. For 'price_level' these are forecast price levels; for 'rate_percent' these are the forecast rates in percent. Each entry is a point-in-time value, not a change and not a cumulative total.",
                         },
                         "incomeYieldPct": {
                             "type": "number",
-                            "description": "Recurring annual income yield as a percent (dividends, coupons, distributions), e.g. 4.5 for 4.5%. Use 0 if the asset pays no income. Added on top of the level change.",
+                            "description": "Recurring annual income yield as a percent (dividends, coupons, distributions), e.g. 4.5 for 4.5%. Use 0 if the asset pays no income, and 0 when basisKind is 'rate_percent' (the rate already represents the income).",
                         },
                         "why": {
                             "type": "array",
                             "items": {"type": "string"},
                             "minItems": 3,
                             "maxItems": 3,
-                            "description": "One rationale per year (under 240 characters), naming the actual source/analyst and date found, and stating the target level for that year",
+                            "description": "One rationale per year (under 240 characters), naming the actual source/analyst and date found, and stating the target value for that year",
                         },
                     },
-                    "required": ["id", "basisValue", "basisDescription", "targets", "incomeYieldPct", "why"],
+                    "required": ["id", "basisValue", "basisDescription", "basisKind", "targets", "incomeYieldPct", "why"],
                 },
             },
         },
@@ -281,18 +325,34 @@ def chunk(items, size):
     return [items[i : i + size] for i in range(0, len(items), size)]
 
 
-def compute_returns(basis_value, targets, income_yield_pct, label=""):
-    """Derive year-over-year percentage returns from absolute level targets.
+def compute_returns(basis_value, targets, income_yield_pct, label="", basis_kind="price_level"):
+    """Derive year-over-year percentage returns from absolute target values.
 
-    Each year's return is measured against the PREVIOUS year's level (not
-    against today), then any recurring income yield is added, giving a total
-    return. Doing this in Python rather than asking the model for percentages
-    is what prevents cumulative-vs-annual confusion from reaching the UI.
+    Doing this in Python rather than asking the model for percentages is what
+    prevents cumulative-vs-annual confusion from reaching the UI.
+
+    Two kinds of basis, because conflating them produces nonsense:
+      - price_level: basisValue/targets are prices or index levels. Each
+        year's return is the change against the PREVIOUS year's level, plus
+        any recurring income yield.
+      - rate_percent: basisValue/targets are themselves interest rates in
+        percent (a savings account, a policy rate). The rate IS that year's
+        return — a HISA going from 4.0% to 4.5% earns 4.5% that year, not a
+        12.5% "capital gain". Treating a rate change as price appreciation
+        also gets the sign wrong for bonds, where rising yields push prices
+        down.
     """
     if basis_value is None or not targets or len(targets) != 3:
         raise ValueError(f"{label}: need basisValue and exactly 3 targets, got basis={basis_value} targets={targets}")
+
+    if basis_kind == "rate_percent":
+        # The prevailing rate in each year is that year's return. Income yield
+        # is ignored on purpose: the rate already represents the income, so
+        # adding it would double-count.
+        return [round(float(t), 1) for t in targets]
+
     if basis_value <= 0 or any(t <= 0 for t in targets):
-        raise ValueError(f"{label}: basis and targets must be positive levels, got basis={basis_value} targets={targets}")
+        raise ValueError(f"{label}: price levels must be positive, got basis={basis_value} targets={targets}")
 
     income = income_yield_pct or 0.0
     levels = [basis_value] + list(targets)
@@ -365,7 +425,7 @@ Once you've searched enough to form a view, call submit_projection."""
         model=model_id,
         max_tokens=3000,
         tools=[
-            {"type": "web_search_20250305", "name": "web_search", "max_uses": SEARCHES_PER_CRYPTO_ASSET},
+            web_search_tool(SEARCHES_PER_CRYPTO_ASSET),
             SUBMIT_TOOL,
         ],
         tool_choice={"type": "any", "disable_parallel_tool_use": True},
@@ -383,7 +443,11 @@ Once you've searched enough to form a view, call submit_projection."""
 
     inp = submission.input
     r = compute_returns(
-        inp["basisValue"], inp["targets"], inp.get("incomeYieldPct", 0.0), label=asset["id"]
+        inp["basisValue"],
+        inp["targets"],
+        inp.get("incomeYieldPct", 0.0),
+        label=asset["id"],
+        basis_kind=inp.get("basisKind", "price_level"),
     )
     print(
         f"  {asset['id']}: basis {inp['basisValue']:,.2f} -> targets {inp['targets']} "
@@ -458,7 +522,7 @@ Once you've researched all {len(assets)} asset classes, call submit_projections 
         model=model_id,
         max_tokens=1200 * len(assets),
         tools=[
-            {"type": "web_search_20250305", "name": "web_search", "max_uses": max_uses},
+            web_search_tool(max_uses),
             BATCH_SUBMIT_TOOL,
         ],
         tool_choice={"type": "any", "disable_parallel_tool_use": True},
@@ -484,7 +548,11 @@ Once you've researched all {len(assets)} asset classes, call submit_projections 
     for a in assets:
         p = by_id[a["id"]]
         p["r"] = compute_returns(
-            p["basisValue"], p["targets"], p.get("incomeYieldPct", 0.0), label=a["id"]
+            p["basisValue"],
+            p["targets"],
+            p.get("incomeYieldPct", 0.0),
+            label=a["id"],
+            basis_kind=p.get("basisKind", "price_level"),
         )
         print(
             f"  {a['id']}: basis {p['basisValue']:,.2f} -> targets {p['targets']} "
@@ -518,7 +586,7 @@ Search the web yourself for each one and find the actual current value. Then cal
         model=model_id,
         max_tokens=500 * len(claims),
         tools=[
-            {"type": "web_search_20250305", "name": "web_search", "max_uses": max_uses},
+            web_search_tool(max_uses),
             BATCH_VERIFY_TOOL,
         ],
         tool_choice={"type": "any", "disable_parallel_tool_use": True},
