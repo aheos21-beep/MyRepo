@@ -57,6 +57,35 @@
         "cad-re": 23,
         "oil": 24
       }
+    },
+    {
+      "date": "2026-08-01",
+      "ranks": {
+        "eth": 1,
+        "btc": 2,
+        "silver": 3,
+        "gold": 4,
+        "palladium": 5,
+        "natgas": 6,
+        "em": 7,
+        "us-tech": 8,
+        "uranium": 9,
+        "cad-reit": 10,
+        "us-div": 11,
+        "intl-div": 12,
+        "lumber": 13,
+        "us-re": 14,
+        "cad-div": 15,
+        "cad-hy": 16,
+        "lithium": 17,
+        "cad-bond": 18,
+        "potash": 19,
+        "hisa": 20,
+        "wheat": 21,
+        "cad-re": 22,
+        "copper": 23,
+        "oil": 24
+      }
     }
   ]
 }
