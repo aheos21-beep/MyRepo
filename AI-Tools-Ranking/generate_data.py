@@ -175,7 +175,7 @@ def fetch_benchmarks_via_claude() -> tuple[dict | None, str]:
     input_tokens  = getattr(response.usage, "input_tokens", 0)
     output_tokens = getattr(response.usage, "output_tokens", 0)
     cost = (input_tokens * 1.00 + output_tokens * 5.00) / 1_000_000
-    cost_str = f"${cost:.4f}"
+    cost_str = f"${cost:.2f}"
 
     raw_text = "".join(
         block.text for block in response.content
