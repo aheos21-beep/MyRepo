@@ -138,40 +138,6 @@
       "posChange": "down"
     },
     {
-      "id": "cad-bond",
-      "name": "Canadian Bonds",
-      "cat": "Fixed Income",
-      "color": "#84cc16",
-      "r": [
-        2.2,
-        2.8,
-        3.0
-      ],
-      "why": [
-        "BoC Q2 2026 Market Participant Survey (July 27, 2026) projects 2.25% hold through 2026",
-        "CIBC & consensus forecasts (Jul 2026) target 2.75% by year-end 2027 via Q2 2027 first hike",
-        "Extrapolated from trend: 0.25% annual hikes toward neutral midpoint of 3.25%, reaching 3.00% by end-2028"
-      ],
-      "posChange": "up"
-    },
-    {
-      "id": "cad-hy",
-      "name": "Canadian HY Bonds",
-      "cat": "Fixed Income",
-      "color": "#a78bfa",
-      "r": [
-        5.9,
-        6.0,
-        6.0
-      ],
-      "why": [
-        "Canadian HY spreads tightened through 2025 but remain historically tight; BMO expects selective HY exposure only at spreads >60 bps (BMO GAM, Nov 2025)",
-        "As GoC yields rise to 3.6-3.75% and spreads normalize modestly from current tight levels, HY index yield follows; carry remains the dominant driver (extrapolated from trend)",
-        "Limited 3-year published targets available; trajectory assumes spreads remain compressed relative to historical averages even as base yields rise (analyst consensus, 2026)"
-      ],
-      "posChange": "up"
-    },
-    {
       "id": "us-tech",
       "name": "US Tech Stocks",
       "cat": "Equity",
@@ -339,7 +305,7 @@
         "Year 2 (2027): Goldman Sachs June 2026 forecast $13,800/tonne; market remains supported by ex-US deficits of 170,000 tonnes (Goldman, June 2026)",
         "Year 3 (2028): BMI/Fitch Solutions July 2026 forecast $13,500/tonne; represents gradual moderation as tariff effects stabilize and global markets rebalance post-2027"
       ],
-      "posChange": "down"
+      "posChange": "up"
     },
     {
       "id": "lithium",
@@ -373,7 +339,7 @@
         "World Bank and analyst forecasts point to downward pressure in 2027-2028 from global supply recovery; extrapolated 2.4% annual decline based on trend",
         "Extrapolated 2028 price assuming continued modest pressure from improved global supply and carryover stock recovery"
       ],
-      "posChange": "down"
+      "posChange": "same"
     },
     {
       "id": "potash",
@@ -2577,66 +2543,6 @@
       "assetName": "Real Estate"
     },
     {
-      "title": "Bank of Canada maintains the policy rate at 2¼% - Bank of Canada",
-      "url": "https://www.bankofcanada.ca/2026/07/fad-press-release-2026-07-15/",
-      "assetId": "cad-bond",
-      "assetName": "Fixed Income"
-    },
-    {
-      "title": "Mortgage Rate Forecast (2026-2030) | True North Mortgage",
-      "url": "https://www.truenorthmortgage.ca/blog/mortgage-rate-forecast",
-      "assetId": "cad-bond",
-      "assetName": "Fixed Income"
-    },
-    {
-      "title": "Canada Mortgage Rate Forecast 2026 to 2028 | Will Rates Go Up or Down? — Mortgage Sandbox",
-      "url": "https://www.mortgagesandbox.com/mortgage-interest-rate-forecast/",
-      "assetId": "cad-bond",
-      "assetName": "Fixed Income"
-    },
-    {
-      "title": "Bank of Canada maintains policy rate at 2¼% - Bank of Canada",
-      "url": "https://www.bankofcanada.ca/2026/04/fad-press-release-2026-04-29/",
-      "assetId": "cad-bond",
-      "assetName": "Fixed Income"
-    },
-    {
-      "title": "Mortgage Rates Forecast Canada 2026-2030 - nesto.ca",
-      "url": "https://www.nesto.ca/mortgage-basics/mortgage-rates-forecast-canada/",
-      "assetId": "cad-bond",
-      "assetName": "Fixed Income"
-    },
-    {
-      "title": "New Bank Of Canada Schedule 2027 And Interest Rate Expectations",
-      "url": "https://immigrationnewscanada.ca/new-bank-of-canada-schedule-2027/",
-      "assetId": "cad-bond",
-      "assetName": "Fixed Income"
-    },
-    {
-      "title": "CANADA INTEREST RATE TODAY AND FORECAST 2026, 2027, 2028",
-      "url": "https://cadtod.com/boc-rate",
-      "assetId": "cad-bond",
-      "assetName": "Fixed Income"
-    },
-    {
-      "title": "Perch | Canada Interest Rate Forecast 2026-2031",
-      "url": "https://myperch.io/canada-interest-rate-forecast/",
-      "assetId": "cad-bond",
-      "assetName": "Fixed Income"
-    },
-    {
-      "title": "Policy interest rate - Bank of Canada",
-      "url": "https://www.bankofcanada.ca/core-functions/monetary-policy/key-interest-rate/",
-      "assetId": "cad-bond",
-      "assetName": "Fixed Income"
-    },
-    {
-      "title": "CANADIAN MORTGAGE RATES FORECAST 2026, 2027, 2028",
-      "url": "https://cadtod.com/mortgage-rates",
-      "assetId": "cad-bond",
-      "assetName": "Fixed Income"
-    },
-    {
       "title": "Bank of Canada Policy Interest Rate Schedule 2026 - nesto.ca",
       "url": "https://www.nesto.ca/mortgage-basics/bank-of-canada-interest-rate-schedule/",
       "assetId": "hisa",
@@ -2824,7 +2730,5 @@
     }
   ],
   "lastRunCostUsd": 2.79,
-  "staleAssetIds": [
-    "cad-hy"
-  ]
+  "staleAssetIds": []
 }

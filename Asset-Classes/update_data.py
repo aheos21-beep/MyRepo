@@ -124,8 +124,6 @@ SOURCE_HINTS = {
     "cad-reit": "RBC Capital Markets Canadian REIT sector outlook",
     "cad-re": "CREA (Canadian Real Estate Association) forecasts, Bank of Canada rate path",
     "us-re": "CBRE US commercial real estate outlook",
-    "cad-bond": "Bank of Canada rate path, RBC bond market outlook",
-    "cad-hy": "RBC high-yield credit research, Canadian corporate bond outlook",
     "us-tech": "Goldman Sachs, Morgan Stanley S&P 500 / tech sector targets",
     "hisa": "Bank of Canada policy rate, RBC/Scotiabank GIC and HISA rate tables",
     "intl-div": "MSCI EAFE outlook, Goldman Sachs/JPMorgan international equity strategy",
