@@ -1,26 +1,6 @@
 {
   "tools": [
     {
-      "name": "Claude",
-      "model": "Claude 4",
-      "company": "Anthropic",
-      "url": "https://claude.ai",
-      "icon": "\u2728",
-      "color": "#cc785c",
-      "cats": [
-        "\ud83e\udde0 Reasoning",
-        "\u270d\ufe0f Creative Writing"
-      ],
-      "score": 95,
-      "benchmarks": {
-        "lmsys_elo": 1502.0,
-        "mmlu": 92.0,
-        "humaneval": 92.7,
-        "math": 88.0
-      },
-      "rank": 1
-    },
-    {
       "name": "ChatGPT",
       "model": "GPT-5",
       "company": "OpenAI",
@@ -31,12 +11,32 @@
         "\ud83d\udcbb Coding",
         "\ud83d\udccb Instructions"
       ],
-      "score": 94,
+      "score": 92,
       "benchmarks": {
         "lmsys_elo": 1484.0,
-        "mmlu": 92.4,
+        "mmlu": 90.2,
         "humaneval": 90.2,
-        "math": 85.0
+        "math": 76.6
+      },
+      "rank": 1
+    },
+    {
+      "name": "Claude",
+      "model": "Claude 4",
+      "company": "Anthropic",
+      "url": "https://claude.ai",
+      "icon": "\u2728",
+      "color": "#cc785c",
+      "cats": [
+        "\ud83e\udde0 Reasoning",
+        "\u270d\ufe0f Creative Writing"
+      ],
+      "score": 92,
+      "benchmarks": {
+        "lmsys_elo": 1504.0,
+        "mmlu": 90.4,
+        "humaneval": 92.7,
+        "math": 71.1
       },
       "rank": 2
     },
@@ -51,10 +51,10 @@
         "\ud83d\udd22 Math",
         "\ud83c\udf10 Multilingual"
       ],
-      "score": 93,
+      "score": 92,
       "benchmarks": {
         "lmsys_elo": 1490.0,
-        "mmlu": 90.3,
+        "mmlu": 85.9,
         "humaneval": 89.0,
         "math": 82.9
       },
@@ -71,9 +71,9 @@
         "\ud83d\udd22 Math",
         "\ud83d\udcbb Coding"
       ],
-      "score": 79,
+      "score": 77,
       "benchmarks": {
-        "lmsys_elo": 1340.0,
+        "lmsys_elo": 1318.0,
         "mmlu": 88.0,
         "humaneval": 82.6,
         "math": 90.0
@@ -91,9 +91,9 @@
         "\ud83d\udcbb Coding",
         "\ud83d\udd22 Math"
       ],
-      "score": 72,
+      "score": 74,
       "benchmarks": {
-        "lmsys_elo": 1291.0,
+        "lmsys_elo": 1308.0,
         "mmlu": 87.3,
         "humaneval": 89.0,
         "math": 73.8
@@ -101,6 +101,6 @@
       "rank": 5
     }
   ],
-  "last_updated": "2026-07-15T10:30:58.025898+00:00",
-  "api_cost": "—"
+  "last_updated": "2026-08-01T10:23:47.729588+00:00",
+  "api_cost": "$0.0466"
 }
