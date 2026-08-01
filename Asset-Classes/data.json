@@ -33,7 +33,7 @@
         "Morgan Stanley mid-2027 target of 8,300 (published May 13, 2026), with EPS growth of 12% in 2027 supporting modest index appreciation",
         "2028 target of 8,650 extrapolated from Morgan Stanley EPS forecast of $429 for 2028 (13% growth), assuming 4% index appreciation beyond 2027 target"
       ],
-      "posChange": "same"
+      "posChange": "up"
     },
     {
       "id": "gold",
@@ -189,23 +189,6 @@
       "posChange": "up"
     },
     {
-      "id": "em",
-      "name": "Emerging Markets",
-      "cat": "Equity",
-      "color": "#fb7185",
-      "r": [
-        28.2,
-        20.0,
-        10.0
-      ],
-      "why": [
-        "JPMorgan mid-year 2026 forecast: MSCI EM to hit 2,000 by December 2026; also cited by Goldman Sachs (June 2026) with implied 12% upside, forecast 55% earnings growth in 2026.",
-        "Goldman Sachs forecasts 20% earnings growth for 2027; assuming price-to-earnings multiple remains stable or tightens modestly, project index to 2,400 at end of year 2.",
-        "Earnings growth expected to moderate but remain robust into 2028; with structural tailwinds from AI exposure in semiconductors (Korea/Taiwan), weaker US dollar, and favorable demographics, project 10% growth to 2,640 for year 3."
-      ],
-      "posChange": "up"
-    },
-    {
       "id": "silver",
       "name": "Silver",
       "cat": "Commodity",
@@ -339,7 +322,7 @@
         "World Bank and analyst forecasts point to downward pressure in 2027-2028 from global supply recovery; extrapolated 2.4% annual decline based on trend",
         "Extrapolated 2028 price assuming continued modest pressure from improved global supply and carryover stock recovery"
       ],
-      "posChange": "same"
+      "posChange": "up"
     },
     {
       "id": "potash",
@@ -758,204 +741,6 @@
       "title": "S&P/TSX 60 | S&P Dow Jones Indices",
       "url": "https://www.spglobal.com/spdji/en/indices/equity/sp-tsx-60-index/",
       "assetId": "cad-div+us-div+cad-reit+us-tech",
-      "assetName": "Equity"
-    },
-    {
-      "title": "Market Pulse: 10 for 2026",
-      "url": "https://am.gs.com/cms-assets/gsam-app/documents/insights/en/2026/us-market-pulse_jan2026.pdf",
-      "assetId": "intl-div+em",
-      "assetName": "Equity"
-    },
-    {
-      "title": "Goldman Sachs International Equity Insights Fund Q1 2026 Commentary | Seeking Alpha",
-      "url": "https://seekingalpha.com/article/4918390-goldman-sachs-international-equity-insights-fund-q1-2026-commentary",
-      "assetId": "intl-div+em",
-      "assetName": "Equity"
-    },
-    {
-      "title": "2026 Outlooks | Goldman Sachs",
-      "url": "https://www.goldmansachs.com/insights/outlooks/2026-outlooks",
-      "assetId": "intl-div+em",
-      "assetName": "Equity"
-    },
-    {
-      "title": "Global Stocks Are Projected to Return 11% in the Next 12 Months | Goldman Sachs",
-      "url": "https://www.goldmansachs.com/insights/articles/global-stocks-are-projected-to-return-11-percent-in-next-12-months",
-      "assetId": "intl-div+em",
-      "assetName": "Equity"
-    },
-    {
-      "title": "2026 Mid-Year Outlook: Global Equity",
-      "url": "https://www.schwab.com/learn/story/global-stock-market-outlook",
-      "assetId": "intl-div+em",
-      "assetName": "Equity"
-    },
-    {
-      "title": "2026 Year-Ahead Investment Outlook",
-      "url": "https://am.jpmorgan.com/content/dam/jpm-am-aem/global/en/2026%20Year-Ahead%20Investment%20Outlook.pdf",
-      "assetId": "intl-div+em",
-      "assetName": "Equity"
-    },
-    {
-      "title": "Investment Outlook for Public Markets in 2026 - Goldman Sachs Asset Management",
-      "url": "https://am.gs.com/en-us/advisors/insights/article/investment-outlook/public-markets-2026",
-      "assetId": "intl-div+em",
-      "assetName": "Equity"
-    },
-    {
-      "title": "US Market Pulse July 2026 - Goldman Sachs Asset Management",
-      "url": "https://am.gs.com/en-us/advisors/insights/article/market-pulse",
-      "assetId": "intl-div+em",
-      "assetName": "Equity"
-    },
-    {
-      "title": "Mid-Year Outlook 2026 Promise and Pressure",
-      "url": "https://www.jpmorgan.com/content/dam/jpmorgan/documents/wealth-management/mid-year-outlook-2026.pdf",
-      "assetId": "intl-div+em",
-      "assetName": "Equity"
-    },
-    {
-      "title": "8 Best Index Funds To Buy and Invest In For 2026",
-      "url": "https://www.forbes.com/sites/investor-hub/article/8-index-funds-to-consider-for-2026/",
-      "assetId": "intl-div+em",
-      "assetName": "Equity"
-    },
-    {
-      "title": "EFA - Ishares Msci Eafe Etf Stock Price Forecast 2025, 2026, 2030 to 2050 - StockScan",
-      "url": "https://stockscan.io/stocks/EFA/forecast",
-      "assetId": "intl-div+em",
-      "assetName": "Equity"
-    },
-    {
-      "title": "IEFA - iShares Core MSCI EAFE ETF Stock Price Forecast 2026, 2027, 2030 to 2050 - StockScan",
-      "url": "https://stockscan.io/stocks/IEFA/forecast",
-      "assetId": "intl-div+em",
-      "assetName": "Equity"
-    },
-    {
-      "title": "MSCI EAFE Index - MSCI",
-      "url": "https://www.msci.com/www/index-factsheets/msci-eafe-index/07146631",
-      "assetId": "intl-div+em",
-      "assetName": "Equity"
-    },
-    {
-      "title": ".EAFE: MS EAFE Index - Stock Price, Quote and News - CNBC",
-      "url": "https://www.cnbc.com/quotes/.EAFE",
-      "assetId": "intl-div+em",
-      "assetName": "Equity"
-    },
-    {
-      "title": "MSCI EAFE Index Today (MIEA00000PUS) - Investing.com",
-      "url": "https://www.investing.com/indices/msci-eafe",
-      "assetId": "intl-div+em",
-      "assetName": "Equity"
-    },
-    {
-      "title": "MSCI EAFE Index",
-      "url": "https://www.msci.com/indexes/index/990300/msci-eafe-index",
-      "assetId": "intl-div+em",
-      "assetName": "Equity"
-    },
-    {
-      "title": "MSCI EAFE Growth (^105833-USD-STRD) Index Forecast 2027, 2031 & 7-Year Price Prediction | Meyka AI | Meyka",
-      "url": "https://meyka.com/indices/%5E105833-USD-STRD/forecasting/",
-      "assetId": "intl-div+em",
-      "assetName": "Equity"
-    },
-    {
-      "title": "MFS1! Charts and Quotes — TradingView",
-      "url": "https://www.tradingview.com/symbols/ICEUS-MFS1!/",
-      "assetId": "intl-div+em",
-      "assetName": "Equity"
-    },
-    {
-      "title": "MSCI EAFE - Live Performance & Historical Returns",
-      "url": "https://ycharts.com/indices/%5EMSEAFE",
-      "assetId": "intl-div+em",
-      "assetName": "Equity"
-    },
-    {
-      "title": "EFAS - Global X Msci Superdividend Eafe Etf Stock Price Forecast 2026, 2027, 2030 to 2050 - StockScan",
-      "url": "https://stockscan.io/stocks/EFAS/forecast",
-      "assetId": "intl-div+em",
-      "assetName": "Equity"
-    },
-    {
-      "title": "2026 Mid-Year Market Outlook | J.P. Morgan Global Research",
-      "url": "https://www.jpmorgan.com/insights/global-research/outlook/mid-year-outlook",
-      "assetId": "intl-div+em",
-      "assetName": "Equity"
-    },
-    {
-      "title": "Emerging Markets Stocks and Currencies Are Forecast to Rally | Goldman Sachs",
-      "url": "https://www.goldmansachs.com/insights/articles/emerging-markets-stocks-and-currencies-are-forecast-to-rally",
-      "assetId": "intl-div+em",
-      "assetName": "Equity"
-    },
-    {
-      "title": "Goldman lifts MSCI EM target on AI boost, flags Iran deal relief for forex, bonds - Global Business & Finance Magazine",
-      "url": "https://gbfinancemag.com/goldman-lifts-msci-em-target-on-ai-boost-flags-iran-deal-relief-for-forex-bonds/",
-      "assetId": "intl-div+em",
-      "assetName": "Equity"
-    },
-    {
-      "title": "MSCI EM (Emerging Markets) Index",
-      "url": "https://www.msci.com/indexes/index/891800/msci-em-emerging-markets-index-2",
-      "assetId": "intl-div+em",
-      "assetName": "Equity"
-    },
-    {
-      "title": "The case for emerging markets is strengthening - J.P. Morgan Personal Investing",
-      "url": "https://www.personalinvesting.jpmorgan.com/guides/our-investment-outlook/emerging-markets",
-      "assetId": "intl-div+em",
-      "assetName": "Equity"
-    },
-    {
-      "title": "MSCI Emerging Markets Index - MSCI",
-      "url": "https://www.msci.com/www/fact-sheet/msci-emerging-markets-index/07149641",
-      "assetId": "intl-div+em",
-      "assetName": "Equity"
-    },
-    {
-      "title": "Index Factsheet MSCI Emerging Markets Index (USD)",
-      "url": "https://www.msci.com/documents/10199/255599/msci-emerging-markets-index-usd-net.pdf",
-      "assetId": "intl-div+em",
-      "assetName": "Equity"
-    },
-    {
-      "title": "Goldman Sachs: Raises 12-month target price for MSCI Emerging Markets Index from 1850 to 2000 points | Bitget News",
-      "url": "https://www.bitget.com/amp/news/detail/12560605443330",
-      "assetId": "intl-div+em",
-      "assetName": "Equity"
-    },
-    {
-      "title": "MSCI Emerging Markets Historical Data (MSCIEF) - Investing.com",
-      "url": "https://www.investing.com/indices/msci-emerging-markets-historical-data",
-      "assetId": "intl-div+em",
-      "assetName": "Equity"
-    },
-    {
-      "title": "MSCI EMERGING MARKETS Index Overview - Stock Price, Quote and News - MarketScreener",
-      "url": "https://www.marketscreener.com/quote/index/MSCI-EMERGING-MARKETS-107361476/",
-      "assetId": "intl-div+em",
-      "assetName": "Equity"
-    },
-    {
-      "title": "Historical performance of the MSCI Emerging Markets index",
-      "url": "https://curvo.eu/backtest/en/market-index/msci-emerging-markets",
-      "assetId": "intl-div+em",
-      "assetName": "Equity"
-    },
-    {
-      "title": "iShares MSCI Emerging Markets ETF | EEM",
-      "url": "https://www.ishares.com/us/products/239637/ishares-msci-emerging-markets-etf",
-      "assetId": "intl-div+em",
-      "assetName": "Equity"
-    },
-    {
-      "title": "World - MSCI Emerging Markets Index | Series | MacroMicro",
-      "url": "https://en.macromicro.me/series/1250/msci-emerging-markets-index",
-      "assetId": "intl-div+em",
       "assetName": "Equity"
     },
     {

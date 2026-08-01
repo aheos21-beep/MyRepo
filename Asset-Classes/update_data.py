@@ -17,12 +17,20 @@ Design, and the reasoning behind it:
    answer.
 
 3. The model never does arithmetic. It reports only what it can read off a
-   page — a current basis value, three absolute yearly targets, whether those
-   are prices or interest rates, and any income yield — and compute_returns()
-   derives the annual percentages. An earlier version asked for percentages
-   directly and got Year 2/3 as cumulative-from-today figures, which the
-   dashboard compounded a second time (ETH: a correct ~1,400% three-year
-   total rendered as +77,248%).
+   page — a current basis value, the forecasts it found with their sources,
+   whether those are prices or interest rates, and any income yield — and
+   Python derives the annual percentages. An earlier version asked for
+   percentages directly and got Year 2/3 as cumulative-from-today figures,
+   which the dashboard compounded a second time (ETH: a correct ~1,400%
+   three-year total rendered as +77,248%).
+
+3b. Several forecasts per year, reduced to their median. Asking for one target
+   per year made each number a coin flip between disagreeing analysts: two runs
+   25 minutes apart put Ethereum at +28%/yr and +156%/yr, and Emerging Markets
+   at -15%/yr and +19%/yr. Stable assets were unaffected (Gold moved 0.3pp),
+   because the disagreement, not the app, was the variable. The median across
+   sources absorbs a single outlier, and the spread is appended to each
+   rationale so the tooltip shows what the figure was drawn from.
 
 4. Bases are pinned or checked, because a wrong starting value yields a
    wrong-but-plausible result that no magnitude guardrail would catch:
@@ -55,6 +63,7 @@ Design, and the reasoning behind it:
 import argparse
 import json
 import os
+import statistics
 import urllib.error
 import urllib.request
 from datetime import date
@@ -127,7 +136,6 @@ SOURCE_HINTS = {
     "us-tech": "Goldman Sachs, Morgan Stanley S&P 500 / tech sector targets",
     "hisa": "Bank of Canada policy rate, RBC/Scotiabank GIC and HISA rate tables",
     "intl-div": "MSCI EAFE outlook, Goldman Sachs/JPMorgan international equity strategy",
-    "em": "MSCI Emerging Markets outlook, Goldman Sachs/JPMorgan/Morgan Stanley EM strategy",
     "silver": "World Gold Council, JPMorgan, Goldman Sachs silver price forecasts",
     "palladium": "LBMA, BofA, TD Securities palladium price forecasts",
     "oil": "Goldman Sachs, JPMorgan, EIA WTI/Brent crude oil forecasts",
@@ -168,19 +176,40 @@ PROJECTION_ITEM = {
                 "is no capital appreciation."
             ),
         },
-        "targets": {
+        "forecasts": {
             "type": "array",
-            "items": {"type": "number"},
             "minItems": 3,
-            "maxItems": 3,
             "description": (
-                "The projected ABSOLUTE value at the END of year 1, year 2 and year 3, in the "
-                "SAME UNITS as basisValue — never percentages of change. For 'price_level' these "
-                "are forecast price levels; for 'rate_percent' these are forecast rates in "
-                "percent. Each entry is a point-in-time value, not a change and not a running "
-                "total. Example (price_level): an asset at 100 today expected to reach 110, then "
-                "121, then 133 -> [110, 121, 133]."
+                "EVERY published forecast you found, as one entry per (year, source) pair. You "
+                "must cover years 1, 2 and 3, and should give as many genuinely independent "
+                "sources per year as you actually found — two or three each is ideal. The median "
+                "across sources is what gets used, so one outlier cannot decide the answer. Do "
+                "not invent sources to pad this out; report only forecasts you actually saw."
             ),
+            "items": {
+                "type": "object",
+                "properties": {
+                    "year": {
+                        "type": "integer",
+                        "enum": [1, 2, 3],
+                        "description": "Which forecast year this value is for",
+                    },
+                    "value": {
+                        "type": "number",
+                        "description": (
+                            "The forecast ABSOLUTE value at the END of that year, in the SAME "
+                            "UNITS as basisValue — never a percentage change and never a running "
+                            "total. For 'price_level' a price/index level; for 'rate_percent' a "
+                            "rate in percent."
+                        ),
+                    },
+                    "source": {
+                        "type": "string",
+                        "description": "Who published it, e.g. 'Goldman Sachs' or 'World Gold Council'",
+                    },
+                },
+                "required": ["year", "value", "source"],
+            },
         },
         "incomeYieldPct": {
             "type": "number",
@@ -198,7 +227,7 @@ PROJECTION_ITEM = {
             "description": "One rationale per year, under 240 characters, naming the actual source/analyst and date found and stating that year's target value",
         },
     },
-    "required": ["id", "basisValue", "basisDescription", "basisKind", "targets", "incomeYieldPct", "why"],
+    "required": ["id", "basisValue", "basisDescription", "basisKind", "forecasts", "incomeYieldPct", "why"],
 }
 
 SUBMIT_TOOL = {
@@ -281,6 +310,45 @@ def chunk(items, size):
 
 def avg_return(rates):
     return sum(rates) / len(rates)
+
+
+def median_targets(forecasts, label=""):
+    """Reduce the forecasts found for an asset to one target per year.
+
+    Taking the median across independent sources is the point of collecting
+    several: a single search that happened to surface one bullish analyst can
+    no longer decide the number. Two runs 25 minutes apart previously put
+    Ethereum at +28%/yr and +156%/yr because one found Standard Chartered and
+    the other found a lower midpoint — both real forecasts, wildly apart.
+
+    Returns (targets, by_year) so callers can report the spread behind each.
+    """
+    by_year = {1: [], 2: [], 3: []}
+    for f in forecasts or []:
+        year, value = f.get("year"), f.get("value")
+        if year in by_year and isinstance(value, (int, float)):
+            by_year[year].append(float(value))
+
+    missing = [y for y, values in by_year.items() if not values]
+    if missing:
+        raise ValueError(f"{label}: no forecast supplied for year(s) {missing}")
+
+    return [statistics.median(by_year[y]) for y in (1, 2, 3)], by_year
+
+
+def annotate_why(why, by_year):
+    """Append the spread behind each year's median, so a tooltip shows what the
+    number was actually drawn from rather than just one cherry-picked source."""
+    annotated = []
+    for year in (1, 2, 3):
+        text = why[year - 1] if year - 1 < len(why) else ""
+        values = by_year.get(year, [])
+        if len(values) > 1:
+            # " · " rather than ", ": thousands separators already use commas.
+            joined = " · ".join(f"{v:,.6g}" for v in sorted(values))
+            text = f"{text} [median of {len(values)}: {joined}]"
+        annotated.append(text)
+    return annotated
 
 
 def compute_returns(basis_value, targets, income_yield_pct, label="", basis_kind="price_level"):
@@ -450,11 +518,11 @@ Use the web_search tool to find REAL, CURRENT analyst projections for EACH of th
 
 {chr(10).join(blocks)}
 
-Find the latest published price targets, index levels or rate outlooks. Where figures are not published for all three years, extrapolate the later ones from the trend implied by what you find and say so in that asset's "why".
+Find the latest published price targets, index levels or rate outlooks. Analysts often disagree sharply, so gather SEVERAL independent forecasts per year where they exist rather than stopping at the first one — the median across them is what will be used, so one outlier must not decide the answer. Where figures are not published for all three years, extrapolate the later ones from the trend implied by what you find and say so in that asset's "why".
 
 Report ONLY values you can read off a source — do NOT calculate percentage returns, that arithmetic is done downstream. For each asset give:
 - basisValue + basisKind: the current value today, and whether it is a price/index level ('price_level') or an interest rate in percent ('rate_percent')
-- targets: the projected value at the end of year 1, year 2 and year 3, in the same units as basisValue. Three point-in-time values — NOT percentage changes, NOT cumulative growth.
+- forecasts: every forecast you found, one entry per (year, source), covering years 1-3. Each value is a point-in-time level in the same units as basisValue — NOT a percentage change, NOT cumulative growth. Name the actual publisher of each. Do not invent sources to pad the list.
 - incomeYieldPct: annual dividend/coupon/distribution/staking yield, or 0. For income-driven assets the level may barely move and this yield carries the return; that is expected.
 
 Once you have researched all {len(assets)}, call submit_projections with one entry per asset, matching each id exactly."""
@@ -476,15 +544,20 @@ Once you have researched all {len(assets)}, call submit_projections with one ent
         p = by_id[a["id"]]
         if a["id"] in pinned_bases:
             p["basisValue"] = pinned_bases[a["id"]]["value"]
+        targets, by_year = median_targets(p.get("forecasts"), label=a["id"])
+        p["targets"] = targets
+        p["why"] = annotate_why(p["why"], by_year)
         p["r"] = compute_returns(
             p["basisValue"],
-            p["targets"],
+            targets,
             p.get("incomeYieldPct", 0.0),
             label=a["id"],
             basis_kind=p.get("basisKind", "price_level"),
         )
         pin = " (pinned)" if a["id"] in pinned_bases else ""
-        print(f"  {a['id']}: basis {p['basisValue']:,.2f}{pin} -> {p['targets']} +{p.get('incomeYieldPct', 0.0)}% => {p['r']}")
+        counts = "/".join(str(len(by_year[y])) for y in (1, 2, 3))
+        print(f"  {a['id']}: basis {p['basisValue']:,.2f}{pin} -> medians {targets} "
+              f"from {counts} forecasts +{p.get('incomeYieldPct', 0.0)}% => {p['r']}")
 
     return by_id, sources
 
