@@ -86,6 +86,35 @@
         "copper": 23,
         "oil": 24
       }
+    },
+    {
+      "date": "2026-08-01",
+      "ranks": {
+        "eth": 1,
+        "btc": 2,
+        "silver": 3,
+        "gold": 4,
+        "palladium": 5,
+        "us-tech": 6,
+        "em": 7,
+        "intl-div": 8,
+        "cad-reit": 9,
+        "us-div": 10,
+        "uranium": 11,
+        "cad-div": 12,
+        "lumber": 13,
+        "cad-hy": 14,
+        "potash": 15,
+        "cad-bond": 16,
+        "hisa": 17,
+        "cad-re": 18,
+        "us-re": 19,
+        "wheat": 20,
+        "copper": 21,
+        "natgas": 22,
+        "lithium": 23,
+        "oil": 24
+      }
     }
   ]
 }
