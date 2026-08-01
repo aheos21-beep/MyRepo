@@ -4,6 +4,19 @@ on:
   schedule:
     - cron: '0 8 1 * *'  # 8am UTC on the 1st of each month
   workflow_dispatch:      # Allow manual trigger from GitHub Actions tab
+    inputs:
+      scope:
+        description: 'What to refresh'
+        type: choice
+        default: full
+        options:
+          - full          # all 24 assets (~$2.50)
+          - repair-stale  # only assets the last run left stale (~$0.40)
+          - only          # just the ids listed below
+      only_ids:
+        description: "Comma-separated asset ids, e.g. natgas,copper (only used when scope = 'only')"
+        type: string
+        default: ''
 
 jobs:
   refresh:
@@ -24,12 +37,32 @@ jobs:
       - name: Update asset projections
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python Asset-Classes/update_data.py
+          # Scheduled runs have no inputs, so default to a full refresh.
+          SCOPE: ${{ github.event.inputs.scope || 'full' }}
+          ONLY_IDS: ${{ github.event.inputs.only_ids }}
+        run: |
+          case "$SCOPE" in
+            repair-stale)
+              python Asset-Classes/update_data.py --repair-stale
+              ;;
+            only)
+              if [ -z "$ONLY_IDS" ]; then
+                echo "::error::scope 'only' requires only_ids to be set"
+                exit 1
+              fi
+              python Asset-Classes/update_data.py --only "$ONLY_IDS"
+              ;;
+            *)
+              python Asset-Classes/update_data.py
+              ;;
+          esac
 
       - name: Commit updated data
+        env:
+          SCOPE: ${{ github.event.inputs.scope || 'full' }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add Asset-Classes/data.json Asset-Classes/history.json
-          git diff --staged --quiet || git commit -m "chore: monthly asset projection refresh $(date +%Y-%m-%d)"
+          git diff --staged --quiet || git commit -m "chore: asset projection refresh ($SCOPE) $(date +%Y-%m-%d)"
           git push
