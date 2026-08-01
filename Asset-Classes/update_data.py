@@ -124,6 +124,13 @@ BLOCKED_SOURCE_DOMAINS = [
 RATE_PERCENT_BOUNDS = (-10.0, 30.0)
 RATE_SCALE_RATIO = 5.0
 
+# Forecasts are discarded if they sit further than this from the (verified)
+# basis. Sources quote the same commodity in different units — one lithium run
+# returned "$16/kg" and "$15,646/tonne" for the same year, and averaging them
+# produced a 363x "gain". No credible 3-year forecast is 20x today's price, so
+# anything beyond that is a unit mismatch rather than a bullish analyst.
+PRICE_SCALE_RATIO = 20.0
+
 SOURCE_HINTS = {
     "cad-div": "Goldman Sachs, JPMorgan, RBC, BofA, Morgan Stanley TSX dividend stock targets",
     "us-div": "Goldman Sachs, JPMorgan, RBC, BofA, Morgan Stanley S&P 500 dividend stock targets",
@@ -312,7 +319,7 @@ def avg_return(rates):
     return sum(rates) / len(rates)
 
 
-def median_targets(forecasts, label=""):
+def median_targets(forecasts, basis_value, basis_kind="price_level", label=""):
     """Reduce the forecasts found for an asset to one target per year.
 
     Taking the median across independent sources is the point of collecting
@@ -321,17 +328,35 @@ def median_targets(forecasts, label=""):
     Ethereum at +28%/yr and +156%/yr because one found Standard Chartered and
     the other found a lower midpoint — both real forecasts, wildly apart.
 
+    Forecasts implausibly far from the basis are dropped first. A median is
+    only meaningful over values in the same unit, and sources mix them freely:
+    one run returned "$16/kg" and "$15,646/tonne" for the same year of lithium,
+    whose average is meaningless. The basis is the trusted anchor here — it is
+    either live-pinned or independently verified — so distance from it is the
+    signal for a unit mismatch.
+
     Returns (targets, by_year) so callers can report the spread behind each.
     """
-    by_year = {1: [], 2: [], 3: []}
+    ratio = RATE_SCALE_RATIO if basis_kind == "rate_percent" else PRICE_SCALE_RATIO
+    lo, hi = (abs(basis_value) / ratio, abs(basis_value) * ratio) if basis_value else (0, float("inf"))
+
+    by_year, discarded = {1: [], 2: [], 3: []}, []
     for f in forecasts or []:
         year, value = f.get("year"), f.get("value")
-        if year in by_year and isinstance(value, (int, float)):
-            by_year[year].append(float(value))
+        if year not in by_year or not isinstance(value, (int, float)):
+            continue
+        if basis_value and not (lo <= abs(value) <= hi):
+            discarded.append((year, float(value), f.get("source", "?")))
+            continue
+        by_year[year].append(float(value))
+
+    if discarded:
+        detail = ", ".join(f"y{y} {v:,.6g} ({src})" for y, v, src in discarded)
+        print(f"    {label}: discarded {len(discarded)} off-scale forecast(s) vs basis {basis_value:,.6g}: {detail}")
 
     missing = [y for y, values in by_year.items() if not values]
     if missing:
-        raise ValueError(f"{label}: no forecast supplied for year(s) {missing}")
+        raise ValueError(f"{label}: no usable forecast for year(s) {missing}")
 
     return [statistics.median(by_year[y]) for y in (1, 2, 3)], by_year
 
@@ -544,7 +569,12 @@ Once you have researched all {len(assets)}, call submit_projections with one ent
         p = by_id[a["id"]]
         if a["id"] in pinned_bases:
             p["basisValue"] = pinned_bases[a["id"]]["value"]
-        targets, by_year = median_targets(p.get("forecasts"), label=a["id"])
+        targets, by_year = median_targets(
+            p.get("forecasts"),
+            p["basisValue"],
+            basis_kind=p.get("basisKind", "price_level"),
+            label=a["id"],
+        )
         p["targets"] = targets
         p["why"] = annotate_why(p["why"], by_year)
         p["r"] = compute_returns(
