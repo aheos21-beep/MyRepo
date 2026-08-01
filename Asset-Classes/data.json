@@ -16,7 +16,7 @@
         "Scotiabank 2027 TSX target approximately 40,000 (P/E 16.4x on 2028E earnings), April 29, 2026",
         "2028 target 42,200 extrapolated from Scotiabank's EPS growth forecast of +13% for 2028 applied to 2027 base, maintaining 16.4x P/E assumption"
       ],
-      "posChange": "down"
+      "posChange": "up"
     },
     {
       "id": "us-div",
@@ -33,7 +33,7 @@
         "2027 target of 8,400 based on $385 EPS forecast with modest P/E multiple maintenance per Goldman guidance, May 28, 2026",
         "2028 target of 8,800 extrapolated from 10% EPS growth trajectory, with no multiple expansion assumed due to elevated valuations"
       ],
-      "posChange": "up"
+      "posChange": "same"
     },
     {
       "id": "gold",
@@ -118,7 +118,7 @@
         "CREA July 15, 2026 forecast: $694,164 (+1.1% from 2026 to 2027)",
         "Extrapolated from consistent 1.1% annual growth trend implied by CREA's 2026-2027 forecasts"
       ],
-      "posChange": "down"
+      "posChange": "up"
     },
     {
       "id": "us-re",
@@ -152,7 +152,7 @@
         "BoC policy rate projected to 3.25% by end 2027; term premiums rising from fiscal concerns; bond yields to follow higher path (RBC & Scotiabank, June-July 2026)",
         "Trend from 3.6% to 3.75% implies modest continuation of normalization into 2028 as neutral rate assumptions stabilize (extrapolated from 2027 guidance)"
       ],
-      "posChange": "down"
+      "posChange": "up"
     },
     {
       "id": "cad-hy",
@@ -169,7 +169,7 @@
         "As GoC yields rise to 3.6-3.75% and spreads normalize modestly from current tight levels, HY index yield follows; carry remains the dominant driver (extrapolated from trend)",
         "Limited 3-year published targets available; trajectory assumes spreads remain compressed relative to historical averages even as base yields rise (analyst consensus, 2026)"
       ],
-      "posChange": "down"
+      "posChange": "up"
     },
     {
       "id": "us-tech",
@@ -186,7 +186,7 @@
         "Goldman forecasts $385 EPS for 2027 (13% growth); applying 21.8x forward P/E yields ~8,400 for 2027 year-end",
         "Extrapolated 2028 target of 8,800 assuming 10% EPS growth and stable valuation multiples, consistent with Goldman's cautious outlook on multiple expansion"
       ],
-      "posChange": "up"
+      "posChange": "down"
     },
     {
       "id": "hisa",
@@ -203,7 +203,7 @@
         "End 2027: RBC projects 3.25%, Scotiabank projects 3.0%; midpoint ~3.0% (nesto.ca, WOWA, Apr-May 2026)",
         "End 2028: Extrapolated from 2027 trend; RBC trajectory suggests continued modest increases to ~3.25% (based on RBC Apr 2026 outlook)"
       ],
-      "posChange": "down"
+      "posChange": "up"
     },
     {
       "id": "intl-div",
@@ -237,7 +237,7 @@
         "StockScan 2027 average target $44.45 (-32.03% from current, published StockScan Aug 2026)",
         "StockScan 2028 average target $37.13 (-43.23% from current, reflecting emerging market headwinds per Morgan Stanley May 2026)"
       ],
-      "posChange": "same"
+      "posChange": "down"
     },
     {
       "id": "silver",
@@ -254,7 +254,7 @@
         "HSBC March 2027 target $68/oz; UBS expects decline toward $85 in March 2027. Conservative midpoint ~$75/oz reflects gold-silver ratio normalization at 63:1.",
         "Extrapolated 2028 target $85/oz: assumes recovery from 2027 consolidation as solar/EV industrial demand drives supply deficit thesis emphasized by Silver Institute."
       ],
-      "posChange": "up"
+      "posChange": "down"
     },
     {
       "id": "palladium",
@@ -271,7 +271,7 @@
         "WalletInvestor projects $2,368/oz YE2027 driven by supply constraints; Kursprognose forecasts year-end $1,464/oz. Conservative midpoint ~$1,550/oz reflects EV adoption offsetting structural deficit claims.",
         "CoinPriceForecast $2,128/oz YE2028; WPIC notes deficit-to-surplus transition 2027–2028. Extrapolated $1,800 balances hybrid vehicle resilience vs. long-term EV headwind."
       ],
-      "posChange": "down"
+      "posChange": "up"
     },
     {
       "id": "oil",
@@ -288,7 +288,7 @@
         "EIA July 2026 STEO projects 2027 average Brent $65/bbl (WTI typically $5–10/bbl below); Goldman targets WTI $70/bbl 2027. Central estimate $68/bbl reflects structural oversupply reasserting.",
         "EIA and Goldman both project 2027–2028 range $55–$70/bbl as energy transition headwinds and non-OPEC supply growth cap upside. Extrapolated $65/bbl YE2028 represents gradual inventory normalization."
       ],
-      "posChange": "same"
+      "posChange": "up"
     },
     {
       "id": "natgas",
@@ -322,7 +322,7 @@
         "Uranium Insider founder Justin Huhn expects breakthrough to $100+ in 2026–2027, with long-term contract prices supporting $110+ by mid-2027 amid supply deficits (ANS Nuclear Newswire, mid-2026).",
         "2028 projection at $120 reflects Sprott/analyst consensus on tightening fundamentals, policy support for nuclear expansion, and expected supply deficit through early 2030s (Sprott December 2025 outlook, ANS/INN Q2 2026 reports)."
       ],
-      "posChange": "same"
+      "posChange": "up"
     },
     {
       "id": "copper",
@@ -373,7 +373,7 @@
         "Year 2 (2028): Extrapolated to $6.40/bu from trend of gradual price moderation as global wheat stocks stabilize post-drought recovery",
         "Year 3 (2029): Further decline to $6.35/bu reflecting normalization of supplies and resumption of typical export flows as production recovers"
       ],
-      "posChange": "up"
+      "posChange": "down"
     },
     {
       "id": "potash",
@@ -390,7 +390,7 @@
         "Year 2 (2028): World Bank expects 6% decline in 2027 as new production capacity comes online; $448 × 0.94 ≈ $421/mt",
         "Year 3 (2029): Continued downward pressure from Canadian capacity expansion; extrapolate modest 2-3% further decline to $410/mt"
       ],
-      "posChange": "up"
+      "posChange": "down"
     },
     {
       "id": "lumber",

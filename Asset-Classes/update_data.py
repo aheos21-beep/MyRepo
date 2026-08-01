@@ -40,10 +40,19 @@ Design, and the reasoning behind it:
 6. Batched by category to control cost. Related assets share one call's
    search budget and prompt overhead instead of paying it per asset.
 
-7. A failed batch is contained. Its assets keep last month's values and the
-   run still completes; failures are listed at the end and recorded in
-   data["staleAssetIds"].
+7. Failures are isolated, not absorbed. A failed batch is retried one asset
+   at a time, so the extra cost of isolation is paid only where something
+   actually broke. Anything still failing keeps last month's values, is
+   reported, and is recorded in data["staleAssetIds"].
+
+8. Partial runs. --repair-stale re-attempts exactly the assets a previous run
+   left stale (and --only takes explicit ids). A partial run merges into the
+   existing cycle: it keeps that cycle's date, adds to its cost, preserves the
+   sources of untouched assets, and replaces rather than appends its history
+   entry — so month-over-month arrows stay anchored to the previous month
+   rather than to a run from minutes earlier.
 """
+import argparse
 import json
 import os
 import urllib.error
@@ -618,73 +627,174 @@ def select_model(client):
     return fallback
 
 
+BATCH_ERRORS = (ValueError, KeyError, anthropic.APIError)
+
+
+def refresh_assets(client, model_id, assets, today, costs):
+    """Research every batch, isolating any batch that fails.
+
+    A failed batch is retried one asset at a time before being given up on.
+    Isolation costs more per asset, so it is paid only where something actually
+    broke rather than as a standing premium on every run — a batch-of-1 policy
+    for all 24 assets would cost more every month than the occasional wasted
+    batch it would save.
+
+    Returns (projections, source_groups, stale_ids).
+    """
+    projections, source_groups, stale_ids = {}, [], []
+
+    for category, batch in plan_batches(assets):
+        ids = [a["id"] for a in batch]
+        print(f"Researching batch ({category}): {ids}...")
+        pinned = live_crypto_bases(batch) if category == "Crypto" else None
+
+        try:
+            by_id, sources = process_batch(client, model_id, batch, today, costs, pinned)
+        except BATCH_ERRORS as e:
+            print(f"  FAILED ({type(e).__name__}: {e})")
+            by_id, sources = {}, []
+            if len(batch) == 1:
+                stale_ids.extend(ids)
+            else:
+                print(f"  Isolating {ids} and retrying one at a time...")
+                for a in batch:
+                    solo_pin = {a["id"]: pinned[a["id"]]} if pinned and a["id"] in pinned else None
+                    try:
+                        one, one_sources = process_batch(client, model_id, [a], today, costs, solo_pin)
+                    except BATCH_ERRORS as solo_error:
+                        print(f"    {a['id']}: still failing ({type(solo_error).__name__}) — keeping previous values")
+                        stale_ids.append(a["id"])
+                        continue
+                    by_id.update(one)
+                    sources += one_sources
+
+        if by_id:
+            projections.update(by_id)
+            source_groups.append(([i for i in ids if i in by_id], category, sources))
+
+    return projections, source_groups, stale_ids
+
+
+def apply_history(updated_assets, data_date):
+    """Set posChange from the previous *distinct* run date and return the
+    history to write.
+
+    Re-running on a day that already has an entry replaces it instead of
+    appending. Otherwise repeated same-day runs compare each asset against a
+    run from minutes earlier — which silently made the arrows meaningless —
+    and evict real months from the 12-month window.
+    """
+    history = load_json(HISTORY_PATH, {"history": []})
+    entries = history["history"]
+
+    replacing = bool(entries) and entries[-1]["date"] == data_date
+    baseline = entries[:-1] if replacing else entries
+    prev_ranks = baseline[-1]["ranks"] if baseline else {}
+
+    new_ranks = compute_ranks(updated_assets)
+    for asset in updated_assets:
+        asset["posChange"] = position_change(prev_ranks.get(asset["id"]), new_ranks[asset["id"]])
+
+    history["history"] = (baseline + [{"date": data_date, "ranks": new_ranks}])[-MAX_HISTORY_MONTHS:]
+    return history
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Refresh Asset-Classes projections.")
+    scope = parser.add_mutually_exclusive_group()
+    scope.add_argument("--repair-stale", action="store_true",
+                       help="refresh only the assets the last run left stale")
+    scope.add_argument("--only", metavar="IDS",
+                       help="comma-separated asset ids to refresh")
+    return parser.parse_args()
+
+
+def resolve_targets(args, assets, data):
+    """Return (targets, partial). A partial run touches only some assets and so
+    must merge with, rather than replace, the existing file."""
+    known = {a["id"] for a in assets}
+
+    if args.repair_stale:
+        wanted = set(data.get("staleAssetIds") or [])
+        if not wanted:
+            return [], True
+    elif args.only:
+        wanted = {s.strip() for s in args.only.split(",") if s.strip()}
+        unknown = wanted - known
+        if unknown:
+            raise SystemExit(f"unknown asset ids: {sorted(unknown)}")
+    else:
+        return assets, False
+
+    return [a for a in assets if a["id"] in wanted], True
+
+
 def main():
+    args = parse_args()
     client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
     data = load_json(DATA_PATH, {"assets": []})
-    today = date.today().isoformat()
     costs = CostTracker()
+
+    targets, partial = resolve_targets(args, data["assets"], data)
+    if partial and not targets:
+        print("Nothing to repair: no stale assets recorded.")
+        return
+
+    # A partial run patches assets inside the existing cycle, so it keeps that
+    # cycle's date and adds to its cost rather than restating either.
+    data_date = data.get("updated") if partial else date.today().isoformat()
+    print(f"{'Repairing' if partial else 'Refreshing'} {len(targets)} of {len(data['assets'])} assets (date {data_date})")
 
     model_id = select_model(client)
     print(f"Using model: {model_id}")
 
-    projections, all_sources, seen_urls, stale_ids = {}, [], set(), []
+    projections, source_groups, stale_ids = refresh_assets(client, model_id, targets, data_date, costs)
+    if not projections:
+        raise RuntimeError("nothing was refreshed; leaving data.json untouched")
 
-    for category, batch in plan_batches(data["assets"]):
-        ids = [a["id"] for a in batch]
-        print(f"Researching batch ({category}): {ids}...")
-        pinned = live_crypto_bases(batch) if category == "Crypto" else None
-        try:
-            by_id, sources = process_batch(client, model_id, batch, today, costs, pinned)
-        except (ValueError, KeyError, anthropic.APIError) as e:
-            # Contain the failure: these assets keep last month's numbers and
-            # the rest of the run still produces a usable file.
-            print(f"  FAILED ({type(e).__name__}: {e}) — keeping previous values for {ids}")
-            stale_ids.extend(ids)
-            continue
-
-        projections.update(by_id)
-        # A batch shares one search budget, so a source cannot be pinned to a
-        # single asset within it. Keep the exact ids in the data, but label the
-        # UI by category — joining four asset names produced a caption that
-        # truncated away the source title itself.
-        for s in sources:
-            if s["url"] not in seen_urls:
-                seen_urls.add(s["url"])
-                all_sources.append({**s, "assetId": "+".join(ids), "assetName": category})
-
-    if len(stale_ids) == len(data["assets"]):
-        raise RuntimeError("every batch failed; leaving data.json untouched")
-
+    refreshed = set(projections)
     updated_assets = []
     for asset in data["assets"]:
-        fresh = projections.get(asset["id"])
         updated = {k: v for k, v in asset.items() if k != "d"}  # "d" is a dead field
+        fresh = projections.get(asset["id"])
         if fresh:
             updated["r"] = fresh["r"]
             updated["why"] = fresh["why"]
         updated_assets.append(updated)
 
-    history = load_json(HISTORY_PATH, {"history": []})
-    prev_ranks = history["history"][-1]["ranks"] if history["history"] else {}
-    new_ranks = compute_ranks(updated_assets)
-    for asset in updated_assets:
-        asset["posChange"] = position_change(prev_ranks.get(asset["id"]), new_ranks[asset["id"]])
+    # Keep sources for assets this run did not touch; drop the ones it replaced.
+    kept = [s for s in data.get("sources", [])
+            if not (set(str(s.get("assetId", "")).split("+")) & refreshed)] if partial else []
+    seen_urls = {s["url"] for s in kept}
+    all_sources = list(kept)
+    # A batch shares one search budget, so a source cannot be pinned to a single
+    # asset within it. Keep the exact ids in the data, but label the UI by
+    # category — joining four asset names truncated the source title away.
+    for ids, category, sources in source_groups:
+        for s in sources:
+            if s["url"] not in seen_urls:
+                seen_urls.add(s["url"])
+                all_sources.append({**s, "assetId": "+".join(ids), "assetName": category})
 
+    still_stale = sorted((set(data.get("staleAssetIds") or []) | set(stale_ids)) - refreshed) if partial else stale_ids
+    total_cost = costs.total + (data.get("lastRunCostUsd", 0.0) if partial else 0.0)
+
+    history = apply_history(updated_assets, data_date)
     data.update({
         "assets": updated_assets,
-        "updated": today,
+        "updated": data_date,
         "sources": all_sources,
-        "lastRunCostUsd": round(costs.total, 2),
-        "staleAssetIds": stale_ids,
+        "lastRunCostUsd": round(total_cost, 2),
+        "staleAssetIds": still_stale,
     })
     write_json(DATA_PATH, data)
-
-    history["history"] = (history["history"] + [{"date": today, "ranks": new_ranks}])[-MAX_HISTORY_MONTHS:]
     write_json(HISTORY_PATH, history)
 
-    summary = f"data.json updated — {len(updated_assets)} assets, {len(all_sources)} sources, cost ${costs.total:.4f}, date: {today}"
-    if stale_ids:
-        summary += f" | STALE (kept previous values): {stale_ids}"
+    summary = (f"data.json updated — {len(refreshed)} of {len(updated_assets)} assets refreshed, "
+               f"{len(all_sources)} sources, cost ${costs.total:.4f}"
+               f"{f' (cycle total ${total_cost:.2f})' if partial else ''}, date: {data_date}")
+    if still_stale:
+        summary += f" | STALE (kept previous values): {still_stale}"
     print(summary)
 
 
