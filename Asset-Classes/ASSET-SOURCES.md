@@ -1,10 +1,51 @@
-# Asset source reference
+# Asset source reference — rebuild spec
 
-Working reference for which assets belong in the dashboard, where each one's
-numbers should come from, and what that costs. Written to be argued with —
-the tiers are a proposal, not a decision.
+Spec for rebuilding the dashboard from the assets that demonstrably work,
+rather than patching the ones that do not. Covers which assets are in, where
+each one's number comes from, the horizon, and the cost.
 
-## The finding this is built on
+---
+
+## Decision 1 — Horizon: a single 1-year figure
+
+6-month / 1-year / 18-month columns were considered and rejected, because
+those numbers cannot be derived for every asset:
+
+| Source | Sub-annual granularity? |
+| --- | --- |
+| EIA STEO | Yes — monthly and quarterly, out to 18 months |
+| BoC yield curve | Yes — forward rates at any tenor |
+| CREA, CBRE, USDA | **No** — annual or marketing-year figures only |
+| Analyst price targets | **No** — year-end targets only |
+
+Producing a 6-month number for CREA or a bank price target would mean
+interpolating and presenting the result as if it were published. So the
+dashboard shows **one column: the 1-year projected return.**
+
+Where a source gives an 18-month figure, annualise it back:
+
+```
+r_1yr = (1 + r_18mo) ** (1 / 1.5) - 1
+```
+
+This is a real simplification, not a compromise. One number per asset means
+one thing to verify, one thing to get wrong, and no compounding across years
+— which is where the worst bugs came from (a correct ~1,400% three-year
+Ethereum total once rendered as +77,248% because annual and cumulative
+figures were confused).
+
+## Decision 2 — Only assets with a named publisher
+
+> Name the institution that publishes the forecast. If you cannot, the asset
+> does not go in.
+
+This test costs nothing and predicts stability better than any code change
+made so far. Stable-looking numbers with no provenance are worse than
+volatile ones with provenance, because nothing signals they are unsupported.
+
+---
+
+## The finding behind both decisions
 
 Stability does not track how volatile the *asset* is. It tracks **whether one
 institution is the recognised publisher of that forecast.**
@@ -14,155 +55,129 @@ the 3-year average return between runs):
 
 | Asset | Swing | Sources/yr | Why |
 | --- | --- | --- | --- |
-| HISA (Canada) | 0.1pp | 5.0 | Bank of Canada *is* the rate |
+| HISA (Canada) | 0.1pp | 5.0 | The Bank of Canada *is* the rate |
 | Canadian Real Estate | 0.8pp | 2.0 | CREA is the recognised forecaster |
 | US Real Estate | 1.1pp | 4.0 | CBRE is the recognised forecaster |
-| … | | | |
-| Bitcoin | 36.9pp | 3.3 | no authority; Bernstein vs StanChart differ 2-3x |
-| Ethereum | 45.4pp | 2.7 | same, plus content farms in the mix |
+| Gold | 8.4pp | 4.0 | Four sources, no authority among them |
+| Bitcoin | 36.9pp | 3.3 | No authority; houses differ 2-3x |
+| Ethereum | 45.4pp | 2.7 | Same, plus content farms in the mix |
 
-More sources does not help. Gold pulls 4 sources per year and still swings
-8.4pp; Canadian Real Estate pulls 2 and swings 0.8pp. **Authority beats
-quantity**, which is why the tiers below are organised by source type rather
-than by asset class.
-
-## Rule for adding an asset
-
-> Name the institution that publishes its forecast. If you cannot, the asset
-> will behave like Bitcoin or Intl Dividend Stocks: expensive, volatile, and
-> unattributable.
-
-This test costs nothing and predicts the outcome better than any code change
-made so far.
+More sources does not help. Gold pulls four per year and still swings 8.4pp;
+Canadian Real Estate pulls two and swings 0.8pp. **Authority beats quantity.**
 
 ---
 
-## Tier 1 — Fetch it, no LLM
+## The starting nine
 
-Deterministic, free, and stable by construction. Zero API cost and zero
-run-to-run variance.
+### Tier 1 — Fetched. No LLM, no cost, no variance.
 
-| Asset | Source | Endpoint | Notes |
+The ≤18-month horizon is what makes this tier possible: EIA STEO covers oil
+and gas completely within it, so those assets need no search at all.
+
+| Asset | Source | Access | Notes |
 | --- | --- | --- | --- |
-| HISA (Canada) | Bank of Canada Valet | `bankofcanada.ca/valet` series `CBC20210` | No key, no registration, versioned since 2017 |
-| *(rate-quoted assets generally)* | BoC Valet | group `BD.CDN.*.DQ.YLD` | The GoC curve gives **market-implied forward rates** — the market's own forecast, computed not guessed |
-| Bitcoin / Ethereum *(basis only)* | CoinGecko | `/simple/price` | Already live in `update_data.py` |
+| HISA (Canada) | Bank of Canada Valet | Free, **no key** | Forward rates from the GoC curve are the market's own 1-year forecast — computed, not guessed |
+| WTI Crude Oil | EIA STEO | Free, key required | 18-month projection, annualised back |
+| Natural Gas | EIA STEO | Free, key required | 18-month projection, annualised back |
 
-The yield-curve point is the interesting one: for anything quoted as a rate,
-forward rates are derivable from today's curve. That is a real forecast,
-free, deterministic, and it removes the LLM from those assets entirely.
+### Tier 2 — One authority, one search, no median.
 
-## Tier 2 — Fetch the near term, extend the rest
-
-| Asset | Source | Horizon | Gap |
-| --- | --- | --- | --- |
-| WTI Crude Oil | EIA STEO API | 18 months | Year 1 fetched; years 2-3 still need a source |
-| Natural Gas | EIA STEO API | 18 months | same |
-
-EIA STEO publishes genuine forward projections monthly, updated on a fixed
-schedule. Free, but **requires a registered API key** — a new repository
-secret, which is the one operational cost of this tier.
-
-## Tier 3 — Single authoritative source, no median needed
-
-These have one recognised publisher, and the data shows they are already
-stable. Paying for several sources and a median buys nothing here.
+The median buys nothing where a recognised publisher exists.
 
 | Asset | Authority | Observed swing |
 | --- | --- | --- |
 | Canadian Real Estate | CREA | 0.8pp |
 | US Real Estate | CBRE | 1.1pp |
-| Potash / Fertilizers | USDA / World Bank | 3.9pp |
-| Wheat | USDA | 11.3pp ⚠️ |
 | Lumber | Fastmarkets | 3.6pp |
+| Potash / Fertilizers | USDA / World Bank | 3.9pp |
 
-Wheat is the odd one: it has an authority (USDA) but still swung 11.3pp,
-because content-farm sources crept into its median alongside USDA. Pinning it
-to USDA only should fix that — worth testing before trusting it.
+### Tier 3 — Median of several, variance accepted.
 
-## Tier 4 — Genuine analyst disagreement, median required
+No single authority, but the disagreement is modest and the sources are real.
 
-No single authority exists. The median is doing real work here and should
-stay.
-
-| Asset | Swing | Note |
-| --- | --- | --- |
-| Copper | 4.0pp | acceptable |
-| US Dividend Stocks | 4.1pp | acceptable |
-| US Tech Stocks | 6.4pp | acceptable |
-| Palladium | 7.8pp | acceptable |
-| Gold | 8.4pp | acceptable |
-| Silver | 8.7pp | acceptable |
-| Canadian REITs | 9.0pp | thin sourcing (1.3/yr) |
-| Lithium | — | unit chaos; needs a pinned unit before it is trustworthy |
-| Bitcoin | 36.9pp | inherent — analysts differ 2-3x |
-| Ethereum | 45.4pp | inherent |
-
-Crypto stays only if volatility is acceptable as *information*: the spread is
-the honest answer, and the tooltip already shows it.
-
-## Tier 5 — Candidates to drop
-
-| Asset | Why |
+| Asset | Swing |
 | --- | --- |
-| Intl Dividend Stocks | Content farms were the **only** identifiable sources; swings 10.6pp |
-| Uranium | No publisher identifiable in any run |
-| CAD Dividend Stocks | No publisher identifiable; single source per year |
-
-Stable-looking numbers with no provenance are worse than volatile ones with
-provenance, because nothing signals that they are unsupported.
+| Copper | 4.0pp |
+| US Dividend Stocks | 4.1pp |
 
 ---
 
-## Cost model
+## Deliberately excluded
 
-Derived from observed runs, not vendor list prices. Current design: **~$0.14
-per asset per month** ($2.89 ÷ 21 assets). Roughly a quarter of that is web
-search fees ($0.01/search) and the rest is tokens, dominated by search
-results entering context.
+| Asset | Swing | Reason |
+| --- | --- | --- |
+| Uranium | 2.5pp | **No publisher identifiable in any run** — stable-looking but unattributable |
+| CAD Dividend Stocks | 2.9pp | Same; one source per year, unnamed |
+| US Tech Stocks | 6.4pp | Borderline variance; easy to add back |
+| Palladium | 7.8pp | Borderline |
+| Gold | 8.4pp | Borderline; four sources, none authoritative |
+| Silver | 8.7pp | Borderline |
+| Canadian REITs | 9.0pp | Thin sourcing (1.3 sources/yr) |
+| Intl Dividend Stocks | 10.6pp | Content farms were the **only** identifiable sources |
+| Wheat | 11.3pp | Has an authority (USDA) but content farms crept into its median |
+| Lithium | — | Unit chaos: `$16/kg` and `$15,646/tonne` averaged together once gave +12,074% |
+| Bitcoin | 36.9pp | Inherent — no authority exists |
+| Ethereum | 45.4pp | Inherent |
 
-Per-asset monthly estimate by tier:
+**Known bias in this list:** it is commodity and real-estate heavy and thin on
+equities. That is not accidental. Equity forecasts are index targets where
+every house publishes a different number, so they cannot clear the stability
+bar. Equity representation means accepting Tier 3 variance for it.
 
-| Tier | Method | Est. cost/asset | Variance |
-| --- | --- | --- | --- |
-| 1 | API fetch | **$0.00** | none |
-| 2 | API + light search for years 2-3 | ~$0.05 | low |
-| 3 | 1 search, 1 source, no verify pass | ~$0.05 | low |
-| 4 | 2-3 searches, median, verify pass | ~$0.14 | high |
+---
 
-### Worked example — a stable core of 10
+## Cost
+
+Derived from observed runs, not vendor list prices. Today: **~$0.14 per asset
+per month** ($2.89 ÷ 21 assets), roughly a quarter search fees and the rest
+tokens from search results entering context.
+
+| Tier | Method | Est. cost/asset |
+| --- | --- | --- |
+| 1 | API fetch | **$0.00** |
+| 2 | 1 search, 1 source, no verify pass | ~$0.05 |
+| 3 | 2-3 searches, median, verify pass | ~$0.14 |
+
+**The starting nine:**
 
 | Count | Tier | Cost |
 | --- | --- | --- |
-| 1 | Tier 1 (HISA) | $0.00 |
-| 2 | Tier 2 (oil, natgas) | $0.10 |
-| 5 | Tier 3 | $0.25 |
-| 2 | Tier 4 (gold, copper) | $0.28 |
-| **10** | | **≈ $0.63/month** |
+| 3 | Tier 1 (HISA, oil, natgas) | $0.00 |
+| 4 | Tier 2 | $0.20 |
+| 2 | Tier 3 | $0.28 |
+| **9** | | **≈ $0.48/month** |
 
-Against $2.89 today for 21 assets — and the ten that remain are the ten whose
-numbers can be defended.
+Against $2.89 today for 21 assets, for a set whose numbers can be defended.
 
-### Scaling
+**Scaling.** Tier 2 assets cost about $0.05 each, so 40 of them lands near
+**$2/month** — below today's bill at roughly double the coverage. The
+constraint is not cost; it is that only assets with a named publisher
+qualify.
 
-Adding assets under the Tier 3 discipline costs about **$0.05 each**, so 40
-assets lands near **$2/month** — below today's bill with roughly double the
-coverage. Adding Tier 4 assets costs ~3x that and brings volatility with it,
-which is the real argument for the naming rule above.
-
-### A cadence lever, separately
-
-HISA moved 0.1pp across three runs; refreshing it monthly is paying for
-noise. Quarterly for Tier 1-3 and monthly for Tier 4 roughly halves whatever
-the above totals to, with no information lost.
+**Cadence, separately.** HISA moved 0.1pp across three runs, so refreshing it
+monthly is paying for noise. Quarterly for Tiers 1-2 and monthly for Tier 3
+roughly halves whatever the above totals to.
 
 ---
 
-## Open questions
+## Before building
 
-- EIA STEO stops at 18 months. Extend years 2-3 by trend, source them
-  separately, or shorten the dashboard's horizon for those assets?
-- Forward rates from the GoC curve are the market's forecast, not an
-  analyst's. Is that the number the dashboard should show for cash?
-- Is crypto's spread better shown as a **range** than a single median? The
-  disagreement is the honest signal and a point estimate hides it.
+1. **Verify the EIA STEO series IDs** for WTI spot and Henry Hub. Confirmed:
+   STEO publishes forward projections and has a free API. Not confirmed: the
+   exact series names. Everything in Tier 1 for oil and gas rests on this.
+2. **Register an EIA API key** and add it as a repository secret. This is the
+   only new operational dependency in the design.
+3. **Decide the cash number.** Forward rates from the GoC curve are the
+   *market's* forecast, not an analyst's. Correct and free, but a different
+   thing wearing the same label — worth being explicit in the UI.
+
+## Carried forward from the current build
+
+Worth keeping regardless of which assets are in:
+
+- The model never does arithmetic — it reports values, Python computes returns.
+- Structured output via a forced tool call, never parsed from prose.
+- Bases pinned from a live feed where one exists, verified otherwise.
+- Failures isolated per asset; stale assets keep their previous value and are
+  recorded rather than silently refreshed.
+- Output escaped before rendering — model-authored text reaches the page.
