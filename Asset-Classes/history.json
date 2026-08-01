@@ -115,6 +115,35 @@
         "lithium": 23,
         "oil": 24
       }
+    },
+    {
+      "date": "2026-08-01",
+      "ranks": {
+        "eth": 1,
+        "btc": 2,
+        "palladium": 3,
+        "gold": 4,
+        "silver": 5,
+        "cad-div": 6,
+        "uranium": 7,
+        "hisa": 8,
+        "cad-reit": 9,
+        "cad-bond": 10,
+        "cad-hy": 11,
+        "lumber": 12,
+        "lithium": 13,
+        "us-re": 14,
+        "us-div": 15,
+        "natgas": 16,
+        "cad-re": 17,
+        "potash": 18,
+        "us-tech": 19,
+        "copper": 20,
+        "intl-div": 21,
+        "wheat": 22,
+        "oil": 23,
+        "em": 24
+      }
     }
   ]
 }
