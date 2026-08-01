@@ -69,31 +69,19 @@ Any sleeve with a benchmark ETF works. Candidate benchmarks:
 | Canadian Utilities | ZUT | 12 names |
 | Intl Dividend | ⚠️ | Foreign listings — `yfinance` target coverage is patchier abroad. Verify before committing |
 
-### B. EIA STEO — $0 each, same API call and key
-
-Gasoline · Diesel / heating oil · Propane · Electricity · Coal.
-Monthly, 18-month horizon, same credential as oil and gas.
-
-### C. World Bank CMO — ~$0 marginal, same twice-yearly search
+### B. World Bank CMO metals — ~$0 marginal, same twice-yearly search
 
 Aluminium · Nickel · Zinc · Tin · Lead · Iron ore.
 One document already being read for potash; more rows cost nothing extra.
 Filter to what is investable rather than taking all 46 commodities.
 
-### D. USDA WASDE — one monthly search covers several
+### Considered and dropped as expansion routes
 
-Wheat · Corn · Soybeans.
-**Wheat is a re-entry candidate**: it was dropped at 11.3pp not for lack of an
-authority but because content farms entered its median. Pinning to USDA only
-should fix it — worth testing before trusting.
-
-### E. Philadelphia Fed Survey of Professional Forecasters — free, quarterly
-
-3-month T-bill · 10-year Treasury · inflation.
-Notable because it is a **published median of ~40 professional forecasters** —
-the thing the app's own median was trying to construct, done properly and for
-free. This is the honest route back to bonds, which were dropped for reporting
-the policy rate rather than their own return.
+| Route | Would have added | Why not |
+| --- | --- | --- |
+| EIA STEO extras | Gasoline, diesel, propane, electricity, coal | Refined fuels and power are consumption prices, not asset classes anyone holds. Core WTI and natural gas stay — they use the same call and key |
+| USDA WASDE | Wheat, corn, soybeans | Would have been the re-entry route for wheat (dropped at 11.3pp). Ags stay out |
+| Philadelphia Fed SPF | 3-mo T-bill, 10-yr Treasury, inflation | Was the one honest route back to bonds. **Dropping it means the list carries no fixed income beyond HISA** — accepted deliberately |
 
 ---
 
@@ -103,8 +91,8 @@ Not the same kind of claim, and the dashboard should not blur them:
 
 | Kind | Assets | Caveat |
 | --- | --- | --- |
-| Market-implied | HISA, Treasuries | Not an opinion — what the curve prices. But forward rates are biased predictors of future spot |
-| Official projection | Oil, gas, potash, ags | A government or multilateral model. EIA publishes wide confidence bands on oil |
+| Market-implied | HISA | Not an opinion — what the curve prices. But forward rates are biased predictors of future spot. **The only fixed-income row on the list** |
+| Official projection | Oil, gas, potash, CMO metals | A government or multilateral model. EIA publishes wide confidence bands on oil |
 | Analyst consensus | All equity sleeves, copper | Real consensus, but sell-side targets are **persistently optimistic as a class** — expect the equity rows to skew positive |
 | Single-institution | Canadian / US real estate | One organisation's view on its own schedule |
 
@@ -140,7 +128,9 @@ badge.
 | Intl Dividend via LLM (10.6pp) | Content farms were the only identifiable sources — but see A above for an ETF route |
 | Lithium | Unit chaos: `$16/kg` and `$15,646/tonne` averaged once gave +12,074% |
 | Bitcoin (36.9pp), Ethereum (45.4pp) | No authority exists; houses differ 2-3x. The spread is the honest answer |
-| Canadian Bonds, HY Bonds | Reported the policy rate rather than their own return — but see E above for an SPF route |
+| Canadian Bonds, HY Bonds | Reported the policy rate rather than their own return. An SPF route existed and was declined — bonds stay out |
+| Wheat and other ags | Content farms entered wheat's median (11.3pp). A USDA WASDE route existed and was declined |
+| Refined fuels, electricity, coal | Consumption prices, not holdable asset classes |
 
 ## Failure modes
 
