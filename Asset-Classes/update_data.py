@@ -254,7 +254,7 @@ PROJECTION_ITEM = {
                         ),
                     },
                 },
-                "required": ["year", "value", "source", "unit"],
+                "required": ["year", "value", "source"],
             },
         },
         "incomeYieldPct": {
@@ -624,7 +624,10 @@ Once you have researched all {len(assets)}, call submit_projections with one ent
         costs=costs,
     )
 
-    by_id = {p["id"]: p for p in submitted["projections"]}
+    projections = submitted.get("projections")
+    if not projections:
+        raise ValueError("submit_projections called without any projections")
+    by_id = {p["id"]: p for p in projections if isinstance(p, dict) and "id" in p}
     missing = [a["id"] for a in assets if a["id"] not in by_id]
     if missing:
         raise ValueError(f"response missing ids: {missing}")
@@ -683,7 +686,7 @@ Search the web yourself for each one and find the actual current value. Then cal
         # keep the researched bases rather than losing the batch.
         print(f"  Warning: verification unavailable ({e}); keeping researched bases")
         return {}, []
-    return {v["id"]: v for v in submitted["verifications"]}, sources
+    return {v["id"]: v for v in submitted.get("verifications") or [] if "id" in v}, sources
 
 
 def process_batch(client, model_id, batch, today, costs, pinned_bases=None):
