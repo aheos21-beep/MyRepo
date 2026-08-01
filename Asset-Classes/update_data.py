@@ -69,6 +69,12 @@ VERIFY_SEARCHES_PER_ASSET = 1
 VERIFY_CATEGORIES = {"Commodity"}
 BASIS_MISMATCH_TOLERANCE = 0.20
 
+# A search-heavy turn can come back as stop_reason="pause_turn" (resume it) or
+# simply end without answering (retry it). Without both, one such turn used to
+# discard a whole batch.
+MAX_PAUSE_CONTINUATIONS = 4
+REQUEST_ATTEMPTS = 2
+
 # Pricing per token, from https://platform.claude.com/docs/en/about-claude/pricing
 # These track PRICING_MODEL_FAMILY; main() warns if a different model is chosen.
 PRICING_MODEL_FAMILY = "claude-haiku-4-5"
@@ -342,6 +348,48 @@ def tool_input(response, tool_name):
     return None
 
 
+def request_tool_call(client, model_id, prompt, tools, tool_name, max_tokens, costs):
+    """Run one research/verification request and return (tool_input, sources).
+
+    A single request is not enough on its own. A turn that runs several
+    searches can come back as stop_reason="pause_turn", which means "not
+    finished, send this back to continue" — and a turn can also simply end
+    without the model calling the tool. Either way the batch used to be lost.
+    So: continue paused turns, and retry the whole request once if the model
+    ends without answering.
+    """
+    last_stop = None
+    for attempt in range(1, REQUEST_ATTEMPTS + 1):
+        messages = [{"role": "user", "content": prompt}]
+        sources = []
+        for _ in range(MAX_PAUSE_CONTINUATIONS + 1):
+            response = client.messages.create(
+                model=model_id,
+                max_tokens=max_tokens,
+                tools=tools,
+                # "any" forces a tool call each turn — search again or submit —
+                # so the model cannot answer with prose instead.
+                tool_choice={"type": "any", "disable_parallel_tool_use": True},
+                messages=messages,
+            )
+            costs.add(response.usage)
+            sources += extract_search_sources(response.content)
+
+            payload = tool_input(response, tool_name)
+            if payload is not None:
+                return payload, sources
+
+            last_stop = response.stop_reason
+            if last_stop != "pause_turn":
+                break
+            # Paused mid-search: hand the turn back verbatim to resume it.
+            messages = messages + [{"role": "assistant", "content": response.content}]
+
+        print(f"  Attempt {attempt}/{REQUEST_ATTEMPTS}: ended without calling {tool_name} (stop_reason={last_stop})")
+
+    raise ValueError(f"no {tool_name} call after {REQUEST_ATTEMPTS} attempts (last stop_reason={last_stop})")
+
+
 def load_json(path, default):
     if path.exists():
         with open(path) as f:
@@ -404,20 +452,13 @@ Report ONLY values you can read off a source — do NOT calculate percentage ret
 
 Once you have researched all {len(assets)}, call submit_projections with one entry per asset, matching each id exactly."""
 
-    response = client.messages.create(
-        model=model_id,
-        max_tokens=1200 * len(assets),
+    submitted, sources = request_tool_call(
+        client, model_id, prompt,
         tools=[web_search_tool(max(2, SEARCHES_PER_ASSET * len(assets))), SUBMIT_TOOL],
-        # "any" forces a tool call each turn — search again or submit — so the
-        # model cannot end its turn with prose instead of an answer.
-        tool_choice={"type": "any", "disable_parallel_tool_use": True},
-        messages=[{"role": "user", "content": prompt}],
+        tool_name="submit_projections",
+        max_tokens=1200 * len(assets),
+        costs=costs,
     )
-    costs.add(response.usage)
-
-    submitted = tool_input(response, "submit_projections")
-    if submitted is None:
-        raise ValueError(f"no submit_projections call (stop_reason={response.stop_reason})")
 
     by_id = {p["id"]: p for p in submitted["projections"]}
     missing = [a["id"] for a in assets if a["id"] not in by_id]
@@ -438,7 +479,7 @@ Once you have researched all {len(assets)}, call submit_projections with one ent
         pin = " (pinned)" if a["id"] in pinned_bases else ""
         print(f"  {a['id']}: basis {p['basisValue']:,.2f}{pin} -> {p['targets']} +{p.get('incomeYieldPct', 0.0)}% => {p['r']}")
 
-    return by_id, extract_search_sources(response.content)
+    return by_id, sources
 
 
 def verify_bases(client, model_id, claims, today, costs):
@@ -454,20 +495,19 @@ def verify_bases(client, model_id, claims, today, costs):
 
 Search the web yourself for each one and find the actual current value. Then call submit_verifications with one entry per id, reporting what you actually find whether or not it matches the claim."""
 
-    response = client.messages.create(
-        model=model_id,
-        max_tokens=500 * len(claims),
-        tools=[web_search_tool(max(1, VERIFY_SEARCHES_PER_ASSET * len(claims))), VERIFY_TOOL],
-        tool_choice={"type": "any", "disable_parallel_tool_use": True},
-        messages=[{"role": "user", "content": prompt}],
-    )
-    costs.add(response.usage)
-
-    submitted = tool_input(response, "submit_verifications")
-    sources = extract_search_sources(response.content)
-    if submitted is None:
-        print("  Warning: verification call returned no values; keeping researched bases")
-        return {}, sources
+    try:
+        submitted, sources = request_tool_call(
+            client, model_id, prompt,
+            tools=[web_search_tool(max(1, VERIFY_SEARCHES_PER_ASSET * len(claims))), VERIFY_TOOL],
+            tool_name="submit_verifications",
+            max_tokens=500 * len(claims),
+            costs=costs,
+        )
+    except ValueError as e:
+        # Verification is a safety net, not the payload: if it will not answer,
+        # keep the researched bases rather than losing the batch.
+        print(f"  Warning: verification unavailable ({e}); keeping researched bases")
+        return {}, []
     return {v["id"]: v for v in submitted["verifications"]}, sources
 
 
