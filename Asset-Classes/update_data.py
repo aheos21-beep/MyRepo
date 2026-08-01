@@ -63,6 +63,7 @@ Design, and the reasoning behind it:
 import argparse
 import json
 import os
+import re
 import statistics
 import urllib.error
 import urllib.request
@@ -131,6 +132,27 @@ RATE_SCALE_RATIO = 5.0
 # anything beyond that is a unit mismatch rather than a bullish analyst.
 PRICE_SCALE_RATIO = 20.0
 
+# Commodities get quoted in several units at once, and a median is only
+# meaningful over one of them. A run had copper at "$14.30/kg" with forecasts
+# in "$/lb" (a 2.6x gap) and lithium at "$18.95/kg" against "$/tonne" (1000x).
+# PRICE_SCALE_RATIO catches the second and sails past the first, so units are
+# compared directly. Order matters below: "short ton" must be tested before
+# "ton", and "tonne" before the bare "/t".
+UNIT_PATTERNS = [
+    ("per_short_ton", r"short\s*ton"),
+    ("per_tonne", r"tonne|metric\s*ton|\bmt\b|per\s*t\b|/\s*t\b"),
+    ("per_lb", r"\blbs?\b|pound"),
+    ("per_kg", r"\bkgs?\b|kilogram|kilo\b"),
+    ("per_oz", r"\boz\b|ounce"),
+    ("per_bbl", r"\bbbl\b|barrel"),
+    ("per_mmbtu", r"mmbtu|million\s*btu|\bmbtu\b"),
+    ("per_bushel", r"\bbu\b|bushel"),
+    ("per_mbf", r"\bmbf\b|board\s*f(?:oo|ee)t"),
+    ("percent", r"percent|%"),
+    ("index_level", r"index|points|level"),
+]
+CURRENCY_PATTERNS = [("cad", r"\bcad\b|c\$"), ("usd", r"\busd\b|us\$")]
+
 SOURCE_HINTS = {
     "cad-div": "Goldman Sachs, JPMorgan, RBC, BofA, Morgan Stanley TSX dividend stock targets",
     "us-div": "Goldman Sachs, JPMorgan, RBC, BofA, Morgan Stanley S&P 500 dividend stock targets",
@@ -170,7 +192,15 @@ PROJECTION_ITEM = {
         },
         "basisDescription": {
             "type": "string",
-            "description": "Short phrase naming basisValue and its unit, e.g. 'spot gold price per oz in USD' or 'BoC overnight policy rate, percent'",
+            "description": "Short phrase naming basisValue, e.g. 'spot gold price' or 'BoC overnight policy rate'",
+        },
+        "basisUnit": {
+            "type": "string",
+            "description": (
+                "The unit basisValue is quoted in, written explicitly, e.g. 'USD/oz', "
+                "'USD/tonne', 'USD/lb', 'USD/bbl', 'USD/MMBtu', 'USD/bushel', 'index points' "
+                "or 'percent'. Every forecast below MUST use this same unit."
+            ),
         },
         "basisKind": {
             "type": "string",
@@ -214,8 +244,17 @@ PROJECTION_ITEM = {
                         "type": "string",
                         "description": "Who published it, e.g. 'Goldman Sachs' or 'World Gold Council'",
                     },
+                    "unit": {
+                        "type": "string",
+                        "description": (
+                            "The unit THIS value is quoted in, in the same form as basisUnit. "
+                            "Convert the source's figure into basisUnit rather than reporting a "
+                            "different one — a forecast whose unit does not match the basis is "
+                            "discarded, since averaging $/lb with $/tonne is meaningless."
+                        ),
+                    },
                 },
-                "required": ["year", "value", "source"],
+                "required": ["year", "value", "source", "unit"],
             },
         },
         "incomeYieldPct": {
@@ -234,7 +273,7 @@ PROJECTION_ITEM = {
             "description": "One rationale per year, under 240 characters, naming the actual source/analyst and date found and stating that year's target value",
         },
     },
-    "required": ["id", "basisValue", "basisDescription", "basisKind", "forecasts", "incomeYieldPct", "why"],
+    "required": ["id", "basisValue", "basisDescription", "basisUnit", "basisKind", "forecasts", "incomeYieldPct", "why"],
 }
 
 SUBMIT_TOOL = {
@@ -319,7 +358,19 @@ def avg_return(rates):
     return sum(rates) / len(rates)
 
 
-def median_targets(forecasts, basis_value, basis_kind="price_level", label=""):
+def parse_unit(text):
+    """Map a free-text unit onto (measure, currency), either of which may be
+    None when the text does not say. Matching canonical tokens rather than raw
+    strings lets "USD/tonne", "$ per metric ton" and "US$/t" compare equal."""
+    if not text:
+        return None, None
+    lowered = str(text).lower()
+    measure = next((name for name, pattern in UNIT_PATTERNS if re.search(pattern, lowered)), None)
+    currency = next((name for name, pattern in CURRENCY_PATTERNS if re.search(pattern, lowered)), None)
+    return measure, currency
+
+
+def median_targets(forecasts, basis_value, basis_kind="price_level", basis_unit="", label=""):
     """Reduce the forecasts found for an asset to one target per year.
 
     Taking the median across independent sources is the point of collecting
@@ -339,20 +390,33 @@ def median_targets(forecasts, basis_value, basis_kind="price_level", label=""):
     """
     ratio = RATE_SCALE_RATIO if basis_kind == "rate_percent" else PRICE_SCALE_RATIO
     lo, hi = (abs(basis_value) / ratio, abs(basis_value) * ratio) if basis_value else (0, float("inf"))
+    basis_measure, basis_currency = parse_unit(basis_unit)
 
     by_year, discarded = {1: [], 2: [], 3: []}, []
     for f in forecasts or []:
         year, value = f.get("year"), f.get("value")
         if year not in by_year or not isinstance(value, (int, float)):
             continue
-        if basis_value and not (lo <= abs(value) <= hi):
-            discarded.append((year, float(value), f.get("source", "?")))
+
+        measure, currency = parse_unit(f.get("unit"))
+        reason = None
+        # Only reject when both sides are actually identifiable; an unreadable
+        # unit string should not throw away a good forecast.
+        if basis_measure and measure and measure != basis_measure:
+            reason = f"unit {measure} != basis {basis_measure}"
+        elif basis_currency and currency and currency != basis_currency:
+            reason = f"currency {currency} != basis {basis_currency}"
+        elif basis_value and not (lo <= abs(value) <= hi):
+            reason = f"off-scale vs basis {basis_value:,.6g}"
+
+        if reason:
+            discarded.append((year, float(value), f.get("source", "?"), reason))
             continue
         by_year[year].append(float(value))
 
     if discarded:
-        detail = ", ".join(f"y{y} {v:,.6g} ({src})" for y, v, src in discarded)
-        print(f"    {label}: discarded {len(discarded)} off-scale forecast(s) vs basis {basis_value:,.6g}: {detail}")
+        detail = ", ".join(f"y{y} {v:,.6g} ({src}: {why})" for y, v, src, why in discarded)
+        print(f"    {label}: discarded {len(discarded)} forecast(s) — {detail}")
 
     missing = [y for y, values in by_year.items() if not values]
     if missing:
@@ -546,8 +610,8 @@ Use the web_search tool to find REAL, CURRENT analyst projections for EACH of th
 Find the latest published price targets, index levels or rate outlooks. Analysts often disagree sharply, so gather SEVERAL independent forecasts per year where they exist rather than stopping at the first one — the median across them is what will be used, so one outlier must not decide the answer. Where figures are not published for all three years, extrapolate the later ones from the trend implied by what you find and say so in that asset's "why".
 
 Report ONLY values you can read off a source — do NOT calculate percentage returns, that arithmetic is done downstream. For each asset give:
-- basisValue + basisKind: the current value today, and whether it is a price/index level ('price_level') or an interest rate in percent ('rate_percent')
-- forecasts: every forecast you found, one entry per (year, source), covering years 1-3. Each value is a point-in-time level in the same units as basisValue — NOT a percentage change, NOT cumulative growth. Name the actual publisher of each. Do not invent sources to pad the list.
+- basisValue + basisUnit + basisKind: the current value today, the unit it is quoted in (e.g. 'USD/tonne', 'USD/lb', 'USD/oz', 'index points', 'percent'), and whether it is a price/index level ('price_level') or an interest rate in percent ('rate_percent')
+- forecasts: every forecast you found, one entry per (year, source), covering years 1-3. Each value is a point-in-time level — NOT a percentage change, NOT cumulative growth. State the unit of each and CONVERT it into basisUnit first: commodities are quoted per pound, per kilogram and per tonne interchangeably, and a forecast in a different unit from the basis is discarded rather than averaged. Name the actual publisher of each. Do not invent sources to pad the list.
 - incomeYieldPct: annual dividend/coupon/distribution/staking yield, or 0. For income-driven assets the level may barely move and this yield carries the return; that is expected.
 
 Once you have researched all {len(assets)}, call submit_projections with one entry per asset, matching each id exactly."""
@@ -573,6 +637,7 @@ Once you have researched all {len(assets)}, call submit_projections with one ent
             p.get("forecasts"),
             p["basisValue"],
             basis_kind=p.get("basisKind", "price_level"),
+            basis_unit=f"{p.get('basisUnit', '')} {p.get('basisDescription', '')}",
             label=a["id"],
         )
         p["targets"] = targets
