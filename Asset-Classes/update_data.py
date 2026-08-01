@@ -29,6 +29,16 @@ simple magnitude guardrail wouldn't catch. Two defenses:
     likely, and double-checking all 24 assets individually was the single
     biggest driver of API cost for comparatively little accuracy benefit.
 
+The model is never asked to compute a percentage return. It reports only
+what it can actually read off a source — the current basis level, the
+absolute price/level target for each of the next three years, and any
+recurring income yield — and Python derives the year-over-year percentages
+from those. An earlier version asked the model for percentages directly and
+it returned Year 2/Year 3 as cumulative-from-today figures, which the
+dashboard then compounded a second time (ETH: a correct ~1,400% 3-year
+cumulative rendered as +77,248%). Verifying the basis did not catch that,
+because the basis was the one number that was already right.
+
 To keep cost down, non-crypto assets are researched (and, for commodities,
 verified) in small batches grouped by category rather than one call per
 asset — this amortizes the fixed per-call tool/system-prompt overhead and
@@ -88,34 +98,38 @@ CRYPTO_PRICE_IDS = {"btc": "bitcoin", "eth": "ethereum"}
 # hedging in prose when the data it found is incomplete.
 SUBMIT_TOOL = {
     "name": "submit_projection",
-    "description": "Submit the researched 3-year forward return projection for this asset class, based on real web search results.",
+    "description": "Submit the researched 3-year forward outlook for this asset class, based on real web search results. Report levels you found in sources — do NOT compute percentage returns.",
     "input_schema": {
         "type": "object",
         "properties": {
-            "r": {
+            "basisValue": {
+                "type": "number",
+                "description": "The CURRENT market level today (price, index level, or rate) that the targets below should be measured against",
+            },
+            "basisDescription": {
+                "type": "string",
+                "description": "One short phrase describing exactly what basisValue represents and its unit, e.g. 'spot gold price per oz in USD' or 'BoC overnight policy rate, percent'",
+            },
+            "targets": {
                 "type": "array",
                 "items": {"type": "number"},
                 "minItems": 3,
                 "maxItems": 3,
-                "description": "Year 1, Year 2, Year 3 projected annual return percentages, e.g. 8.0 for +8.0%",
+                "description": "The projected ABSOLUTE level at the END of year 1, year 2, and year 3 — in the SAME UNITS as basisValue, never percentages. Each entry is a point-in-time level, not a change and not a cumulative total. Example: if the asset is at 100 today and is expected to reach 110, then 121, then 133, submit [110, 121, 133].",
+            },
+            "incomeYieldPct": {
+                "type": "number",
+                "description": "Recurring annual income yield as a percent (dividends, coupons, distributions, staking), e.g. 4.5 for 4.5%. Use 0 if the asset pays no income. This is added on top of the level change.",
             },
             "why": {
                 "type": "array",
                 "items": {"type": "string"},
                 "minItems": 3,
                 "maxItems": 3,
-                "description": "One rationale per year (under 240 characters), naming the actual source/analyst and date found",
-            },
-            "basisValue": {
-                "type": "number",
-                "description": "The single current market figure (price, yield, or rate) you used as the starting reference point for your Year 1 calculation",
-            },
-            "basisDescription": {
-                "type": "string",
-                "description": "One short phrase describing exactly what basisValue represents and its unit, e.g. 'spot gold price per oz in USD' or 'BoC overnight policy rate, percent'",
+                "description": "One rationale per year (under 240 characters), naming the actual source/analyst and date found, and stating the target level for that year",
             },
         },
-        "required": ["r", "why", "basisValue", "basisDescription"],
+        "required": ["basisValue", "basisDescription", "targets", "incomeYieldPct", "why"],
     },
 }
 
@@ -142,7 +156,7 @@ SUBMIT_VERIFICATION_TOOL = {
 # so results can be mapped back to the right asset.
 BATCH_SUBMIT_TOOL = {
     "name": "submit_projections",
-    "description": "Submit researched 3-year forward return projections for ALL the asset classes listed in this request.",
+    "description": "Submit researched 3-year forward outlooks for ALL the asset classes listed in this request. Report levels you found in sources — do NOT compute percentage returns.",
     "input_schema": {
         "type": "object",
         "properties": {
@@ -153,30 +167,34 @@ BATCH_SUBMIT_TOOL = {
                     "type": "object",
                     "properties": {
                         "id": {"type": "string", "description": "The asset's id, exactly as given in the prompt"},
-                        "r": {
+                        "basisValue": {
+                            "type": "number",
+                            "description": "The CURRENT market level today (price, index level, or rate) that the targets below should be measured against",
+                        },
+                        "basisDescription": {
+                            "type": "string",
+                            "description": "One short phrase describing exactly what basisValue represents and its unit",
+                        },
+                        "targets": {
                             "type": "array",
                             "items": {"type": "number"},
                             "minItems": 3,
                             "maxItems": 3,
-                            "description": "Year 1, Year 2, Year 3 projected annual return percentages, e.g. 8.0 for +8.0%",
+                            "description": "The projected ABSOLUTE level at the END of year 1, year 2, and year 3 — in the SAME UNITS as basisValue, never percentages. Each entry is a point-in-time level, not a change and not a cumulative total. Example: if the asset is at 100 today and is expected to reach 110, then 121, then 133, submit [110, 121, 133].",
+                        },
+                        "incomeYieldPct": {
+                            "type": "number",
+                            "description": "Recurring annual income yield as a percent (dividends, coupons, distributions), e.g. 4.5 for 4.5%. Use 0 if the asset pays no income. Added on top of the level change.",
                         },
                         "why": {
                             "type": "array",
                             "items": {"type": "string"},
                             "minItems": 3,
                             "maxItems": 3,
-                            "description": "One rationale per year (under 240 characters), naming the actual source/analyst and date found",
-                        },
-                        "basisValue": {
-                            "type": "number",
-                            "description": "The single current market figure (price, yield, or rate) used as the Year 1 starting reference point",
-                        },
-                        "basisDescription": {
-                            "type": "string",
-                            "description": "One short phrase describing exactly what basisValue represents and its unit",
+                            "description": "One rationale per year (under 240 characters), naming the actual source/analyst and date found, and stating the target level for that year",
                         },
                     },
-                    "required": ["id", "r", "why", "basisValue", "basisDescription"],
+                    "required": ["id", "basisValue", "basisDescription", "targets", "incomeYieldPct", "why"],
                 },
             },
         },
@@ -263,6 +281,28 @@ def chunk(items, size):
     return [items[i : i + size] for i in range(0, len(items), size)]
 
 
+def compute_returns(basis_value, targets, income_yield_pct, label=""):
+    """Derive year-over-year percentage returns from absolute level targets.
+
+    Each year's return is measured against the PREVIOUS year's level (not
+    against today), then any recurring income yield is added, giving a total
+    return. Doing this in Python rather than asking the model for percentages
+    is what prevents cumulative-vs-annual confusion from reaching the UI.
+    """
+    if basis_value is None or not targets or len(targets) != 3:
+        raise ValueError(f"{label}: need basisValue and exactly 3 targets, got basis={basis_value} targets={targets}")
+    if basis_value <= 0 or any(t <= 0 for t in targets):
+        raise ValueError(f"{label}: basis and targets must be positive levels, got basis={basis_value} targets={targets}")
+
+    income = income_yield_pct or 0.0
+    levels = [basis_value] + list(targets)
+    returns = []
+    for i in range(3):
+        price_return = (levels[i + 1] / levels[i] - 1) * 100
+        returns.append(round(price_return + income, 1))
+    return returns
+
+
 def usage_cost(usage):
     """Convert an Anthropic API response's usage object into a USD cost."""
     cost = usage.input_tokens * PRICE_PER_INPUT_TOKEN
@@ -312,12 +352,14 @@ Name: {asset['name']}
 Category: {asset['cat']}
 Look for sources like: {hint}
 {correction_block}
-Current (soon to be replaced) projections for reference — update them based on what you actually find:
-Year 1: {asset['r'][0]}%, Year 2: {asset['r'][1]}%, Year 3: {asset['r'][2]}%
+Search for the latest published price targets for the next three years. If targets aren't published for all three years, reasonably extrapolate the later ones from the trend implied by what you find, and say so in "why".
 
-Search for the latest available price targets. If exact 3-year figures aren't published, reasonably derive Year 2/Year 3 from the trend implied by what you find, and say so in "why".
+Report ONLY levels you can read off a source — do NOT calculate percentage returns; that arithmetic is done downstream. Specifically:
+- basisValue: the current price today
+- targets: the projected PRICE at the end of year 1, year 2, and year 3, in the same currency/units as basisValue. These are three point-in-time price levels, each one a standalone forecast price — NOT percentage changes, and NOT cumulative growth figures.
+- incomeYieldPct: annual staking/income yield percent, or 0 if none
 
-Once you've searched enough to form a view, call submit_projection with your answer, including the specific current-market basisValue and basisDescription you used as your Year 1 starting point."""
+Once you've searched enough to form a view, call submit_projection."""
 
     response = client.messages.create(
         model=model_id,
@@ -339,9 +381,18 @@ Once you've searched enough to form a view, call submit_projection with your ans
             f"Model never called submit_projection for {asset['id']} (stop_reason={response.stop_reason})"
         )
 
+    inp = submission.input
+    r = compute_returns(
+        inp["basisValue"], inp["targets"], inp.get("incomeYieldPct", 0.0), label=asset["id"]
+    )
+    print(
+        f"  {asset['id']}: basis {inp['basisValue']:,.2f} -> targets {inp['targets']} "
+        f"(+{inp.get('incomeYieldPct', 0.0)}% income) => r={r}"
+    )
+
     return (
-        submission.input["r"],
-        submission.input["why"],
+        r,
+        inp["why"],
         extract_search_sources(response.content),
         usage_cost(response.usage),
     )
@@ -380,8 +431,7 @@ def research_batch(client, model_id, assets, today, corrections=None):
             f"- id: {a['id']}\n"
             f"  Name: {a['name']}\n"
             f"  Category: {a['cat']}\n"
-            f"  Look for sources like: {hint}\n"
-            f"  Current (soon to be replaced) projections: Year1 {a['r'][0]}%, Year2 {a['r'][1]}%, Year3 {a['r'][2]}%"
+            f"  Look for sources like: {hint}"
         )
         if a["id"] in corrections:
             block += f"\n  VERIFIED CURRENT DATA (override): {corrections[a['id']]} You MUST use this as this asset's Year 1 starting basisValue."
@@ -394,9 +444,14 @@ Use the web_search tool to find REAL, CURRENT analyst consensus 3-year forward r
 
 {assets_block}
 
-Search for the latest available price targets, rate outlooks, or return forecasts for each asset. If exact 3-year figures aren't published for one, reasonably derive Year 2/Year 3 from the trend implied by what you find, and say so in that asset's "why".
+Search for the latest published price targets, index levels, or rate outlooks for each asset. If figures aren't published for all three years, reasonably extrapolate the later ones from the trend implied by what you find, and say so in that asset's "why".
 
-Once you've researched all {len(assets)} asset classes, call submit_projections with one entry per asset (matching each "id" exactly), including the specific current-market basisValue and basisDescription you used as each asset's Year 1 starting point."""
+Report ONLY levels you can read off a source — do NOT calculate percentage returns; that arithmetic is done downstream. For each asset:
+- basisValue: the current level today (price, index level, or rate)
+- targets: the projected LEVEL at the end of year 1, year 2, and year 3, in the same units as that asset's basisValue. These are three point-in-time levels, each a standalone forecast — NOT percentage changes, and NOT cumulative growth figures.
+- incomeYieldPct: annual dividend/coupon/distribution yield percent, or 0 if none. For income-driven assets (bonds, cash, high-yield), the level may barely move and this yield carries most of the return — that is expected.
+
+Once you've researched all {len(assets)} asset classes, call submit_projections with one entry per asset (matching each "id" exactly)."""
 
     max_uses = max(2, SEARCHES_PER_ASSET_BATCHED * len(assets))
     response = client.messages.create(
@@ -423,6 +478,18 @@ Once you've researched all {len(assets)} asset classes, call submit_projections 
     missing = [a["id"] for a in assets if a["id"] not in by_id]
     if missing:
         raise ValueError(f"submit_projections response missing ids: {missing}")
+
+    # Derive the annual percentages ourselves rather than trusting the model's
+    # arithmetic (see module docstring).
+    for a in assets:
+        p = by_id[a["id"]]
+        p["r"] = compute_returns(
+            p["basisValue"], p["targets"], p.get("incomeYieldPct", 0.0), label=a["id"]
+        )
+        print(
+            f"  {a['id']}: basis {p['basisValue']:,.2f} -> targets {p['targets']} "
+            f"(+{p.get('incomeYieldPct', 0.0)}% income) => r={p['r']}"
+        )
 
     return by_id, extract_search_sources(response.content), usage_cost(response.usage)
 
