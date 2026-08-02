@@ -501,6 +501,8 @@ def fetch_ishares_holdings(asset):
     # distributions and performance, and "shortest" picked one of those.
     named = [h for h in candidates if re.search(r"holdings", h, re.I)]
     url = sorted(named or candidates, key=len)[0]
+    if len(candidates) > 1:
+        print(f"    {asset['ticker']}: {len(candidates)} csv link(s), chose {url[-70:]!r}")
     if not url.startswith("http"):
         url = urllib.parse.urljoin(asset["url"], url)
     text = http_get(url)
@@ -545,6 +547,8 @@ def fetch_ishares_holdings(asset):
 
     holdings, skipped = [], {}
     for row in rows[start + 1:]:
+        if not any(cell.strip().strip("\xa0") for cell in row):
+            continue                      # blank/padding line, not a holding
         if len(row) <= idx["Weight (%)"]:
             skipped["short row"] = skipped.get("short row", 0) + 1
             continue
@@ -574,7 +578,9 @@ def fetch_ishares_holdings(asset):
         sample = rows[start + 1][:6] if len(rows) > start + 1 else []
         raise ValueError(
             f"{asset['id']}: holdings file parsed to zero equity rows. "
-            f"Header {header[:6]}; first data row {sample}; dropped {skipped}"
+            f"Fetched {url[:150]!r} ({len(text)} chars, {len(rows)} csv rows, "
+            f"header at row {start}). Header {header[:6]}; first data row {sample}; "
+            f"dropped {skipped}. Begins {text[:160]!r}"
         )
     if skipped:
         print(f"    {asset['ticker']}: skipped {skipped}")
