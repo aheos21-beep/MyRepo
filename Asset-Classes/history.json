@@ -4,21 +4,20 @@
       "date": "2026-08-02",
       "ranks": {
         "us-tech": 1,
-        "aluminium": 2,
-        "copper": 3,
+        "copper": 2,
+        "aluminium": 3,
         "nickel": 4,
-        "cad-div": 5,
-        "cad-reit": 6,
-        "potash": 7,
-        "us-div": 8,
+        "cad-reit": 5,
+        "potash": 6,
+        "us-div": 7,
+        "hisa": 8,
         "intl-div": 9,
-        "hisa": 10,
-        "cad-util": 11,
+        "cad-util": 10,
+        "cad-energy": 11,
         "cad-re": 12,
-        "cad-energy": 13,
-        "natgas": 14,
-        "cad-fin": 15,
-        "oil": 16
+        "natgas": 13,
+        "cad-fin": 14,
+        "oil": 15
       }
     }
   ]
