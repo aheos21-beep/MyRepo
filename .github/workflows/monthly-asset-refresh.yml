@@ -2,7 +2,7 @@ name: Monthly Asset Projections Refresh
 
 on:
   schedule:
-    - cron: '0 8 1 * *'  # 8am UTC on the 1st of each month
+    - cron: '0 8 15 * *'  # 8am UTC on the 15th — after EIA's STEO lands (~6th-12th)
   workflow_dispatch:      # Allow manual trigger from GitHub Actions tab
     inputs:
       scope:
@@ -10,13 +10,17 @@ on:
         type: choice
         default: full
         options:
-          - full          # all 24 assets (~$2.50)
-          - repair-stale  # only assets the last run left stale (~$0.40)
+          - full          # all 17 assets; searched rows only if their publisher is due
+          - repair-stale  # only assets the last run left stale
           - only          # just the ids listed below
       only_ids:
-        description: "Comma-separated asset ids, e.g. natgas,copper (only used when scope = 'only')"
+        description: "Comma-separated asset ids, e.g. oil,copper (only used when scope = 'only')"
         type: string
         default: ''
+      force_search:
+        description: 'Also re-run searched rows whose publisher is not due yet (costs money)'
+        type: boolean
+        default: false
 
 jobs:
   refresh:
@@ -32,28 +36,32 @@ jobs:
           python-version: '3.12'
 
       - name: Install dependencies
-        run: pip install anthropic
+        run: pip install anthropic yfinance
 
       - name: Update asset projections
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
           # Scheduled runs have no inputs, so default to a full refresh.
           SCOPE: ${{ github.event.inputs.scope || 'full' }}
           ONLY_IDS: ${{ github.event.inputs.only_ids }}
+          FORCE_SEARCH: ${{ github.event.inputs.force_search }}
         run: |
+          FORCE=""
+          if [ "$FORCE_SEARCH" = "true" ]; then FORCE="--force-search"; fi
           case "$SCOPE" in
             repair-stale)
-              python Asset-Classes/update_data.py --repair-stale
+              python Asset-Classes/update_data.py --repair-stale $FORCE
               ;;
             only)
               if [ -z "$ONLY_IDS" ]; then
                 echo "::error::scope 'only' requires only_ids to be set"
                 exit 1
               fi
-              python Asset-Classes/update_data.py --only "$ONLY_IDS"
+              python Asset-Classes/update_data.py --only "$ONLY_IDS" $FORCE
               ;;
             *)
-              python Asset-Classes/update_data.py
+              python Asset-Classes/update_data.py $FORCE
               ;;
           esac
 

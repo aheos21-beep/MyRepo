@@ -1,1 +1,254 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8" /> <meta name="viewport" content="width=device-width, initial-scale=1.0" /> <title>Asset Class Projections</title> <style> :root { --bg0: #0d1117; --bg1: #161b22; --bg2: #21262d; --bd: #30363d; --t1: #e6edf3; --t2: #8b949e; --ac: #58a6ff; } *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; } html, body { height: 100%; } body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg0); color: var(--t1); display: flex; flex-direction: column; overflow: hidden; } .hdr { background: var(--bg1); border-bottom: 1px solid var(--bd); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; } .hdr-brand { display: flex; align-items: center; gap: 10px; } .hdr-icon { width: 34px; height: 34px; background: linear-gradient(135deg, #58a6ff, #a371f7); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 17px; } .hdr h1 { font-size: 17px; font-weight: 650; } .hdr-sub { font-size: 11.5px; color: var(--t2); margin-top: 1px; } .hdr-badge { font-size: 12px; color: var(--t2); background: var(--bg2); border: 1px solid var(--bd); border-radius: 14px; padding: 6px 14px; white-space: nowrap; display: flex; flex-direction: column; align-items: flex-start; gap: 1px; line-height: 1.3; } .hdr-badge-label { display: inline-block; min-width: 36px; } .hdr-badge-date, .hdr-badge-days, .hdr-badge-cost { color: #f0c040; } .main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 18px 24px; gap: 16px; } .main::-webkit-scrollbar { width: 5px; } .main::-webkit-scrollbar-thumb { background: var(--bd); border-radius: 3px; } .cards { display: flex; gap: 12px; flex-shrink: 0; } .card { flex: 1; background: var(--bg2); border: 1px solid var(--bd); border-radius: 10px; padding: 14px 18px; } .card-l { font-size: 10px; color: var(--t2); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 5px; } .card-v { font-size: 24px; font-weight: 730; letter-spacing: -.4px; } .card-s { font-size: 11px; color: var(--t2); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .rates-box { background: var(--bg2); border: 1px solid var(--bd); border-radius: 10px; padding: 16px 18px; flex-shrink: 0; overflow-x: auto; } .rates-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; } .rates-ttl { font-size: 15px; font-weight: 600; } .rtable { width: 100%; border-collapse: collapse; } .rtable th { font-size: 10.5px; font-weight: 700; color: var(--t2); text-transform: uppercase; letter-spacing: .6px; padding: 8px 8px; text-align: center; border-bottom: 2px solid var(--bd); } .rtable th:first-child { text-align: center; min-width: 20px; } .rtable th:nth-child(2) { text-align: center; min-width: 90px; } .rtable th:nth-child(3) { text-align: left; min-width: 185px; } .rtable td:nth-child(3) { text-align: left; } .rtable th.cum { color: #58a6ff; } .rtable th.sortable { cursor: pointer; user-select: none; transition: color .15s; } .rtable th.sortable:hover { color: var(--ac); } .rtable th.sortable.active { color: var(--ac); } .rtable th.sortable::after { content: ' ↕'; font-size: 9px; opacity: .5; } .rtable th.sortable.active::after { content: ' ▼'; opacity: 1; } .rtable td { padding: 7px 6px; text-align: center; vertical-align: middle; } .rtable td:first-child { text-align: center; padding-left: 0; padding-right: 0; } .rtable td:nth-child(3) { padding-left: 0; } .pos-arrow { font-size: 11px; display: inline-block; } .pos-up { color: #3fb950; } .pos-down { color: #f85149; } .pos-same { color: #e6edf3; } .rtable tbody tr { border-bottom: 1px solid rgba(48,54,61,.4); transition: background .1s; } .rtable tbody tr:last-child { border-bottom: none; } .rtable tbody tr:hover { background: rgba(88,166,255,.04); } .tdname { display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 520; } .tddot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; } .tdcat { font-size: 9.5px; color: var(--t2); margin-left: auto; background: var(--bg0); border: 1px solid var(--bd); border-radius: 10px; padding: 1px 7px; white-space: nowrap; } .yr-val { font-size: 13px; color: var(--t2); font-variant-numeric: tabular-nums; } .cum-val { font-size: 13.5px; font-weight: 680; letter-spacing: -.2px; padding: 5px 12px; border-radius: 6px; display: inline-block; min-width: 70px; } .disc { font-size: 10.5px; color: var(--t2); text-align: center; flex-shrink: 0; line-height: 1.55; padding-bottom: 6px; } .sources-box { background: var(--bg2); border: 1px solid var(--bd); border-radius: 10px; padding: 12px 16px; flex-shrink: 0; } .sources-box summary { cursor: pointer; font-size: 12px; font-weight: 600; color: var(--t2); user-select: none; } .sources-box summary:hover { color: var(--ac); } .sources-list { margin-top: 10px; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 6px 16px; } .source-item { font-size: 11px; color: var(--t2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .source-item b { color: var(--t1); font-weight: 600; } .source-item a { color: var(--ac); text-decoration: none; } .source-item a:hover { text-decoration: underline; } @media (max-width: 700px) { body { overflow: auto; } .main { padding: 14px 12px; overflow: visible; } .cards { flex-wrap: wrap; } .card { min-width: 140px; } } </style> </head> <body> <header class="hdr"> <div class="hdr-brand"> <div class="hdr-icon">📈</div> <div> <h1>Asset Class<br>Projections</h1> <div class="hdr-sub"></div> </div> </div> <div class="hdr-badge" id="hdr-badge">Loading update info…</div> </header> <main class="main"> <div class="cards" id="cards"></div> <div class="rates-box"> <div class="rates-hdr"> <div class="rates-ttl">Annual Return Rates</div> </div> <table class="rtable" id="rtable"></table> </div> <div class="disc"> ⚠️ Rates auto-refreshed <span id="updated-date">June 1, 2026</span> from analyst forecasts (Goldman Sachs, JPMorgan, RBC, BofA, Morgan Stanley, CBRE, WGC, Bitwise, Standard Chartered, EIA, Sprott, ERA, USDA, World Bank, CREA, TD, Lazard, State Street). Crypto projections are highly speculative. Past performance ≠ future results. <strong>Not financial advice.</strong> </div> <details class="sources-box" id="sources-box" style="display:none"> <summary>Sources <span id="sources-count"></span></summary> <div class="sources-list" id="sources-list"></div> </details> </main> <script> let A = []; const YR_LABELS = ['Year 1', 'Year 2', 'Year 3']; let sortCol = 'avg'; function cumR(rates, toYr) { let c = 1; for (let i = 0; i < toYr; i++) c *= (1 + rates[i] / 100); return +((c - 1) * 100).toFixed(2); } function f(n) { return (n >= 0 ? '+' : '') + n.toFixed(1) + '%'; } function avgR(rates) { return +(rates.reduce((s, r) => s + r, 0) / rates.length).toFixed(2); } function esc(v) { return String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); } function posArrow(change) { if (change === 'up') return '<span class="pos-arrow pos-up" title="Moved up vs. last month">▲</span>'; if (change === 'down') return '<span class="pos-arrow pos-down" title="Moved down vs. last month">▼</span>'; return '<span class="pos-arrow pos-same" title="No change vs. last month">--</span>'; } function heatColor(value, min, max) { if (value >= 0) { const denom = max > 0 ? max : 1; const t = Math.max(0, Math.min(1, value / denom)); const hue = 80 + t * 60; const sat = 50 + t * 35; const light = 56 - t * 18; return `hsl(${hue},${sat}%,${light}%)`; } const denom = min < 0 ? min : -1; const t = Math.max(0, Math.min(1, value / denom)); const hue = 55 - t * 55; const sat = 75 + t * 15; const light = 50 - t * 8; return `hsl(${hue},${sat}%,${light}%)`; } function sortBy(col) { sortCol = (sortCol === col) ? null : col; buildTable(); } function getSorted() { let items = A.map((a, i) => ({ a, i })); if (sortCol !== null) { items.sort((x, y) => { const valA = sortCol === 'cum' ? cumR(x.a.r, 3) : sortCol === 'avg' ? avgR(x.a.r) : x.a.r[sortCol]; const valB = sortCol === 'cum' ? cumR(y.a.r, 3) : sortCol === 'avg' ? avgR(y.a.r) : y.a.r[sortCol]; return valB - valA; }); } return items; } function buildTable() { const sc = sortCol; const avgs = A.map(a => avgR(a.r)); const minAvg = Math.min(...avgs), maxAvg = Math.max(...avgs); let h = `<thead><tr> <th></th> <th class="sortable ${sc==='avg'?'active':''}" onclick="sortBy('avg')">3-Yr Avg / Yr</th> <th>Asset Class</th> <th class="sortable ${sc===0?'active':''}" onclick="sortBy(0)">${YR_LABELS[0]}</th> <th class="sortable ${sc===1?'active':''}" onclick="sortBy(1)">${YR_LABELS[1]}</th> <th class="sortable ${sc===2?'active':''}" onclick="sortBy(2)">${YR_LABELS[2]}</th> <th class="cum sortable ${sc==='cum'?'active':''}" onclick="sortBy('cum')">3-Yr Cumulative</th> </tr></thead><tbody>`; getSorted().forEach(({ a }) => { const cum = cumR(a.r, 3), avg = avgR(a.r); const heat = heatColor(avg, minAvg, maxAvg); h += `<tr> <td>${posArrow(a.posChange)}</td> <td><span style="font-size:13px;font-weight:700;color:${heat}">${f(avg)}</span></td> <td><div class="tdname"><div class="tddot" style="background:${heat}"></div>${esc(a.name)}<span class="tdcat">${esc(a.cat)}</span></div></td> <td><span class="yr-val" title="${esc(a.why[0])}">${f(a.r[0])}</span></td> <td><span class="yr-val" title="${esc(a.why[1])}">${f(a.r[1])}</span></td> <td><span class="yr-val" title="${esc(a.why[2])}">${f(a.r[2])}</span></td> <td><span class="cum-val" style="color:${heat};background:${heat.replace('hsl','hsla').replace(')',',0.12)')}">${f(cum)}</span></td> </tr>`; }); h += '</tbody>'; document.getElementById('rtable').innerHTML = h; } function buildCards() { const sorted = [...A].sort((a, b) => cumR(b.r, 3) - cumR(a.r, 3)); const top = sorted[0], bot = sorted[sorted.length - 1]; const avgs = A.map(a => avgR(a.r)); const minAvg = Math.min(...avgs), maxAvg = Math.max(...avgs); const topHeat = heatColor(avgR(top.r), minAvg, maxAvg); const botHeat = heatColor(avgR(bot.r), minAvg, maxAvg); document.getElementById('cards').innerHTML = ` <div class="card"><div class="card-l">Best · 3 yr cum.</div><div class="card-v" style="color:${topHeat}">${f(cumR(top.r,3))}</div><div class="card-s">${esc(top.name)}</div></div> <div class="card"><div class="card-l">Worst · 3 yr cum.</div><div class="card-v" style="color:${botHeat}">${f(cumR(bot.r,3))}</div><div class="card-s">${esc(bot.name)}</div></div>`; } function refresh() { buildCards(); buildTable(); } function buildSources(sources) { const box = document.getElementById('sources-box'); const list = document.getElementById('sources-list'); const count = document.getElementById('sources-count'); if (!box || !list) return; list.innerHTML = ''; if (!sources || !sources.length) { box.style.display = 'none'; return; } let rendered = 0; sources.forEach(function(s) { const url = String(s.url || ''); if (!/^https?:\/\//i.test(url)) return; const item = document.createElement('div'); item.className = 'source-item'; const b = document.createElement('b'); b.textContent = (s.assetName || '') + ': '; const a = document.createElement('a'); a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = s.title || url; item.appendChild(b); item.appendChild(a); list.appendChild(item); rendered++; }); if (!rendered) { box.style.display = 'none'; return; } if (count) count.textContent = '(' + rendered + ')'; box.style.display = ''; } fetch('data.json').then(function(r){return r.json();}).then(function(data){A=data.assets;var el=document.getElementById('updated-date');var badge=document.getElementById('hdr-badge');if(data.updated){var d=new Date(data.updated+'T00:00:00');var formatted=d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});var monthShort=d.toLocaleDateString('en-US',{month:'short'});var day=d.getDate();var j=day%10,k=day%100;var suf=(j===1&&k!==11)?'st':(j===2&&k!==12)?'nd':(j===3&&k!==13)?'rd':'th';if(el)el.textContent=formatted;var now=new Date();var todayMid=new Date(now.getFullYear(),now.getMonth(),now.getDate());var nextUpdate=new Date(now.getFullYear(),now.getMonth()+1,1);var daysUntil=Math.round((nextUpdate-todayMid)/86400000);var costText=(typeof data.lastRunCostUsd==='number')?('$'+data.lastRunCostUsd.toFixed(2)):'—';if(badge)badge.innerHTML='<div><span class="hdr-badge-label">Freq:</span>Monthly</div><div><span class="hdr-badge-label">Last:</span><span class="hdr-badge-date">'+monthShort+' '+day+suf+'</span></div><div><span class="hdr-badge-label">Next:</span><span class="hdr-badge-days">'+daysUntil+'</span> days</div><div><span class="hdr-badge-label">Cost:</span><span class="hdr-badge-cost">'+costText+'</span></div>';}buildSources(data.sources);refresh();}).catch(function(){console.error('Failed to load data.json');}); </script> </body> </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Asset Class Projections</title>
+<style>
+:root { --bg0:#0d1117; --bg1:#161b22; --bg2:#21262d; --bd:#30363d; --t1:#e6edf3; --t2:#8b949e; --ac:#58a6ff; }
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+html, body { height:100%; }
+body { font-family:'Segoe UI', system-ui, -apple-system, sans-serif; background:var(--bg0); color:var(--t1); display:flex; flex-direction:column; overflow:hidden; }
+.hdr { background:var(--bg1); border-bottom:1px solid var(--bd); padding:14px 24px; display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
+.hdr-brand { display:flex; align-items:center; gap:10px; }
+.hdr-icon { width:34px; height:34px; background:linear-gradient(135deg,#58a6ff,#a371f7); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:17px; }
+.hdr h1 { font-size:17px; font-weight:650; }
+.hdr-sub { font-size:11.5px; color:var(--t2); margin-top:1px; }
+.hdr-badge { font-size:12px; color:var(--t2); background:var(--bg2); border:1px solid var(--bd); border-radius:14px; padding:6px 14px; white-space:nowrap; display:flex; flex-direction:column; align-items:flex-start; gap:1px; line-height:1.3; }
+.hdr-badge-label { display:inline-block; min-width:36px; }
+.hdr-badge-date, .hdr-badge-days, .hdr-badge-cost { color:#f0c040; }
+.main { flex:1; display:flex; flex-direction:column; overflow-y:auto; padding:18px 24px; gap:16px; }
+.main::-webkit-scrollbar { width:5px; }
+.main::-webkit-scrollbar-thumb { background:var(--bd); border-radius:3px; }
+.cards { display:flex; gap:12px; flex-shrink:0; }
+.card { flex:1; background:var(--bg2); border:1px solid var(--bd); border-radius:10px; padding:14px 18px; }
+.card-l { font-size:10px; color:var(--t2); text-transform:uppercase; letter-spacing:.6px; margin-bottom:5px; }
+.card-v { font-size:24px; font-weight:730; letter-spacing:-.4px; }
+.card-s { font-size:11px; color:var(--t2); margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.rates-box { background:var(--bg2); border:1px solid var(--bd); border-radius:10px; padding:16px 18px; flex-shrink:0; overflow-x:auto; }
+.rates-hdr { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; gap:12px; flex-wrap:wrap; }
+.rates-ttl { font-size:15px; font-weight:600; }
+.rates-note { font-size:10.5px; color:var(--t2); }
+.rtable { width:100%; border-collapse:collapse; }
+.rtable th { font-size:10.5px; font-weight:700; color:var(--t2); text-transform:uppercase; letter-spacing:.6px; padding:8px; text-align:center; border-bottom:2px solid var(--bd); }
+.rtable th:first-child { min-width:20px; }
+.rtable th:nth-child(2) { min-width:96px; }
+.rtable th:nth-child(3), .rtable td:nth-child(3) { text-align:left; min-width:185px; }
+.rtable th:nth-child(4), .rtable td:nth-child(4) { text-align:left; min-width:170px; }
+.rtable th.sortable { cursor:pointer; user-select:none; transition:color .15s; }
+.rtable th.sortable:hover, .rtable th.sortable.active { color:var(--ac); }
+.rtable th.sortable::after { content:' ↕'; font-size:9px; opacity:.5; }
+.rtable th.sortable.active::after { content:' ▼'; opacity:1; }
+.rtable td { padding:7px 6px; text-align:center; vertical-align:middle; }
+.rtable td:first-child { padding-left:0; padding-right:0; }
+.rtable td:nth-child(3) { padding-left:0; }
+.pos-arrow { font-size:11px; display:inline-block; }
+.pos-up { color:#3fb950; } .pos-down { color:#f85149; } .pos-same { color:#e6edf3; }
+.rtable tbody tr { border-bottom:1px solid rgba(48,54,61,.4); transition:background .1s; }
+.rtable tbody tr:last-child { border-bottom:none; }
+.rtable tbody tr:hover { background:rgba(88,166,255,.04); }
+.tdname { display:flex; align-items:center; gap:8px; font-size:12.5px; font-weight:520; }
+.tddot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+.tdcat { font-size:9.5px; color:var(--t2); margin-left:auto; background:var(--bg0); border:1px solid var(--bd); border-radius:10px; padding:1px 7px; white-space:nowrap; }
+.tdpub { font-size:11px; color:var(--t2); }
+.tddate { font-size:11px; color:var(--t2); font-variant-numeric:tabular-nums; }
+.tdrange { font-size:10.5px; color:var(--t2); font-variant-numeric:tabular-nums; white-space:nowrap; }
+.stale { font-size:9px; color:#d29922; border:1px solid #d29922; border-radius:8px; padding:0 5px; margin-left:6px; }
+.cum-val { font-size:13.5px; font-weight:680; letter-spacing:-.2px; padding:5px 12px; border-radius:6px; display:inline-block; min-width:70px; }
+.disc { font-size:10.5px; color:var(--t2); text-align:center; flex-shrink:0; line-height:1.55; padding-bottom:6px; }
+.sources-box { background:var(--bg2); border:1px solid var(--bd); border-radius:10px; padding:12px 16px; flex-shrink:0; }
+.sources-box summary { cursor:pointer; font-size:12px; font-weight:600; color:var(--t2); user-select:none; }
+.sources-box summary:hover { color:var(--ac); }
+.sources-list { margin-top:10px; display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:6px 16px; }
+.source-item { font-size:11px; color:var(--t2); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.source-item b { color:var(--t1); font-weight:600; }
+.source-item a { color:var(--ac); text-decoration:none; }
+.source-item a:hover { text-decoration:underline; }
+@media (max-width:700px) {
+  body { overflow:auto; }
+  .main { padding:14px 12px; overflow:visible; }
+  .cards { flex-wrap:wrap; }
+  .card { min-width:140px; }
+}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <div class="hdr-brand">
+    <div class="hdr-icon">📈</div>
+    <div>
+      <h1>Asset Class<br>Projections</h1>
+      <div class="hdr-sub"></div>
+    </div>
+  </div>
+  <div class="hdr-badge" id="hdr-badge">Loading update info…</div>
+</header>
+<main class="main">
+  <div class="cards" id="cards"></div>
+  <div class="rates-box">
+    <div class="rates-hdr">
+      <div class="rates-ttl">One-Year Projections</div>
+      <div class="rates-note">Hover a projection for the figure it came from</div>
+    </div>
+    <table class="rtable" id="rtable"></table>
+  </div>
+  <div class="disc">
+    ⚠️ Each row is a one-year forward figure from the named publisher, refreshed on that
+    publisher's own schedule — so dates differ by row and some are months old by design.
+    Equity sleeves are a weighted analyst consensus over a benchmark ETF's holdings;
+    sell-side targets are persistently optimistic as a class. Past performance ≠ future
+    results. <strong>Not financial advice.</strong>
+  </div>
+  <details class="sources-box" id="sources-box" style="display:none">
+    <summary>Sources <span id="sources-count"></span></summary>
+    <div class="sources-list" id="sources-list"></div>
+  </details>
+</main>
+<script>
+let A = [], STALE = [];
+let sortCol = 'r';
+
+function f(n) { return (n >= 0 ? '+' : '') + n.toFixed(1) + '%'; }
+
+/* Model-authored text reaches this page, so everything interpolated into
+   markup is escaped. */
+function esc(v) {
+  return String(v == null ? '' : v)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function posArrow(change) {
+  if (change === 'up') return '<span class="pos-arrow pos-up" title="Moved up vs. last update">▲</span>';
+  if (change === 'down') return '<span class="pos-arrow pos-down" title="Moved down vs. last update">▼</span>';
+  return '<span class="pos-arrow pos-same" title="No change vs. last update">--</span>';
+}
+
+/* Zero-anchored: every positive value is a shade of green, every negative one
+   runs yellow -> orange -> red. */
+function heatColor(value, min, max) {
+  if (value >= 0) {
+    const t = Math.max(0, Math.min(1, value / (max > 0 ? max : 1)));
+    return `hsl(${80 + t * 60},${50 + t * 35}%,${56 - t * 18}%)`;
+  }
+  const t = Math.max(0, Math.min(1, value / (min < 0 ? min : -1)));
+  return `hsl(${55 - t * 55},${75 + t * 15}%,${50 - t * 8}%)`;
+}
+
+function shortDate(iso) {
+  if (!iso) return '—';
+  const parts = String(iso).split('-');
+  const d = new Date(+parts[0], (+parts[1] || 1) - 1, +parts[2] || 1);
+  if (isNaN(d)) return '—';
+  return parts.length >= 3
+    ? d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    : d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+}
+
+function sortBy(col) { sortCol = (sortCol === col) ? null : col; buildTable(); }
+
+function getSorted() {
+  const items = A.slice();
+  if (sortCol === 'r') items.sort((x, y) => y.r - x.r);
+  else if (sortCol === 'pub') items.sort((x, y) => String(y.published || '').localeCompare(String(x.published || '')));
+  return items;
+}
+
+function buildTable() {
+  const values = A.map(a => a.r);
+  const lo = Math.min.apply(null, values), hi = Math.max.apply(null, values);
+  let h = `<thead><tr>
+    <th></th>
+    <th class="sortable ${sortCol === 'r' ? 'active' : ''}" onclick="sortBy('r')">1-Yr Projection</th>
+    <th>Asset Class</th>
+    <th>Source</th>
+    <th class="sortable ${sortCol === 'pub' ? 'active' : ''}" onclick="sortBy('pub')">Published</th>
+    <th>Range</th>
+  </tr></thead><tbody>`;
+
+  getSorted().forEach(a => {
+    const heat = heatColor(a.r, lo, hi);
+    const isStale = STALE.indexOf(a.id) !== -1;
+    const range = (typeof a.lo === 'number' && typeof a.hi === 'number')
+      ? `${f(a.lo)} … ${f(a.hi)}` : '—';
+    h += `<tr>
+      <td>${posArrow(a.posChange)}</td>
+      <td><span class="cum-val" style="color:${heat};background:${heat.replace('hsl', 'hsla').replace(')', ',0.12)')}" title="${esc(a.why)}">${f(a.r)}</span></td>
+      <td><div class="tdname"><div class="tddot" style="background:${a.color ? esc(a.color) : heat}"></div>${esc(a.name)}<span class="tdcat">${esc(a.cat)}</span></div></td>
+      <td><span class="tdpub">${esc(a.publisher)}</span>${isStale ? '<span class="stale" title="This row could not be refreshed on the last run; it keeps its previous value">STALE</span>' : ''}</td>
+      <td><span class="tddate">${esc(shortDate(a.published))}</span></td>
+      <td><span class="tdrange" title="Interquartile range across the sleeve’s holdings">${esc(range)}</span></td>
+    </tr>`;
+  });
+  document.getElementById('rtable').innerHTML = h + '</tbody>';
+}
+
+function buildCards() {
+  const sorted = A.slice().sort((a, b) => b.r - a.r);
+  const top = sorted[0], bot = sorted[sorted.length - 1];
+  if (!top || !bot) return;
+  const values = A.map(a => a.r);
+  const lo = Math.min.apply(null, values), hi = Math.max.apply(null, values);
+  document.getElementById('cards').innerHTML =
+    `<div class="card"><div class="card-l">Best · 1 yr</div><div class="card-v" style="color:${heatColor(top.r, lo, hi)}">${f(top.r)}</div><div class="card-s">${esc(top.name)}</div></div>
+     <div class="card"><div class="card-l">Worst · 1 yr</div><div class="card-v" style="color:${heatColor(bot.r, lo, hi)}">${f(bot.r)}</div><div class="card-s">${esc(bot.name)}</div></div>`;
+}
+
+/* Built by DOM construction rather than innerHTML: these titles and URLs come
+   from search results, so they are never treated as markup. */
+function buildSources(sources) {
+  const box = document.getElementById('sources-box');
+  const list = document.getElementById('sources-list');
+  const count = document.getElementById('sources-count');
+  if (!box || !list) return;
+  list.innerHTML = '';
+  if (!sources || !sources.length) { box.style.display = 'none'; return; }
+  let rendered = 0;
+  sources.forEach(function (s) {
+    const url = String(s.url || '');
+    if (!/^https?:\/\//i.test(url)) return;
+    const item = document.createElement('div');
+    item.className = 'source-item';
+    const b = document.createElement('b');
+    b.textContent = (s.assetName || '') + ': ';
+    const a = document.createElement('a');
+    a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+    a.textContent = s.title || url;
+    item.appendChild(b); item.appendChild(a);
+    list.appendChild(item);
+    rendered++;
+  });
+  if (!rendered) { box.style.display = 'none'; return; }
+  if (count) count.textContent = '(' + rendered + ')';
+  box.style.display = '';
+}
+
+fetch('data.json').then(function (r) { return r.json(); }).then(function (data) {
+  A = (data.assets || []).filter(function (a) { return typeof a.r === 'number'; });
+  STALE = data.staleAssetIds || [];
+
+  const badge = document.getElementById('hdr-badge');
+  if (data.updated) {
+    const d = new Date(data.updated + 'T00:00:00');
+    const monthShort = d.toLocaleDateString('en-US', { month: 'short' });
+    const day = d.getDate(), j = day % 10, k = day % 100;
+    const suf = (j === 1 && k !== 11) ? 'st' : (j === 2 && k !== 12) ? 'nd' : (j === 3 && k !== 13) ? 'rd' : 'th';
+    const now = new Date();
+    const todayMid = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const nextUpdate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+    const daysUntil = Math.round((nextUpdate - todayMid) / 86400000);
+    const costText = (typeof data.lastRunCostUsd === 'number') ? ('$' + data.lastRunCostUsd.toFixed(2)) : '—';
+    if (badge) badge.innerHTML =
+      '<div><span class="hdr-badge-label">Freq:</span>Monthly</div>' +
+      '<div><span class="hdr-badge-label">Last:</span><span class="hdr-badge-date">' + esc(monthShort) + ' ' + day + suf + '</span></div>' +
+      '<div><span class="hdr-badge-label">Next:</span><span class="hdr-badge-days">' + daysUntil + '</span> days</div>' +
+      '<div><span class="hdr-badge-label">Cost:</span><span class="hdr-badge-cost">' + esc(costText) + '</span></div>';
+  }
+
+  buildSources(data.sources);
+  buildCards();
+  buildTable();
+}).catch(function () { console.error('Failed to load data.json'); });
+</script>
+</body>
+</html>

@@ -1,557 +1,197 @@
 #!/usr/bin/env python3
 """
-Refresh Asset-Classes/data.json from the Claude API. Run monthly by
-.github/workflows/monthly-asset-refresh.yml. Requires ANTHROPIC_API_KEY.
+Refresh Asset-Classes/data.json. Run by
+.github/workflows/monthly-asset-refresh.yml.
+
+Requires ANTHROPIC_API_KEY (for the six searched rows) and EIA_API_KEY (for
+the two energy rows). See ASSET-SOURCES.md for why each asset is here.
 
 Design, and the reasoning behind it:
 
-1. Grounded in real sources. Every call has web_search enabled, so figures
-   come from current pages rather than the model's training data. Known
-   algorithmic "price prediction" content farms are excluded at search time
-   (BLOCKED_SOURCE_DOMAINS) — they publish confident multi-year numbers with
-   no analyst behind them and are indistinguishable from research once they
-   are in context.
+1. One horizon, one number. A single 1-year figure per asset. The previous
+   build carried three years and compounded them, which produced the worst bug
+   it ever had (a correct ~1,400% three-year total rendered as +77,248%).
+   Nothing here multiplies two forecasts together.
 
-2. Structured output, never free text. Results arrive through a forced tool
-   call, so a model that is unsure cannot substitute a prose caveat for an
-   answer.
+2. Fetched beats searched. Eleven of seventeen rows come from an API or a
+   published holdings file, so they cost nothing and return the same answer
+   every run. Only six rows involve a language model at all.
 
-3. The model never does arithmetic. It reports only what it can read off a
-   page — a current basis value, the forecasts it found with their sources,
-   whether those are prices or interest rates, and any income yield — and
-   Python derives the annual percentages. An earlier version asked for
-   percentages directly and got Year 2/3 as cumulative-from-today figures,
-   which the dashboard compounded a second time (ETH: a correct ~1,400%
-   three-year total rendered as +77,248%).
+3. Every row names its publisher. No medians of anonymous sell-side views —
+   that mechanism is what made the old build swing 8-45pp between identical
+   runs. If an institution cannot be named, the asset is not on the list.
 
-3b. Several forecasts per year, reduced to their median. Asking for one target
-   per year made each number a coin flip between disagreeing analysts: two runs
-   25 minutes apart put Ethereum at +28%/yr and +156%/yr, and Emerging Markets
-   at -15%/yr and +19%/yr. Stable assets were unaffected (Gold moved 0.3pp),
-   because the disagreement, not the app, was the variable. The median across
-   sources absorbs a single outlier, and the spread is appended to each
-   rationale so the tooltip shows what the figure was drawn from.
+4. The model never does arithmetic and never picks a number. For the six
+   searched rows it reports what a named document says; Python derives the
+   percentage.
 
-4. Bases are pinned or checked, because a wrong starting value yields a
-   wrong-but-plausible result that no magnitude guardrail would catch:
-     - Crypto: the basis is fetched live from CoinGecko and pinned.
-     - Commodities: a second call with no shared context re-checks the basis;
-       a mismatch beyond BASIS_MISMATCH_TOLERANCE pins the verified value and
-       re-runs the batch.
-   Pinned values are enforced in code after the response, not merely
-   requested in the prompt.
+5. An asset class is defined by a benchmark you could buy. Equity sleeves are
+   computed over a benchmark ETF's actual holdings and weights:
+   sum(w_i * ((target_i / price_i - 1) + yield_i)). The ETF is not the
+   forecast — the analyst targets are. The ETF settles which names, at what
+   weight, so that choice belongs to the fund provider rather than to us.
 
-5. One code path. Crypto is not special-cased — it is simply a batch whose
-   bases are pinned up front, which is the same mechanism a commodity retry
-   uses.
+6. A 200 is not evidence the right fund was fetched. iShares returns a
+   well-formed CSV for a wrong product id: id 239500 was requested as IDV and
+   served DVY, with nothing in the response signalling an error. Every
+   holdings fetch asserts the fund name inside the file.
 
-6. Batched by category to control cost. Related assets share one call's
-   search budget and prompt overhead instead of paying it per asset.
+7. Columns are read by name, never by position. The same provider uses
+   'Shares' for one fund and 'Quantity' for another, and IDV carries an extra
+   'Type' column that shifts everything after it.
 
-7. Failures are isolated, not absorbed. A failed batch is retried one asset
-   at a time, so the extra cost of isolation is paid only where something
-   actually broke. Anything still failing keeps last month's values, is
-   reported, and is recorded in data["staleAssetIds"].
+8. Publisher cadence, not fetch cadence. CREA publishes quarterly and the
+   World Bank twice a year; asking them monthly buys nothing and costs money.
+   Searched rows are skipped until their next publication is due, and every
+   row carries the date its publisher last published rather than the date we
+   happened to fetch it.
 
-8. Partial runs. --repair-stale re-attempts exactly the assets a previous run
-   left stale (and --only takes explicit ids). A partial run merges into the
-   existing cycle: it keeps that cycle's date, adds to its cost, preserves the
-   sources of untouched assets, and replaces rather than appends its history
-   entry — so month-over-month arrows stay anchored to the previous month
-   rather than to a run from minutes earlier.
+9. Failures stale, they do not guess. A row that cannot be refreshed keeps its
+   previous value, is listed in data["staleAssetIds"], and says so in the UI.
 """
 import argparse
+import csv
+import io
 import json
 import os
 import re
 import statistics
 import urllib.error
+import urllib.parse
 import urllib.request
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
-
-import anthropic
 
 DATA_PATH = Path(__file__).parent / "data.json"
 HISTORY_PATH = Path(__file__).parent / "history.json"
 MAX_HISTORY_MONTHS = 12
 
-# Assets per research call. Larger batches amortize prompt/tool overhead but
-# give each asset a smaller share of attention and search budget.
-BATCH_SIZE = 4
-SEARCHES_PER_ASSET = 2
-VERIFY_SEARCHES_PER_ASSET = 1
-
-# Categories that get a second, independent basis check. Commodities are the
-# most exposed to a wrong single spot price; broad baskets and rate-quoted
-# assets are less so, and verifying everything was the largest cost driver.
-VERIFY_CATEGORIES = {"Commodity"}
-BASIS_MISMATCH_TOLERANCE = 0.20
-
-# A search-heavy turn can come back as stop_reason="pause_turn" (resume it) or
-# simply end without answering (retry it). Without both, one such turn used to
-# discard a whole batch.
-MAX_PAUSE_CONTINUATIONS = 4
-REQUEST_ATTEMPTS = 2
+HTTP_TIMEOUT = 60
+USER_AGENT = "asset-classes-dashboard/2.0"
 
 # Pricing per token, from https://platform.claude.com/docs/en/about-claude/pricing
-# These track PRICING_MODEL_FAMILY; main() warns if a different model is chosen.
 PRICING_MODEL_FAMILY = "claude-haiku-4-5"
 PRICE_PER_INPUT_TOKEN = 1.00 / 1_000_000
 PRICE_PER_OUTPUT_TOKEN = 5.00 / 1_000_000
-PRICE_PER_CACHE_WRITE_TOKEN = 1.25 / 1_000_000  # 5-minute cache write rate
+PRICE_PER_CACHE_WRITE_TOKEN = 1.25 / 1_000_000
 PRICE_PER_CACHE_READ_TOKEN = 0.10 / 1_000_000
 PRICE_PER_SEARCH = 10.00 / 1_000
 
-CRYPTO_PRICE_IDS = {"btc": "bitcoin", "eth": "ethereum"}
+MAX_PAUSE_CONTINUATIONS = 4
+REQUEST_ATTEMPTS = 2
 
+# Content farms publish confident numbers with no analyst behind them and are
+# indistinguishable from research once they are in context.
 BLOCKED_SOURCE_DOMAINS = [
-    "longforecast.com",
-    "coinpriceforecast.com",
-    "walletinvestor.com",
-    "gov.capital",
-    "pricepredictions.com",
-    "digitalcoinprice.com",
-    "coincodex.com",
-    "30rates.com",
-    "traders-union.com",
-    "cryptopolitan.com",
+    "longforecast.com", "coinpriceforecast.com", "walletinvestor.com",
+    "gov.capital", "pricepredictions.com", "digitalcoinprice.com",
+    "coincodex.com", "30rates.com", "traders-union.com", "cryptopolitan.com",
 ]
 
-# An annual interest rate outside this band is almost certainly a unit error
-# (a price that slipped into a rate field). RATE_SCALE_RATIO additionally
-# catches decimals-for-percent (0.045 meaning 4.5%), which falls inside the
-# band: forecast rates must stay on the same scale as the current rate.
-RATE_PERCENT_BOUNDS = (-10.0, 30.0)
-RATE_SCALE_RATIO = 5.0
+# A 1-year forecast outside this band is a unit or scale error, not a bullish
+# analyst. Deliberately wide: real commodity years do reach +/-50%.
+RETURN_SANITY_BOUNDS = (-90.0, 200.0)
+# A forecast level this far from today's level is a unit mismatch (one run
+# averaged "$16/kg" with "$15,646/tonne" and produced +12,074%).
+PRICE_SCALE_RATIO = 5.0
 
-# Forecasts are discarded if they sit further than this from the (verified)
-# basis. Sources quote the same commodity in different units — one lithium run
-# returned "$16/kg" and "$15,646/tonne" for the same year, and averaging them
-# produced a 363x "gain". No credible 3-year forecast is 20x today's price, so
-# anything beyond that is a unit mismatch rather than a bullish analyst.
-PRICE_SCALE_RATIO = 20.0
+# Below this share of a fund, a top-10 stands in for too little of the sleeve:
+# renormalising reweights it onto its largest names. The five top-10 sleeves
+# measured 79-89%; the three below that use a full holdings file instead.
+MIN_SLEEVE_COVERAGE = 0.70
+# A sleeve whose holdings mostly lack analyst targets is not a consensus.
+MIN_SLEEVE_TARGET_COVERAGE = 0.60
 
-# Commodities get quoted in several units at once, and a median is only
-# meaningful over one of them. A run had copper at "$14.30/kg" with forecasts
-# in "$/lb" (a 2.6x gap) and lithium at "$18.95/kg" against "$/tonne" (1000x).
-# PRICE_SCALE_RATIO catches the second and sails past the first, so units are
-# compared directly. Order matters below: "short ton" must be tested before
-# "ton", and "tonne" before the bare "/t".
-UNIT_PATTERNS = [
-    ("per_short_ton", r"short\s*ton"),
-    ("per_tonne", r"tonne|metric\s*ton|\bmt\b|per\s*t\b|/\s*t\b"),
-    ("per_lb", r"\blbs?\b|pound"),
-    ("per_kg", r"\bkgs?\b|kilogram|kilo\b"),
-    ("per_oz", r"\boz\b|ounce"),
-    ("per_bbl", r"\bbbl\b|barrel"),
-    ("per_mmbtu", r"mmbtu|million\s*btu|\bmbtu\b"),
-    ("per_bushel", r"\bbu\b|bushel"),
-    ("per_mbf", r"\bmbf\b|board\s*f(?:oo|ee)t"),
-    ("percent", r"percent|%"),
-    ("index_level", r"index|points|level"),
+
+# ---------------------------------------------------------------------------
+# The asset list. See ASSET-SOURCES.md.
+# ---------------------------------------------------------------------------
+
+# method="ishares"  : full holdings CSV from an iShares product page
+# method="yf_top"   : yfinance top-10 holdings, renormalised
+# method="eia"      : EIA STEO series
+# method="boc"      : Bank of Canada Valet
+# method="search"   : one named publisher, via web search
+ASSETS = [
+    # --- Fetched: cash ---
+    dict(id="hisa", name="HISA (Canada)", cat="Cash", color="#3fb950",
+         method="boc", publisher="Bank of Canada"),
+
+    # --- Fetched: equity sleeves, full holdings file ---
+    dict(id="cad-div", name="CAD Dividend Stocks", cat="Equity", color="#58a6ff",
+         method="ishares", ticker="CDZ",
+         url="https://www.blackrock.com/ca/investors/en/products/239834/ishares-sptsx-canadian-dividend-aristocrats-index-fund",
+         expect="Dividend Aristocrats", publisher="Analyst consensus via CDZ holdings"),
+    dict(id="us-div", name="US Dividend Stocks", cat="Equity", color="#79c0ff",
+         method="ishares", ticker="DVY",
+         url="https://www.ishares.com/us/products/239500/ishares-select-dividend-etf",
+         expect="Select Dividend", publisher="Analyst consensus via DVY holdings"),
+    dict(id="intl-div", name="Intl Dividend Stocks", cat="Equity", color="#a5d6ff",
+         method="ishares", ticker="IDV",
+         url="https://www.ishares.com/us/products/239499/ishares-international-select-dividend-etf",
+         expect="International Select Dividend", publisher="Analyst consensus via IDV holdings"),
+
+    # --- Fetched: equity sleeves, yfinance top-10 (all measured 79-89% cover) ---
+    dict(id="cad-reit", name="Canadian REITs", cat="Equity", color="#d2a8ff",
+         method="yf_top", ticker="XRE.TO", publisher="Analyst consensus via XRE holdings"),
+    dict(id="us-tech", name="US Tech", cat="Equity", color="#a371f7",
+         method="yf_top", ticker="XLK", publisher="Analyst consensus via XLK holdings"),
+    dict(id="cad-energy", name="Canadian Energy", cat="Equity", color="#ffa657",
+         method="yf_top", ticker="XEG.TO", publisher="Analyst consensus via XEG holdings"),
+    dict(id="cad-fin", name="Canadian Financials", cat="Equity", color="#7ee787",
+         method="yf_top", ticker="XFN.TO", publisher="Analyst consensus via XFN holdings"),
+    dict(id="cad-util", name="Canadian Utilities", cat="Equity", color="#56d364",
+         method="yf_top", ticker="ZUT.TO", publisher="Analyst consensus via ZUT holdings"),
+
+    # --- Fetched: energy ---
+    dict(id="oil", name="WTI Crude Oil", cat="Commodity", color="#f0883e",
+         method="eia", series="WTIPUUS", publisher="EIA Short-Term Energy Outlook"),
+    dict(id="natgas", name="Natural Gas", cat="Commodity", color="#ffa198",
+         method="eia", series="NGHHUUS", publisher="EIA Short-Term Energy Outlook"),
+
+    # --- Searched: one named authority each ---
+    dict(id="cad-re", name="Canadian Real Estate", cat="Real Estate", color="#f778ba",
+         method="search", group="crea", publisher="CREA",
+         cadence_months=3,
+         hint="Canadian Real Estate Association (CREA) quarterly housing market forecast, "
+              "national average home price forecast for next year"),
+    dict(id="us-re", name="US Real Estate", cat="Real Estate", color="#db61a2",
+         method="search", group="cbre", publisher="CBRE",
+         cadence_months=6,
+         hint="CBRE US Real Estate Market Outlook, commercial property value / total return forecast"),
+    dict(id="potash", name="Potash", cat="Commodity", color="#e3b341",
+         method="search", group="cmo", publisher="World Bank CMO",
+         cadence_months=6,
+         hint="World Bank Commodity Markets Outlook potash price forecast, USD per tonne"),
+    dict(id="copper", name="Copper", cat="Commodity", color="#ec8e2c",
+         method="search", group="cmo", publisher="World Bank CMO",
+         cadence_months=6,
+         hint="World Bank Commodity Markets Outlook copper price forecast, USD per tonne"),
+    dict(id="aluminium", name="Aluminium", cat="Commodity", color="#bfc7d5",
+         method="search", group="cmo", publisher="World Bank CMO",
+         cadence_months=6,
+         hint="World Bank Commodity Markets Outlook aluminum price forecast, USD per tonne"),
+    dict(id="nickel", name="Nickel", cat="Commodity", color="#9db1c5",
+         method="search", group="cmo", publisher="World Bank CMO",
+         cadence_months=6,
+         hint="World Bank Commodity Markets Outlook nickel price forecast, USD per tonne"),
 ]
-CURRENCY_PATTERNS = [("cad", r"\bcad\b|c\$"), ("usd", r"\busd\b|us\$")]
 
-SOURCE_HINTS = {
-    "cad-div": "Goldman Sachs, JPMorgan, RBC, BofA, Morgan Stanley TSX dividend stock targets",
-    "us-div": "Goldman Sachs, JPMorgan, RBC, BofA, Morgan Stanley S&P 500 dividend stock targets",
-    "gold": "World Gold Council, LBMA, JPMorgan, Goldman Sachs gold price forecasts",
-    "btc": "Bitwise, Standard Chartered, JPMorgan Bitcoin price targets",
-    "eth": "Bitwise, Standard Chartered Ethereum price targets",
-    "cad-reit": "RBC Capital Markets Canadian REIT sector outlook",
-    "cad-re": "CREA (Canadian Real Estate Association) forecasts, Bank of Canada rate path",
-    "us-re": "CBRE US commercial real estate outlook",
-    "us-tech": "Goldman Sachs, Morgan Stanley S&P 500 / tech sector targets",
-    "hisa": "Bank of Canada policy rate, RBC/Scotiabank GIC and HISA rate tables",
-    "intl-div": "MSCI EAFE outlook, Goldman Sachs/JPMorgan international equity strategy",
-    "silver": "World Gold Council, JPMorgan, Goldman Sachs silver price forecasts",
-    "palladium": "LBMA, BofA, TD Securities palladium price forecasts",
-    "oil": "Goldman Sachs, JPMorgan, EIA WTI/Brent crude oil forecasts",
-    "natgas": "EIA, JPMorgan Henry Hub natural gas forecasts",
-    "uranium": "Sprott, IAEA uranium market outlook",
-    "copper": "Goldman Sachs, TD Securities, Wood Mackenzie copper forecasts",
-    "lithium": "Goldman Sachs, Wood Mackenzie lithium price forecasts",
-    "wheat": "USDA, World Bank wheat price outlook",
-    "potash": "USDA, World Bank, Procurement Resource potash/fertilizer outlook",
-    "lumber": "ERA Forecast, Fastmarkets lumber price outlook",
+SEARCH_GROUPS = {
+    "crea": "CREA quarterly housing market forecast",
+    "cbre": "CBRE US real estate market outlook",
+    "cmo": "World Bank Commodity Markets Outlook",
 }
 
 
 # ---------------------------------------------------------------------------
-# Tool schemas
+# Small helpers
 # ---------------------------------------------------------------------------
 
-PROJECTION_ITEM = {
-    "type": "object",
-    "properties": {
-        "id": {"type": "string", "description": "The asset's id, exactly as given in the prompt"},
-        "basisValue": {
-            "type": "number",
-            "description": "The CURRENT value today (price, index level, or rate) that the targets below are measured against",
-        },
-        "basisDescription": {
-            "type": "string",
-            "description": "Short phrase naming basisValue, e.g. 'spot gold price' or 'BoC overnight policy rate'",
-        },
-        "basisUnit": {
-            "type": "string",
-            "description": (
-                "The unit basisValue is quoted in, written explicitly, e.g. 'USD/oz', "
-                "'USD/tonne', 'USD/lb', 'USD/bbl', 'USD/MMBtu', 'USD/bushel', 'index points' "
-                "or 'percent'. Every forecast below MUST use this same unit."
-            ),
-        },
-        "basisKind": {
-            "type": "string",
-            "enum": ["price_level", "rate_percent"],
-            "description": (
-                "'price_level' when basisValue is a price or index level that can appreciate "
-                "(stocks, commodities, crypto, REITs, bond ETF prices). 'rate_percent' when "
-                "basisValue is itself an interest rate or yield in percent (savings accounts, "
-                "GIC rates, policy rates) — for those the rate IS the annual return and there "
-                "is no capital appreciation."
-            ),
-        },
-        "forecasts": {
-            "type": "array",
-            "minItems": 3,
-            "description": (
-                "EVERY published forecast you found, as one entry per (year, source) pair. You "
-                "must cover years 1, 2 and 3, and should give as many genuinely independent "
-                "sources per year as you actually found — two or three each is ideal. The median "
-                "across sources is what gets used, so one outlier cannot decide the answer. Do "
-                "not invent sources to pad this out; report only forecasts you actually saw."
-            ),
-            "items": {
-                "type": "object",
-                "properties": {
-                    "year": {
-                        "type": "integer",
-                        "enum": [1, 2, 3],
-                        "description": "Which forecast year this value is for",
-                    },
-                    "value": {
-                        "type": "number",
-                        "description": (
-                            "The forecast ABSOLUTE value at the END of that year, in the SAME "
-                            "UNITS as basisValue — never a percentage change and never a running "
-                            "total. For 'price_level' a price/index level; for 'rate_percent' a "
-                            "rate in percent."
-                        ),
-                    },
-                    "source": {
-                        "type": "string",
-                        "description": "Who published it, e.g. 'Goldman Sachs' or 'World Gold Council'",
-                    },
-                    "unit": {
-                        "type": "string",
-                        "description": (
-                            "The unit THIS value is quoted in, in the same form as basisUnit. "
-                            "Convert the source's figure into basisUnit rather than reporting a "
-                            "different one — a forecast whose unit does not match the basis is "
-                            "discarded, since averaging $/lb with $/tonne is meaningless."
-                        ),
-                    },
-                },
-                "required": ["year", "value", "source"],
-            },
-        },
-        "incomeYieldPct": {
-            "type": "number",
-            "description": (
-                "Recurring annual income yield in percent (dividends, coupons, distributions, "
-                "staking), e.g. 4.5. Use 0 if the asset pays no income, and 0 when basisKind is "
-                "'rate_percent' since the rate already represents that income."
-            ),
-        },
-        "why": {
-            "type": "array",
-            "items": {"type": "string"},
-            "minItems": 3,
-            "maxItems": 3,
-            "description": "One rationale per year, under 240 characters, naming the actual source/analyst and date found and stating that year's target value",
-        },
-    },
-    "required": ["id", "basisValue", "basisDescription", "basisUnit", "basisKind", "forecasts", "incomeYieldPct", "why"],
-}
-
-SUBMIT_TOOL = {
-    "name": "submit_projections",
-    "description": "Submit researched 3-year forward outlooks for ALL asset classes listed in this request. Report values read from sources; do NOT compute percentage returns.",
-    "input_schema": {
-        "type": "object",
-        "properties": {
-            "projections": {
-                "type": "array",
-                "description": "One entry per asset class in the prompt, using the exact id given for each.",
-                "items": PROJECTION_ITEM,
-            }
-        },
-        "required": ["projections"],
-    },
-}
-
-VERIFY_TOOL = {
-    "name": "submit_verifications",
-    "description": "Report independently found current values for each data-point claim listed in this request.",
-    "input_schema": {
-        "type": "object",
-        "properties": {
-            "verifications": {
-                "type": "array",
-                "items": {
-                    "type": "object",
-                    "properties": {
-                        "id": {"type": "string", "description": "The asset id this verification is for, exactly as given"},
-                        "verifiedValue": {
-                            "type": "number",
-                            "description": "The current value you independently found, in the same units as the claim",
-                        },
-                        "note": {"type": "string", "description": "Brief note (under 200 characters) on what you found and where"},
-                    },
-                    "required": ["id", "verifiedValue", "note"],
-                },
-            }
-        },
-        "required": ["verifications"],
-    },
-}
-
-
-def web_search_tool(max_uses):
-    return {
-        "type": "web_search_20250305",
-        "name": "web_search",
-        "max_uses": max_uses,
-        "blocked_domains": BLOCKED_SOURCE_DOMAINS,
-    }
-
-
-# ---------------------------------------------------------------------------
-# Pure helpers
-# ---------------------------------------------------------------------------
-
-
-class CostTracker:
-    """Accumulates the real metered cost of every API call in a run."""
-
-    def __init__(self):
-        self.total = 0.0
-
-    def add(self, usage):
-        cost = usage.input_tokens * PRICE_PER_INPUT_TOKEN
-        cost += usage.output_tokens * PRICE_PER_OUTPUT_TOKEN
-        cost += (usage.cache_creation_input_tokens or 0) * PRICE_PER_CACHE_WRITE_TOKEN
-        cost += (usage.cache_read_input_tokens or 0) * PRICE_PER_CACHE_READ_TOKEN
-        if usage.server_tool_use:
-            cost += usage.server_tool_use.web_search_requests * PRICE_PER_SEARCH
-        self.total += cost
-        return cost
-
-
-def chunk(items, size):
-    return [items[i : i + size] for i in range(0, len(items), size)]
-
-
-def avg_return(rates):
-    return sum(rates) / len(rates)
-
-
-def parse_unit(text):
-    """Map a free-text unit onto (measure, currency), either of which may be
-    None when the text does not say. Matching canonical tokens rather than raw
-    strings lets "USD/tonne", "$ per metric ton" and "US$/t" compare equal."""
-    if not text:
-        return None, None
-    lowered = str(text).lower()
-    measure = next((name for name, pattern in UNIT_PATTERNS if re.search(pattern, lowered)), None)
-    currency = next((name for name, pattern in CURRENCY_PATTERNS if re.search(pattern, lowered)), None)
-    return measure, currency
-
-
-def median_targets(forecasts, basis_value, basis_kind="price_level", basis_unit="", label=""):
-    """Reduce the forecasts found for an asset to one target per year.
-
-    Taking the median across independent sources is the point of collecting
-    several: a single search that happened to surface one bullish analyst can
-    no longer decide the number. Two runs 25 minutes apart previously put
-    Ethereum at +28%/yr and +156%/yr because one found Standard Chartered and
-    the other found a lower midpoint — both real forecasts, wildly apart.
-
-    Forecasts implausibly far from the basis are dropped first. A median is
-    only meaningful over values in the same unit, and sources mix them freely:
-    one run returned "$16/kg" and "$15,646/tonne" for the same year of lithium,
-    whose average is meaningless. The basis is the trusted anchor here — it is
-    either live-pinned or independently verified — so distance from it is the
-    signal for a unit mismatch.
-
-    Returns (targets, by_year) so callers can report the spread behind each.
-    """
-    ratio = RATE_SCALE_RATIO if basis_kind == "rate_percent" else PRICE_SCALE_RATIO
-    lo, hi = (abs(basis_value) / ratio, abs(basis_value) * ratio) if basis_value else (0, float("inf"))
-    basis_measure, basis_currency = parse_unit(basis_unit)
-
-    by_year, discarded = {1: [], 2: [], 3: []}, []
-    for f in forecasts or []:
-        year, value = f.get("year"), f.get("value")
-        if year not in by_year or not isinstance(value, (int, float)):
-            continue
-
-        measure, currency = parse_unit(f.get("unit"))
-        reason = None
-        # Only reject when both sides are actually identifiable; an unreadable
-        # unit string should not throw away a good forecast.
-        if basis_measure and measure and measure != basis_measure:
-            reason = f"unit {measure} != basis {basis_measure}"
-        elif basis_currency and currency and currency != basis_currency:
-            reason = f"currency {currency} != basis {basis_currency}"
-        elif basis_value and not (lo <= abs(value) <= hi):
-            reason = f"off-scale vs basis {basis_value:,.6g}"
-
-        if reason:
-            discarded.append((year, float(value), f.get("source", "?"), reason))
-            continue
-        by_year[year].append(float(value))
-
-    if discarded:
-        detail = ", ".join(f"y{y} {v:,.6g} ({src}: {why})" for y, v, src, why in discarded)
-        print(f"    {label}: discarded {len(discarded)} forecast(s) — {detail}")
-
-    missing = [y for y, values in by_year.items() if not values]
-    if missing:
-        raise ValueError(f"{label}: no usable forecast for year(s) {missing}")
-
-    return [statistics.median(by_year[y]) for y in (1, 2, 3)], by_year
-
-
-def annotate_why(why, by_year):
-    """Append the spread behind each year's median, so a tooltip shows what the
-    number was actually drawn from rather than just one cherry-picked source."""
-    annotated = []
-    for year in (1, 2, 3):
-        text = why[year - 1] if year - 1 < len(why) else ""
-        values = by_year.get(year, [])
-        if len(values) > 1:
-            # " · " rather than ", ": thousands separators already use commas.
-            joined = " · ".join(f"{v:,.6g}" for v in sorted(values))
-            text = f"{text} [median of {len(values)}: {joined}]"
-        annotated.append(text)
-    return annotated
-
-
-def compute_returns(basis_value, targets, income_yield_pct, label="", basis_kind="price_level"):
-    """Derive year-over-year percentage returns from absolute target values.
-
-    Computing this here rather than asking the model for percentages is what
-    keeps cumulative-vs-annual confusion out of the dashboard.
-
-    price_level : targets are prices/index levels; each year's return is the
-                  change against the previous year's level plus income yield.
-    rate_percent: targets are themselves rates in percent, so the rate IS that
-                  year's return. A HISA going 4.0% -> 4.5% earns 4.5%, not a
-                  12.5% "capital gain" on the rate. The same mistake also
-                  inverts the sign for bonds, where rising yields cut prices.
-    """
-    if basis_value is None or not targets or len(targets) != 3:
-        raise ValueError(f"{label}: need basisValue and exactly 3 targets, got basis={basis_value} targets={targets}")
-
-    if basis_kind == "rate_percent":
-        lo, hi = RATE_PERCENT_BOUNDS
-        if not all(lo <= t <= hi for t in targets):
-            raise ValueError(f"{label}: rate_percent targets outside {RATE_PERCENT_BOUNDS}, likely a unit error: {targets}")
-        # An absolute band alone misses decimals-for-percent (0.045 meaning
-        # 4.5%), which sits inside it. Targets must also share the basis's
-        # scale — a policy rate does not move 5x in a year.
-        if abs(basis_value) > 1e-9:
-            ratios = [abs(t / basis_value) for t in targets if abs(t) > 1e-9]
-            if ratios and (max(ratios) > RATE_SCALE_RATIO or min(ratios) < 1 / RATE_SCALE_RATIO):
-                raise ValueError(
-                    f"{label}: rate_percent targets {targets} are not on the same scale as basis "
-                    f"{basis_value}; likely percent-vs-decimal mismatch"
-                )
-        # Income yield is ignored deliberately: the rate already is the income.
-        return [round(float(t), 1) for t in targets]
-
-    if basis_value <= 0 or any(t <= 0 for t in targets):
-        raise ValueError(f"{label}: price levels must be positive, got basis={basis_value} targets={targets}")
-
-    income = income_yield_pct or 0.0
-    levels = [basis_value] + list(targets)
-    return [round((levels[i + 1] / levels[i] - 1) * 100 + income, 1) for i in range(3)]
-
-
-def compute_ranks(assets):
-    """Rank assets 1..N by 3-yr average return, best first."""
-    ranked = sorted(range(len(assets)), key=lambda i: -avg_return(assets[i]["r"]))
-    return {assets[idx]["id"]: rank for rank, idx in enumerate(ranked, start=1)}
-
-
-def position_change(prev_rank, new_rank):
-    if prev_rank is None or prev_rank == new_rank:
-        return "same"
-    return "up" if new_rank < prev_rank else "down"
-
-
-def extract_search_sources(content_blocks):
-    sources, seen = [], set()
-    for b in content_blocks:
-        if b.type == "web_search_tool_result" and isinstance(b.content, list):
-            for result in b.content:
-                if result.url not in seen:
-                    seen.add(result.url)
-                    sources.append({"title": result.title, "url": result.url})
-    return sources
-
-
-def tool_input(response, tool_name):
-    """Return the input of the named tool call, or None if absent."""
-    for b in response.content:
-        if b.type == "tool_use" and b.name == tool_name:
-            return b.input
-    return None
-
-
-def request_tool_call(client, model_id, prompt, tools, tool_name, max_tokens, costs):
-    """Run one research/verification request and return (tool_input, sources).
-
-    A single request is not enough on its own. A turn that runs several
-    searches can come back as stop_reason="pause_turn", which means "not
-    finished, send this back to continue" — and a turn can also simply end
-    without the model calling the tool. Either way the batch used to be lost.
-    So: continue paused turns, and retry the whole request once if the model
-    ends without answering.
-    """
-    last_stop = None
-    for attempt in range(1, REQUEST_ATTEMPTS + 1):
-        messages = [{"role": "user", "content": prompt}]
-        sources = []
-        for _ in range(MAX_PAUSE_CONTINUATIONS + 1):
-            response = client.messages.create(
-                model=model_id,
-                max_tokens=max_tokens,
-                tools=tools,
-                # "any" forces a tool call each turn — search again or submit —
-                # so the model cannot answer with prose instead.
-                tool_choice={"type": "any", "disable_parallel_tool_use": True},
-                messages=messages,
-            )
-            costs.add(response.usage)
-            sources += extract_search_sources(response.content)
-
-            payload = tool_input(response, tool_name)
-            if payload is not None:
-                return payload, sources
-
-            last_stop = response.stop_reason
-            if last_stop != "pause_turn":
-                break
-            # Paused mid-search: hand the turn back verbatim to resume it.
-            messages = messages + [{"role": "assistant", "content": response.content}]
-
-        print(f"  Attempt {attempt}/{REQUEST_ATTEMPTS}: ended without calling {tool_name} (stop_reason={last_stop})")
-
-    raise ValueError(f"no {tool_name} call after {REQUEST_ATTEMPTS} attempts (last stop_reason={last_stop})")
+def http_get(url, timeout=HTTP_TIMEOUT):
+    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        return resp.read().decode("utf-8", errors="replace")
 
 
 def load_json(path, default):
@@ -567,221 +207,473 @@ def write_json(path, payload):
         f.write("\n")
 
 
-def fetch_live_crypto_price(coingecko_id):
-    url = f"https://api.coingecko.com/api/v3/simple/price?ids={coingecko_id}&vs_currencies=usd"
-    req = urllib.request.Request(url, headers={"User-Agent": "asset-classes-dashboard/1.0"})
-    with urllib.request.urlopen(req, timeout=10) as resp:
-        return json.loads(resp.read().decode())[coingecko_id]["usd"]
+def months_between(earlier, later):
+    return (later.year - earlier.year) * 12 + (later.month - earlier.month)
 
 
-# ---------------------------------------------------------------------------
-# API calls
-# ---------------------------------------------------------------------------
+def check_return(pct, label):
+    """Reject a return that is outside anything a real 1-year forecast reaches.
 
-
-def research_assets(client, model_id, assets, today, costs, pinned_bases=None):
-    """Research a batch of assets in one call and return {id: projection}.
-
-    pinned_bases maps asset id -> {"value": float, "note": str} for bases we
-    already trust (a live crypto price, or a value confirmed by verification).
-    Those are stated in the prompt AND overwritten on the response, so the
-    result does not depend on the model choosing to comply.
+    This is a unit/scale guard, not a view on the market. It catches a price
+    compared against a rate, or a per-tonne figure compared against per-pound.
     """
-    pinned_bases = pinned_bases or {}
+    lo, hi = RETURN_SANITY_BOUNDS
+    if not isinstance(pct, (int, float)) or pct != pct:
+        raise ValueError(f"{label}: return is not a number ({pct!r})")
+    if not lo <= pct <= hi:
+        raise ValueError(f"{label}: {pct:.1f}% is outside {RETURN_SANITY_BOUNDS}; unit or scale error")
+    return round(float(pct), 1)
 
-    blocks = []
-    for a in assets:
-        block = (
-            f"- id: {a['id']}\n"
-            f"  Name: {a['name']}\n"
-            f"  Category: {a['cat']}\n"
-            f"  Look for sources like: {SOURCE_HINTS.get(a['id'], '')}"
+
+# ---------------------------------------------------------------------------
+# Fetch: Bank of Canada (HISA)
+# ---------------------------------------------------------------------------
+
+# Candidates in preference order. The 1-year Government of Canada yield is the
+# market's own expectation for one year of cash, which is what a HISA tracks.
+# Valet series naming has changed over the years, so several are tried and the
+# one that answers is recorded — guessing a single id and failing silently is
+# how a row goes stale without anyone noticing.
+BOC_SERIES_CANDIDATES = [
+    ("V80691345", "1-year Government of Canada treasury bill yield"),
+    ("BD.CDN.1YR.DQ.YLD", "1-year Government of Canada benchmark bond yield"),
+    ("V122558", "1-year Government of Canada benchmark bond yield"),
+    ("V80691342", "3-month Government of Canada treasury bill yield"),
+]
+
+
+def fetch_boc_rate():
+    """Return (rate_pct, description, observation_date) from the BoC Valet API."""
+    errors = []
+    for series, description in BOC_SERIES_CANDIDATES:
+        url = f"https://www.bankofcanada.ca/valet/observations/{series}/json?recent=1"
+        try:
+            payload = json.loads(http_get(url, timeout=30))
+            obs = payload.get("observations") or []
+            if not obs:
+                errors.append(f"{series}: no observations")
+                continue
+            row = obs[-1]
+            value = row.get(series, {}).get("v")
+            if value in (None, ""):
+                errors.append(f"{series}: empty value")
+                continue
+            print(f"    BoC series {series} -> {value}% on {row['d']}")
+            return float(value), description, row["d"]
+        except (urllib.error.URLError, TimeoutError, ValueError, KeyError) as e:
+            errors.append(f"{series}: {type(e).__name__}")
+    raise ValueError(f"no Bank of Canada series answered ({'; '.join(errors)})")
+
+
+def hisa_projection():
+    rate, description, observed = fetch_boc_rate()
+    # A HISA is cash: the rate IS the one-year return. There is no capital
+    # appreciation to add, and treating the rate as a price level is what once
+    # printed 39.5% for a savings account.
+    pct = check_return(rate, "hisa")
+    why = (f"{description} is {rate:.2f}% as of {observed} (Bank of Canada Valet API). "
+           f"For cash the prevailing rate is the one-year return.")
+    return dict(r=pct, why=why, published=observed, basis=f"{rate:.2f}%")
+
+
+# ---------------------------------------------------------------------------
+# Fetch: EIA STEO (oil, natural gas)
+# ---------------------------------------------------------------------------
+
+def fetch_eia_series(series, api_key):
+    """Return the STEO monthly series as an ordered list of (period, value)."""
+    params = urllib.parse.urlencode({
+        "api_key": api_key,
+        "frequency": "monthly",
+        "data[0]": "value",
+        "facets[seriesId][]": series,
+        "sort[0][column]": "period",
+        "sort[0][direction]": "desc",
+        "length": 40,
+    }, safe="[]")
+    payload = json.loads(http_get(f"https://api.eia.gov/v2/steo/data/?{params}"))
+    rows = payload.get("response", {}).get("data") or []
+    points = [(r["period"], float(r["value"])) for r in rows if r.get("value") is not None]
+    if not points:
+        raise ValueError(f"EIA returned no values for {series}")
+    points.sort(key=lambda p: p[0])
+    return points, (rows[0].get("seriesDescription") or series), (rows[0].get("unit") or "")
+
+
+def eia_projection(asset, api_key, today):
+    """One year out versus the most recent actual month.
+
+    STEO runs ~18 months forward, so a 12-month-ahead point exists rather than
+    needing extrapolation. Anchoring to the current month (not to the far end)
+    is what keeps this a 1-year figure.
+    """
+    points, description, unit = fetch_eia_series(asset["series"], api_key)
+    by_period = dict(points)
+
+    current_key = today.strftime("%Y-%m")
+    # The current month may not be published yet; walk back to the latest that is.
+    anchor = next((p for p in reversed([k for k, _ in points]) if p <= current_key), None)
+    if anchor is None:
+        raise ValueError(f"{asset['id']}: no STEO period at or before {current_key}")
+
+    year, month = int(anchor[:4]), int(anchor[5:])
+    target_key = f"{year + 1:04d}-{month:02d}"
+    if target_key not in by_period:
+        raise ValueError(f"{asset['id']}: STEO has no {target_key} (horizon ends {points[-1][0]})")
+
+    base, target = by_period[anchor], by_period[target_key]
+    if base <= 0 or target <= 0:
+        raise ValueError(f"{asset['id']}: non-positive prices base={base} target={target}")
+    if not (1 / PRICE_SCALE_RATIO <= target / base <= PRICE_SCALE_RATIO):
+        raise ValueError(f"{asset['id']}: {base} -> {target} is off-scale; unit change?")
+
+    pct = check_return((target / base - 1) * 100, asset["id"])
+    why = (f"EIA Short-Term Energy Outlook projects {description} at {target:,.2f} {unit} "
+           f"in {target_key}, against {base:,.2f} in {anchor}.")
+    return dict(r=pct, why=why, published=anchor, basis=f"{base:,.2f} {unit}")
+
+
+# ---------------------------------------------------------------------------
+# Fetch: equity sleeves
+# ---------------------------------------------------------------------------
+
+def _find_header_row(rows):
+    """iShares files carry a preamble before the real header."""
+    for i, row in enumerate(rows):
+        if row and row[0].strip().lower() == "ticker":
+            return i
+    raise ValueError("no 'Ticker' header row found in holdings file")
+
+
+def fetch_ishares_holdings(asset):
+    """Return (holdings, as_of) from an iShares product page.
+
+    Columns are read by NAME: the same provider uses 'Shares' for CDZ and
+    'Quantity' for DVY/IDV, and IDV inserts a 'Type' column that shifts every
+    position after it.
+    """
+    page = http_get(asset["url"])
+    links = set(re.findall(r'href="([^"]+)"', page))
+    candidates = [h for h in links if re.search(r"(fileType=csv|latest-holdings\.csv)", h, re.I)]
+    if not candidates:
+        raise ValueError(f"{asset['id']}: no holdings CSV link on {asset['url']}")
+
+    url = sorted(candidates, key=len)[0]
+    if not url.startswith("http"):
+        url = urllib.parse.urljoin(asset["url"], url)
+    text = http_get(url)
+
+    # A wrong product id returns 200 with a valid CSV for a different fund.
+    head = text[:400]
+    if asset["expect"].lower() not in head.lower():
+        raise ValueError(
+            f"{asset['id']}: holdings file is the wrong fund — expected "
+            f"{asset['expect']!r}, file begins {head.splitlines()[0][:80]!r}"
         )
-        if a["id"] in pinned_bases:
-            block += f"\n  VERIFIED CURRENT VALUE (use as basisValue): {pinned_bases[a['id']]['note']}"
-        blocks.append(block)
 
-    prompt = f"""Today is {today}, which is after your training cutoff — you cannot know current market conditions or analyst forecasts from memory alone.
+    as_of = None
+    m = re.search(r"Fund Holdings as of,\"?([^\"\n]+)", text)
+    if m:
+        try:
+            as_of = datetime.strptime(m.group(1).strip(), "%b %d, %Y").date().isoformat()
+        except ValueError:
+            as_of = None
 
-Use the web_search tool to find REAL, CURRENT analyst projections for EACH of the following {len(assets)} asset classes. You share one search budget across all of them, so search efficiently.
+    rows = list(csv.reader(io.StringIO(text)))
+    start = _find_header_row(rows)
+    header = [c.strip() for c in rows[start]]
+    idx = {name: i for i, name in enumerate(header)}
+    for required in ("Ticker", "Weight (%)"):
+        if required not in idx:
+            raise ValueError(f"{asset['id']}: holdings file has no {required!r} column; saw {header}")
 
-{chr(10).join(blocks)}
+    holdings = []
+    for row in rows[start + 1:]:
+        if len(row) <= idx["Weight (%)"]:
+            continue
+        ticker = row[idx["Ticker"]].strip()
+        asset_class = row[idx["Asset Class"]].strip() if "Asset Class" in idx else "Equity"
+        if not ticker or ticker == "-" or asset_class.lower() != "equity":
+            continue
+        try:
+            weight = float(row[idx["Weight (%)"]].replace(",", ""))
+        except ValueError:
+            continue
+        if weight > 0:
+            exchange = row[idx["Exchange"]].strip() if "Exchange" in idx else ""
+            holdings.append({"ticker": ticker, "weight": weight, "exchange": exchange})
 
-Find the latest published price targets, index levels or rate outlooks. Analysts often disagree sharply, so gather SEVERAL independent forecasts per year where they exist rather than stopping at the first one — the median across them is what will be used, so one outlier must not decide the answer. Where figures are not published for all three years, extrapolate the later ones from the trend implied by what you find and say so in that asset's "why".
+    if not holdings:
+        raise ValueError(f"{asset['id']}: holdings file parsed to zero equity rows")
+    print(f"    {asset['ticker']}: {len(holdings)} holdings, {sum(h['weight'] for h in holdings):.1f}% of fund"
+          + (f", as of {as_of}" if as_of else ""))
+    return holdings, as_of
 
-Report ONLY values you can read off a source — do NOT calculate percentage returns, that arithmetic is done downstream. For each asset give:
-- basisValue + basisUnit + basisKind: the current value today, the unit it is quoted in (e.g. 'USD/tonne', 'USD/lb', 'USD/oz', 'index points', 'percent'), and whether it is a price/index level ('price_level') or an interest rate in percent ('rate_percent')
-- forecasts: every forecast you found, one entry per (year, source), covering years 1-3. Each value is a point-in-time level — NOT a percentage change, NOT cumulative growth. State the unit of each and CONVERT it into basisUnit first: commodities are quoted per pound, per kilogram and per tonne interchangeably, and a forecast in a different unit from the basis is discarded rather than averaged. Name the actual publisher of each. Do not invent sources to pad the list.
-- incomeYieldPct: annual dividend/coupon/distribution/staking yield, or 0. For income-driven assets the level may barely move and this yield carries the return; that is expected.
 
-Once you have researched all {len(assets)}, call submit_projections with one entry per asset, matching each id exactly."""
+def fetch_yf_top_holdings(asset):
+    """Return (holdings, None) from yfinance's top-10 for a fund."""
+    import yfinance as yf
+
+    top = yf.Ticker(asset["ticker"]).funds_data.top_holdings
+    if top is None or len(top) == 0:
+        raise ValueError(f"{asset['id']}: yfinance returned no holdings for {asset['ticker']}")
+
+    weight_col = top.columns[-1]
+    holdings = [{"ticker": str(sym), "weight": float(row[weight_col]) * 100.0, "exchange": ""}
+                for sym, row in top.iterrows() if float(row[weight_col]) > 0]
+    covered = sum(h["weight"] for h in holdings) / 100.0
+    if covered < MIN_SLEEVE_COVERAGE:
+        raise ValueError(
+            f"{asset['id']}: top-{len(holdings)} covers only {covered:.1%} of {asset['ticker']}; "
+            f"renormalising that would reweight the sleeve onto its largest names"
+        )
+    print(f"    {asset['ticker']}: top-{len(holdings)} covers {covered:.1%} of fund")
+    return holdings, None
+
+
+# iShares lists foreign holdings by local ticker and exchange; Yahoo wants a
+# suffix. Only the exchanges these three funds actually hold are mapped.
+EXCHANGE_SUFFIX = {
+    "toronto stock exchange": ".TO", "tsx venture exchange": ".V",
+    "london stock exchange": ".L", "euronext paris": ".PA",
+    "euronext amsterdam": ".AS", "euronext brussels": ".BR",
+    "xetra": ".DE", "deutsche boerse ag": ".DE", "six swiss exchange": ".SW",
+    "borsa italiana": ".MI", "bolsa de madrid": ".MC", "tokyo stock exchange": ".T",
+    "asx - all markets": ".AX", "australian securities exchange": ".AX",
+    "hong kong exchanges and clearing ltd": ".HK",
+    "singapore exchange": ".SI", "nasdaq omx stockholm": ".ST",
+    "oslo bors asa": ".OL", "nasdaq omx helsinki": ".HE",
+    "nasdaq omx copenhagen": ".CO", "bolsa mexicana de valores": ".MX",
+    "new zealand exchange": ".NZ",
+}
+
+
+def yahoo_symbol(holding, fund_ticker):
+    ticker = holding["ticker"].replace(".", "-").strip()
+    suffix = EXCHANGE_SUFFIX.get(holding.get("exchange", "").strip().lower(), "")
+    if not suffix and fund_ticker.endswith(".TO"):
+        suffix = ".TO"
+    return ticker + suffix
+
+
+def equity_sleeve_projection(asset, holdings, as_of, today):
+    """Weighted expected return over a benchmark's holdings.
+
+    sum(w_i * ((target_i / price_i - 1) + yield_i)), renormalised over the
+    holdings that actually carry an analyst target. Holdings without one are
+    dropped rather than substituted — an invented target is worse than a
+    smaller sample.
+    """
+    import yfinance as yf
+
+    symbols = {h["ticker"]: yahoo_symbol(h, asset.get("ticker", "")) for h in holdings}
+    contributions, used_weight, total_weight, per_name = [], 0.0, 0.0, []
+
+    for h in holdings:
+        total_weight += h["weight"]
+        try:
+            info = yf.Ticker(symbols[h["ticker"]]).get_info() or {}
+        except Exception:
+            continue
+        price = info.get("currentPrice") or info.get("regularMarketPrice")
+        target = info.get("targetMeanPrice")
+        if not price or not target or price <= 0 or target <= 0:
+            continue
+        if not (1 / PRICE_SCALE_RATIO <= target / price <= PRICE_SCALE_RATIO):
+            continue  # a target 5x the price is a stale or mis-scaled quote
+        raw_yield = info.get("dividendYield") or 0.0
+        # Yahoo has returned this both as a fraction and as a percent.
+        income = raw_yield * 100.0 if raw_yield < 1 else raw_yield
+        income = min(income, 15.0)
+        expected = (target / price - 1) * 100.0 + income
+        contributions.append((h["weight"], expected))
+        per_name.append(expected)
+        used_weight += h["weight"]
+
+    if total_weight <= 0:
+        raise ValueError(f"{asset['id']}: holdings carry no weight")
+    coverage = used_weight / total_weight
+    if coverage < MIN_SLEEVE_TARGET_COVERAGE:
+        raise ValueError(
+            f"{asset['id']}: only {coverage:.0%} of {asset['ticker']} by weight has analyst "
+            f"targets ({len(contributions)} of {len(holdings)} names); not a consensus"
+        )
+
+    weighted = sum(w * e for w, e in contributions) / used_weight
+    pct = check_return(weighted, asset["id"])
+
+    # Dispersion matters more than the point estimate here: a single number
+    # hides that sleeve constituents routinely span -1% to +25%.
+    lo = hi = None
+    if len(per_name) >= 4:
+        quartiles = statistics.quantiles(per_name, n=4)
+        lo, hi = round(quartiles[0], 1), round(quartiles[2], 1)
+
+    why = (f"Weighted analyst consensus across {len(contributions)} of {len(holdings)} "
+           f"{asset['ticker']} holdings ({coverage:.0%} of fund weight): mean target plus "
+           f"income yield. Interquartile range {lo}% to {hi}%." if lo is not None else
+           f"Weighted analyst consensus across {len(contributions)} of {len(holdings)} "
+           f"{asset['ticker']} holdings ({coverage:.0%} of fund weight).")
+
+    return dict(r=pct, why=why, published=as_of or today.isoformat(),
+                basis=f"{len(contributions)} holdings", lo=lo, hi=hi)
+
+
+def sleeve_projection(asset, today):
+    holdings, as_of = (fetch_ishares_holdings(asset) if asset["method"] == "ishares"
+                       else fetch_yf_top_holdings(asset))
+    return equity_sleeve_projection(asset, holdings, as_of, today)
+
+
+# ---------------------------------------------------------------------------
+# Searched rows
+# ---------------------------------------------------------------------------
+
+SEARCH_TOOL = {
+    "name": "submit_forecasts",
+    "description": (
+        "Report the forecast figures found in the named publication. Report only what the "
+        "document states; do NOT compute percentage changes — that arithmetic is done downstream."
+    ),
+    "input_schema": {
+        "type": "object",
+        "properties": {
+            "forecasts": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {"type": "string", "description": "The asset id exactly as given"},
+                        "currentValue": {"type": "number", "description": "The current level the publication compares against"},
+                        "forecastValue": {"type": "number", "description": "The level forecast roughly one year ahead, in the SAME unit as currentValue"},
+                        "unit": {"type": "string", "description": "Unit both values are quoted in, e.g. 'USD/tonne' or 'CAD'"},
+                        "publisher": {"type": "string", "description": "The institution that published it"},
+                        "publishedDate": {"type": "string", "description": "Publication date of the document, YYYY-MM-DD or YYYY-MM"},
+                        "note": {"type": "string", "description": "Under 200 characters: what the document says and which edition it is"},
+                    },
+                    "required": ["id", "currentValue", "forecastValue", "unit", "publisher", "publishedDate", "note"],
+                },
+            }
+        },
+        "required": ["forecasts"],
+    },
+}
+
+
+class CostTracker:
+    def __init__(self):
+        self.total = 0.0
+
+    def add(self, usage):
+        cost = usage.input_tokens * PRICE_PER_INPUT_TOKEN
+        cost += usage.output_tokens * PRICE_PER_OUTPUT_TOKEN
+        cost += (usage.cache_creation_input_tokens or 0) * PRICE_PER_CACHE_WRITE_TOKEN
+        cost += (usage.cache_read_input_tokens or 0) * PRICE_PER_CACHE_READ_TOKEN
+        if usage.server_tool_use:
+            cost += usage.server_tool_use.web_search_requests * PRICE_PER_SEARCH
+        self.total += cost
+        return cost
+
+
+def extract_search_sources(blocks):
+    sources, seen = [], set()
+    for b in blocks:
+        if b.type == "web_search_tool_result" and isinstance(b.content, list):
+            for result in b.content:
+                if result.url not in seen:
+                    seen.add(result.url)
+                    sources.append({"title": result.title, "url": result.url})
+    return sources
+
+
+def request_tool_call(client, model_id, prompt, tools, tool_name, max_tokens, costs):
+    """Run one request, resuming paused turns and retrying a turn that ends
+    without answering. Without both, one such turn discards the whole group."""
+    last_stop = None
+    for attempt in range(1, REQUEST_ATTEMPTS + 1):
+        messages = [{"role": "user", "content": prompt}]
+        sources = []
+        for _ in range(MAX_PAUSE_CONTINUATIONS + 1):
+            response = client.messages.create(
+                model=model_id, max_tokens=max_tokens, tools=tools,
+                tool_choice={"type": "any", "disable_parallel_tool_use": True},
+                messages=messages,
+            )
+            costs.add(response.usage)
+            sources += extract_search_sources(response.content)
+            for b in response.content:
+                if b.type == "tool_use" and b.name == tool_name:
+                    return b.input, sources
+            last_stop = response.stop_reason
+            if last_stop != "pause_turn":
+                break
+            messages = messages + [{"role": "assistant", "content": response.content}]
+        print(f"    attempt {attempt}/{REQUEST_ATTEMPTS}: no {tool_name} call (stop_reason={last_stop})")
+    raise ValueError(f"no {tool_name} call after {REQUEST_ATTEMPTS} attempts (last stop_reason={last_stop})")
+
+
+def search_group(client, model_id, group, assets, today, costs):
+    """Research one publication covering one or more assets. Returns {id: projection}."""
+    blocks = "\n".join(
+        f"- id: {a['id']}\n  Asset: {a['name']}\n  Look for: {a['hint']}" for a in assets
+    )
+    prompt = f"""Today is {today}, which is after your training cutoff — you cannot know current forecasts from memory.
+
+Use web_search to find the most recent edition of: **{SEARCH_GROUPS[group]}**.
+
+Read the figures for each of the following {len(assets)} item(s) out of that publication:
+
+{blocks}
+
+Rules:
+- Use ONLY that named publication as the source of the forecast figures. Do not blend in other forecasters, and do not use aggregator or price-prediction sites.
+- Report the CURRENT level and the level forecast roughly ONE YEAR ahead, both in the SAME unit. Do not compute a percentage change — that is done downstream.
+- If the publication gives a multi-year path, use the point closest to one year out.
+- Report the document's own publication date, not today's date.
+- If you genuinely cannot find a figure for an item in that publication, omit that item rather than substituting another source.
+
+Then call submit_forecasts."""
 
     submitted, sources = request_tool_call(
         client, model_id, prompt,
-        tools=[web_search_tool(max(2, SEARCHES_PER_ASSET * len(assets))), SUBMIT_TOOL],
-        tool_name="submit_projections",
-        max_tokens=1200 * len(assets),
+        tools=[{"type": "web_search_20250305", "name": "web_search",
+                "max_uses": max(3, 2 * len(assets)), "blocked_domains": BLOCKED_SOURCE_DOMAINS},
+               SEARCH_TOOL],
+        tool_name="submit_forecasts",
+        max_tokens=700 * len(assets) + 500,
         costs=costs,
     )
 
-    projections = submitted.get("projections")
-    if not projections:
-        raise ValueError("submit_projections called without any projections")
-    by_id = {p["id"]: p for p in projections if isinstance(p, dict) and "id" in p}
-    missing = [a["id"] for a in assets if a["id"] not in by_id]
-    if missing:
-        raise ValueError(f"response missing ids: {missing}")
-
-    for a in assets:
-        p = by_id[a["id"]]
-        if a["id"] in pinned_bases:
-            p["basisValue"] = pinned_bases[a["id"]]["value"]
-        targets, by_year = median_targets(
-            p.get("forecasts"),
-            p["basisValue"],
-            basis_kind=p.get("basisKind", "price_level"),
-            basis_unit=f"{p.get('basisUnit', '')} {p.get('basisDescription', '')}",
-            label=a["id"],
-        )
-        p["targets"] = targets
-        p["why"] = annotate_why(p["why"], by_year)
-        p["r"] = compute_returns(
-            p["basisValue"],
-            targets,
-            p.get("incomeYieldPct", 0.0),
-            label=a["id"],
-            basis_kind=p.get("basisKind", "price_level"),
-        )
-        pin = " (pinned)" if a["id"] in pinned_bases else ""
-        counts = "/".join(str(len(by_year[y])) for y in (1, 2, 3))
-        print(f"  {a['id']}: basis {p['basisValue']:,.2f}{pin} -> medians {targets} "
-              f"from {counts} forecasts +{p.get('incomeYieldPct', 0.0)}% => {p['r']}")
-
-    return by_id, sources
-
-
-def verify_bases(client, model_id, claims, today, costs):
-    """Re-check each basis in one call that shares no context with the
-    research call. Returns {id: {"verifiedValue", "note"}}."""
-    blocks = [
-        f"- id: {c['id']}\n  Asset: {c['name']} ({c['cat']})\n  Claim to verify: \"{c['basisDescription']}\" was reported as {c['basisValue']}"
-        for c in claims
-    ]
-    prompt = f"""Today is {today}. You are independently fact-checking these market data claims — do not assume any of them are correct.
-
-{chr(10).join(blocks)}
-
-Search the web yourself for each one and find the actual current value. Then call submit_verifications with one entry per id, reporting what you actually find whether or not it matches the claim."""
-
-    try:
-        submitted, sources = request_tool_call(
-            client, model_id, prompt,
-            tools=[web_search_tool(max(1, VERIFY_SEARCHES_PER_ASSET * len(claims))), VERIFY_TOOL],
-            tool_name="submit_verifications",
-            max_tokens=500 * len(claims),
-            costs=costs,
-        )
-    except ValueError as e:
-        # Verification is a safety net, not the payload: if it will not answer,
-        # keep the researched bases rather than losing the batch.
-        print(f"  Warning: verification unavailable ({e}); keeping researched bases")
-        return {}, []
-    return {v["id"]: v for v in submitted.get("verifications") or [] if "id" in v}, sources
-
-
-def process_batch(client, model_id, batch, today, costs, pinned_bases=None):
-    """Research one batch, then for verified categories re-check the bases and
-    re-run once with the verified values pinned. Returns (by_id, sources)."""
-    by_id, sources = research_assets(client, model_id, batch, today, costs, pinned_bases)
-
-    if batch[0]["cat"] not in VERIFY_CATEGORIES:
-        return by_id, sources
-
-    claims = [
-        {
-            "id": a["id"],
-            "name": a["name"],
-            "cat": a["cat"],
-            "basisValue": by_id[a["id"]]["basisValue"],
-            "basisDescription": by_id[a["id"]]["basisDescription"],
-        }
-        for a in batch
-        # A pinned basis is already ground truth; re-checking it would only
-        # invite a worse value.
-        if a["id"] not in (pinned_bases or {}) and by_id[a["id"]].get("basisValue") is not None
-    ]
-    if not claims:
-        return by_id, sources
-
-    verified, verify_sources = verify_bases(client, model_id, claims, today, costs)
-    sources += verify_sources
-
-    corrections = {}
-    for c in claims:
-        v = verified.get(c["id"])
-        if v is None:
+    by_id = {}
+    for f in submitted.get("forecasts") or []:
+        asset_id = f.get("id")
+        if asset_id not in {a["id"] for a in assets}:
             continue
-        rel_diff = abs(v["verifiedValue"] - c["basisValue"]) / max(abs(c["basisValue"]), 1e-9)
-        if rel_diff > BASIS_MISMATCH_TOLERANCE:
-            print(f"  Basis mismatch for {c['id']}: claimed {c['basisValue']}, independently found {v['verifiedValue']} ({rel_diff:.0%} off)")
-            corrections[c["id"]] = {
-                "value": v["verifiedValue"],
-                "note": f"'{c['basisDescription']}' is approximately {v['verifiedValue']}, not {c['basisValue']} ({v['note']}).",
-            }
-        else:
-            print(f"  Basis confirmed for {c['id']}: {c['basisValue']} ≈ {v['verifiedValue']}")
-
-    if corrections:
-        print(f"  Re-running batch with verified bases pinned for: {list(corrections)}")
-        by_id, retry_sources = research_assets(
-            client, model_id, batch, today, costs, {**(pinned_bases or {}), **corrections}
-        )
-        sources += retry_sources
-
-    return by_id, sources
-
-
-# ---------------------------------------------------------------------------
-# Orchestration
-# ---------------------------------------------------------------------------
-
-
-def live_crypto_bases(assets):
-    """Pin crypto bases to a live price feed, so the most volatile assets never
-    depend on the model recalling a spot price correctly."""
-    pinned = {}
-    for a in assets:
-        coingecko_id = CRYPTO_PRICE_IDS.get(a["id"])
-        if not coingecko_id:
+        current, forecast = f.get("currentValue"), f.get("forecastValue")
+        if not isinstance(current, (int, float)) or not isinstance(forecast, (int, float)):
+            continue
+        if current <= 0 or forecast <= 0:
+            print(f"    {asset_id}: non-positive levels {current} -> {forecast}; skipped")
+            continue
+        if not (1 / PRICE_SCALE_RATIO <= forecast / current <= PRICE_SCALE_RATIO):
+            print(f"    {asset_id}: {current} -> {forecast} off-scale; likely unit mismatch, skipped")
             continue
         try:
-            price = fetch_live_crypto_price(coingecko_id)
-        except (urllib.error.URLError, KeyError, ValueError, TimeoutError) as e:
-            print(f"  Warning: live price fetch failed for {a['name']} ({e}); falling back to a searched basis")
+            pct = check_return((forecast / current - 1) * 100, asset_id)
+        except ValueError as e:
+            print(f"    {e}")
             continue
-        pinned[a["id"]] = {
-            "value": price,
-            "note": f"{a['name']} is ${price:,.2f} USD right now, fetched live from CoinGecko.",
-        }
-        print(f"  Live price for {a['name']}: ${price:,.2f}")
-    return pinned
+        unit = f.get("unit", "")
+        by_id[asset_id] = dict(
+            r=pct,
+            why=f"{f.get('publisher')} ({f.get('publishedDate')}): {forecast:,.6g} {unit} "
+                f"one year out vs {current:,.6g} {unit} now. {f.get('note', '')}".strip(),
+            published=str(f.get("publishedDate") or today.isoformat())[:10],
+            basis=f"{current:,.6g} {unit}",
+        )
+        print(f"    {asset_id}: {current:,.6g} -> {forecast:,.6g} {unit} => {pct:+.1f}%")
 
-
-def plan_batches(assets):
-    """Group assets into batches: crypto together (live-pinned bases), then
-    each remaining category chunked to BATCH_SIZE."""
-    crypto = [a for a in assets if a["id"] in CRYPTO_PRICE_IDS]
-
-    by_category = {}
-    for a in assets:
-        if a["id"] in CRYPTO_PRICE_IDS:
-            continue
-        by_category.setdefault(a["cat"], []).append(a)
-
-    batches = [(cat, b) for cat, group in by_category.items() for b in chunk(group, BATCH_SIZE)]
-    if crypto:
-        batches.append(("Crypto", crypto))
-    return batches
+    return by_id, sources
 
 
 def select_model(client):
@@ -792,69 +684,58 @@ def select_model(client):
     fallback = next((m for m in models if "haiku" in m), None)
     if fallback is None:
         raise RuntimeError(f"no Haiku model available; saw: {models}")
-    print(f"Warning: {PRICING_MODEL_FAMILY} unavailable, using {fallback}. Cost figures assume {PRICING_MODEL_FAMILY} pricing and may be wrong.")
+    print(f"Warning: {PRICING_MODEL_FAMILY} unavailable, using {fallback}; cost figures may be wrong.")
     return fallback
 
 
-BATCH_ERRORS = (ValueError, KeyError, anthropic.APIError)
+# ---------------------------------------------------------------------------
+# Cadence
+# ---------------------------------------------------------------------------
 
+def search_is_due(asset, previous, today, force):
+    """Searched rows are skipped until their publisher publishes again.
 
-def refresh_assets(client, model_id, assets, today, costs):
-    """Research every batch, isolating any batch that fails.
-
-    A failed batch is retried one asset at a time before being given up on.
-    Isolation costs more per asset, so it is paid only where something actually
-    broke rather than as a standing premium on every run — a batch-of-1 policy
-    for all 24 assets would cost more every month than the occasional wasted
-    batch it would save.
-
-    Returns (projections, source_groups, stale_ids).
+    CREA publishes quarterly and the World Bank twice a year. Asking monthly
+    returns the same document at full price, and worse, invites the model to
+    find a different source when the real one has not moved.
     """
-    projections, source_groups, stale_ids = {}, [], []
+    if force:
+        return True
+    published = (previous or {}).get("published")
+    if not published:
+        return True
+    try:
+        last = datetime.strptime(published[:7], "%Y-%m").date()
+    except ValueError:
+        return True
+    return months_between(last, today) >= asset.get("cadence_months", 3)
 
-    for category, batch in plan_batches(assets):
-        ids = [a["id"] for a in batch]
-        print(f"Researching batch ({category}): {ids}...")
-        pinned = live_crypto_bases(batch) if category == "Crypto" else None
 
-        try:
-            by_id, sources = process_batch(client, model_id, batch, today, costs, pinned)
-        except BATCH_ERRORS as e:
-            print(f"  FAILED ({type(e).__name__}: {e})")
-            by_id, sources = {}, []
-            if len(batch) == 1:
-                stale_ids.extend(ids)
-            else:
-                print(f"  Isolating {ids} and retrying one at a time...")
-                for a in batch:
-                    solo_pin = {a["id"]: pinned[a["id"]]} if pinned and a["id"] in pinned else None
-                    try:
-                        one, one_sources = process_batch(client, model_id, [a], today, costs, solo_pin)
-                    except BATCH_ERRORS as solo_error:
-                        print(f"    {a['id']}: still failing ({type(solo_error).__name__}) — keeping previous values")
-                        stale_ids.append(a["id"])
-                        continue
-                    by_id.update(one)
-                    sources += one_sources
+# ---------------------------------------------------------------------------
+# History / arrows
+# ---------------------------------------------------------------------------
 
-        if by_id:
-            projections.update(by_id)
-            source_groups.append(([i for i in ids if i in by_id], category, sources))
+def compute_ranks(assets):
+    """Rank 1..N by the 1-year figure, best first."""
+    ranked = sorted(range(len(assets)), key=lambda i: -assets[i]["r"])
+    return {assets[idx]["id"]: rank for rank, idx in enumerate(ranked, start=1)}
 
-    return projections, source_groups, stale_ids
+
+def position_change(prev_rank, new_rank):
+    if prev_rank is None or prev_rank == new_rank:
+        return "same"
+    return "up" if new_rank < prev_rank else "down"
 
 
 def apply_history(updated_assets, data_date):
-    """Set posChange from the previous *distinct* run date and return the
-    history to write.
+    """Set posChange against the previous *distinct* run date.
 
-    Re-running on a day that already has an entry replaces it instead of
-    appending. Otherwise repeated same-day runs compare each asset against a
-    run from minutes earlier — which silently made the arrows meaningless —
-    and evict real months from the 12-month window.
+    Re-running on a date that already has an entry replaces it. Otherwise
+    repeated same-day runs compare each asset against a run from minutes
+    earlier, which silently makes every arrow meaningless.
     """
     history = load_json(HISTORY_PATH, {"history": []})
-    entries = history["history"]
+    entries = history.get("history", [])
 
     replacing = bool(entries) and entries[-1]["date"] == data_date
     baseline = entries[:-1] if replacing else entries
@@ -868,21 +749,23 @@ def apply_history(updated_assets, data_date):
     return history
 
 
+# ---------------------------------------------------------------------------
+# Orchestration
+# ---------------------------------------------------------------------------
+
 def parse_args():
     parser = argparse.ArgumentParser(description="Refresh Asset-Classes projections.")
     scope = parser.add_mutually_exclusive_group()
     scope.add_argument("--repair-stale", action="store_true",
                        help="refresh only the assets the last run left stale")
-    scope.add_argument("--only", metavar="IDS",
-                       help="comma-separated asset ids to refresh")
+    scope.add_argument("--only", metavar="IDS", help="comma-separated asset ids to refresh")
+    parser.add_argument("--force-search", action="store_true",
+                        help="run searched rows even when their publisher is not due")
     return parser.parse_args()
 
 
-def resolve_targets(args, assets, data):
-    """Return (targets, partial). A partial run touches only some assets and so
-    must merge with, rather than replace, the existing file."""
-    known = {a["id"] for a in assets}
-
+def resolve_targets(args, data):
+    known = {a["id"] for a in ASSETS}
     if args.repair_stale:
         wanted = set(data.get("staleAssetIds") or [])
         if not wanted:
@@ -893,65 +776,134 @@ def resolve_targets(args, assets, data):
         if unknown:
             raise SystemExit(f"unknown asset ids: {sorted(unknown)}")
     else:
-        return assets, False
+        return ASSETS, False
+    return [a for a in ASSETS if a["id"] in wanted], True
 
-    return [a for a in assets if a["id"] in wanted], True
+
+def refresh(targets, previous_by_id, today, costs, force_search):
+    """Fetch every targeted asset. Returns (projections, sources, stale_ids, skipped)."""
+    results, sources, stale, skipped = {}, [], [], []
+    eia_key = os.environ.get("EIA_API_KEY", "").strip()
+
+    fetched = [a for a in targets if a["method"] != "search"]
+    searched = [a for a in targets if a["method"] == "search"]
+
+    for asset in fetched:
+        print(f"  {asset['id']} ({asset['method']})...")
+        try:
+            if asset["method"] == "boc":
+                results[asset["id"]] = hisa_projection()
+            elif asset["method"] == "eia":
+                if not eia_key:
+                    raise ValueError("EIA_API_KEY is not set")
+                results[asset["id"]] = eia_projection(asset, eia_key, today)
+            else:
+                results[asset["id"]] = sleeve_projection(asset, today)
+            print(f"    => {results[asset['id']]['r']:+.1f}%")
+        except Exception as e:
+            print(f"    FAILED ({type(e).__name__}: {e}) — keeping previous value")
+            stale.append(asset["id"])
+
+    # Group searched rows by publication so one document serves several assets.
+    groups = {}
+    for asset in searched:
+        if not search_is_due(asset, previous_by_id.get(asset["id"]), today, force_search):
+            skipped.append(asset["id"])
+            continue
+        groups.setdefault(asset["group"], []).append(asset)
+
+    if skipped:
+        print(f"  Not due (publisher has not published since last fetch): {skipped}")
+
+    if groups:
+        import anthropic
+        client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
+        model_id = select_model(client)
+        print(f"  Using model: {model_id}")
+        for group, assets in groups.items():
+            print(f"  Searching {SEARCH_GROUPS[group]} for {[a['id'] for a in assets]}...")
+            try:
+                by_id, group_sources = search_group(client, model_id, group, assets, today, costs)
+            except Exception as e:
+                print(f"    FAILED ({type(e).__name__}: {e}) — keeping previous values")
+                stale.extend(a["id"] for a in assets)
+                continue
+            results.update(by_id)
+            missing = [a["id"] for a in assets if a["id"] not in by_id]
+            if missing:
+                print(f"    no usable figure for {missing} — keeping previous values")
+                stale.extend(missing)
+            # One search budget serves the whole group, so sources belong to
+            # the group rather than to any single asset within it.
+            if by_id:
+                sources.append((sorted(by_id), SEARCH_GROUPS[group], group_sources))
+
+    return results, sources, stale, skipped
 
 
 def main():
     args = parse_args()
-    client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
+    today = date.today()
     data = load_json(DATA_PATH, {"assets": []})
+    previous_by_id = {a["id"]: a for a in data.get("assets", [])}
     costs = CostTracker()
 
-    targets, partial = resolve_targets(args, data["assets"], data)
+    targets, partial = resolve_targets(args, data)
     if partial and not targets:
         print("Nothing to repair: no stale assets recorded.")
         return
 
-    # A partial run patches assets inside the existing cycle, so it keeps that
-    # cycle's date and adds to its cost rather than restating either.
-    data_date = data.get("updated") if partial else date.today().isoformat()
-    print(f"{'Repairing' if partial else 'Refreshing'} {len(targets)} of {len(data['assets'])} assets (date {data_date})")
+    data_date = data.get("updated") if (partial and data.get("updated")) else today.isoformat()
+    print(f"{'Repairing' if partial else 'Refreshing'} {len(targets)} of {len(ASSETS)} assets (date {data_date})")
 
-    model_id = select_model(client)
-    print(f"Using model: {model_id}")
-
-    projections, source_groups, stale_ids = refresh_assets(client, model_id, targets, data_date, costs)
-    if not projections:
+    results, source_groups, stale_ids, skipped = refresh(
+        targets, previous_by_id, today, costs, args.force_search
+    )
+    if not results and not skipped:
         raise RuntimeError("nothing was refreshed; leaving data.json untouched")
 
-    refreshed = set(projections)
     updated_assets = []
-    for asset in data["assets"]:
-        updated = {k: v for k, v in asset.items() if k != "d"}  # "d" is a dead field
-        fresh = projections.get(asset["id"])
+    for spec in ASSETS:
+        previous = previous_by_id.get(spec["id"], {})
+        fresh = results.get(spec["id"])
+        row = {
+            "id": spec["id"], "name": spec["name"], "cat": spec["cat"],
+            "color": spec["color"], "publisher": spec["publisher"],
+        }
         if fresh:
-            updated["r"] = fresh["r"]
-            updated["why"] = fresh["why"]
-        updated_assets.append(updated)
+            row.update({k: v for k, v in fresh.items() if v is not None})
+        elif "r" in previous:
+            row.update({k: previous[k] for k in ("r", "why", "published", "basis", "lo", "hi")
+                        if k in previous})
+        else:
+            # Never invent a value for an asset that has never been fetched.
+            print(f"  {spec['id']}: no current or previous value — omitted from output")
+            continue
+        updated_assets.append(row)
 
-    # Keep sources for assets this run did not touch; drop the ones it replaced.
+    if not updated_assets:
+        raise RuntimeError("no assets have a value; leaving data.json untouched")
+
+    refreshed = set(results)
     kept = [s for s in data.get("sources", [])
             if not (set(str(s.get("assetId", "")).split("+")) & refreshed)] if partial else []
-    seen_urls = {s["url"] for s in kept}
+    seen = {s["url"] for s in kept}
     all_sources = list(kept)
-    # A batch shares one search budget, so a source cannot be pinned to a single
-    # asset within it. Keep the exact ids in the data, but label the UI by
-    # category — joining four asset names truncated the source title away.
-    for ids, category, sources in source_groups:
-        for s in sources:
-            if s["url"] not in seen_urls:
-                seen_urls.add(s["url"])
-                all_sources.append({**s, "assetId": "+".join(ids), "assetName": category})
+    for ids, label, group_sources in source_groups:
+        for s in group_sources:
+            if s["url"] not in seen:
+                seen.add(s["url"])
+                all_sources.append({**s, "assetId": "+".join(ids), "assetName": label})
 
-    still_stale = sorted((set(data.get("staleAssetIds") or []) | set(stale_ids)) - refreshed) if partial else stale_ids
+    still_stale = sorted((set(data.get("staleAssetIds") or []) | set(stale_ids)) - refreshed) \
+        if partial else sorted(set(stale_ids))
     total_cost = costs.total + (data.get("lastRunCostUsd", 0.0) if partial else 0.0)
 
     history = apply_history(updated_assets, data_date)
     data.update({
         "assets": updated_assets,
         "updated": data_date,
+        "horizon": "1-year",
         "sources": all_sources,
         "lastRunCostUsd": round(total_cost, 2),
         "staleAssetIds": still_stale,
@@ -960,8 +912,9 @@ def main():
     write_json(HISTORY_PATH, history)
 
     summary = (f"data.json updated — {len(refreshed)} of {len(updated_assets)} assets refreshed, "
-               f"{len(all_sources)} sources, cost ${costs.total:.4f}"
-               f"{f' (cycle total ${total_cost:.2f})' if partial else ''}, date: {data_date}")
+               f"{len(all_sources)} sources, cost ${costs.total:.4f}, date {data_date}")
+    if skipped:
+        summary += f" | not due: {skipped}"
     if still_stale:
         summary += f" | STALE (kept previous values): {still_stale}"
     print(summary)
