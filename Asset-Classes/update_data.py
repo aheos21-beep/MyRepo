@@ -170,30 +170,26 @@ ASSETS = [
          method="boc", publisher="Bank of Canada"),
 
     # --- Fetched: equity sleeves, full holdings file ---
-    dict(id="cad-div", name="CAD Dividend Stocks", cat="Equity", color="#58a6ff",
-         method="ishares", ticker="CDZ",
-         url="https://www.blackrock.com/ca/investors/en/products/239834/ishares-sptsx-canadian-dividend-aristocrats-index-fund",
-         expect="Dividend Aristocrats", publisher="Analyst consensus via CDZ holdings"),
     dict(id="us-div", name="US Dividend Stocks", cat="Equity", color="#79c0ff",
          method="ishares", ticker="DVY",
          url="https://www.ishares.com/us/products/239500/ishares-select-dividend-etf",
-         expect="Select Dividend", publisher="Analyst consensus via DVY holdings"),
+         expect="Select Dividend", publisher="Analyst consensus via DVY"),
     dict(id="intl-div", name="Intl Dividend Stocks", cat="Equity", color="#a5d6ff",
          method="ishares", ticker="IDV",
          url="https://www.ishares.com/us/products/239499/ishares-international-select-dividend-etf",
-         expect="International Select Dividend", publisher="Analyst consensus via IDV holdings"),
+         expect="International Select Dividend", publisher="Analyst consensus via IDV"),
 
     # --- Fetched: equity sleeves, yfinance top-10 (all measured 79-89% cover) ---
     dict(id="cad-reit", name="Canadian REITs", cat="Equity", color="#d2a8ff",
-         method="yf_top", ticker="XRE.TO", publisher="Analyst consensus via XRE holdings"),
+         method="yf_top", ticker="XRE.TO", publisher="Analyst consensus via XRE"),
     dict(id="us-tech", name="US Tech", cat="Equity", color="#a371f7",
-         method="yf_top", ticker="XLK", publisher="Analyst consensus via XLK holdings"),
+         method="yf_top", ticker="XLK", publisher="Analyst consensus via XLK"),
     dict(id="cad-energy", name="Canadian Energy", cat="Equity", color="#ffa657",
-         method="yf_top", ticker="XEG.TO", publisher="Analyst consensus via XEG holdings"),
+         method="yf_top", ticker="XEG.TO", publisher="Analyst consensus via XEG"),
     dict(id="cad-fin", name="Canadian Financials", cat="Equity", color="#7ee787",
-         method="yf_top", ticker="XFN.TO", publisher="Analyst consensus via XFN holdings"),
+         method="yf_top", ticker="XFN.TO", publisher="Analyst consensus via XFN"),
     dict(id="cad-util", name="Canadian Utilities", cat="Equity", color="#56d364",
-         method="yf_top", ticker="ZUT.TO", publisher="Analyst consensus via ZUT holdings"),
+         method="yf_top", ticker="ZUT.TO", publisher="Analyst consensus via ZUT"),
 
     # --- Fetched: energy ---
     dict(id="oil", name="WTI Crude Oil", cat="Commodity", color="#f0883e",
@@ -1037,6 +1033,42 @@ def search_is_due(asset, previous, today, force):
     return months_between(last, today) >= asset.get("cadence_months", 3)
 
 
+
+# Monthly rows refresh on the workflow cron; the rest move only when their
+# publisher publishes again. Stating the real next date beats implying every
+# row updates monthly when four of them do not.
+MONTHLY_REFRESH_DAY = 15
+
+
+def next_monthly_refresh(today):
+    if today.day < MONTHLY_REFRESH_DAY:
+        return today.replace(day=MONTHLY_REFRESH_DAY)
+    year, month = (today.year + 1, 1) if today.month == 12 else (today.year, today.month + 1)
+    return date(year, month, MONTHLY_REFRESH_DAY)
+
+
+def next_update(spec, published, today):
+    """When this row's number can next actually change."""
+    if spec["method"] == "worldbank":
+        # The CMO publishes in April and October; we read the new edition the
+        # month after it lands.
+        edition_month = int(WORLDBANK_EDITION.split("-")[1])
+        year = int(WORLDBANK_EDITION.split("-")[0])
+        if edition_month < 10:
+            return date(year, 11, 1)
+        return date(year + 1, 5, 1)
+    if spec["method"] == "search":
+        try:
+            base = datetime.strptime(str(published)[:10], "%Y-%m-%d").date()
+        except (ValueError, TypeError):
+            return next_monthly_refresh(today)
+        months = base.month + spec.get("cadence_months", 3)
+        year, month = base.year + (months - 1) // 12, (months - 1) % 12 + 1
+        day = min(base.day, 28)
+        return date(year, month, day)
+    return next_monthly_refresh(today)
+
+
 # ---------------------------------------------------------------------------
 # History / arrows
 # ---------------------------------------------------------------------------
@@ -1233,6 +1265,7 @@ def main():
             # Never invent a value for an asset that has never been fetched.
             print(f"  {spec['id']}: no current or previous value — omitted from output")
             continue
+        row["nextUpdate"] = next_update(spec, row.get("published"), today).isoformat()
         updated_assets.append(row)
 
     if not updated_assets:

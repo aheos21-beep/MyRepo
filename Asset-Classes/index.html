@@ -94,7 +94,8 @@ body { font-family:'Segoe UI', system-ui, -apple-system, sans-serif; background:
   </div>
   <div class="disc">
     ⚠️ Every row is a one-year forward figure from the named publisher, refreshed on that
-    publisher's own schedule — so dates differ by row and some are months old by design.
+    publisher's own schedule — so dates differ by row, some are months old by design, and
+    Next Update shows when each one can actually change rather than when the page refreshes.
     <strong>The figures are put on a comparable footing before being shown:</strong> equity
     sleeves come from analyst price targets, which sit systematically above realised prices,
     so those targets are discounted 9.4% for that known bias. Dividend yields are not
@@ -166,21 +167,20 @@ function buildTable() {
     <th>Asset Class</th>
     <th>Source</th>
     <th class="sortable ${sortCol === 'pub' ? 'active' : ''}" onclick="sortBy('pub')">Published</th>
-    <th>Range</th>
+    <th>Next Update</th>
   </tr></thead><tbody>`;
 
   getSorted().forEach(a => {
     const heat = heatColor(a.r, lo, hi);
     const isStale = STALE.indexOf(a.id) !== -1;
-    const range = (typeof a.lo === 'number' && typeof a.hi === 'number')
-      ? `${f(a.lo)} … ${f(a.hi)}` : '—';
+
     h += `<tr>
       <td>${posArrow(a.posChange)}</td>
       <td><span class="cum-val" style="color:${heat};background:${heat.replace('hsl', 'hsla').replace(')', ',0.12)')}" title="${esc(a.why)}">${f(a.r)}</span></td>
       <td><div class="tdname"><div class="tddot" style="background:${a.color ? esc(a.color) : heat}"></div>${esc(a.name)}<span class="tdcat">${esc(a.cat)}</span></div></td>
       <td><span class="tdpub">${esc(a.publisher)}</span>${isStale ? '<span class="stale" title="This row could not be refreshed on the last run; it keeps its previous value">STALE</span>' : ''}</td>
       <td><span class="tddate">${esc(shortDate(a.published))}</span></td>
-      <td><span class="tdrange" title="Interquartile range across the sleeve’s holdings">${esc(range)}</span></td>
+      <td><span class="tddate">${esc(shortDate(a.nextUpdate))}</span></td>
     </tr>`;
   });
   document.getElementById('rtable').innerHTML = h + '</tbody>';

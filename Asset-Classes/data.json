@@ -13,14 +13,15 @@
       "why": "1-year Government of Canada treasury bill yield is 2.36% as of 2026-07-29 (Bank of Canada Valet API). For cash the prevailing rate is the one-year return.",
       "published": "2026-07-29",
       "basis": "2.36%",
-      "posChange": "same"
+      "posChange": "same",
+      "nextUpdate": "2026-08-15"
     },
     {
       "id": "us-div",
       "name": "US Dividend Stocks",
       "cat": "Equity",
       "color": "#79c0ff",
-      "publisher": "Analyst consensus via DVY holdings",
+      "publisher": "Analyst consensus via DVY",
       "r": 3.0,
       "rRaw": 12.4,
       "adj": 0.094,
@@ -29,14 +30,15 @@
       "basis": "99 holdings",
       "lo": -10.3,
       "hi": 12.0,
-      "posChange": "same"
+      "posChange": "same",
+      "nextUpdate": "2026-08-15"
     },
     {
       "id": "intl-div",
       "name": "Intl Dividend Stocks",
       "cat": "Equity",
       "color": "#a5d6ff",
-      "publisher": "Analyst consensus via IDV holdings",
+      "publisher": "Analyst consensus via IDV",
       "r": 2.5,
       "rRaw": 12.0,
       "adj": 0.094,
@@ -45,14 +47,15 @@
       "basis": "71 holdings",
       "lo": -9.4,
       "hi": 19.3,
-      "posChange": "same"
+      "posChange": "same",
+      "nextUpdate": "2026-08-15"
     },
     {
       "id": "cad-reit",
       "name": "Canadian REITs",
       "cat": "Equity",
       "color": "#d2a8ff",
-      "publisher": "Analyst consensus via XRE holdings",
+      "publisher": "Analyst consensus via XRE",
       "r": 5.3,
       "rRaw": 14.7,
       "adj": 0.094,
@@ -61,14 +64,15 @@
       "basis": "10 holdings",
       "lo": 1.1,
       "hi": 17.2,
-      "posChange": "same"
+      "posChange": "same",
+      "nextUpdate": "2026-08-15"
     },
     {
       "id": "us-tech",
       "name": "US Tech",
       "cat": "Equity",
       "color": "#a371f7",
-      "publisher": "Analyst consensus via XLK holdings",
+      "publisher": "Analyst consensus via XLK",
       "r": 31.1,
       "rRaw": 42.4,
       "adj": 0.094,
@@ -77,14 +81,15 @@
       "basis": "10 holdings",
       "lo": 10.7,
       "hi": 52.9,
-      "posChange": "same"
+      "posChange": "same",
+      "nextUpdate": "2026-08-15"
     },
     {
       "id": "cad-energy",
       "name": "Canadian Energy",
       "cat": "Equity",
       "color": "#ffa657",
-      "publisher": "Analyst consensus via XEG holdings",
+      "publisher": "Analyst consensus via XEG",
       "r": 1.2,
       "rRaw": 10.5,
       "adj": 0.094,
@@ -93,14 +98,15 @@
       "basis": "10 holdings",
       "lo": -7.8,
       "hi": 7.0,
-      "posChange": "same"
+      "posChange": "same",
+      "nextUpdate": "2026-08-15"
     },
     {
       "id": "cad-fin",
       "name": "Canadian Financials",
       "cat": "Equity",
       "color": "#7ee787",
-      "publisher": "Analyst consensus via XFN holdings",
+      "publisher": "Analyst consensus via XFN",
       "r": -7.2,
       "rRaw": 1.2,
       "adj": 0.094,
@@ -109,14 +115,15 @@
       "basis": "10 holdings",
       "lo": -13.1,
       "hi": 10.6,
-      "posChange": "same"
+      "posChange": "same",
+      "nextUpdate": "2026-08-15"
     },
     {
       "id": "cad-util",
       "name": "Canadian Utilities",
       "cat": "Equity",
       "color": "#56d364",
-      "publisher": "Analyst consensus via ZUT holdings",
+      "publisher": "Analyst consensus via ZUT",
       "r": 2.1,
       "rRaw": 11.4,
       "adj": 0.094,
@@ -125,7 +132,8 @@
       "basis": "10 holdings",
       "lo": -6.4,
       "hi": 12.4,
-      "posChange": "same"
+      "posChange": "same",
+      "nextUpdate": "2026-08-15"
     },
     {
       "id": "oil",
@@ -138,7 +146,8 @@
       "why": "EIA Short-Term Energy Outlook projects West Texas Intermediate Crude Oil Price at 60.00 dollars per barrel in 2027-08, against 72.00 in 2026-08.",
       "published": "2026-08",
       "basis": "72.00 dollars per barrel",
-      "posChange": "same"
+      "posChange": "same",
+      "nextUpdate": "2026-08-15"
     },
     {
       "id": "natgas",
@@ -151,7 +160,8 @@
       "why": "EIA Short-Term Energy Outlook projects Natural Gas Henry Hub Spot Price ($/mmBtu) at 3.39 dollars per million Btu in 2027-08, against 3.40 in 2026-08.",
       "published": "2026-08",
       "basis": "3.40 dollars per million Btu",
-      "posChange": "same"
+      "posChange": "same",
+      "nextUpdate": "2026-08-15"
     },
     {
       "id": "cad-re",
@@ -164,7 +174,8 @@
       "why": "Canadian Real Estate Association (CREA) (2026-07-15): 694,164 CAD one year out vs 686,710 CAD now. National average home price forecast; 2026 forecast vs 2027 forecast from CREA July 15, 2026 quarterly update",
       "published": "2026-07-15",
       "basis": "686,710 CAD",
-      "posChange": "same"
+      "posChange": "same",
+      "nextUpdate": "2026-10-15"
     },
     {
       "id": "potash",
@@ -177,7 +188,8 @@
       "why": "World Bank Commodity Markets Outlook: Potassium chloride forecast at 365 USD/tonne next year against 390 this year. Read from the published forecast table, comparing forecast years — not a forecast against a past actual.",
       "published": "2026-04",
       "basis": "390 USD/tonne",
-      "posChange": "same"
+      "posChange": "same",
+      "nextUpdate": "2026-11-01"
     },
     {
       "id": "copper",
@@ -190,7 +202,8 @@
       "why": "World Bank Commodity Markets Outlook: Copper forecast at 11,000 USD/tonne next year against 12,000 this year. Read from the published forecast table, comparing forecast years — not a forecast against a past actual.",
       "published": "2026-04",
       "basis": "12,000 USD/tonne",
-      "posChange": "same"
+      "posChange": "same",
+      "nextUpdate": "2026-11-01"
     },
     {
       "id": "nickel",
@@ -203,7 +216,8 @@
       "why": "World Bank Commodity Markets Outlook: Nickel forecast at 17,500 USD/tonne next year against 17,000 this year. Read from the published forecast table, comparing forecast years — not a forecast against a past actual.",
       "published": "2026-04",
       "basis": "17,000 USD/tonne",
-      "posChange": "same"
+      "posChange": "same",
+      "nextUpdate": "2026-11-01"
     },
     {
       "id": "aluminium",
@@ -216,12 +230,11 @@
       "why": "World Bank Commodity Markets Outlook: Aluminum forecast at 3,000 USD/tonne next year against 3,200 this year. Read from the published forecast table, comparing forecast years — not a forecast against a past actual.",
       "published": "2026-04",
       "basis": "3,200 USD/tonne",
-      "posChange": "same"
+      "posChange": "same",
+      "nextUpdate": "2026-11-01"
     }
   ],
   "sources": [],
   "lastRunCostUsd": 0.0,
-  "staleAssetIds": [
-    "cad-div"
-  ]
+  "staleAssetIds": []
 }
