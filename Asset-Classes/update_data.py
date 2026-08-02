@@ -33,8 +33,9 @@ Design, and the reasoning behind it:
 
 6. A 200 is not evidence the right fund was fetched. iShares returns a
    well-formed CSV for a wrong product id: id 239500 was requested as IDV and
-   served DVY, with nothing in the response signalling an error. Every
-   holdings fetch asserts the fund name inside the file.
+   served DVY, with nothing in the response signalling an error. So identity
+   is asserted, not inferred — via the fund name inside the file (US funds) or
+   the ticker in the download URL (Canadian files, which carry no name line).
 
 7. Columns are read by name, never by position. The same provider uses
    'Shares' for one fund and 'Quantity' for another, and IDV carries an extra
@@ -96,9 +97,11 @@ RETURN_SANITY_BOUNDS = (-90.0, 200.0)
 PRICE_SCALE_RATIO = 5.0
 
 # Below this share of a fund, a top-10 stands in for too little of the sleeve:
-# renormalising reweights it onto its largest names. The five top-10 sleeves
-# measured 79-89%; the three below that use a full holdings file instead.
-MIN_SLEEVE_COVERAGE = 0.70
+# renormalising reweights it onto its largest names. Set by XLK, the lowest
+# sleeve that still ships, at 59%: a cap-weighted tech fund genuinely is its
+# top names. The Canadian sector sleeves sit at 79-89%. Anything under this
+# uses a full holdings file instead.
+MIN_SLEEVE_COVERAGE = 0.55
 # A sleeve whose holdings mostly lack analyst targets is not a consensus.
 MIN_SLEEVE_TARGET_COVERAGE = 0.60
 
@@ -363,12 +366,19 @@ def fetch_ishares_holdings(asset):
         url = urllib.parse.urljoin(asset["url"], url)
     text = http_get(url)
 
-    # A wrong product id returns 200 with a valid CSV for a different fund.
+    # A wrong product id returns 200 with a valid CSV for a different fund, so
+    # identity is asserted rather than inferred from a 200. The US files name
+    # the fund on their first line; the Canadian ones do not, and carry the
+    # ticker in the download URL instead (fileName=CDZ_holdings). Either proves
+    # identity; neither being present does not.
     head = text[:400]
-    if asset["expect"].lower() not in head.lower():
+    named = asset["expect"].lower() in head.lower()
+    in_url = re.search(rf"\b{re.escape(asset['ticker'])}[_-]?holdings\b", url, re.I) is not None
+    if not (named or in_url):
         raise ValueError(
-            f"{asset['id']}: holdings file is the wrong fund — expected "
-            f"{asset['expect']!r}, file begins {head.splitlines()[0][:80]!r}"
+            f"{asset['id']}: cannot confirm this is {asset['ticker']} — neither "
+            f"{asset['expect']!r} in the file nor {asset['ticker']} in the download URL. "
+            f"File begins {head.splitlines()[0][:80]!r}, url {url[:110]!r}"
         )
 
     as_of = None
@@ -401,7 +411,11 @@ def fetch_ishares_holdings(asset):
             continue
         if weight > 0:
             exchange = row[idx["Exchange"]].strip() if "Exchange" in idx else ""
-            holdings.append({"ticker": ticker, "weight": weight, "exchange": exchange})
+            holdings.append({
+                "ticker": ticker, "weight": weight, "exchange": exchange,
+                # A provider file lists a local ticker; it must be mapped.
+                "symbol": yahoo_symbol(ticker, exchange, asset.get("ticker", "")),
+            })
 
     if not holdings:
         raise ValueError(f"{asset['id']}: holdings file parsed to zero equity rows")
@@ -419,7 +433,11 @@ def fetch_yf_top_holdings(asset):
         raise ValueError(f"{asset['id']}: yfinance returned no holdings for {asset['ticker']}")
 
     weight_col = top.columns[-1]
-    holdings = [{"ticker": str(sym), "weight": float(row[weight_col]) * 100.0, "exchange": ""}
+    # yfinance already returns Yahoo symbols, suffixes and all ('BMO.TO', 'RY').
+    # Rewriting them turned 'BMO.TO' into 'BMO-TO.TO' and cost four sleeves
+    # every one of their analyst targets, so they are passed through untouched.
+    holdings = [{"ticker": str(sym), "weight": float(row[weight_col]) * 100.0,
+                 "exchange": "", "symbol": str(sym)}
                 for sym, row in top.iterrows() if float(row[weight_col]) > 0]
     covered = sum(h["weight"] for h in holdings) / 100.0
     if covered < MIN_SLEEVE_COVERAGE:
@@ -448,12 +466,18 @@ EXCHANGE_SUFFIX = {
 }
 
 
-def yahoo_symbol(holding, fund_ticker):
-    ticker = holding["ticker"].replace(".", "-").strip()
-    suffix = EXCHANGE_SUFFIX.get(holding.get("exchange", "").strip().lower(), "")
+def yahoo_symbol(ticker, exchange, fund_ticker):
+    """Map a provider file's local ticker + exchange onto a Yahoo symbol.
+
+    Only for provider files. Symbols that already come from Yahoo must not be
+    passed through here — they are already correct, and re-suffixing them
+    produces 'BMO-TO.TO'.
+    """
+    base = ticker.replace(".", "-").strip()
+    suffix = EXCHANGE_SUFFIX.get((exchange or "").strip().lower(), "")
     if not suffix and fund_ticker.endswith(".TO"):
         suffix = ".TO"
-    return ticker + suffix
+    return base + suffix
 
 
 def equity_sleeve_projection(asset, holdings, as_of, today):
@@ -466,13 +490,12 @@ def equity_sleeve_projection(asset, holdings, as_of, today):
     """
     import yfinance as yf
 
-    symbols = {h["ticker"]: yahoo_symbol(h, asset.get("ticker", "")) for h in holdings}
     contributions, used_weight, total_weight, per_name = [], 0.0, 0.0, []
 
     for h in holdings:
         total_weight += h["weight"]
         try:
-            info = yf.Ticker(symbols[h["ticker"]]).get_info() or {}
+            info = yf.Ticker(h["symbol"]).get_info() or {}
         except Exception:
             continue
         price = info.get("currentPrice") or info.get("regularMarketPrice")
@@ -553,7 +576,16 @@ SEARCH_TOOL = {
                     },
                     "required": ["id", "currentValue", "forecastValue", "unit", "publisher", "publishedDate", "note"],
                 },
-            }
+            },
+            "notFound": {
+                "type": "array",
+                "items": {"type": "string"},
+                "description": (
+                    "Ids you could NOT find a figure for in this publication. Reporting an id "
+                    "here is a correct, expected answer — always preferable to omitting it "
+                    "silently or substituting a different source."
+                ),
+            },
         },
         "required": ["forecasts"],
     },
@@ -630,9 +662,9 @@ Rules:
 - Report the CURRENT level and the level forecast roughly ONE YEAR ahead, both in the SAME unit. Do not compute a percentage change — that is done downstream.
 - If the publication gives a multi-year path, use the point closest to one year out.
 - Report the document's own publication date, not today's date.
-- If you genuinely cannot find a figure for an item in that publication, omit that item rather than substituting another source.
+- If you genuinely cannot find a figure for an item in that publication, put its id in "notFound". Do NOT substitute a different source, and do NOT skip calling the tool.
 
-Then call submit_forecasts."""
+You MUST finish by calling submit_forecasts, even if you found nothing at all — in that case call it with an empty "forecasts" list and every id in "notFound". Ending your turn without calling it loses the whole group."""
 
     submitted, sources = request_tool_call(
         client, model_id, prompt,
@@ -643,6 +675,10 @@ Then call submit_forecasts."""
         max_tokens=700 * len(assets) + 500,
         costs=costs,
     )
+
+    not_found = [str(i) for i in (submitted.get("notFound") or [])]
+    if not_found:
+        print(f"    publication carries no figure for {not_found}")
 
     by_id = {}
     for f in submitted.get("forecasts") or []:
