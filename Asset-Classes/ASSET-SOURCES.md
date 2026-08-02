@@ -32,7 +32,7 @@ inclusion rule actually being enforced rather than merely stated.
 
 ---
 
-## The list — 18 assets
+## The list — 17 assets
 
 ### Tier 1 — Fetched. No LLM, $0, no run-to-run variance.
 
@@ -57,10 +57,23 @@ Notes on the benchmark picks:
   with non-tech names.
 - **ZUT is equal-weighted, XRE is not.** Not an inconsistency — each is the
   standard benchmark for its sleeve. The provider's choice, not ours.
-- **XDV over VDY** to keep the Canadian dividend sleeve from becoming a bank
-  proxy; **SCHD over VYM** for its quality screen.
-- **Intl Dividend is provisional.** `yfinance` target coverage on foreign
-  listings is unverified. If it fails, the row is dropped — not substituted.
+- **XDV over VDY** — but see the correction below; the stated rationale did
+  not survive contact with the actual holdings. **SCHD over VYM** for its
+  quality screen.
+- **Intl Dividend is confirmed viable.** Foreign target coverage came back
+  6/6. Benchmark still to pick between IDV and ZDI.
+
+**Correction — XDV is also a bank proxy.** The pick was justified as keeping
+the Canadian dividend sleeve from becoming one. Its actual top ten is RY, BMO,
+CTC-A, TD, BNS, CM, SLF, GWO, TRP, CCA — **seven of ten are financials**. The
+reasoning was wrong; whether XDV is still the right benchmark is now an open
+question rather than a settled one.
+
+**CAD Dividend and Cdn Financials would substantially duplicate each other.**
+XDV and XFN share six of their top ten (RY, TD, BMO, BNS, CM, SLF). Two rows
+that move together are two rows carrying one asset class. Worth resolving
+before building — either drop one, or move the dividend sleeve to a benchmark
+that is genuinely not bank-led.
 
 ### Tier 2 — One authority, one LLM search, no median.
 
@@ -72,7 +85,6 @@ Notes on the benchmark picks:
 | Copper | World Bank CMO | **Semi-annual** — Apr, Oct | May, Nov | 4.0pp → expect lower |
 | Aluminium | World Bank CMO | **Semi-annual** — Apr, Oct | May, Nov | — |
 | Nickel | World Bank CMO | **Semi-annual** — Apr, Oct | May, Nov | — |
-| Lumber | ⚠️ Fastmarkets — **no free forecast, see below** | Price assessments weekly; forecasts paywalled | Pending decision | 3.6pp |
 
 **One CMO search covers four assets.** Potash, copper, aluminium and nickel
 all come out of the same twice-yearly document, so metals three and four cost
@@ -87,9 +99,9 @@ being up to six months stale — the publication date makes that visible.
 | Rows | Cost |
 | --- | --- |
 | 11 fetched | $0 |
-| 7 searched, across 4 searches at their own cadence (~1/month averaged) | ≈ $0.05/mo |
+| 6 searched, across 3 searches at their own cadence (<1/month averaged) | ≈ $0.04/mo |
 
-**≈ $0.05/month, estimated** — against $2.89/month for 21 assets today. Treat
+**≈ $0.04/month, estimated** — against $2.89/month for 21 assets today. Treat
 the figure as unconfirmed until the first real run meters it.
 
 Cost scales with **sources, not assets**. Adding an equity sleeve or another
@@ -106,7 +118,7 @@ Not the same kind of claim, and the dashboard should not blur them:
 | Market-implied | HISA | Not an opinion — what the curve prices. But forward rates are biased predictors of future spot. **The only fixed-income row on the list** |
 | Official projection | Oil, gas, potash, copper, aluminium, nickel | A government or multilateral model. EIA publishes wide confidence bands on oil |
 | Analyst consensus | All 8 equity sleeves | Real consensus, but sell-side targets are **persistently optimistic as a class** — expect the equity rows to skew positive |
-| Single-institution | Canadian / US real estate, lumber | One organisation's view on its own schedule |
+| Single-institution | Canadian / US real estate | One organisation's view on its own schedule |
 
 **Show a range, not just a point, for equity sleeves.** Dispersion within a
 sleeve is large — Canadian financials span roughly −1% to +25% at the
@@ -116,8 +128,9 @@ quartiles. A single number hides more than any weighting choice does.
 July and next publishes 16 October, a July number must not wear an August
 badge. This matters more now: the CMO rows can legitimately be five months old.
 
-**Composition:** 8 equity sleeves · 7 commodities · 2 real estate · 1 cash.
-No bonds — the SPF route was considered and declined.
+**Composition:** 8 equity sleeves · 6 commodities · 2 real estate · 1 cash.
+No bonds — the SPF route was considered and declined. No lumber — no free
+forecast exists.
 
 ---
 
@@ -125,43 +138,46 @@ No bonds — the SPF route was considered and declined.
 
 | # | Item | Result |
 | --- | --- | --- |
-| 1 | EIA STEO series IDs | ✅ **Confirmed** — `STEO.WTIPUUS` and `STEO.NGHHUUS`, both appearing in EIA's own query-builder URLs. STEO is monthly with an 18-month horizon, as assumed |
-| 2 | `yfinance` US coverage | ⛔ **Not testable here** — Yahoo is policy-denied at the sandbox proxy (403 on CONNECT), including the Canadian control that is known to work in Actions. No evidence either way |
-| 3 | ETF holdings fetch | ⛔ **Not testable here** — `ishares.com`, `bmo.com`, `blackrock.com` all 403 at the proxy |
-| 4 | Fastmarkets cadence | ⚠️ **Answered, and the answer is bad** — see below |
+| 1 | EIA STEO series IDs | ✅ **Confirmed** — `STEO.WTIPUUS` and `STEO.NGHHUUS`, from EIA's own query-builder URLs. STEO is monthly, 18-month horizon, as assumed |
+| 2 | `yfinance` target coverage | ✅ **Confirmed, 18/18** — US 8/8, Canadian 4/4, foreign 6/6, run in Actions. Analyst counts 13–58 per name |
+| 3 | ETF holdings | ⚠️ **Partly solved** — `yfinance` returns top-10 only, and coverage varies from 88% to 24%. See below |
+| 4 | Lumber authority | ❌ **No free forecast exists** — dropped from the list |
 
-Items 2 and 3 need a throwaway GitHub Actions run to settle. That is the
-environment the refresh actually runs in, and it is not subject to the sandbox
-egress policy.
+### Q2 — target coverage is a solved problem
 
-### The lumber problem
+Every ticker tested returned a price, a mean target and an analyst count.
+Foreign listings worked across Switzerland, France, London, Tokyo, Sydney and
+Germany, so **the Intl Dividend row survives**. This was the largest single
+risk to the design and it cleared.
 
-Random Lengths (Fastmarkets) publishes **weekly and twice-weekly price
-assessments, not a free forecast**, and the product is a paid subscription.
-The other lumber authority, Forest Economic Advisors, publishes a Quarterly
-Forecasting Service — also paywalled.
+### Q3 — `yfinance` holdings are enough for some sleeves, not all
 
-So lumber can satisfy the inclusion rule only in its weak form: *an institution
-can be named*. It fails the strong form — **the published forecast cannot
-actually be read**. What a search would find is FEA's headline number quoted
-secondhand in trade press. That is the exact route by which content farms
-entered wheat's median.
+`yfinance` returns exactly ten holdings per fund. What those ten cover:
 
-Options: (a) drop lumber; (b) keep it pinned to FEA, quarterly, marked as the
-weakest row on the list. Pending decision.
+| Benchmark | Top-10 covers | Verdict |
+| --- | --- | --- |
+| XFN.TO | 88.7% | `yfinance` alone is fine |
+| XEG.TO | 88.1% | fine |
+| XRE.TO | 82.3% | fine |
+| ZUT.TO | 79.0% | fine |
+| XLK | 59.3% | borderline — but XLK genuinely is top-heavy, so the ten are what drives it |
+| XDV.TO | 59.2% | borderline |
+| SCHD | 41.9% | **needs a real holdings file** |
+| IDV | 27.3% | **needs a real holdings file** |
+| ZDI.TO | 23.8% | **needs a real holdings file** |
 
-### Note on the EIA confirmation
+Renormalising a top-10 is not a neutral approximation — it reweights the sleeve
+onto its largest names. At 88% that distortion is small. At 24% the row is ten
+stocks standing in for a hundred, which is not the asset class.
 
-The series *names* are confirmed. The **v2 API query shape**
-(`/v2/steo/data/?facets[seriesId][]=...`) and the free key are still untested,
-because `api.eia.gov` is also blocked here and no key is held. The `.A` / `.M`
-suffixes seen in the URLs are v1 conventions; v2 takes the bare series ID as a
-facet.
+So the provider-CSV question does have to be answered, but only for **three of
+nine benchmarks**: SCHD, and whichever Intl Dividend candidate is chosen. The
+five Canadian sector sleeves can ship on `yfinance` alone.
 
-### Still open on first run
+### Still unverified
 
-Whether `yfinance` returns targets for the Intl Dividend benchmark's foreign
-listings. If not, drop the row — do not substitute.
+The EIA **v2 query shape** (`/v2/steo/data/?facets[seriesId][]=...`) and the
+free key. The series names are confirmed; the request that fetches them is not.
 
 ## Rejected, and why
 
@@ -172,6 +188,7 @@ listings. If not, drop the row — do not substitute.
 | Lithium | Unit chaos: `$16/kg` and `$15,646/tonne` averaged once gave +12,074% |
 | Bitcoin (36.9pp), Ethereum (45.4pp) | No authority exists; houses differ 2-3x. The spread is the honest answer |
 | Canadian Bonds, HY Bonds | Reported the policy rate rather than their own return. A Philadelphia Fed SPF route existed and was declined — bonds stay out |
+| Lumber (3.6pp) | **No free forecast exists.** Fastmarkets Random Lengths sells price assessments, not forecasts; FEA's forecast service is also paywalled. An institution could be named but its published forecast could not be read |
 | Wheat and other ags | Content farms entered wheat's median (11.3pp). A USDA WASDE route existed and was declined |
 | Refined fuels, electricity, coal | Consumption prices, not holdable asset classes. Would have been free off the existing EIA key |
 | Tin, lead, iron ore | Free off the CMO search, but not things a retail allocation holds |
@@ -181,6 +198,7 @@ listings. If not, drop the row — do not substitute.
 | What breaks | Effect | Response |
 | --- | --- | --- |
 | `yfinance` breaks (unofficial Yahoo scraper) | **All 8 equity sleeves stale at once** — the single largest concentration of risk on the list | Already a repo dependency and holding; keep last value, flag |
+| `yfinance` silently narrows holdings | A sleeve quietly becomes its top names | Assert coverage ≥ a floor per sleeve; stale rather than distort |
 | ETF provider changes its holdings file | That sleeve stales | Fall back to top-10 holdings |
 | Yahoo returns no target for a holding | 2 of 173 already do | Drop and reweight; do not substitute |
 | EIA key revoked / STEO reshaped | Oil and gas stale | Keep last value, flag |
