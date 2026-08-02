@@ -72,7 +72,7 @@ Notes on the benchmark picks:
 | Copper | World Bank CMO | **Semi-annual** — Apr, Oct | May, Nov | 4.0pp → expect lower |
 | Aluminium | World Bank CMO | **Semi-annual** — Apr, Oct | May, Nov | — |
 | Nickel | World Bank CMO | **Semi-annual** — Apr, Oct | May, Nov | — |
-| Lumber | Fastmarkets | ⚠️ Cadence unknown | Quarterly until known | 3.6pp |
+| Lumber | ⚠️ Fastmarkets — **no free forecast, see below** | Price assessments weekly; forecasts paywalled | Pending decision | 3.6pp |
 
 **One CMO search covers four assets.** Potash, copper, aluminium and nickel
 all come out of the same twice-yearly document, so metals three and four cost
@@ -121,21 +121,47 @@ No bonds — the SPF route was considered and declined.
 
 ---
 
-## To verify before building
+## Verification status — checked 2026-08-02
 
-Lookups, not judgment calls.
+| # | Item | Result |
+| --- | --- | --- |
+| 1 | EIA STEO series IDs | ✅ **Confirmed** — `STEO.WTIPUUS` and `STEO.NGHHUUS`, both appearing in EIA's own query-builder URLs. STEO is monthly with an 18-month horizon, as assumed |
+| 2 | `yfinance` US coverage | ⛔ **Not testable here** — Yahoo is policy-denied at the sandbox proxy (403 on CONNECT), including the Canadian control that is known to work in Actions. No evidence either way |
+| 3 | ETF holdings fetch | ⛔ **Not testable here** — `ishares.com`, `bmo.com`, `blackrock.com` all 403 at the proxy |
+| 4 | Fastmarkets cadence | ⚠️ **Answered, and the answer is bad** — see below |
 
-1. **EIA STEO series IDs** for WTI spot and Henry Hub — both energy rows depend on it.
-2. **`yfinance` US coverage** — Canadian is proven (171 of 173 TSX names return
-   targets daily in `Stock-Screener/fetch_data.py`); all 173 rows there are
-   Canadian, so US is expected but untested. Gates SCHD and XLK.
-3. **ETF holdings fetch** — provider CSVs (iShares, BMO) are free and daily, but
-   format stability is unproven. Fallback: `yfinance` top-10 holdings
-   renormalised, which for concentrated Canadian ETFs is often 50-70% of the fund.
-4. **Fastmarkets cadence** — the only Tier 2 row with an unknown schedule.
+Items 2 and 3 need a throwaway GitHub Actions run to settle. That is the
+environment the refresh actually runs in, and it is not subject to the sandbox
+egress policy.
 
-Plus one that resolves itself on first run: whether `yfinance` returns targets
-for the Intl Dividend benchmark's foreign listings. If not, drop the row.
+### The lumber problem
+
+Random Lengths (Fastmarkets) publishes **weekly and twice-weekly price
+assessments, not a free forecast**, and the product is a paid subscription.
+The other lumber authority, Forest Economic Advisors, publishes a Quarterly
+Forecasting Service — also paywalled.
+
+So lumber can satisfy the inclusion rule only in its weak form: *an institution
+can be named*. It fails the strong form — **the published forecast cannot
+actually be read**. What a search would find is FEA's headline number quoted
+secondhand in trade press. That is the exact route by which content farms
+entered wheat's median.
+
+Options: (a) drop lumber; (b) keep it pinned to FEA, quarterly, marked as the
+weakest row on the list. Pending decision.
+
+### Note on the EIA confirmation
+
+The series *names* are confirmed. The **v2 API query shape**
+(`/v2/steo/data/?facets[seriesId][]=...`) and the free key are still untested,
+because `api.eia.gov` is also blocked here and no key is held. The `.A` / `.M`
+suffixes seen in the URLs are v1 conventions; v2 takes the bare series ID as a
+facet.
+
+### Still open on first run
+
+Whether `yfinance` returns targets for the Intl Dividend benchmark's foreign
+listings. If not, drop the row — do not substitute.
 
 ## Rejected, and why
 
