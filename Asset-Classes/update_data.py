@@ -78,8 +78,19 @@ PRICE_PER_CACHE_WRITE_TOKEN = 1.25 / 1_000_000
 PRICE_PER_CACHE_READ_TOKEN = 0.10 / 1_000_000
 PRICE_PER_SEARCH = 10.00 / 1_000
 
+# A search-heavy turn legitimately pauses mid-work and must be handed back to
+# resume. This is not a retry and it earns its keep.
 MAX_PAUSE_CONTINUATIONS = 4
-REQUEST_ATTEMPTS = 2
+
+# One attempt, deliberately. A whole-request retry only fires on "ended without
+# calling the tool" — a transient API failure raises instead and never reaches
+# it. The first live run showed that condition is deterministic, not random:
+# CBRE ended its turn twice identically because the tool had no way to express
+# "this document has no figure", and the second attempt re-ran every web search
+# to reach the same place. A failed group now stales and can be re-run
+# deliberately with --repair-stale, rather than every run paying double on the
+# way down.
+REQUEST_ATTEMPTS = 1
 
 # Content farms publish confident numbers with no analyst behind them and are
 # indistinguishable from research once they are in context.
@@ -619,8 +630,13 @@ def extract_search_sources(blocks):
 
 
 def request_tool_call(client, model_id, prompt, tools, tool_name, max_tokens, costs):
-    """Run one request, resuming paused turns and retrying a turn that ends
-    without answering. Without both, one such turn discards the whole group."""
+    """Run one request, resuming paused turns.
+
+    Paused turns are resumed because a search-heavy turn genuinely is unfinished.
+    A turn that simply ends without calling the tool is NOT retried: that has
+    proven deterministic rather than transient, so a second attempt re-runs
+    every search to fail the same way. The group stales instead.
+    """
     last_stop = None
     for attempt in range(1, REQUEST_ATTEMPTS + 1):
         messages = [{"role": "user", "content": prompt}]
@@ -640,7 +656,8 @@ def request_tool_call(client, model_id, prompt, tools, tool_name, max_tokens, co
             if last_stop != "pause_turn":
                 break
             messages = messages + [{"role": "assistant", "content": response.content}]
-        print(f"    attempt {attempt}/{REQUEST_ATTEMPTS}: no {tool_name} call (stop_reason={last_stop})")
+        if REQUEST_ATTEMPTS > 1:
+            print(f"    attempt {attempt}/{REQUEST_ATTEMPTS}: no {tool_name} call (stop_reason={last_stop})")
     raise ValueError(f"no {tool_name} call after {REQUEST_ATTEMPTS} attempts (last stop_reason={last_stop})")
 
 
