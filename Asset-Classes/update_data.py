@@ -536,17 +536,31 @@ def fetch_ishares_holdings(asset):
         if required not in idx:
             raise ValueError(f"{asset['id']}: holdings file has no {required!r} column; saw {header}")
 
-    holdings = []
+    # Exclude what is definitely not a stock, rather than requiring an exact
+    # "Equity" label. Requiring the label meant guessing at a value never
+    # actually observed in the Canadian file, and every row was silently
+    # dropped when it did not match.
+    NON_EQUITY = ("cash", "money market", "futures", "future", "forward", "fx",
+                  "currency", "derivative", "swap", "bond", "fixed income")
+
+    holdings, skipped = [], {}
     for row in rows[start + 1:]:
         if len(row) <= idx["Weight (%)"]:
+            skipped["short row"] = skipped.get("short row", 0) + 1
             continue
         ticker = row[idx["Ticker"]].strip()
-        asset_class = row[idx["Asset Class"]].strip() if "Asset Class" in idx else "Equity"
-        if not ticker or ticker == "-" or asset_class.lower() != "equity":
+        asset_class = (row[idx["Asset Class"]].strip().lower()
+                       if "Asset Class" in idx and len(row) > idx["Asset Class"] else "")
+        if not ticker or ticker == "-":
+            skipped["no ticker"] = skipped.get("no ticker", 0) + 1
+            continue
+        if any(term in asset_class for term in NON_EQUITY):
+            skipped[f"class={asset_class}"] = skipped.get(f"class={asset_class}", 0) + 1
             continue
         try:
-            weight = float(row[idx["Weight (%)"]].replace(",", ""))
+            weight = float(row[idx["Weight (%)"]].replace(",", "").replace("%", ""))
         except ValueError:
+            skipped["unparseable weight"] = skipped.get("unparseable weight", 0) + 1
             continue
         if weight > 0:
             exchange = row[idx["Exchange"]].strip() if "Exchange" in idx else ""
@@ -557,7 +571,13 @@ def fetch_ishares_holdings(asset):
             })
 
     if not holdings:
-        raise ValueError(f"{asset['id']}: holdings file parsed to zero equity rows")
+        sample = rows[start + 1][:6] if len(rows) > start + 1 else []
+        raise ValueError(
+            f"{asset['id']}: holdings file parsed to zero equity rows. "
+            f"Header {header[:6]}; first data row {sample}; dropped {skipped}"
+        )
+    if skipped:
+        print(f"    {asset['ticker']}: skipped {skipped}")
     print(f"    {asset['ticker']}: {len(holdings)} holdings, {sum(h['weight'] for h in holdings):.1f}% of fund"
           + (f", as of {as_of}" if as_of else ""))
     return holdings, as_of
