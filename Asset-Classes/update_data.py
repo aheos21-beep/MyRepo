@@ -497,7 +497,10 @@ def fetch_ishares_holdings(asset):
     if not candidates:
         raise ValueError(f"{asset['id']}: no holdings CSV link on {asset['url']}")
 
-    url = sorted(candidates, key=len)[0]
+    # Prefer a link that says holdings; a product page also exports
+    # distributions and performance, and "shortest" picked one of those.
+    named = [h for h in candidates if re.search(r"holdings", h, re.I)]
+    url = sorted(named or candidates, key=len)[0]
     if not url.startswith("http"):
         url = urllib.parse.urljoin(asset["url"], url)
     text = http_get(url)
@@ -1080,6 +1083,7 @@ def resolve_targets(args, data):
 def refresh(targets, previous_by_id, today, costs, force_search):
     """Fetch every targeted asset. Returns (projections, sources, stale_ids, skipped)."""
     results, sources, stale, skipped = {}, [], [], []
+    failures = {}
     eia_key = os.environ.get("EIA_API_KEY", "").strip()
 
     fetched = [a for a in targets if a["method"] != "search"]
@@ -1109,8 +1113,10 @@ def refresh(targets, previous_by_id, today, costs, force_search):
                 results[asset["id"]] = sleeve_projection(asset, today)
             print(f"    => {results[asset['id']]['r']:+.1f}%")
         except Exception as e:
-            print(f"    FAILED ({type(e).__name__}: {e}) — keeping previous value")
+            reason = f"{type(e).__name__}: {e}"
+            print(f"    FAILED ({reason}) — keeping previous value")
             stale.append(asset["id"])
+            failures[asset["id"]] = reason
 
     # Group searched rows by publication so one document serves several assets.
     groups = {}
@@ -1148,7 +1154,7 @@ def refresh(targets, previous_by_id, today, costs, force_search):
                 sources.append((sorted(by_id) or [a["id"] for a in assets],
                                 label, group_sources))
 
-    return results, sources, stale, skipped
+    return results, sources, stale, skipped, failures
 
 
 def main():
@@ -1166,7 +1172,7 @@ def main():
     data_date = data.get("updated") if (partial and data.get("updated")) else today.isoformat()
     print(f"{'Repairing' if partial else 'Refreshing'} {len(targets)} of {len(ASSETS)} assets (date {data_date})")
 
-    results, source_groups, stale_ids, skipped = refresh(
+    results, source_groups, stale_ids, skipped, failures = refresh(
         targets, previous_by_id, today, costs, args.force_search
     )
     if not results and not skipped:
@@ -1240,6 +1246,10 @@ def main():
     if still_stale:
         summary += f" | STALE (kept previous values): {still_stale}"
     print(summary)
+    # Repeated at the end because a sleeve's own failure line is buried under
+    # a hundred yfinance 404s by the time the run finishes.
+    for asset_id, reason in failures.items():
+        print(f"  WHY {asset_id} FAILED: {reason}")
 
 
 if __name__ == "__main__":
