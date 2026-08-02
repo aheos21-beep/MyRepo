@@ -21,11 +21,11 @@
       "color": "#58a6ff",
       "publisher": "Analyst consensus via CDZ holdings",
       "r": 11.9,
-      "why": "Weighted analyst consensus across 95 of 95 CDZ holdings (100% of fund weight): mean target plus income yield. Weighted interquartile range 3.3% to 21.5%. 16 outlier(s) clipped.",
+      "why": "Weighted analyst consensus across 95 of 95 CDZ holdings (100% of fund weight): mean target plus income yield. Middle 80% of fund weight spans -4.0% to 32.0%. 16 outlier(s) clipped.",
       "published": "2026-07-31",
       "basis": "95 holdings",
-      "lo": 3.3,
-      "hi": 21.5,
+      "lo": -4.0,
+      "hi": 32.0,
       "posChange": "same"
     },
     {
@@ -35,11 +35,11 @@
       "color": "#79c0ff",
       "publisher": "Analyst consensus via DVY holdings",
       "r": 12.4,
-      "why": "Weighted analyst consensus across 99 of 99 DVY holdings (100% of fund weight): mean target plus income yield. Weighted interquartile range 7.9% to 17.8%. 8 outlier(s) clipped.",
+      "why": "Weighted analyst consensus across 99 of 99 DVY holdings (100% of fund weight): mean target plus income yield. Middle 80% of fund weight spans -2.1% to 22.3%. 8 outlier(s) clipped.",
       "published": "2026-07-30",
       "basis": "99 holdings",
-      "lo": 7.9,
-      "hi": 17.8,
+      "lo": -2.1,
+      "hi": 22.3,
       "posChange": "same"
     },
     {
@@ -49,11 +49,11 @@
       "color": "#a5d6ff",
       "publisher": "Analyst consensus via IDV holdings",
       "r": 11.5,
-      "why": "Weighted analyst consensus across 71 of 99 IDV holdings (77% of fund weight): mean target plus income yield. Weighted interquartile range 4.2% to 16.1%. 7 outlier(s) clipped.",
+      "why": "Weighted analyst consensus across 71 of 99 IDV holdings (77% of fund weight): mean target plus income yield. Middle 80% of fund weight spans -1.3% to 29.8%. 7 outlier(s) clipped.",
       "published": "2026-07-31",
       "basis": "71 holdings",
-      "lo": 4.2,
-      "hi": 16.1,
+      "lo": -1.3,
+      "hi": 29.8,
       "posChange": "same"
     },
     {
@@ -63,11 +63,11 @@
       "color": "#d2a8ff",
       "publisher": "Analyst consensus via XRE holdings",
       "r": 14.7,
-      "why": "Weighted analyst consensus across 10 of 10 XRE.TO holdings (100% of fund weight): mean target plus income yield. Weighted interquartile range 11.6% to 14.3%.",
+      "why": "Weighted analyst consensus across 10 of 10 XRE.TO holdings (100% of fund weight): mean target plus income yield. Middle 80% of fund weight spans 10.2% to 27.8%.",
       "published": "2026-08-02",
       "basis": "10 holdings",
-      "lo": 11.6,
-      "hi": 14.3,
+      "lo": 10.2,
+      "hi": 27.8,
       "posChange": "same"
     },
     {
@@ -77,10 +77,10 @@
       "color": "#a371f7",
       "publisher": "Analyst consensus via XLK holdings",
       "r": 42.4,
-      "why": "Weighted analyst consensus across 10 of 10 XLK holdings (100% of fund weight): mean target plus income yield. Weighted interquartile range 21.6% to 65.8%.",
+      "why": "Weighted analyst consensus across 10 of 10 XLK holdings (100% of fund weight): mean target plus income yield. Middle 80% of fund weight spans 19.7% to 65.8%.",
       "published": "2026-08-02",
       "basis": "10 holdings",
-      "lo": 21.6,
+      "lo": 19.7,
       "hi": 65.8,
       "posChange": "same"
     },
@@ -91,11 +91,11 @@
       "color": "#ffa657",
       "publisher": "Analyst consensus via XEG holdings",
       "r": 10.5,
-      "why": "Weighted analyst consensus across 10 of 10 XEG.TO holdings (100% of fund weight): mean target plus income yield. Weighted interquartile range 8.7% to 16.7%.",
+      "why": "Weighted analyst consensus across 10 of 10 XEG.TO holdings (100% of fund weight): mean target plus income yield. Middle 80% of fund weight spans 0.6% to 16.8%.",
       "published": "2026-08-02",
       "basis": "10 holdings",
-      "lo": 8.7,
-      "hi": 16.7,
+      "lo": 0.6,
+      "hi": 16.8,
       "posChange": "same"
     },
     {
@@ -105,11 +105,11 @@
       "color": "#7ee787",
       "publisher": "Analyst consensus via XFN holdings",
       "r": 1.1,
-      "why": "Weighted analyst consensus across 10 of 10 XFN.TO holdings (100% of fund weight): mean target plus income yield. Weighted interquartile range -5.1% to -1.3%.",
+      "why": "Weighted analyst consensus across 10 of 10 XFN.TO holdings (100% of fund weight): mean target plus income yield. Middle 80% of fund weight spans -5.2% to 20.8%.",
       "published": "2026-08-02",
       "basis": "10 holdings",
-      "lo": -5.1,
-      "hi": -1.3,
+      "lo": -5.2,
+      "hi": 20.8,
       "posChange": "same"
     },
     {
@@ -119,11 +119,11 @@
       "color": "#56d364",
       "publisher": "Analyst consensus via ZUT holdings",
       "r": 11.4,
-      "why": "Weighted analyst consensus across 10 of 10 ZUT.TO holdings (100% of fund weight): mean target plus income yield. Weighted interquartile range 3.3% to 18.8%.",
+      "why": "Weighted analyst consensus across 10 of 10 ZUT.TO holdings (100% of fund weight): mean target plus income yield. Middle 80% of fund weight spans 2.2% to 22.5%.",
       "published": "2026-08-02",
       "basis": "10 holdings",
-      "lo": 3.3,
-      "hi": 18.8,
+      "lo": 2.2,
+      "hi": 22.5,
       "posChange": "same"
     },
     {
@@ -163,6 +163,30 @@
       "posChange": "same"
     },
     {
+      "id": "potash",
+      "name": "Potash",
+      "cat": "Commodity",
+      "color": "#e3b341",
+      "publisher": "World Bank CMO",
+      "r": 4.1,
+      "why": "World Bank (2026-04): 253 USD/tonne one year out vs 243 USD/tonne now. Potash/MOP price forecast from World Bank Commodity Markets Outlook April 2026. Current price is 2025 estimate, forecast is for 2026.",
+      "published": "2026-04",
+      "basis": "243 USD/tonne",
+      "posChange": "same"
+    },
+    {
+      "id": "copper",
+      "name": "Copper",
+      "cat": "Commodity",
+      "color": "#ec8e2c",
+      "publisher": "World Bank CMO",
+      "r": 20.6,
+      "why": "World Bank (2026-04): 12,000 USD/tonne one year out vs 9,947 USD/tonne now. Copper price forecast from World Bank Commodity Markets Outlook April 2026. Current price is 2025 estimate, forecast is for 2026.",
+      "published": "2026-04",
+      "basis": "9,947 USD/tonne",
+      "posChange": "same"
+    },
+    {
       "id": "aluminium",
       "name": "Aluminium",
       "cat": "Commodity",
@@ -173,14 +197,240 @@
       "published": "2026-04",
       "basis": "2,632 USD/tonne",
       "posChange": "same"
+    },
+    {
+      "id": "nickel",
+      "name": "Nickel",
+      "cat": "Commodity",
+      "color": "#9db1c5",
+      "publisher": "World Bank CMO",
+      "r": 12.1,
+      "why": "World Bank (2026-04): 17,000 USD/tonne one year out vs 15,162 USD/tonne now. Nickel price forecast from World Bank Commodity Markets Outlook April 2026. Current price is 2025 estimate, forecast is for 2026.",
+      "published": "2026-04",
+      "basis": "15,162 USD/tonne",
+      "posChange": "same"
     }
   ],
-  "sources": [],
-  "lastRunCostUsd": 0.34,
+  "sources": [
+    {
+      "title": "U.S. Real Estate Market Outlook 2026 | CBRE",
+      "url": "https://www.cbre.com/insights/books/us-real-estate-market-outlook-2026",
+      "assetId": "us-re",
+      "assetName": "CBRE US real estate market outlook"
+    },
+    {
+      "title": "U.S. Real Estate Market Outlook 2026 - Local Markets",
+      "url": "https://www.cbre.com/insights/books/us-real-estate-market-outlook-2026/local-markets",
+      "assetId": "us-re",
+      "assetName": "CBRE US real estate market outlook"
+    },
+    {
+      "title": "U.S. Real Estate Market Outlook 2026 - Office",
+      "url": "https://www.cbre.com/insights/books/us-real-estate-market-outlook-2026/office",
+      "assetId": "us-re",
+      "assetName": "CBRE US real estate market outlook"
+    },
+    {
+      "title": "Greater Los Angeles 2026 U.S. Real Estate Market Outlook | CBRE",
+      "url": "https://www.cbre.com/insights/reports/greater-los-angeles-2026-u-s-real-estate-market-outlook",
+      "assetId": "us-re",
+      "assetName": "CBRE US real estate market outlook"
+    },
+    {
+      "title": "U.S. Real Estate Market Outlook 2026 - Capital Markets",
+      "url": "https://www.cbre.com/insights/books/us-real-estate-market-outlook-2026/capital-markets",
+      "assetId": "us-re",
+      "assetName": "CBRE US real estate market outlook"
+    },
+    {
+      "title": "U.S. Real Estate Market Outlook 2026 - Economy",
+      "url": "https://www.cbre.com/insights/books/us-real-estate-market-outlook-2026/economy",
+      "assetId": "us-re",
+      "assetName": "CBRE US real estate market outlook"
+    },
+    {
+      "title": "Denver 2026 U.S. Real Estate Market Outlook | CBRE",
+      "url": "https://www.cbre.com/insights/reports/denver-2026-u-s-real-estate-market-outlook",
+      "assetId": "us-re",
+      "assetName": "CBRE US real estate market outlook"
+    },
+    {
+      "title": "Insights & Research | CBRE",
+      "url": "https://www.cbre.com/insights",
+      "assetId": "us-re",
+      "assetName": "CBRE US real estate market outlook"
+    },
+    {
+      "title": "U.S. Real Estate Market Outlook 2026 - Multifamily",
+      "url": "https://www.cbre.com/insights/books/us-real-estate-market-outlook-2026/multifamily",
+      "assetId": "us-re",
+      "assetName": "CBRE US real estate market outlook"
+    },
+    {
+      "title": "U.S. Real Estate Market Outlook 2026 - Industrial",
+      "url": "https://www.cbre.com/insights/books/us-real-estate-market-outlook-2026/industrial",
+      "assetId": "us-re",
+      "assetName": "CBRE US real estate market outlook"
+    },
+    {
+      "title": "Exclusive: What's in CBRE's Forecast for 2026 - Commercial Property Executive",
+      "url": "https://www.commercialsearch.com/news/qa-whats-in-cbres-forecast-for-2026/",
+      "assetId": "us-re",
+      "assetName": "CBRE US real estate market outlook"
+    },
+    {
+      "title": "REPORT 2026 UK Real Estate Market Outlook CBRE RESEARCH JANUARY 2026",
+      "url": "https://mediaassets.cbre.com/-/media/project/cbre/shared-site/insights/books/uk-real-estate-market-outlook-2026/uk-real-estate-market-outlook-2026-report.pdf?rev=4e7cb4f74218451cbeb553eda69a5c7b",
+      "assetId": "us-re",
+      "assetName": "CBRE US real estate market outlook"
+    },
+    {
+      "title": "CRE Investment Sales Mid-Year 2026: Q1 Surged, Q2 Stalled, Full Year on Track",
+      "url": "https://www.hbcapitalre.com/cre-investment-sales-mid-year-2026/",
+      "assetId": "us-re",
+      "assetName": "CBRE US real estate market outlook"
+    },
+    {
+      "title": "Commercial Real Estate Market Forecasts and Analytics | CBRE",
+      "url": "https://www.cbre.com/services/invest-finance-and-value/market-forecasts-and-analytics",
+      "assetId": "us-re",
+      "assetName": "CBRE US real estate market outlook"
+    },
+    {
+      "title": "9 Promising Growth: CBRE Forecasts $562 Billion in Commercial Real Estate Investment in 2026",
+      "url": "https://iilife.live/academy/legacy-wealth/investing/cbre-forecasts-562-billion-in-commercial-real-estate-investment-in-2026/",
+      "assetId": "us-re",
+      "assetName": "CBRE US real estate market outlook"
+    },
+    {
+      "title": "Commercial Real Estate State of the Market - Q1 2026",
+      "url": "https://www.ccpllc.us/industry-whitepapers/commercial-real-estate-state-of-the-market-q1-2026/",
+      "assetId": "us-re",
+      "assetName": "CBRE US real estate market outlook"
+    },
+    {
+      "title": "Commodity Markets",
+      "url": "https://www.worldbank.org/en/research/commodity-markets",
+      "assetId": "copper+nickel+potash",
+      "assetName": "World Bank Commodity Markets Outlook"
+    },
+    {
+      "title": "Commodity Prices to Hit Six-Year Low in 2026 as Oil Glut Expands",
+      "url": "https://www.worldbank.org/en/news/press-release/2025/10/28/commodity-markets-outlook-october-2025-press-release",
+      "assetId": "copper+nickel+potash",
+      "assetName": "World Bank Commodity Markets Outlook"
+    },
+    {
+      "title": "Commodity Markets Outlook, April 2026 (English)",
+      "url": "https://documents.worldbank.org/en/publication/documents-reports/documentdetail/099842304282633100",
+      "assetId": "copper+nickel+potash",
+      "assetName": "World Bank Commodity Markets Outlook"
+    },
+    {
+      "title": "The Commodity Markets Outlook in eight charts",
+      "url": "https://blogs.worldbank.org/en/developmenttalk/the-commodity-markets-outlook-in-eight-charts3",
+      "assetId": "copper+nickel+potash",
+      "assetName": "World Bank Commodity Markets Outlook"
+    },
+    {
+      "title": "Publication: Commodity Markets Outlook, April 2026",
+      "url": "https://openknowledge.worldbank.org/entities/publication/3ede6f8c-ba03-4176-867c-40e604698570",
+      "assetId": "copper+nickel+potash",
+      "assetName": "World Bank Commodity Markets Outlook"
+    },
+    {
+      "title": "World Bank's Commodity Markets Outlook, April 2026 | How to use it | Hinrich Foundation",
+      "url": "https://www.hinrichfoundation.com/research/how-to-use-it/natural-resources/commodity-markets-outlook-april-2026",
+      "assetId": "copper+nickel+potash",
+      "assetName": "World Bank Commodity Markets Outlook"
+    },
+    {
+      "title": "Commodity Markets Outlook A World Bank Group Report APRIL 2026 Apr Apr Oct Oct",
+      "url": "https://documents1.worldbank.org/curated/en/099842304282633100/pdf/IDU-29bd7eb3-10b9-441a-89be-9732d149e669.pdf",
+      "assetId": "copper+nickel+potash",
+      "assetName": "World Bank Commodity Markets Outlook"
+    },
+    {
+      "title": "Middle East War to Spark Biggest Energy Price Surge in Four Years",
+      "url": "https://www.worldbank.org/en/news/press-release/2026/04/28/commodity-markets-outlook-april-2026-press-release",
+      "assetId": "copper+nickel+potash",
+      "assetName": "World Bank Commodity Markets Outlook"
+    },
+    {
+      "title": "World Bank Forecasts Further Decline in Global Commodity Prices in 2026 | Canadian Mining Report",
+      "url": "https://www.canadianminingreport.com/blog/world-bank-forecasts-further-decline-in-global-commodity-prices-in-2026",
+      "assetId": "copper+nickel+potash",
+      "assetName": "World Bank Commodity Markets Outlook"
+    },
+    {
+      "title": "WORLD BANK / COMMODITY MARKETS OUTLOOK | UNifeed",
+      "url": "https://media.un.org/unifeed/en/asset/d336/d3365872",
+      "assetId": "copper+nickel+potash",
+      "assetName": "World Bank Commodity Markets Outlook"
+    },
+    {
+      "title": "Commodity Markets Outlook (April 2026)",
+      "url": "https://thedocs.worldbank.org/en/doc/f3138644a1e8e2bb631399ae11d6c408-0050012026/commodity-markets-outlook-april-2026",
+      "assetId": "copper+nickel+potash",
+      "assetName": "World Bank Commodity Markets Outlook"
+    },
+    {
+      "title": "Commodity Markets Outlook -- April 2026",
+      "url": "https://openknowledge.worldbank.org/bitstreams/497b52a8-8294-4d4d-8c5f-d88fd6686f87/download",
+      "assetId": "copper+nickel+potash",
+      "assetName": "World Bank Commodity Markets Outlook"
+    },
+    {
+      "title": "EXECUTIVE SUMMARY COMMODITY MARKETS OUTLOOK | APRIL 2026 12 Commodity Unit 2024",
+      "url": "https://thedocs.worldbank.org/en/doc/f3138644a1e8e2bb631399ae11d6c408-0050012026/related/CMO-April-2026-Forecasts.pdf",
+      "assetId": "copper+nickel+potash",
+      "assetName": "World Bank Commodity Markets Outlook"
+    },
+    {
+      "title": "CMO-Pink-Sheet-April-2026.pdf",
+      "url": "https://thedocs.worldbank.org/en/doc/74e8be41ceb20fa0da750cda2f6b9e4e-0050012026/related/CMO-Pink-Sheet-April-2026.pdf",
+      "assetId": "copper+nickel+potash",
+      "assetName": "World Bank Commodity Markets Outlook"
+    },
+    {
+      "title": "Fertilizer prices surge as Strait of Hormuz disruptions tighten supplies",
+      "url": "https://blogs.worldbank.org/en/opendata/fertilizer-prices-surge-as-strait-of-hormuz-disruptions-tighten-",
+      "assetId": "copper+nickel+potash",
+      "assetName": "World Bank Commodity Markets Outlook"
+    },
+    {
+      "title": "EXECUTIVE SUMMARY COMMODITY MARKETS OUTLOOK | APRIL 2026 1",
+      "url": "https://thedocs.worldbank.org/en/doc/f3138644a1e8e2bb631399ae11d6c408-0050012026/related/CMO-April-2026-Executive-Summary.pdf",
+      "assetId": "copper+nickel+potash",
+      "assetName": "World Bank Commodity Markets Outlook"
+    },
+    {
+      "title": "Commodity Markets Outlook: April 2026 - World Bank Report - Studocu",
+      "url": "https://www.studocu.vn/vn/document/dai-hoc-western-sydney/business-academic-skill/commodity-markets-outlook-april-2026-world-bank-report/161515187",
+      "assetId": "copper+nickel+potash",
+      "assetName": "World Bank Commodity Markets Outlook"
+    },
+    {
+      "title": "Commodity Markets Outlook, April 2026 | The World Bank ...",
+      "url": "https://www.linkedin.com/posts/the-world-bank-group_commodity-markets-outlook-april-2026-activity-7454982791391424514-iXuY",
+      "assetId": "copper+nickel+potash",
+      "assetName": "World Bank Commodity Markets Outlook"
+    },
+    {
+      "title": "World Bank - Commodity Markets Outlook April 2026 - Knowledge for policy - European Commission",
+      "url": "https://knowledge4policy.ec.europa.eu/publication/world-bank-commodity-markets-outlook-april-2026_en",
+      "assetId": "copper+nickel+potash",
+      "assetName": "World Bank Commodity Markets Outlook"
+    },
+    {
+      "title": "World Bank: Precious Metals to Surge 42% This Year",
+      "url": "https://goldsilver.com/industry-news/article/world-bank-precious-metals-surge-42-this-year/",
+      "assetId": "copper+nickel+potash",
+      "assetName": "World Bank Commodity Markets Outlook"
+    }
+  ],
+  "lastRunCostUsd": 0.3,
   "staleAssetIds": [
-    "copper",
-    "nickel",
-    "potash",
     "us-re"
   ]
 }

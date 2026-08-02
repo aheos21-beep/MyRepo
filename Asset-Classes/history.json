@@ -5,17 +5,20 @@
       "ranks": {
         "us-tech": 1,
         "aluminium": 2,
-        "cad-reit": 3,
-        "us-div": 4,
-        "cad-div": 5,
-        "intl-div": 6,
-        "cad-util": 7,
-        "cad-energy": 8,
-        "hisa": 9,
-        "cad-re": 10,
-        "cad-fin": 11,
-        "natgas": 12,
-        "oil": 13
+        "copper": 3,
+        "cad-reit": 4,
+        "us-div": 5,
+        "nickel": 6,
+        "cad-div": 7,
+        "intl-div": 8,
+        "cad-util": 9,
+        "cad-energy": 10,
+        "potash": 11,
+        "hisa": 12,
+        "cad-re": 13,
+        "cad-fin": 14,
+        "natgas": 15,
+        "oil": 16
       }
     }
   ]
