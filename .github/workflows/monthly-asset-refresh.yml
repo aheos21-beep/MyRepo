@@ -36,7 +36,7 @@ jobs:
           python-version: '3.12'
 
       - name: Install dependencies
-        run: pip install anthropic yfinance
+        run: pip install anthropic yfinance pdfplumber
 
       - name: Update asset projections
         env:

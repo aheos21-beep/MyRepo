@@ -228,6 +228,28 @@ exists for them, and inventing one would be worse than leaving it visible.
 
 ## Annual-average forecasts are not one-year-ahead forecasts
 
+The World Bank CMO publishes calendar-year averages, and the row reads:
+
+    Copper $/mt  9,142  9,947  12,000  11,000  20.6  -8.3
+                 2024   2025    2026f   2027f   %26   %27
+
+Three figures can be computed from that, and only one answers "what happens
+over the next year":
+
+| | |
+| --- | --- |
+| +20.6% | 2026 forecast against **2025 actual** — a forecast against a past year |
+| +10.6% | 2027 forecast against 2025 actual — same flaw, quieter |
+| **−8.3%** | 2027 forecast against 2026 forecast — **the answer**, and the World Bank publishes it |
+
+Both wrong versions shipped at some point. The trap is that 9,947 looks like a
+spot price and is not: it is last year's average.
+
+The parser reads the forecast columns and **verifies its own column positions**
+by recomputing the published percentages. An edition that moves or adds a
+column fails that check and stales the row rather than reading the wrong one.
+
+
 The World Bank CMO publishes calendar-year averages. Read in August 2026, its
 2026 column is two-thirds elapsed history, so taking it as "one year ahead"
 overstates the forecast. Copper's April 2026 table reads $12,000/mt for 2026

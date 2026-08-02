@@ -207,32 +207,29 @@ ASSETS = [
          cadence_months=3,
          hint="Canadian Real Estate Association (CREA) quarterly housing market forecast, "
               "national average home price forecast for next year"),
-    # Potash, copper and nickel are suspended, not deleted. The LLM search route
-    # returned one of four commodities on three consecutive attempts even with
-    # the document pinned, and the three that failed kept older values read off
-    # the wrong (current-year) column — showing +20.6% copper beside +14.0%
-    # aluminium from the same table. Better absent than inconsistent. They come
-    # back when a deterministic fetch route is confirmed; see the verification
-    # workflow.
+    # --- Fetched: World Bank CMO forecast table, parsed from the PDF ---
+    # The LLM search route returned one of four on three consecutive attempts
+    # even with the document pinned. Reading the table ourselves removes the
+    # model from the loop entirely.
+    dict(id="potash", name="Potash", cat="Commodity", color="#e3b341",
+         method="worldbank", wb_name="Potassium chloride", publisher="World Bank CMO"),
+    dict(id="copper", name="Copper", cat="Commodity", color="#ec8e2c",
+         method="worldbank", wb_name="Copper", publisher="World Bank CMO"),
+    dict(id="nickel", name="Nickel", cat="Commodity", color="#9db1c5",
+         method="worldbank", wb_name="Nickel", publisher="World Bank CMO"),
     dict(id="aluminium", name="Aluminium", cat="Commodity", color="#bfc7d5",
-         method="search", group="cmo", publisher="World Bank CMO",
-         cadence_months=6,
-         hint="World Bank Commodity Markets Outlook aluminum price forecast, USD per tonne"),
+         method="worldbank", wb_name="Aluminum", publisher="World Bank CMO"),
 ]
 
 SEARCH_GROUPS = {
     "crea": "CREA quarterly housing market forecast",
-    "cmo": "World Bank Commodity Markets Outlook",
 }
 
 # Pinning the exact document removes the run-to-run variance that came from
 # letting the model pick which page to believe: the same prompt found these
 # figures on one run and reported them missing on the next. Update these twice
 # a year, in May and November, when a new edition lands.
-SEARCH_SOURCE_URLS = {
-    "cmo": "https://thedocs.worldbank.org/en/doc/f3138644a1e8e2bb631399ae11d6c408-0050012026"
-           "/related/CMO-April-2026-Forecasts.pdf",
-}
+SEARCH_SOURCE_URLS = {}
 
 
 # ---------------------------------------------------------------------------
@@ -382,6 +379,97 @@ def eia_projection(asset, api_key, today):
     why = (f"EIA Short-Term Energy Outlook projects {description} at {target:,.2f} {unit} "
            f"in {target_key}, against {base:,.2f} in {anchor}.")
     return dict(r=pct, adj=0.0, why=why, published=anchor, basis=f"{base:,.2f} {unit}")
+
+
+# ---------------------------------------------------------------------------
+# Fetch: World Bank Commodity Markets Outlook (PDF forecast table)
+# ---------------------------------------------------------------------------
+
+# Update each May and November, when a new edition lands.
+WORLDBANK_EDITION = "2026-04"
+WORLDBANK_FORECAST_PDF = (
+    "https://thedocs.worldbank.org/en/doc/f3138644a1e8e2bb631399ae11d6c408-0050012026"
+    "/related/CMO-April-2026-Forecasts.pdf"
+)
+
+# The published table reads, per commodity:
+#   name  unit  <year-2 actual>  <year-1 actual>  <this-year fcst>  <next-year fcst>
+#         <%chg this year>  <%chg next year>  <band>  <band>
+# e.g. "Copper $/mt 9,142 9,947 12,000 11,000 20.6 -8.3 2200 1000"
+#
+# The one-year-ahead figure is next-year forecast against this-year forecast.
+# Comparing a forecast against an ACTUAL from a past year is the mistake this
+# route exists to remove: it made copper read +20.6% when the World Bank's own
+# view of the coming year is -8.3%.
+WORLDBANK_ROW_TOLERANCE = 0.6   # percentage points, against the published %chg
+
+
+def parse_worldbank_row(numbers):
+    """Return the one-year-ahead percent change, or None if the row does not
+    have the expected shape.
+
+    Self-validating: the table publishes its own year-over-year percentages, so
+    the column positions are confirmed by recomputing them rather than assumed.
+    A future edition that adds or moves a column fails this check and stales the
+    row instead of silently reading the wrong number.
+    """
+    if len(numbers) < 6:
+        return None
+    prev_actual, this_fcst, next_fcst = numbers[1], numbers[2], numbers[3]
+    if min(prev_actual, this_fcst, next_fcst) <= 0:
+        return None
+    published_this = numbers[4]
+    published_next = numbers[5]
+    if abs((this_fcst / prev_actual - 1) * 100 - published_this) > WORLDBANK_ROW_TOLERANCE:
+        return None
+    if abs((next_fcst / this_fcst - 1) * 100 - published_next) > WORLDBANK_ROW_TOLERANCE:
+        return None
+    return (next_fcst / this_fcst - 1) * 100, this_fcst, next_fcst
+
+
+NUMBER_RE = re.compile(r"-?\d[\d,]*\.?\d*")
+
+
+def fetch_worldbank_forecasts(pdf_bytes=None):
+    """Return {lowercased commodity name: (pct, this_fcst, next_fcst)}."""
+    import pdfplumber
+
+    if pdf_bytes is None:
+        req = urllib.request.Request(WORLDBANK_FORECAST_PDF, headers={"User-Agent": USER_AGENT})
+        with urllib.request.urlopen(req, timeout=HTTP_TIMEOUT) as resp:
+            pdf_bytes = resp.read()
+
+    rows = {}
+    with pdfplumber.open(io.BytesIO(pdf_bytes)) as pdf:
+        for page in pdf.pages:
+            for line in (page.extract_text() or "").splitlines():
+                if "$/" not in line and "/mt" not in line:
+                    continue
+                name, _, rest = line.partition("$/")
+                name = name.strip().lower()
+                if not name or name[0].isdigit():
+                    continue
+                numbers = [float(m.group().replace(",", ""))
+                           for m in NUMBER_RE.finditer(rest)]
+                parsed = parse_worldbank_row(numbers)
+                if parsed:
+                    rows[name] = parsed
+    return rows
+
+
+def worldbank_projection(asset, forecasts, today):
+    key = asset["wb_name"].lower()
+    if key not in forecasts:
+        raise ValueError(f"{asset['id']}: {asset['wb_name']!r} not found in the CMO forecast "
+                         f"table (saw {sorted(forecasts)[:8]}...)")
+    pct, this_fcst, next_fcst = forecasts[key]
+    checked = check_return(pct, asset["id"])
+    why = (f"World Bank Commodity Markets Outlook: {asset['wb_name']} forecast at "
+           f"{next_fcst:,.0f} USD/tonne next year against {this_fcst:,.0f} this year. "
+           f"Read from the published forecast table, comparing forecast years — not a "
+           f"forecast against a past actual.")
+    return dict(r=checked, adj=0.0, why=why, published=WORLDBANK_EDITION,
+                basis=f"{this_fcst:,.0f} USD/tonne")
 
 
 # ---------------------------------------------------------------------------
@@ -997,10 +1085,21 @@ def refresh(targets, previous_by_id, today, costs, force_search):
     fetched = [a for a in targets if a["method"] != "search"]
     searched = [a for a in targets if a["method"] == "search"]
 
+    wb_forecasts = None
+    if any(a["method"] == "worldbank" for a in fetched):
+        try:
+            wb_forecasts = fetch_worldbank_forecasts()
+            print(f"  World Bank CMO table: {len(wb_forecasts)} commodities parsed")
+        except Exception as e:
+            print(f"  World Bank CMO fetch FAILED ({type(e).__name__}: {e})")
+            wb_forecasts = {}
+
     for asset in fetched:
         print(f"  {asset['id']} ({asset['method']})...")
         try:
-            if asset["method"] == "boc":
+            if asset["method"] == "worldbank":
+                results[asset["id"]] = worldbank_projection(asset, wb_forecasts or {}, today)
+            elif asset["method"] == "boc":
                 results[asset["id"]] = hisa_projection()
             elif asset["method"] == "eia":
                 if not eia_key:
