@@ -25,7 +25,7 @@
       "rRaw": 12.4,
       "adj": 0.094,
       "why": "Weighted analyst consensus across 99 of 99 DVY holdings (100% of fund weight): mean target plus income yield. Middle 80% of fund weight spans -10.3% to 12.0%. Analyst targets discounted 9.4% for known sell-side optimism, so this is comparable with the non-analyst rows; unadjusted it is +12.4%. 8 outlier(s) clipped.",
-      "published": "2026-07-30",
+      "published": "2026-07-31",
       "basis": "99 holdings",
       "lo": -10.3,
       "hi": 12.0,
@@ -37,11 +37,11 @@
       "cat": "Equity",
       "color": "#a5d6ff",
       "publisher": "Analyst consensus via IDV holdings",
-      "r": 2.4,
+      "r": 2.5,
       "rRaw": 12.0,
       "adj": 0.094,
       "why": "Weighted analyst consensus across 71 of 99 IDV holdings (77% of fund weight): mean target plus income yield. Middle 80% of fund weight spans -9.4% to 19.3%. Analyst targets discounted 9.4% for known sell-side optimism, so this is comparable with the non-analyst rows; unadjusted it is +12.0%. 7 outlier(s) clipped.",
-      "published": "2026-07-31",
+      "published": "2026-07-30",
       "basis": "71 holdings",
       "lo": -9.4,
       "hi": 19.3,
@@ -167,274 +167,60 @@
       "posChange": "same"
     },
     {
+      "id": "potash",
+      "name": "Potash",
+      "cat": "Commodity",
+      "color": "#e3b341",
+      "publisher": "World Bank CMO",
+      "r": -6.4,
+      "adj": 0.0,
+      "why": "World Bank Commodity Markets Outlook: Potassium chloride forecast at 365 USD/tonne next year against 390 this year. Read from the published forecast table, comparing forecast years — not a forecast against a past actual.",
+      "published": "2026-04",
+      "basis": "390 USD/tonne",
+      "posChange": "same"
+    },
+    {
+      "id": "copper",
+      "name": "Copper",
+      "cat": "Commodity",
+      "color": "#ec8e2c",
+      "publisher": "World Bank CMO",
+      "r": -8.3,
+      "adj": 0.0,
+      "why": "World Bank Commodity Markets Outlook: Copper forecast at 11,000 USD/tonne next year against 12,000 this year. Read from the published forecast table, comparing forecast years — not a forecast against a past actual.",
+      "published": "2026-04",
+      "basis": "12,000 USD/tonne",
+      "posChange": "same"
+    },
+    {
+      "id": "nickel",
+      "name": "Nickel",
+      "cat": "Commodity",
+      "color": "#9db1c5",
+      "publisher": "World Bank CMO",
+      "r": 2.9,
+      "adj": 0.0,
+      "why": "World Bank Commodity Markets Outlook: Nickel forecast at 17,500 USD/tonne next year against 17,000 this year. Read from the published forecast table, comparing forecast years — not a forecast against a past actual.",
+      "published": "2026-04",
+      "basis": "17,000 USD/tonne",
+      "posChange": "same"
+    },
+    {
       "id": "aluminium",
       "name": "Aluminium",
       "cat": "Commodity",
       "color": "#bfc7d5",
       "publisher": "World Bank CMO",
-      "r": 14.0,
+      "r": -6.2,
       "adj": 0.0,
-      "why": "World Bank (2026-04): 3,000 USD/tonne one year out vs 2,632 USD/tonne now. World Bank Commodity Markets Outlook April 2026: aluminum (LME) price forecast, annual average",
+      "why": "World Bank Commodity Markets Outlook: Aluminum forecast at 3,000 USD/tonne next year against 3,200 this year. Read from the published forecast table, comparing forecast years — not a forecast against a past actual.",
       "published": "2026-04",
-      "basis": "2,632 USD/tonne",
+      "basis": "3,200 USD/tonne",
       "posChange": "same"
     }
   ],
-  "sources": [
-    {
-      "title": "CREA Revises Resale Housing Market Forecast",
-      "url": "https://www.crea.ca/housing-market-stats/canadian-housing-market-stats/quarterly-forecasts/",
-      "assetId": "cad-re",
-      "assetName": "CREA quarterly housing market forecast"
-    },
-    {
-      "title": "CREA | CREA Updates Resale Housing Market Forecast for 2026 and 2027",
-      "url": "https://www.crea.ca/media-hub/news/crea-downgrades-resale-housing-market-forecast-amid-tariff-uncertainty-and-economic-uncertainty/",
-      "assetId": "cad-re",
-      "assetName": "CREA quarterly housing market forecast"
-    },
-    {
-      "title": "CREA | CREA Updates Resale Housing Market Forecast for 2025 and 2026",
-      "url": "https://www.crea.ca/media-hub/news/quarterly-forecasts-4/",
-      "assetId": "cad-re",
-      "assetName": "CREA quarterly housing market forecast"
-    },
-    {
-      "title": "CREA downgrades housing market forecast again as June home sales edge up | CBC News",
-      "url": "https://www.cbc.ca/news/business/crea-revision-june-2026-9.7269900",
-      "assetId": "cad-re",
-      "assetName": "CREA quarterly housing market forecast"
-    },
-    {
-      "title": "Canada Housing Market Forecast 2026–2027: CREA Outlook and What It Means for Ottawa Buyers and Sellers - The Molly & Claude Team",
-      "url": "https://www.claudejobin.com/canada-housing-market-forecast-2026-2027-crea-outlook-and-what-it-means-for-ottawa-buyers-and-sellers/",
-      "assetId": "cad-re",
-      "assetName": "CREA quarterly housing market forecast"
-    },
-    {
-      "title": "Housing Market Forecast (2026-2029) | True North Mortgage",
-      "url": "https://www.truenorthmortgage.ca/blog/housing-market-forecast",
-      "assetId": "cad-re",
-      "assetName": "CREA quarterly housing market forecast"
-    },
-    {
-      "title": "July 15 2026 News Release | CREA Statistics - CREA Stats",
-      "url": "https://stats.crea.ca/en-ca/",
-      "assetId": "cad-re",
-      "assetName": "CREA quarterly housing market forecast"
-    },
-    {
-      "title": "Why CREA Lowered Its 2026 Housing Forecast | Pegasus",
-      "url": "https://pegasuslending.com/blog/why-crea-lowered-2026-housing-forecast/",
-      "assetId": "cad-re",
-      "assetName": "CREA quarterly housing market forecast"
-    },
-    {
-      "title": "Here’s what the CREA now estimates the average Canadian home will sell for",
-      "url": "https://www.bnnbloomberg.ca/business/real-estate/2026/04/16/crea-lowers-home-sales-forecast-for-2026-amid-shaky-economic-start-to-year/",
-      "assetId": "cad-re",
-      "assetName": "CREA quarterly housing market forecast"
-    },
-    {
-      "title": "CREA Revises Resale Housing Market Forecast",
-      "url": "https://www.bnnbloomberg.ca/press-releases/2026/07/15/crea-revises-resale-housing-market-forecast/",
-      "assetId": "cad-re",
-      "assetName": "CREA quarterly housing market forecast"
-    },
-    {
-      "title": "CREA Revises Resale Housing Market Forecast",
-      "url": "https://www.globenewswire.com/news-release/2026/07/15/3327509/0/en/crea-revises-resale-housing-market-forecast.html",
-      "assetId": "cad-re",
-      "assetName": "CREA quarterly housing market forecast"
-    },
-    {
-      "title": "CREA Revises Resale Housing Market Forecast",
-      "url": "https://finance.yahoo.com/real-estate/articles/crea-revises-resale-housing-market-090200712.html",
-      "assetId": "cad-re",
-      "assetName": "CREA quarterly housing market forecast"
-    },
-    {
-      "title": "CREA now expects home sales decline in 2026 as it lowers forecast again - Investment Executive",
-      "url": "https://www.investmentexecutive.com/news/economy/crea-now-expects-home-sales-decline-in-2026-as-it-lowers-forecast-again/",
-      "assetId": "cad-re",
-      "assetName": "CREA quarterly housing market forecast"
-    },
-    {
-      "title": "Commodity Markets Outlook (April 2026)",
-      "url": "https://thedocs.worldbank.org/en/doc/f3138644a1e8e2bb631399ae11d6c408-0050012026/commodity-markets-outlook-april-2026",
-      "assetId": "aluminium",
-      "assetName": "World Bank Commodity Markets Outlook"
-    },
-    {
-      "title": "EXECUTIVE SUMMARY COMMODITY MARKETS OUTLOOK | APRIL 2026 12 Commodity Unit 2024",
-      "url": "https://thedocs.worldbank.org/en/doc/f3138644a1e8e2bb631399ae11d6c408-0050012026/related/CMO-April-2026-Forecasts.pdf",
-      "assetId": "aluminium",
-      "assetName": "World Bank Commodity Markets Outlook"
-    },
-    {
-      "title": "World Bank's Commodity Markets Outlook, April 2026 | How to use it | Hinrich Foundation",
-      "url": "https://www.hinrichfoundation.com/research/how-to-use-it/natural-resources/commodity-markets-outlook-april-2026",
-      "assetId": "aluminium",
-      "assetName": "World Bank Commodity Markets Outlook"
-    },
-    {
-      "title": "Commodity Markets Outlook, April 2026 (English)",
-      "url": "https://documents.worldbank.org/en/publication/documents-reports/documentdetail/099842304282633100",
-      "assetId": "aluminium",
-      "assetName": "World Bank Commodity Markets Outlook"
-    },
-    {
-      "title": "Commodity Markets Outlook A World Bank Group Report APRIL 2026 Apr Apr Oct Oct",
-      "url": "https://documents1.worldbank.org/curated/en/099842304282633100/pdf/IDU-29bd7eb3-10b9-441a-89be-9732d149e669.pdf",
-      "assetId": "aluminium",
-      "assetName": "World Bank Commodity Markets Outlook"
-    },
-    {
-      "title": "Middle East War to Spark Biggest Energy Price Surge in Four Years",
-      "url": "https://www.worldbank.org/en/news/press-release/2026/04/28/commodity-markets-outlook-april-2026-press-release",
-      "assetId": "aluminium",
-      "assetName": "World Bank Commodity Markets Outlook"
-    },
-    {
-      "title": "World Bank - Commodity Markets Outlook April 2026 - Knowledge for policy - European Commission",
-      "url": "https://knowledge4policy.ec.europa.eu/publication/world-bank-commodity-markets-outlook-april-2026_en",
-      "assetId": "aluminium",
-      "assetName": "World Bank Commodity Markets Outlook"
-    },
-    {
-      "title": "EXECUTIVE SUMMARY COMMODITY MARKETS OUTLOOK | APRIL 2026 1",
-      "url": "https://thedocs.worldbank.org/en/doc/f3138644a1e8e2bb631399ae11d6c408-0050012026/related/CMO-April-2026-Executive-Summary.pdf",
-      "assetId": "aluminium",
-      "assetName": "World Bank Commodity Markets Outlook"
-    },
-    {
-      "title": "Publication: Commodity Markets Outlook, April 2026",
-      "url": "https://openknowledge.worldbank.org/entities/publication/3ede6f8c-ba03-4176-867c-40e604698570",
-      "assetId": "aluminium",
-      "assetName": "World Bank Commodity Markets Outlook"
-    },
-    {
-      "title": "The Commodity Markets Outlook in eight charts",
-      "url": "https://blogs.worldbank.org/en/developmenttalk/the-commodity-markets-outlook-in-eight-charts3",
-      "assetId": "aluminium",
-      "assetName": "World Bank Commodity Markets Outlook"
-    },
-    {
-      "title": "CMO-Pink-Sheet-April-2026.pdf",
-      "url": "https://thedocs.worldbank.org/en/doc/74e8be41ceb20fa0da750cda2f6b9e4e-0050012026/related/CMO-Pink-Sheet-April-2026.pdf",
-      "assetId": "aluminium",
-      "assetName": "World Bank Commodity Markets Outlook"
-    },
-    {
-      "title": "Metal prices outlook: supply constraints, clean energy demand, and market risks",
-      "url": "https://blogs.worldbank.org/en/opendata/metal-prices-poised-to-strengthen-further",
-      "assetId": "aluminium",
-      "assetName": "World Bank Commodity Markets Outlook"
-    },
-    {
-      "title": "Commodities Market Outlook: 4Q ‘25",
-      "url": "https://www.citigroup.com/global/insights/commodities-market-outlook-4q-25",
-      "assetId": "aluminium",
-      "assetName": "World Bank Commodity Markets Outlook"
-    },
-    {
-      "title": "CMO-Pink-Sheet-January-2026.pdf",
-      "url": "https://thedocs.worldbank.org/en/doc/18675f1d1639c7a34d463f59263ba0a2-0050012025/related/CMO-Pink-Sheet-January-2026.pdf",
-      "assetId": "aluminium",
-      "assetName": "World Bank Commodity Markets Outlook"
-    },
-    {
-      "title": "TD Economics - Commodities Quick-Take",
-      "url": "https://economics.td.com/commodity-price-report",
-      "assetId": "aluminium",
-      "assetName": "World Bank Commodity Markets Outlook"
-    },
-    {
-      "title": "Commodity Markets Outlook, April 2026 | The World Bank ...",
-      "url": "https://www.linkedin.com/posts/the-world-bank-group_commodity-markets-outlook-april-2026-activity-7454982791391424514-iXuY",
-      "assetId": "aluminium",
-      "assetName": "World Bank Commodity Markets Outlook"
-    },
-    {
-      "title": "What will 2026 bring for base metals prices? - Fastmarkets",
-      "url": "https://www.fastmarkets.com/insights/what-will-2026-bring-for-base-metals-prices/",
-      "assetId": "aluminium",
-      "assetName": "World Bank Commodity Markets Outlook"
-    },
-    {
-      "title": "Commodity Markets",
-      "url": "https://www.worldbank.org/en/research/commodity-markets",
-      "assetId": "aluminium",
-      "assetName": "World Bank Commodity Markets Outlook"
-    },
-    {
-      "title": "Fastmarkets monthly base metals market update - Fastmarkets",
-      "url": "https://www.fastmarkets.com/metals-and-mining/base-metals/monthly-base-metals-market-update-2026/",
-      "assetId": "aluminium",
-      "assetName": "World Bank Commodity Markets Outlook"
-    },
-    {
-      "title": "World Bank predicts metals price rise in 2026 - Recycling Today",
-      "url": "https://www.recyclingtoday.com/news/world-bank-base-precious-metals-price-increases-2026-forecast/",
-      "assetId": "aluminium",
-      "assetName": "World Bank Commodity Markets Outlook"
-    },
-    {
-      "title": "Strong start for metal prices in 2026 | International Aluminium Journal",
-      "url": "https://www.aluminium-journal.com/strong-start-for-metal-prices-in-2026",
-      "assetId": "aluminium",
-      "assetName": "World Bank Commodity Markets Outlook"
-    },
-    {
-      "title": "World Bank predicts steady 2026 metals pricing",
-      "url": "https://www.recyclingtoday.com/news/world-bank-2026-metals-pricing-stable-copper-aluminum-iron-forecast/",
-      "assetId": "aluminium",
-      "assetName": "World Bank Commodity Markets Outlook"
-    },
-    {
-      "title": "Metal prices surge as supply pressures intensify",
-      "url": "https://blogs.worldbank.org/en/opendata/metal-prices-surge-as-supply-pressures-intensify",
-      "assetId": "aluminium",
-      "assetName": "World Bank Commodity Markets Outlook"
-    },
-    {
-      "title": "World Bank's 21.6% aluminum price growth forecast is being eclipsed | S&P Global",
-      "url": "https://www.spglobal.com/energy/en/news-research/latest-news/metals/042926-world-banks-216-aluminum-price-growth-forecast-is-being-eclipsed",
-      "assetId": "aluminium",
-      "assetName": "World Bank Commodity Markets Outlook"
-    },
-    {
-      "title": "Commodity Markets Outlook: April 2026 - World Bank Report - Studocu",
-      "url": "https://www.studocu.vn/vn/document/dai-hoc-western-sydney/business-academic-skill/commodity-markets-outlook-april-2026-world-bank-report/161515187",
-      "assetId": "aluminium",
-      "assetName": "World Bank Commodity Markets Outlook"
-    },
-    {
-      "title": "The Commodity Markets Outlook in eight charts",
-      "url": "https://blogs.worldbank.org/en/developmenttalk/the-commodity-markets-outlook-in-eight-charts2",
-      "assetId": "aluminium",
-      "assetName": "World Bank Commodity Markets Outlook"
-    },
-    {
-      "title": "World Bank Forecasts Further Decline in Global Commodity Prices in 2026 | Canadian Mining Report",
-      "url": "https://www.canadianminingreport.com/blog/world-bank-forecasts-further-decline-in-global-commodity-prices-in-2026",
-      "assetId": "aluminium",
-      "assetName": "World Bank Commodity Markets Outlook"
-    },
-    {
-      "title": "World Bank Aluminium Price Forecast 2026: Beyond the $3,200/mt Projection",
-      "url": "https://discoveryalert.com.au/aluminium-price-forecast-2026-world-bank-lme-inventory/",
-      "assetId": "aluminium",
-      "assetName": "World Bank Commodity Markets Outlook"
-    },
-    {
-      "title": "EXECUTIVE SUMMARY COMMODITY MARKETS OUTLOOK | OCTOBER 2025 8",
-      "url": "https://thedocs.worldbank.org/en/doc/55ed8b04df8228fea1607a97b5561f73-0050012025/related/CMO-October-2025-Forecasts.pdf",
-      "assetId": "aluminium",
-      "assetName": "World Bank Commodity Markets Outlook"
-    }
-  ],
-  "lastRunCostUsd": 0.41,
+  "sources": [],
+  "lastRunCostUsd": 0.0,
   "staleAssetIds": [
     "cad-div"
   ]
