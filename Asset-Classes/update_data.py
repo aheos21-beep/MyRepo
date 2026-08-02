@@ -143,6 +143,10 @@ MIN_WINSOR_HOLDINGS = 25
 # estimate exists for them, and inventing one would be worse than leaving it.
 ANALYST_TARGET_OPTIMISM = 0.094
 
+# Methods whose numbers come from analyst price targets, and so carry the
+# adjustment above. Everything else is stamped adj=0.
+ANALYST_METHODS = {"ishares", "yf_top"}
+
 # A single stock whose mean analyst target implies a move outside this band
 # over twelve months is a stale quote, a corporate action or a mis-scaled
 # figure — not a forecast. Such holdings are dropped like a missing target,
@@ -325,7 +329,7 @@ def hisa_projection():
     pct = check_return(rate, "hisa")
     why = (f"{description} is {rate:.2f}% as of {observed} (Bank of Canada Valet API). "
            f"For cash the prevailing rate is the one-year return.")
-    return dict(r=pct, why=why, published=observed, basis=f"{rate:.2f}%")
+    return dict(r=pct, adj=0.0, why=why, published=observed, basis=f"{rate:.2f}%")
 
 
 # ---------------------------------------------------------------------------
@@ -382,7 +386,7 @@ def eia_projection(asset, api_key, today):
     pct = check_return((target / base - 1) * 100, asset["id"])
     why = (f"EIA Short-Term Energy Outlook projects {description} at {target:,.2f} {unit} "
            f"in {target_key}, against {base:,.2f} in {anchor}.")
-    return dict(r=pct, why=why, published=anchor, basis=f"{base:,.2f} {unit}")
+    return dict(r=pct, adj=0.0, why=why, published=anchor, basis=f"{base:,.2f} {unit}")
 
 
 # ---------------------------------------------------------------------------
@@ -653,7 +657,8 @@ def equity_sleeve_projection(asset, holdings, as_of, today):
            f"Weighted analyst consensus across {len(contributions)} of {len(holdings)} "
            f"{asset['ticker']} holdings ({coverage:.0%} of fund weight)." + bias_note)
 
-    return dict(r=pct, rRaw=raw_pct, why=why, published=as_of or today.isoformat(),
+    return dict(r=pct, rRaw=raw_pct, adj=ANALYST_TARGET_OPTIMISM, why=why,
+                published=as_of or today.isoformat(),
                 basis=f"{len(contributions)} holdings", lo=lo, hi=hi)
 
 
@@ -874,7 +879,7 @@ You MUST finish by calling submit_forecasts, even if you found nothing at all �
             continue
         unit = f.get("unit", "")
         by_id[asset_id] = dict(
-            r=pct,
+            r=pct, adj=0.0,
             why=f"{f.get('publisher')} ({f.get('publishedDate')}): {forecast:,.6g} {unit} "
                 f"one year out vs {current:,.6g} {unit} now. {f.get('note', '')}".strip(),
             published=str(f.get("publishedDate") or today.isoformat())[:10],
@@ -1084,7 +1089,19 @@ def main():
         if fresh:
             row.update({k: v for k, v in fresh.items() if v is not None})
         elif "r" in previous:
-            row.update({k: previous[k] for k in ("r", "rRaw", "why", "published", "basis", "lo", "hi")
+            # A value computed under a different bias adjustment is not
+            # comparable with the rest of the table, which is the whole point
+            # of adjusting. Carrying it forward silently reintroduces exactly
+            # the apples-to-oranges problem the adjustment removes, so it is
+            # dropped instead. --repair-stale recomputes it properly.
+            expected_adj = ANALYST_TARGET_OPTIMISM if spec["method"] in ANALYST_METHODS else 0.0
+            if abs(float(previous.get("adj", 0.0)) - expected_adj) > 1e-9:
+                print(f"  {spec['id']}: previous value predates the current bias adjustment "
+                      f"(stored {previous.get('adj', 0.0)}, now {expected_adj}) — dropped rather "
+                      f"than shown on a different basis; run --repair-stale")
+                continue
+            row.update({k: previous[k] for k in
+                        ("r", "rRaw", "adj", "why", "published", "basis", "lo", "hi")
                         if k in previous})
         else:
             # Never invent a value for an asset that has never been fetched.
