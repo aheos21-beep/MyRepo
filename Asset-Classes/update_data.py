@@ -629,18 +629,29 @@ def extract_search_sources(blocks):
     return sources
 
 
-def request_tool_call(client, model_id, prompt, tools, tool_name, max_tokens, costs):
+def searches_used(usage):
+    return getattr(getattr(usage, "server_tool_use", None), "web_search_requests", 0) or 0
+
+
+def request_tool_call(client, model_id, prompt, tools, tool_name, max_tokens, costs,
+                      min_searches=0):
     """Run one request, resuming paused turns.
 
     Paused turns are resumed because a search-heavy turn genuinely is unfinished.
     A turn that simply ends without calling the tool is NOT retried: that has
     proven deterministic rather than transient, so a second attempt re-runs
     every search to fail the same way. The group stales instead.
+
+    min_searches guards against the opposite failure. Giving the model a legal
+    way to answer "not found" let it satisfy tool_choice on the very first turn
+    without searching at all — a whole group came back empty in 28ms having
+    spent zero searches. An answer reached without looking is refused and sent
+    back, which is cheap precisely because nothing was spent reaching it.
     """
     last_stop = None
     for attempt in range(1, REQUEST_ATTEMPTS + 1):
         messages = [{"role": "user", "content": prompt}]
-        sources = []
+        sources, searched, pushed_back = [], 0, False
         for _ in range(MAX_PAUSE_CONTINUATIONS + 1):
             response = client.messages.create(
                 model=model_id, max_tokens=max_tokens, tools=tools,
@@ -649,9 +660,30 @@ def request_tool_call(client, model_id, prompt, tools, tool_name, max_tokens, co
             )
             costs.add(response.usage)
             sources += extract_search_sources(response.content)
-            for b in response.content:
-                if b.type == "tool_use" and b.name == tool_name:
-                    return b.input, sources
+            searched += searches_used(response.usage)
+
+            submitted = next((b for b in response.content
+                              if b.type == "tool_use" and b.name == tool_name), None)
+            if submitted is not None:
+                if searched >= min_searches or pushed_back:
+                    return submitted.input, sources
+                # Answered without looking. Reject it and require the search.
+                print(f"    submitted after {searched} searches; requiring a search first")
+                pushed_back = True
+                messages = messages + [
+                    {"role": "assistant", "content": response.content},
+                    {"role": "user", "content": [{
+                        "type": "tool_result",
+                        "tool_use_id": submitted.id,
+                        "is_error": True,
+                        "content": ("Rejected: you called this tool without using web_search. "
+                                    "You cannot know whether the publication contains these "
+                                    "figures without looking. Search the web for the named "
+                                    "publication now, read it, and only then call the tool again."),
+                    }]},
+                ]
+                continue
+
             last_stop = response.stop_reason
             if last_stop != "pause_turn":
                 break
@@ -681,6 +713,8 @@ Rules:
 - Report the document's own publication date, not today's date.
 - If you genuinely cannot find a figure for an item in that publication, put its id in "notFound". Do NOT substitute a different source, and do NOT skip calling the tool.
 
+Search first — you cannot know whether the publication contains these figures without reading it, and an answer submitted without searching will be rejected.
+
 You MUST finish by calling submit_forecasts, even if you found nothing at all — in that case call it with an empty "forecasts" list and every id in "notFound". Ending your turn without calling it loses the whole group."""
 
     submitted, sources = request_tool_call(
@@ -691,6 +725,8 @@ You MUST finish by calling submit_forecasts, even if you found nothing at all �
         tool_name="submit_forecasts",
         max_tokens=700 * len(assets) + 500,
         costs=costs,
+        # "Not found" is only a real answer if it was reached by looking.
+        min_searches=1,
     )
 
     not_found = [str(i) for i in (submitted.get("notFound") or [])]
