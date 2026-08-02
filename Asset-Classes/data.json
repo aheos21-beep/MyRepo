@@ -167,30 +167,6 @@
       "posChange": "same"
     },
     {
-      "id": "potash",
-      "name": "Potash",
-      "cat": "Commodity",
-      "color": "#e3b341",
-      "publisher": "World Bank CMO",
-      "r": 4.1,
-      "why": "World Bank (2026-04): 253 USD/tonne one year out vs 243 USD/tonne now. Potash/MOP price forecast from World Bank Commodity Markets Outlook April 2026. Current price is 2025 estimate, forecast is for 2026.",
-      "published": "2026-04",
-      "basis": "243 USD/tonne",
-      "posChange": "same"
-    },
-    {
-      "id": "copper",
-      "name": "Copper",
-      "cat": "Commodity",
-      "color": "#ec8e2c",
-      "publisher": "World Bank CMO",
-      "r": 20.6,
-      "why": "World Bank (2026-04): 12,000 USD/tonne one year out vs 9,947 USD/tonne now. Copper price forecast from World Bank Commodity Markets Outlook April 2026. Current price is 2025 estimate, forecast is for 2026.",
-      "published": "2026-04",
-      "basis": "9,947 USD/tonne",
-      "posChange": "same"
-    },
-    {
       "id": "aluminium",
       "name": "Aluminium",
       "cat": "Commodity",
@@ -201,18 +177,6 @@
       "why": "World Bank (2026-04): 3,000 USD/tonne one year out vs 2,632 USD/tonne now. World Bank Commodity Markets Outlook April 2026: aluminum (LME) price forecast, annual average",
       "published": "2026-04",
       "basis": "2,632 USD/tonne",
-      "posChange": "same"
-    },
-    {
-      "id": "nickel",
-      "name": "Nickel",
-      "cat": "Commodity",
-      "color": "#9db1c5",
-      "publisher": "World Bank CMO",
-      "r": 12.1,
-      "why": "World Bank (2026-04): 17,000 USD/tonne one year out vs 15,162 USD/tonne now. Nickel price forecast from World Bank Commodity Markets Outlook April 2026. Current price is 2025 estimate, forecast is for 2026.",
-      "published": "2026-04",
-      "basis": "15,162 USD/tonne",
       "posChange": "same"
     }
   ],
@@ -472,9 +436,6 @@
   ],
   "lastRunCostUsd": 0.41,
   "staleAssetIds": [
-    "cad-div",
-    "copper",
-    "nickel",
-    "potash"
+    "cad-div"
   ]
 }

@@ -207,22 +207,17 @@ ASSETS = [
          cadence_months=3,
          hint="Canadian Real Estate Association (CREA) quarterly housing market forecast, "
               "national average home price forecast for next year"),
-    dict(id="potash", name="Potash", cat="Commodity", color="#e3b341",
-         method="search", group="cmo", publisher="World Bank CMO",
-         cadence_months=6,
-         hint="World Bank Commodity Markets Outlook potash price forecast, USD per tonne"),
-    dict(id="copper", name="Copper", cat="Commodity", color="#ec8e2c",
-         method="search", group="cmo", publisher="World Bank CMO",
-         cadence_months=6,
-         hint="World Bank Commodity Markets Outlook copper price forecast, USD per tonne"),
+    # Potash, copper and nickel are suspended, not deleted. The LLM search route
+    # returned one of four commodities on three consecutive attempts even with
+    # the document pinned, and the three that failed kept older values read off
+    # the wrong (current-year) column — showing +20.6% copper beside +14.0%
+    # aluminium from the same table. Better absent than inconsistent. They come
+    # back when a deterministic fetch route is confirmed; see the verification
+    # workflow.
     dict(id="aluminium", name="Aluminium", cat="Commodity", color="#bfc7d5",
          method="search", group="cmo", publisher="World Bank CMO",
          cadence_months=6,
          hint="World Bank Commodity Markets Outlook aluminum price forecast, USD per tonne"),
-    dict(id="nickel", name="Nickel", cat="Commodity", color="#9db1c5",
-         method="search", group="cmo", publisher="World Bank CMO",
-         cadence_months=6,
-         hint="World Bank Commodity Markets Outlook nickel price forecast, USD per tonne"),
 ]
 
 SEARCH_GROUPS = {
