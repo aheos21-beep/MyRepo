@@ -56,7 +56,6 @@ import io
 import json
 import os
 import re
-import statistics
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -115,6 +114,23 @@ PRICE_SCALE_RATIO = 5.0
 MIN_SLEEVE_COVERAGE = 0.55
 # A sleeve whose holdings mostly lack analyst targets is not a consensus.
 MIN_SLEEVE_TARGET_COVERAGE = 0.60
+
+# Each holding's expected return is clipped into this weighted percentile band
+# before weighting, so one bad quote cannot carry a sleeve. Symmetric by
+# design — see winsorize().
+WINSOR_TAIL = 0.05
+# Percentile clipping needs a tail to clip. With ten holdings the 5th
+# percentile IS the minimum and winsorizing is a no-op, so it only runs on the
+# full-holdings sleeves (~100 names). The top-10 sleeves are protected by
+# HOLDING_RETURN_BOUNDS instead, which does not depend on sample size.
+MIN_WINSOR_HOLDINGS = 25
+
+# A single stock whose mean analyst target implies a move outside this band
+# over twelve months is a stale quote, a corporate action or a mis-scaled
+# figure — not a forecast. Such holdings are dropped like a missing target,
+# so the coverage check notices if too many go. Deliberately wide and
+# symmetric: this removes errors, not opinions.
+HOLDING_RETURN_BOUNDS = (-60.0, 120.0)
 
 
 # ---------------------------------------------------------------------------
@@ -491,6 +507,43 @@ def yahoo_symbol(ticker, exchange, fund_ticker):
     return base + suffix
 
 
+def weighted_quantile(pairs, q):
+    """Quantile of (weight, value) pairs, weighted.
+
+    The point estimate is weight-weighted, so the range around it must be too.
+    An unweighted range describes a different basket than the number it sits
+    next to, and can in principle sit entirely to one side of it.
+    """
+    ordered = sorted(pairs, key=lambda p: p[1])
+    total = sum(w for w, _ in ordered)
+    if total <= 0:
+        return None
+    cum = 0.0
+    for w, value in ordered:
+        cum += w
+        if cum >= q * total:
+            return value
+    return ordered[-1][1]
+
+
+def winsorize(pairs, tail=WINSOR_TAIL):
+    """Clip values into the weighted [tail, 1-tail] band, keeping weights.
+
+    An outlier guard, not a view. A stale quote, a mis-scaled target or a name
+    mid-takeover can otherwise let one holding carry a sleeve. Clipping is
+    symmetric on purpose: trimming only the top would quietly redefine the
+    asset class as its less-favoured half, which is a thumb on the scale
+    dressed up as prudence.
+    """
+    lo = weighted_quantile(pairs, tail)
+    hi = weighted_quantile(pairs, 1 - tail)
+    if lo is None or hi is None or lo > hi:
+        return pairs, 0
+    clipped = [(w, min(max(v, lo), hi)) for w, v in pairs]
+    n_clipped = sum(1 for (_, v), (_, c) in zip(pairs, clipped) if v != c)
+    return clipped, n_clipped
+
+
 def equity_sleeve_projection(asset, holdings, as_of, today):
     """Weighted expected return over a benchmark's holdings.
 
@@ -501,7 +554,7 @@ def equity_sleeve_projection(asset, holdings, as_of, today):
     """
     import yfinance as yf
 
-    contributions, used_weight, total_weight, per_name = [], 0.0, 0.0, []
+    contributions, used_weight, total_weight = [], 0.0, 0.0
 
     for h in holdings:
         total_weight += h["weight"]
@@ -520,8 +573,11 @@ def equity_sleeve_projection(asset, holdings, as_of, today):
         income = raw_yield * 100.0 if raw_yield < 1 else raw_yield
         income = min(income, 15.0)
         expected = (target / price - 1) * 100.0 + income
+        if not (HOLDING_RETURN_BOUNDS[0] <= expected <= HOLDING_RETURN_BOUNDS[1]):
+            print(f"    {asset['id']}: dropped {h['symbol']} at {expected:+.0f}%; outside "
+                  f"{HOLDING_RETURN_BOUNDS}, treating as a bad quote")
+            continue
         contributions.append((h["weight"], expected))
-        per_name.append(expected)
         used_weight += h["weight"]
 
     if total_weight <= 0:
@@ -533,19 +589,29 @@ def equity_sleeve_projection(asset, holdings, as_of, today):
             f"targets ({len(contributions)} of {len(holdings)} names); not a consensus"
         )
 
-    weighted = sum(w * e for w, e in contributions) / used_weight
+    clipped, n_clipped = (winsorize(contributions)
+                          if len(contributions) >= MIN_WINSOR_HOLDINGS
+                          else (contributions, 0))
+    if n_clipped:
+        print(f"    {asset['id']}: clipped {n_clipped} outlying holding(s)")
+
+    weighted = sum(w * e for w, e in clipped) / used_weight
     pct = check_return(weighted, asset["id"])
 
     # Dispersion matters more than the point estimate here: a single number
-    # hides that sleeve constituents routinely span -1% to +25%.
+    # hides that sleeve constituents routinely span -1% to +25%. Weighted, so
+    # the range describes the same basket as the number beside it.
     lo = hi = None
-    if len(per_name) >= 4:
-        quartiles = statistics.quantiles(per_name, n=4)
-        lo, hi = round(quartiles[0], 1), round(quartiles[2], 1)
+    if len(clipped) >= 4:
+        q1, q3 = weighted_quantile(clipped, 0.25), weighted_quantile(clipped, 0.75)
+        if q1 is not None and q3 is not None:
+            lo, hi = round(q1, 1), round(q3, 1)
 
     why = (f"Weighted analyst consensus across {len(contributions)} of {len(holdings)} "
            f"{asset['ticker']} holdings ({coverage:.0%} of fund weight): mean target plus "
-           f"income yield. Interquartile range {lo}% to {hi}%." if lo is not None else
+           f"income yield. Weighted interquartile range {lo}% to {hi}%."
+           + (f" {n_clipped} outlier(s) clipped." if n_clipped else "")
+           if lo is not None else
            f"Weighted analyst consensus across {len(contributions)} of {len(holdings)} "
            f"{asset['ticker']} holdings ({coverage:.0%} of fund weight).")
 
