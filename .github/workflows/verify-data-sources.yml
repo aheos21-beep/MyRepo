@@ -1,14 +1,11 @@
 name: Verify data sources (throwaway)
 
-# Temporary. Settles the remaining open questions in
-# Asset-Classes/ASSET-SOURCES.md that need network access the dev sandbox
-# does not have. Commits nothing — read the job log.
+# Temporary. Confirms the three benchmarks that need full holdings files, and
+# the EIA v2 query shape. Commits nothing — read the job log.
 #
-# Q3b: can we get FULL holdings (not yfinance's top-10) for the three
-#      benchmarks where the top-10 is not representative — CDZ, SCHD, and
-#      the Intl Dividend candidates IDV / ZDI.
-# Q1b: does the EIA v2 STEO query shape work. Skipped unless the
-#      EIA_API_KEY secret is set, so the run is still useful without it.
+# Run 2 found that a wrong product ID still returns HTTP 200 and a valid CSV,
+# just for the wrong fund (239500 served DVY while labelled IDV). So this run
+# checks the fund NAME inside each file, not just that a file came back.
 #
 # Delete once the answers are recorded.
 
@@ -25,7 +22,7 @@ jobs:
 
       - run: pip install requests
 
-      - name: Discover holdings files and check EIA
+      - name: Confirm holdings files and check EIA
         env:
           EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
         run: |
@@ -34,59 +31,64 @@ jobs:
 
           UA = {"User-Agent": "Mozilla/5.0 (compatible; asset-classes-verify/1.0)"}
 
-          def get(url, **kw):
+          def get(url):
               try:
-                  r = requests.get(url, headers=UA, timeout=45, **kw)
-                  return r
+                  return requests.get(url, headers=UA, timeout=45)
               except Exception as e:
                   print(f"      ERROR {type(e).__name__}: {str(e)[:90]}")
                   return None
 
-          def looks_like_holdings(text):
-              """Count data rows in something that may be CSV with a preamble."""
-              rows = [r for r in csv.reader(io.StringIO(text)) if len(r) >= 3]
-              return len(rows)
-
           print("=" * 72)
-          print("Q3b — full holdings for the three sleeves yfinance cannot cover")
+          print("Q3b — full holdings, with fund identity checked")
           print("=" * 72)
 
-          PAGES = {
-              "CDZ (iShares CA)": "https://www.blackrock.com/ca/investors/en/products/239834/ishares-sptsx-canadian-dividend-aristocrats-index-fund",
-              "IDV (iShares US)": "https://www.ishares.com/us/products/239500/ishares-international-select-dividend-etf",
-              "SCHD (Schwab)":    "https://www.schwabassetmanagement.com/products/schd",
-              "ZDI (BMO)":        "https://www.bmogam.com/ca-en/products/exchange-traded-fund/bmo-international-dividend-etf-zdi/",
+          # expect_name: a string that MUST appear in the returned file, so a
+          # wrong-but-valid fund is caught rather than silently accepted.
+          FUNDS = {
+              "CDZ (CAD Dividend)": (
+                  "https://www.blackrock.com/ca/investors/en/products/239834/ishares-sptsx-canadian-dividend-aristocrats-index-fund",
+                  "Dividend Aristocrats"),
+              "DVY (US Dividend)": (
+                  "https://www.ishares.com/us/products/239500/ishares-select-dividend-etf",
+                  "Select Dividend"),
+              "IDV (Intl Dividend)": (
+                  "https://www.ishares.com/us/products/239499/ishares-international-select-dividend-etf",
+                  "International Select Dividend"),
           }
 
-          for label, page in PAGES.items():
+          for label, (page, expect_name) in FUNDS.items():
               print(f"\n  {label}")
-              print(f"    page: {page}")
               r = get(page)
               if r is None:
                   continue
-              print(f"    status {r.status_code}, {len(r.text)} bytes")
+              print(f"    page status {r.status_code}")
               if r.status_code != 200:
                   continue
 
-              # Find anything that smells like a downloadable holdings file.
               hrefs = set(re.findall(r'href="([^"]+)"', r.text))
               cands = [h for h in hrefs
-                       if re.search(r'(fileType=csv|\.csv|holdings.*(csv|xls)|csv.*holdings)', h, re.I)]
+                       if re.search(r'(fileType=csv|latest-holdings\.csv)', h, re.I)]
               if not cands:
-                  print("    no csv-looking link found on the page")
+                  print("    NO CSV LINK FOUND")
                   continue
-              print(f"    {len(cands)} candidate link(s); trying up to 3:")
-              for h in sorted(cands, key=len)[:3]:
+
+              for h in sorted(cands, key=len)[:2]:
                   full = h if h.startswith("http") else requests.compat.urljoin(page, h)
-                  print(f"      -> {full[:120]}")
                   rr = get(full)
                   if rr is None:
                       continue
-                  n = looks_like_holdings(rr.text[:400000])
-                  ctype = rr.headers.get("content-type", "?")[:40]
-                  print(f"         status {rr.status_code}, {ctype}, ~{n} parseable rows")
-                  if rr.status_code == 200 and n > 20:
-                      print(f"         FIRST LINES: {rr.text[:200]!r}")
+                  head = rr.text[:300]
+                  rows = [x for x in csv.reader(io.StringIO(rr.text[:400000])) if len(x) >= 6]
+                  # Identity check — this is what run 2 was missing.
+                  identity = "MATCH" if expect_name.lower() in head.lower() else "*** WRONG FUND ***"
+                  print(f"    {full[:110]}")
+                  print(f"      status {rr.status_code}, ~{len(rows)} rows, identity {identity}")
+                  print(f"      header: {head.splitlines()[0][:90]!r}")
+                  # Show the column names so the parser can be written against them.
+                  for line in rr.text.splitlines()[:12]:
+                      if line.lower().startswith("ticker"):
+                          print(f"      columns: {line[:150]}")
+                          break
 
           print()
           print("=" * 72)

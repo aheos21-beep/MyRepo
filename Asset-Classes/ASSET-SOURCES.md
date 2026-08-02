@@ -40,7 +40,7 @@ inclusion rule actually being enforced rather than merely stated.
 | --- | --- | --- | --- | --- | --- |
 | HISA (Canada) | Bank of Canada | Valet series `CBC20210` + curve `BD.CDN.*.DQ.YLD` | **None** ✅ | Daily | Monthly |
 | CAD Dividend Stocks | Yahoo via `yfinance` | **CDZ** (Dividend Aristocrats, ~90 names) | **None** ✅ | Daily | Monthly |
-| US Dividend Stocks | Yahoo via `yfinance` | **SCHD** | **None** | Daily | Monthly |
+| US Dividend Stocks | Yahoo via `yfinance` | **DVY** (iShares Select Dividend) | **None** | Daily | Monthly |
 | Canadian REITs | Yahoo via `yfinance` | **XRE** (cap-weighted) | **None** | Daily | Monthly |
 | US Tech | Yahoo via `yfinance` | **XLK** | **None** | Daily | Monthly |
 | Canadian Energy | Yahoo via `yfinance` | **XEG** | **None** | Daily | Monthly |
@@ -62,7 +62,10 @@ Notes on the benchmark picks:
   financials, and it shared six of ten with XFN. CDZ screens on dividend-growth
   streaks over ~90 names, so the sleeve is genuinely distinct from Financials.
   The cost: ~90 names means `yfinance`'s top-10 is far too thin, so CDZ needs a
-  real holdings file. **SCHD over VYM** for its quality screen.
+  real holdings file. **DVY, not SCHD.** SCHD's quality screen was the better
+  index, but Schwab returns 403 to non-browser requests and publishes no
+  fetchable holdings file. DVY is the same asset class from the one provider
+  that does publish openly. An unfetchable benchmark is not a benchmark.
 - **Intl Dividend is confirmed viable.** Foreign target coverage came back
   6/6. Benchmark still to pick between IDV and ZDI.
 
@@ -156,7 +159,7 @@ risk to the design and it cleared.
 | ZUT.TO | 79.0% | fine |
 | XLK | 59.3% | borderline — but XLK genuinely is top-heavy, so the ten are what drives it |
 | XDV.TO | 59.2% | *superseded — sleeve moved to CDZ* |
-| SCHD | 41.9% | **needs a real holdings file** |
+| DVY *(was SCHD)* | — | **needs a real holdings file** |
 | IDV | 27.3% | **needs a real holdings file** |
 | ZDI.TO | 23.8% | **needs a real holdings file** |
 
@@ -164,10 +167,26 @@ Renormalising a top-10 is not a neutral approximation — it reweights the sleev
 onto its largest names. At 88% that distortion is small. At 24% the row is ten
 stocks standing in for a hundred, which is not the asset class.
 
-So the provider-CSV question does have to be answered, but only for **three
-benchmarks**: CDZ, SCHD, and whichever Intl Dividend candidate is chosen. The
-four Canadian sector sleeves (XRE, XEG, XFN, ZUT) and XLK ship on `yfinance`
-alone.
+So the provider-CSV question applies to **three benchmarks**: CDZ, DVY and
+IDV. The four Canadian sector sleeves (XRE, XEG, XFN, ZUT) and XLK ship on
+`yfinance` alone.
+
+### Q3b — only iShares publishes a usable holdings file
+
+| Provider | Result |
+| --- | --- |
+| iShares (CDZ) | ✅ 102 rows: `Ticker, Name, Sector, Weight (%), Shares, Price`, dated |
+| Schwab (SCHD) | ❌ **403** to non-browser requests |
+| BMO (ZDI) | ❌ read timeout after 45s |
+
+This is why all three full-holdings sleeves are now iShares funds — one
+mechanism, one parser, one failure mode.
+
+**A wrong product ID returns HTTP 200 and a valid CSV for the wrong fund.**
+Product 239500 was used for IDV and served DVY; nothing in the response
+signalled an error. IDV is 239499. Any holdings fetch must therefore **assert
+the fund name inside the file**, not merely that a file came back — a 200 is
+not evidence the right fund was fetched.
 
 ### Still unverified
 
@@ -195,6 +214,7 @@ free key. The series names are confirmed; the request that fetches them is not.
 | `yfinance` breaks (unofficial Yahoo scraper) | **All 8 equity sleeves stale at once** — the single largest concentration of risk on the list | Already a repo dependency and holding; keep last value, flag |
 | `yfinance` silently narrows holdings | A sleeve quietly becomes its top names | Assert coverage ≥ a floor per sleeve; stale rather than distort |
 | ETF provider changes its holdings file | That sleeve stales | Fall back to top-10 holdings |
+| Holdings fetch returns the wrong fund | **Silent** — a wrong product ID gives 200 and valid CSV | Assert the fund name inside the file every run |
 | Yahoo returns no target for a holding | 2 of 173 already do | Drop and reweight; do not substitute |
 | EIA key revoked / STEO reshaped | Oil and gas stale | Keep last value, flag |
 | World Bank CMO search fails | **Four commodity rows stale together** | Keep last value, flag |
