@@ -39,7 +39,7 @@ inclusion rule actually being enforced rather than merely stated.
 | Asset | Publisher | Benchmark | Credential | Publishes | Pull |
 | --- | --- | --- | --- | --- | --- |
 | HISA (Canada) | Bank of Canada | Valet series `CBC20210` + curve `BD.CDN.*.DQ.YLD` | **None** ✅ | Daily | Monthly |
-| CAD Dividend Stocks | Yahoo via `yfinance` | **XDV** | **None** ✅ | Daily | Monthly |
+| CAD Dividend Stocks | Yahoo via `yfinance` | **CDZ** (Dividend Aristocrats, ~90 names) | **None** ✅ | Daily | Monthly |
 | US Dividend Stocks | Yahoo via `yfinance` | **SCHD** | **None** | Daily | Monthly |
 | Canadian REITs | Yahoo via `yfinance` | **XRE** (cap-weighted) | **None** | Daily | Monthly |
 | US Tech | Yahoo via `yfinance` | **XLK** | **None** | Daily | Monthly |
@@ -57,23 +57,17 @@ Notes on the benchmark picks:
   with non-tech names.
 - **ZUT is equal-weighted, XRE is not.** Not an inconsistency — each is the
   standard benchmark for its sleeve. The provider's choice, not ours.
-- **XDV over VDY** — but see the correction below; the stated rationale did
-  not survive contact with the actual holdings. **SCHD over VYM** for its
-  quality screen.
+- **CDZ, not XDV.** XDV was picked to keep the Canadian dividend sleeve from
+  becoming a bank proxy, and turned out to be one — seven of its top ten are
+  financials, and it shared six of ten with XFN. CDZ screens on dividend-growth
+  streaks over ~90 names, so the sleeve is genuinely distinct from Financials.
+  The cost: ~90 names means `yfinance`'s top-10 is far too thin, so CDZ needs a
+  real holdings file. **SCHD over VYM** for its quality screen.
 - **Intl Dividend is confirmed viable.** Foreign target coverage came back
   6/6. Benchmark still to pick between IDV and ZDI.
 
-**Correction — XDV is also a bank proxy.** The pick was justified as keeping
-the Canadian dividend sleeve from becoming one. Its actual top ten is RY, BMO,
-CTC-A, TD, BNS, CM, SLF, GWO, TRP, CCA — **seven of ten are financials**. The
-reasoning was wrong; whether XDV is still the right benchmark is now an open
-question rather than a settled one.
-
-**CAD Dividend and Cdn Financials would substantially duplicate each other.**
-XDV and XFN share six of their top ten (RY, TD, BMO, BNS, CM, SLF). Two rows
-that move together are two rows carrying one asset class. Worth resolving
-before building — either drop one, or move the dividend sleeve to a benchmark
-that is genuinely not bank-led.
+**Resolved:** the XDV/XFN duplication and the bank-proxy problem were the
+same problem, and moving the dividend sleeve to CDZ fixes both.
 
 ### Tier 2 — One authority, one LLM search, no median.
 
@@ -161,7 +155,7 @@ risk to the design and it cleared.
 | XRE.TO | 82.3% | fine |
 | ZUT.TO | 79.0% | fine |
 | XLK | 59.3% | borderline — but XLK genuinely is top-heavy, so the ten are what drives it |
-| XDV.TO | 59.2% | borderline |
+| XDV.TO | 59.2% | *superseded — sleeve moved to CDZ* |
 | SCHD | 41.9% | **needs a real holdings file** |
 | IDV | 27.3% | **needs a real holdings file** |
 | ZDI.TO | 23.8% | **needs a real holdings file** |
@@ -170,9 +164,10 @@ Renormalising a top-10 is not a neutral approximation — it reweights the sleev
 onto its largest names. At 88% that distortion is small. At 24% the row is ten
 stocks standing in for a hundred, which is not the asset class.
 
-So the provider-CSV question does have to be answered, but only for **three of
-nine benchmarks**: SCHD, and whichever Intl Dividend candidate is chosen. The
-five Canadian sector sleeves can ship on `yfinance` alone.
+So the provider-CSV question does have to be answered, but only for **three
+benchmarks**: CDZ, SCHD, and whichever Intl Dividend candidate is chosen. The
+four Canadian sector sleeves (XRE, XEG, XFN, ZUT) and XLK ship on `yfinance`
+alone.
 
 ### Still unverified
 
