@@ -131,67 +131,63 @@ forecast exists.
 
 ---
 
-## Verification status — checked 2026-08-02
+## Verification status — all clear, 2026-08-02
 
 | # | Item | Result |
 | --- | --- | --- |
-| 1 | EIA STEO series IDs | ✅ **Confirmed** — `STEO.WTIPUUS` and `STEO.NGHHUUS`, from EIA's own query-builder URLs. STEO is monthly, 18-month horizon, as assumed |
-| 2 | `yfinance` target coverage | ✅ **Confirmed, 18/18** — US 8/8, Canadian 4/4, foreign 6/6, run in Actions. Analyst counts 13–58 per name |
-| 3 | ETF holdings | ⚠️ **Partly solved** — `yfinance` returns top-10 only, and coverage varies from 88% to 24%. See below |
-| 4 | Lumber authority | ❌ **No free forecast exists** — dropped from the list |
+| 1 | EIA STEO series IDs | ✅ `STEO.WTIPUUS`, `STEO.NGHHUUS` |
+| 1b | EIA v2 query shape + key | ✅ **200, real forward data** — see below |
+| 2 | `yfinance` target coverage | ✅ **18/18** — US 8/8, Canadian 4/4, foreign 6/6 |
+| 3 | Holdings files | ✅ **CDZ 102 rows, DVY 106, IDV 132**, all identity-checked |
+| 4 | Lumber authority | ❌ none free — dropped |
 
-### Q2 — target coverage is a solved problem
+**Nothing is unverified. The design is ready to build.**
 
-Every ticker tested returned a price, a mean target and an analyst count.
-Foreign listings worked across Switzerland, France, London, Tokyo, Sydney and
-Germany, so **the Intl Dividend row survives**. This was the largest single
-risk to the design and it cleared.
+### The EIA call works and returns genuine projections
 
-### Q3 — `yfinance` holdings are enough for some sleeves, not all
+`GET https://api.eia.gov/v2/steo/data/?api_key=…&frequency=monthly&data[0]=value`
+`&facets[seriesId][]=WTIPUUS&sort[0][column]=period&sort[0][direction]=desc`
 
-`yfinance` returns exactly ten holdings per fund. What those ten cover:
+Returned WTI at 57–61 $/bbl and Henry Hub at 3.27–4.19 $/mmBtu for periods
+running to **2027-12** — sixteen months past the run date, confirming STEO is a
+forward projection and not a restated history.
 
-| Benchmark | Top-10 covers | Verdict |
+### `yfinance` target coverage
+
+Every ticker returned a price, a mean target and an analyst count (13–58 per
+name). Foreign listings worked across `.SW`, `.PA`, `.L`, `.T`, `.AX` and `.DE`,
+which is what keeps the Intl Dividend row alive.
+
+### Holdings files — iShares only, and the schema is not uniform
+
+| Fund | Rows | Identity |
 | --- | --- | --- |
-| XFN.TO | 88.7% | `yfinance` alone is fine |
-| XEG.TO | 88.1% | fine |
-| XRE.TO | 82.3% | fine |
-| ZUT.TO | 79.0% | fine |
-| XLK | 59.3% | borderline — but XLK genuinely is top-heavy, so the ten are what drives it |
-| XDV.TO | 59.2% | *superseded — sleeve moved to CDZ* |
-| DVY *(was SCHD)* | — | **needs a real holdings file** |
-| IDV | 27.3% | **needs a real holdings file** |
-| ZDI.TO | 23.8% | **needs a real holdings file** |
+| CDZ | 102 | MATCH |
+| DVY | 106 | MATCH |
+| IDV | 132 | MATCH |
 
-Renormalising a top-10 is not a neutral approximation — it reweights the sleeve
-onto its largest names. At 88% that distortion is small. At 24% the row is ten
-stocks standing in for a hundred, which is not the asset class.
+Pattern: `…/products/{id}/{slug}/latest-holdings.csv`, preceded by a preamble
+and dated (`Fund Holdings as of, "Jul 31, 2026"`).
 
-So the provider-CSV question applies to **three benchmarks**: CDZ, DVY and
-IDV. The four Canadian sector sleeves (XRE, XEG, XFN, ZUT) and XLK ship on
-`yfinance` alone.
+**Columns differ between funds** — CDZ has `Shares`, DVY and IDV have
+`Quantity`, and IDV carries an extra `Type` column. **Parse by column name,
+never by position.**
 
-### Q3b — only iShares publishes a usable holdings file
+Other providers were tried and failed: Schwab 403s non-browser requests, BMO
+times out. That is why all three full-holdings sleeves are iShares funds.
 
-| Provider | Result |
-| --- | --- |
-| iShares (CDZ) | ✅ 102 rows: `Ticker, Name, Sector, Weight (%), Shares, Price`, dated |
-| Schwab (SCHD) | ❌ **403** to non-browser requests |
-| BMO (ZDI) | ❌ read timeout after 45s |
+**A wrong product ID returns 200 and a valid CSV for the wrong fund.** ID
+239500 was used for IDV and served DVY, with nothing in the response signalling
+an error; IDV is 239499. Every holdings fetch must assert the fund name inside
+the file. A 200 is not evidence the right fund was fetched.
 
-This is why all three full-holdings sleeves are now iShares funds — one
-mechanism, one parser, one failure mode.
+### `yfinance` top-10 coverage, for the sleeves that use it
 
-**A wrong product ID returns HTTP 200 and a valid CSV for the wrong fund.**
-Product 239500 was used for IDV and served DVY; nothing in the response
-signalled an error. IDV is 239499. Any holdings fetch must therefore **assert
-the fund name inside the file**, not merely that a file came back — a 200 is
-not evidence the right fund was fetched.
+| XFN 88.7% · XEG 88.1% · XRE 82.3% · ZUT 79.0% · XLK 59.3% |
+| --- |
 
-### Still unverified
-
-The EIA **v2 query shape** (`/v2/steo/data/?facets[seriesId][]=...`) and the
-free key. The series names are confirmed; the request that fetches them is not.
+Renormalising a top-10 reweights a sleeve onto its largest names. At ~85% that
+distortion is small, which is why these five ship without a holdings file.
 
 ## Rejected, and why
 
