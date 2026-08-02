@@ -3,13 +3,19 @@
     {
       "date": "2026-08-02",
       "ranks": {
-        "aluminium": 1,
-        "us-div": 2,
-        "intl-div": 3,
-        "hisa": 4,
-        "cad-re": 5,
-        "natgas": 6,
-        "oil": 7
+        "us-tech": 1,
+        "aluminium": 2,
+        "cad-reit": 3,
+        "us-div": 4,
+        "cad-div": 5,
+        "intl-div": 6,
+        "cad-util": 7,
+        "cad-energy": 8,
+        "hisa": 9,
+        "cad-re": 10,
+        "cad-fin": 11,
+        "natgas": 12,
+        "oil": 13
       }
     }
   ]
