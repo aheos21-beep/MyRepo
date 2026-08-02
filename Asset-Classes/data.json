@@ -20,12 +20,12 @@
       "cat": "Equity",
       "color": "#58a6ff",
       "publisher": "Analyst consensus via CDZ holdings",
-      "r": 12.2,
-      "why": "Weighted analyst consensus across 95 of 95 CDZ holdings (100% of fund weight): mean target plus income yield. Interquartile range 5.3% to 28.8%.",
+      "r": 11.9,
+      "why": "Weighted analyst consensus across 95 of 95 CDZ holdings (100% of fund weight): mean target plus income yield. Weighted interquartile range 3.3% to 21.5%. 16 outlier(s) clipped.",
       "published": "2026-07-31",
       "basis": "95 holdings",
-      "lo": 5.3,
-      "hi": 28.8,
+      "lo": 3.3,
+      "hi": 21.5,
       "posChange": "same"
     },
     {
@@ -35,11 +35,11 @@
       "color": "#79c0ff",
       "publisher": "Analyst consensus via DVY holdings",
       "r": 12.4,
-      "why": "Weighted analyst consensus across 99 of 99 DVY holdings (100% of fund weight): mean target plus income yield. Interquartile range 8.3% to 18.8%.",
+      "why": "Weighted analyst consensus across 99 of 99 DVY holdings (100% of fund weight): mean target plus income yield. Weighted interquartile range 7.9% to 17.8%. 8 outlier(s) clipped.",
       "published": "2026-07-30",
       "basis": "99 holdings",
-      "lo": 8.3,
-      "hi": 18.8,
+      "lo": 7.9,
+      "hi": 17.8,
       "posChange": "same"
     },
     {
@@ -48,12 +48,12 @@
       "cat": "Equity",
       "color": "#a5d6ff",
       "publisher": "Analyst consensus via IDV holdings",
-      "r": 12.0,
-      "why": "Weighted analyst consensus across 71 of 99 IDV holdings (77% of fund weight): mean target plus income yield. Interquartile range 3.8% to 19.1%.",
+      "r": 11.5,
+      "why": "Weighted analyst consensus across 71 of 99 IDV holdings (77% of fund weight): mean target plus income yield. Weighted interquartile range 4.2% to 16.1%. 7 outlier(s) clipped.",
       "published": "2026-07-31",
       "basis": "71 holdings",
-      "lo": 3.8,
-      "hi": 19.1,
+      "lo": 4.2,
+      "hi": 16.1,
       "posChange": "same"
     },
     {
@@ -63,11 +63,11 @@
       "color": "#d2a8ff",
       "publisher": "Analyst consensus via XRE holdings",
       "r": 14.7,
-      "why": "Weighted analyst consensus across 10 of 10 XRE.TO holdings (100% of fund weight): mean target plus income yield. Interquartile range 11.3% to 17.0%.",
+      "why": "Weighted analyst consensus across 10 of 10 XRE.TO holdings (100% of fund weight): mean target plus income yield. Weighted interquartile range 11.6% to 14.3%.",
       "published": "2026-08-02",
       "basis": "10 holdings",
-      "lo": 11.3,
-      "hi": 17.0,
+      "lo": 11.6,
+      "hi": 14.3,
       "posChange": "same"
     },
     {
@@ -77,11 +77,11 @@
       "color": "#a371f7",
       "publisher": "Analyst consensus via XLK holdings",
       "r": 42.4,
-      "why": "Weighted analyst consensus across 10 of 10 XLK holdings (100% of fund weight): mean target plus income yield. Interquartile range 21.1% to 54.4%.",
+      "why": "Weighted analyst consensus across 10 of 10 XLK holdings (100% of fund weight): mean target plus income yield. Weighted interquartile range 21.6% to 65.8%.",
       "published": "2026-08-02",
       "basis": "10 holdings",
-      "lo": 21.1,
-      "hi": 54.4,
+      "lo": 21.6,
+      "hi": 65.8,
       "posChange": "same"
     },
     {
@@ -91,11 +91,11 @@
       "color": "#ffa657",
       "publisher": "Analyst consensus via XEG holdings",
       "r": 10.5,
-      "why": "Weighted analyst consensus across 10 of 10 XEG.TO holdings (100% of fund weight): mean target plus income yield. Interquartile range 6.7% to 19.5%.",
+      "why": "Weighted analyst consensus across 10 of 10 XEG.TO holdings (100% of fund weight): mean target plus income yield. Weighted interquartile range 8.7% to 16.7%.",
       "published": "2026-08-02",
       "basis": "10 holdings",
-      "lo": 6.7,
-      "hi": 19.5,
+      "lo": 8.7,
+      "hi": 16.7,
       "posChange": "same"
     },
     {
@@ -105,11 +105,11 @@
       "color": "#7ee787",
       "publisher": "Analyst consensus via XFN holdings",
       "r": 1.1,
-      "why": "Weighted analyst consensus across 10 of 10 XFN.TO holdings (100% of fund weight): mean target plus income yield. Interquartile range -5.1% to 4.8%.",
+      "why": "Weighted analyst consensus across 10 of 10 XFN.TO holdings (100% of fund weight): mean target plus income yield. Weighted interquartile range -5.1% to -1.3%.",
       "published": "2026-08-02",
       "basis": "10 holdings",
       "lo": -5.1,
-      "hi": 4.8,
+      "hi": -1.3,
       "posChange": "same"
     },
     {
@@ -119,11 +119,11 @@
       "color": "#56d364",
       "publisher": "Analyst consensus via ZUT holdings",
       "r": 11.4,
-      "why": "Weighted analyst consensus across 10 of 10 ZUT.TO holdings (100% of fund weight): mean target plus income yield. Interquartile range 3.0% to 19.8%.",
+      "why": "Weighted analyst consensus across 10 of 10 ZUT.TO holdings (100% of fund weight): mean target plus income yield. Weighted interquartile range 3.3% to 18.8%.",
       "published": "2026-08-02",
       "basis": "10 holdings",
-      "lo": 3.0,
-      "hi": 19.8,
+      "lo": 3.3,
+      "hi": 18.8,
       "posChange": "same"
     },
     {
@@ -176,7 +176,7 @@
     }
   ],
   "sources": [],
-  "lastRunCostUsd": 0.33,
+  "lastRunCostUsd": 0.34,
   "staleAssetIds": [
     "copper",
     "nickel",
