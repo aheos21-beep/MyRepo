@@ -1,0 +1,90 @@
+name: Verify data sources (throwaway)
+
+# Temporary. Settles two open questions in Asset-Classes/ASSET-SOURCES.md that
+# cannot be answered from the dev sandbox, where Yahoo and the ETF providers are
+# blocked by egress policy. Commits nothing — read the job log.
+# Delete this file once the answers are recorded.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - run: pip install yfinance
+
+      - name: Check analyst target coverage and ETF holdings
+        run: |
+          python - <<'PY'
+          import yfinance as yf
+
+          def info(t):
+              try:
+                  return yf.Ticker(t).get_info() or {}
+              except Exception as e:
+                  print(f"    {t:12} ERROR {type(e).__name__}: {str(e)[:80]}")
+                  return None
+
+          print("=" * 70)
+          print("Q2 — does yfinance return analyst targets outside Canada?")
+          print("=" * 70)
+
+          groups = {
+              "US (gates SCHD / XLK)": ["JNJ", "AAPL", "MSFT", "NVDA", "XOM", "KO", "PEP", "ABBV"],
+              "Canadian (known-good control)": ["RY.TO", "ENB.TO", "BCE.TO", "FTS.TO"],
+              "Foreign (gates Intl Dividend)": ["NESN.SW", "SAN.PA", "SHEL.L", "7203.T", "BHP.AX", "SIE.DE"],
+          }
+
+          for label, tickers in groups.items():
+              print(f"\n{label}")
+              ok = 0
+              for t in tickers:
+                  d = info(t)
+                  if d is None:
+                      continue
+                  price = d.get("currentPrice") or d.get("regularMarketPrice")
+                  tgt, n = d.get("targetMeanPrice"), d.get("numberOfAnalystOpinions")
+                  good = price is not None and tgt is not None
+                  ok += good
+                  print(f"    {t:12} price={str(price):>10} target={str(tgt):>10} "
+                        f"analysts={str(n):>5} {'OK' if good else 'MISSING'}")
+              print(f"    -> {ok}/{len(tickers)} usable")
+
+          print()
+          print("=" * 70)
+          print("Q3 — can we get holdings + weights for each benchmark?")
+          print("(Tests the yfinance fallback path. Provider CSVs are a separate")
+          print(" question, only worth asking if this one is insufficient.)")
+          print("=" * 70)
+
+          benchmarks = {
+              "CAD Dividend":   "XDV.TO",
+              "US Dividend":    "SCHD",
+              "Canadian REITs": "XRE.TO",
+              "US Tech":        "XLK",
+              "Cdn Energy":     "XEG.TO",
+              "Cdn Financials": "XFN.TO",
+              "Cdn Utilities":  "ZUT.TO",
+              "Intl Div (cand A)": "IDV",
+              "Intl Div (cand B)": "ZDI.TO",
+          }
+
+          for label, tk in benchmarks.items():
+              try:
+                  fd = yf.Ticker(tk).funds_data
+                  top = fd.top_holdings
+                  if top is None or len(top) == 0:
+                      print(f"\n  {label:20} {tk:9} NO HOLDINGS RETURNED")
+                      continue
+                  covered = float(top.iloc[:, -1].sum()) if top.shape[1] else 0.0
+                  print(f"\n  {label:20} {tk:9} {len(top)} holdings, "
+                        f"top-N covers {covered:.1%} of fund")
+                  print(f"    {list(top.index)[:10]}")
+              except Exception as e:
+                  print(f"\n  {label:20} {tk:9} ERROR {type(e).__name__}: {str(e)[:80]}")
+          PY
