@@ -198,10 +198,23 @@ distortion is small, which is why these five ship without a holdings file.
 | Lithium | Unit chaos: `$16/kg` and `$15,646/tonne` averaged once gave +12,074% |
 | Bitcoin (36.9pp), Ethereum (45.4pp) | No authority exists; houses differ 2-3x. The spread is the honest answer |
 | Canadian Bonds, HY Bonds | Reported the policy rate rather than their own return. A Philadelphia Fed SPF route existed and was declined — bonds stay out |
+| US Real Estate | CBRE publishes a narrative outlook, not a readable one-year figure. Two searches over sixteen sources returned nothing usable — the same shape of failure as lumber: the institution is nameable, the number is not readable |
 | Lumber (3.6pp) | **No free forecast exists.** Fastmarkets Random Lengths sells price assessments, not forecasts; FEA's forecast service is also paywalled. An institution could be named but its published forecast could not be read |
 | Wheat and other ags | Content farms entered wheat's median (11.3pp). A USDA WASDE route existed and was declined |
 | Refined fuels, electricity, coal | Consumption prices, not holdable asset classes. Would have been free off the existing EIA key |
 | Tin, lead, iron ore | Free off the CMO search, but not things a retail allocation holds |
+
+## Annual-average forecasts are not one-year-ahead forecasts
+
+The World Bank CMO publishes calendar-year averages. Read in August 2026, its
+2026 column is two-thirds elapsed history, so taking it as "one year ahead"
+overstates the forecast. Copper's April 2026 table reads $12,000/mt for 2026
+and $11,000/mt for 2027 — against a $9,947 spot those are +20.6% and +10.6%,
+and only the second answers the question being asked. The prompt now names the
+calendar year containing today + 12 months.
+
+The same caution applies to any annual table, including CREA and any commodity
+source added later.
 
 ## Failure modes
 

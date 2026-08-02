@@ -185,10 +185,6 @@ ASSETS = [
          cadence_months=3,
          hint="Canadian Real Estate Association (CREA) quarterly housing market forecast, "
               "national average home price forecast for next year"),
-    dict(id="us-re", name="US Real Estate", cat="Real Estate", color="#db61a2",
-         method="search", group="cbre", publisher="CBRE",
-         cadence_months=6,
-         hint="CBRE US Real Estate Market Outlook, commercial property value / total return forecast"),
     dict(id="potash", name="Potash", cat="Commodity", color="#e3b341",
          method="search", group="cmo", publisher="World Bank CMO",
          cadence_months=6,
@@ -209,8 +205,16 @@ ASSETS = [
 
 SEARCH_GROUPS = {
     "crea": "CREA quarterly housing market forecast",
-    "cbre": "CBRE US real estate market outlook",
     "cmo": "World Bank Commodity Markets Outlook",
+}
+
+# Pinning the exact document removes the run-to-run variance that came from
+# letting the model pick which page to believe: the same prompt found these
+# figures on one run and reported them missing on the next. Update these twice
+# a year, in May and November, when a new edition lands.
+SEARCH_SOURCE_URLS = {
+    "cmo": "https://thedocs.worldbank.org/en/doc/f3138644a1e8e2bb631399ae11d6c408-0050012026"
+           "/related/CMO-April-2026-Forecasts.pdf",
 }
 
 
@@ -772,9 +776,16 @@ def search_group(client, model_id, group, assets, today, costs):
     blocks = "\n".join(
         f"- id: {a['id']}\n  Asset: {a['name']}\n  Look for: {a['hint']}" for a in assets
     )
+    pinned = SEARCH_SOURCE_URLS.get(group)
+    where = (f"Read this exact document: {pinned}\n(Search for it if the URL will not load, "
+             f"but use no other publication for the figures.)"
+             if pinned else
+             f"Use web_search to find the most recent edition of: **{SEARCH_GROUPS[group]}**.")
+    target_year = today.year + 1 if today.month > 6 else today.year
+
     prompt = f"""Today is {today}, which is after your training cutoff — you cannot know current forecasts from memory.
 
-Use web_search to find the most recent edition of: **{SEARCH_GROUPS[group]}**.
+{where}
 
 Read the figures for each of the following {len(assets)} item(s) out of that publication:
 
@@ -783,7 +794,7 @@ Read the figures for each of the following {len(assets)} item(s) out of that pub
 Rules:
 - Use ONLY that named publication as the source of the forecast figures. Do not blend in other forecasters, and do not use aggregator or price-prediction sites.
 - Report the CURRENT level and the level forecast roughly ONE YEAR ahead, both in the SAME unit. Do not compute a percentage change — that is done downstream.
-- If the publication gives a multi-year path, use the point closest to one year out.
+- These tables are ANNUAL AVERAGES by calendar year. One year from today falls in {target_year}, so report the {target_year} figure — NOT the current year's, which is mostly already elapsed.
 - Report the document's own publication date, not today's date.
 - If you genuinely cannot find a figure for an item in that publication, put its id in "notFound". Do NOT substitute a different source, and do NOT skip calling the tool.
 
