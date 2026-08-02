@@ -46,6 +46,10 @@ jobs:
           SCOPE: ${{ github.event.inputs.scope || 'full' }}
           ONLY_IDS: ${{ github.event.inputs.only_ids }}
           FORCE_SEARCH: ${{ github.event.inputs.force_search }}
+          # Without this, Python block-buffers stdout and every log line lands
+          # with the timestamp of the final flush, which makes the log useless
+          # for telling how long anything actually took.
+          PYTHONUNBUFFERED: '1'
         run: |
           FORCE=""
           if [ "$FORCE_SEARCH" = "true" ]; then FORCE="--force-search"; fi

@@ -601,15 +601,21 @@ def equity_sleeve_projection(asset, holdings, as_of, today):
     # Dispersion matters more than the point estimate here: a single number
     # hides that sleeve constituents routinely span -1% to +25%. Weighted, so
     # the range describes the same basket as the number beside it.
+    # 10th-90th rather than quartiles. A weighted IQR is so narrow on a
+    # concentrated sleeve that the mean can sit outside it — arithmetically
+    # correct under skew, but it reads as a broken number next to the figure
+    # it describes.
     lo = hi = None
     if len(clipped) >= 4:
-        q1, q3 = weighted_quantile(clipped, 0.25), weighted_quantile(clipped, 0.75)
-        if q1 is not None and q3 is not None:
-            lo, hi = round(q1, 1), round(q3, 1)
+        p10, p90 = weighted_quantile(clipped, 0.10), weighted_quantile(clipped, 0.90)
+        if p10 is not None and p90 is not None:
+            lo, hi = round(p10, 1), round(p90, 1)
 
     why = (f"Weighted analyst consensus across {len(contributions)} of {len(holdings)} "
            f"{asset['ticker']} holdings ({coverage:.0%} of fund weight): mean target plus "
-           f"income yield. Weighted interquartile range {lo}% to {hi}%."
+           f"income yield. Middle 80% of fund weight spans {lo}% to {hi}%."
+           + (" The average sits outside that band, so a few large holdings carry "
+              "this sleeve." if not (lo <= pct <= hi) else "")
            + (f" {n_clipped} outlier(s) clipped." if n_clipped else "")
            if lo is not None else
            f"Weighted analyst consensus across {len(contributions)} of {len(holdings)} "
@@ -700,7 +706,7 @@ def searches_used(usage):
 
 
 def request_tool_call(client, model_id, prompt, tools, tool_name, max_tokens, costs,
-                      min_searches=0):
+                      min_searches=0, report=None):
     """Run one request, resuming paused turns.
 
     Paused turns are resumed because a search-heavy turn genuinely is unfinished.
@@ -732,6 +738,8 @@ def request_tool_call(client, model_id, prompt, tools, tool_name, max_tokens, co
                               if b.type == "tool_use" and b.name == tool_name), None)
             if submitted is not None:
                 if searched >= min_searches or pushed_back:
+                    if report is not None:
+                        report["searches"] = searched
                     return submitted.input, sources
                 # Answered without looking. Reject it and require the search.
                 print(f"    submitted after {searched} searches; requiring a search first")
@@ -783,6 +791,7 @@ Search first — you cannot know whether the publication contains these figures 
 
 You MUST finish by calling submit_forecasts, even if you found nothing at all — in that case call it with an empty "forecasts" list and every id in "notFound". Ending your turn without calling it loses the whole group."""
 
+    report = {}
     submitted, sources = request_tool_call(
         client, model_id, prompt,
         tools=[{"type": "web_search_20250305", "name": "web_search",
@@ -793,7 +802,13 @@ You MUST finish by calling submit_forecasts, even if you found nothing at all �
         costs=costs,
         # "Not found" is only a real answer if it was reached by looking.
         min_searches=1,
+        report=report,
     )
+    # Log the search count unconditionally. Without it there is no way to tell
+    # a genuine "the document does not say" from an answer given without
+    # looking — and CI buffers stdout, so timings in the log prove nothing.
+    print(f"    {report.get('searches', 0)} web search(es) used, "
+          f"{len(sources)} source(s) seen")
 
     not_found = [str(i) for i in (submitted.get("notFound") or [])]
     if not_found:
@@ -990,8 +1005,10 @@ def refresh(targets, previous_by_id, today, costs, force_search):
                 stale.extend(missing)
             # One search budget serves the whole group, so sources belong to
             # the group rather than to any single asset within it.
-            if by_id:
-                sources.append((sorted(by_id), SEARCH_GROUPS[group], group_sources))
+            label = SEARCH_GROUPS[group]
+            if group_sources:
+                sources.append((sorted(by_id) or [a["id"] for a in assets],
+                                label, group_sources))
 
     return results, sources, stale, skipped
 
