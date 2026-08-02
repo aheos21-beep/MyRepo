@@ -204,6 +204,28 @@ distortion is small, which is why these five ship without a holdings file.
 | Refined fuels, electricity, coal | Consumption prices, not holdable asset classes. Would have been free off the existing EIA key |
 | Tin, lead, iron ore | Free off the CMO search, but not things a retail allocation holds |
 
+## Making the rows comparable
+
+The sources do not carry the same bias, so showing them side by side unadjusted
+invites a false comparison. Analyst price targets sit systematically above
+realised prices; an EIA projection and a government bond yield do not.
+
+**Analyst targets are divided by 1.094 before weighting** — a ~9.4% systematic
+upward bias on the target level, the most directly applicable published figure.
+Applied per holding, to the price target only; a dividend yield is not an
+analyst opinion and is left alone. `rRaw` keeps the unadjusted figure so the
+source stays auditable, and each tooltip states both.
+
+A flat 20% was considered and rejected: nothing in the literature supports that
+magnitude, and applied to the target level it drives most sleeves deeply
+negative. Published estimates vary widely by market and period — treat 9.4% as
+a defensible default, not a constant of nature.
+
+**The other rows are not adjusted, and that is not a claim they are unbiased.**
+Forward rates carry a term premium; a real-estate association forecasting house
+prices has an evident conflict. It is that no comparable published estimate
+exists for them, and inventing one would be worse than leaving it visible.
+
 ## Annual-average forecasts are not one-year-ahead forecasts
 
 The World Bank CMO publishes calendar-year averages. Read in August 2026, its

@@ -125,6 +125,24 @@ WINSOR_TAIL = 0.05
 # HOLDING_RETURN_BOUNDS instead, which does not depend on sample size.
 MIN_WINSOR_HOLDINGS = 25
 
+# Sell-side price targets sit systematically above realised prices, so an
+# analyst-sourced row is not comparable with an EIA projection or a government
+# bond yield until that is removed. Published estimates of the gap vary by
+# market and period; the most directly applicable figure found is a systematic
+# upward bias of ~9.4% on the target LEVEL, so a target is divided by 1.094 to
+# recover an unbiased expected price. (A flat 20% was considered and rejected:
+# nothing in the literature supports that magnitude, and applied to the level
+# it drives most sleeves deeply negative.)
+#
+# Applied per holding, before weighting, and to the price target only — a
+# dividend yield is not an analyst opinion and is left alone.
+#
+# The other sources are NOT adjusted. That is not a claim they are unbiased:
+# forward rates carry a term premium, and a real-estate association forecasting
+# house prices has its own conflict. It is that no comparable published
+# estimate exists for them, and inventing one would be worse than leaving it.
+ANALYST_TARGET_OPTIMISM = 0.094
+
 # A single stock whose mean analyst target implies a move outside this band
 # over twelve months is a stale quote, a corporate action or a mis-scaled
 # figure — not a forecast. Such holdings are dropped like a missing target,
@@ -558,7 +576,7 @@ def equity_sleeve_projection(asset, holdings, as_of, today):
     """
     import yfinance as yf
 
-    contributions, used_weight, total_weight = [], 0.0, 0.0
+    contributions, raw_contributions, used_weight, total_weight = [], [], 0.0, 0.0
 
     for h in holdings:
         total_weight += h["weight"]
@@ -576,12 +594,16 @@ def equity_sleeve_projection(asset, holdings, as_of, today):
         # Yahoo has returned this both as a fraction and as a percent.
         income = raw_yield * 100.0 if raw_yield < 1 else raw_yield
         income = min(income, 15.0)
-        expected = (target / price - 1) * 100.0 + income
+        # De-bias the target, then add the yield untouched.
+        debiased = target / (1.0 + ANALYST_TARGET_OPTIMISM)
+        expected = (debiased / price - 1) * 100.0 + income
+        raw_expected = (target / price - 1) * 100.0 + income
         if not (HOLDING_RETURN_BOUNDS[0] <= expected <= HOLDING_RETURN_BOUNDS[1]):
             print(f"    {asset['id']}: dropped {h['symbol']} at {expected:+.0f}%; outside "
                   f"{HOLDING_RETURN_BOUNDS}, treating as a bad quote")
             continue
         contributions.append((h["weight"], expected))
+        raw_contributions.append((h["weight"], raw_expected))
         used_weight += h["weight"]
 
     if total_weight <= 0:
@@ -601,6 +623,8 @@ def equity_sleeve_projection(asset, holdings, as_of, today):
 
     weighted = sum(w * e for w, e in clipped) / used_weight
     pct = check_return(weighted, asset["id"])
+    # Keep the unadjusted figure so the source remains auditable.
+    raw_pct = round(sum(w * e for w, e in raw_contributions) / used_weight, 1)
 
     # Dispersion matters more than the point estimate here: a single number
     # hides that sleeve constituents routinely span -1% to +25%. Weighted, so
@@ -615,17 +639,21 @@ def equity_sleeve_projection(asset, holdings, as_of, today):
         if p10 is not None and p90 is not None:
             lo, hi = round(p10, 1), round(p90, 1)
 
+    bias_note = (f" Analyst targets discounted {ANALYST_TARGET_OPTIMISM:.1%} for known "
+                 f"sell-side optimism, so this is comparable with the non-analyst rows; "
+                 f"unadjusted it is {raw_pct:+.1f}%.")
+
     why = (f"Weighted analyst consensus across {len(contributions)} of {len(holdings)} "
            f"{asset['ticker']} holdings ({coverage:.0%} of fund weight): mean target plus "
-           f"income yield. Middle 80% of fund weight spans {lo}% to {hi}%."
+           f"income yield. Middle 80% of fund weight spans {lo}% to {hi}%." + bias_note
            + (" The average sits outside that band, so a few large holdings carry "
               "this sleeve." if not (lo <= pct <= hi) else "")
            + (f" {n_clipped} outlier(s) clipped." if n_clipped else "")
            if lo is not None else
            f"Weighted analyst consensus across {len(contributions)} of {len(holdings)} "
-           f"{asset['ticker']} holdings ({coverage:.0%} of fund weight).")
+           f"{asset['ticker']} holdings ({coverage:.0%} of fund weight)." + bias_note)
 
-    return dict(r=pct, why=why, published=as_of or today.isoformat(),
+    return dict(r=pct, rRaw=raw_pct, why=why, published=as_of or today.isoformat(),
                 basis=f"{len(contributions)} holdings", lo=lo, hi=hi)
 
 
@@ -1056,7 +1084,7 @@ def main():
         if fresh:
             row.update({k: v for k, v in fresh.items() if v is not None})
         elif "r" in previous:
-            row.update({k: previous[k] for k in ("r", "why", "published", "basis", "lo", "hi")
+            row.update({k: previous[k] for k in ("r", "rRaw", "why", "published", "basis", "lo", "hi")
                         if k in previous})
         else:
             # Never invent a value for an asset that has never been fetched.
