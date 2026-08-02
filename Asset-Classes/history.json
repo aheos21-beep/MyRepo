@@ -1,3 +1,16 @@
 {
-  "history": []
+  "history": [
+    {
+      "date": "2026-08-02",
+      "ranks": {
+        "aluminium": 1,
+        "us-div": 2,
+        "intl-div": 3,
+        "hisa": 4,
+        "cad-re": 5,
+        "natgas": 6,
+        "oil": 7
+      }
+    }
+  ]
 }
