@@ -119,7 +119,7 @@
       "model": "DeepSeek V3",
       "company": "DeepSeek AI",
       "color": "#6366f1",
-      "in_cards": true,
+      "in_cards": false,
       "score": [
         67,
         67,
@@ -143,7 +143,7 @@
       "model": "Qwen 2.5 Max",
       "company": "Alibaba",
       "color": "#f59e0b",
-      "in_cards": false,
+      "in_cards": true,
       "score": [
         61,
         61,
@@ -187,5 +187,5 @@
       ]
     }
   ],
-  "last_updated": "2026-08-03T04:04:00.022298+00:00"
+  "last_updated": "2026-08-03T04:07:42.041300+00:00"
 }

@@ -2,7 +2,7 @@
   "tools": [
     {
       "name": "Claude",
-      "model": "Opus 5",
+      "model": "Opus 4.8",
       "company": "Anthropic",
       "url": "https://claude.ai",
       "icon": "\u2728",
@@ -33,22 +33,6 @@
       "rank": 2
     },
     {
-      "name": "Gemini",
-      "model": "3.1 Pro",
-      "company": "Google",
-      "url": "https://gemini.google.com",
-      "icon": "\ud83d\udc8e",
-      "color": "#4285f4",
-      "score": 70,
-      "benchmarks": {
-        "lmsys_elo": null,
-        "mmlu": null,
-        "humaneval": null,
-        "math": null
-      },
-      "rank": 3
-    },
-    {
       "name": "Claude",
       "model": "Fable 5",
       "company": "Anthropic",
@@ -62,15 +46,31 @@
         "humaneval": null,
         "math": null
       },
+      "rank": 3
+    },
+    {
+      "name": "Gemini",
+      "model": "3.1 Pro",
+      "company": "Google",
+      "url": "https://gemini.google.com",
+      "icon": "\ud83d\udc8e",
+      "color": "#4285f4",
+      "score": 70,
+      "benchmarks": {
+        "lmsys_elo": null,
+        "mmlu": null,
+        "humaneval": null,
+        "math": null
+      },
       "rank": 4
     },
     {
-      "name": "DeepSeek",
-      "model": "V4 Pro",
-      "company": "DeepSeek",
-      "url": "https://www.deepseek.com",
-      "icon": "\ud83c\udf0a",
-      "color": "#6366f1",
+      "name": "Grok",
+      "model": "4.5",
+      "company": "xAI",
+      "url": "https://grok.com",
+      "icon": "\ud83c\udf11",
+      "color": "#e879f9",
       "score": 70,
       "benchmarks": {
         "lmsys_elo": null,
@@ -81,6 +81,6 @@
       "rank": 5
     }
   ],
-  "last_updated": "2026-08-03T04:04:00.022689+00:00",
-  "api_cost": "$0.09"
+  "last_updated": "2026-08-03T04:07:42.041668+00:00",
+  "api_cost": "$0.08"
 }
