@@ -29,8 +29,10 @@ import anthropic
 
 DOCS_DIR = Path(__file__).parent
 
-# Research is the quality-critical step; extraction is mechanical and cheap.
-RESEARCH_MODEL = os.getenv("RESEARCH_MODEL", "claude-opus-4-8")
+# Both phases run on Haiku to keep the per-run cost low. Overridable if a run
+# comes back thin — the research call is the one that would benefit from a
+# stronger model, not the extraction call.
+RESEARCH_MODEL = os.getenv("RESEARCH_MODEL", "claude-haiku-4-5")
 EXTRACT_MODEL  = os.getenv("EXTRACT_MODEL",  "claude-haiku-4-5")
 
 # $ per 1M tokens (input, output)
