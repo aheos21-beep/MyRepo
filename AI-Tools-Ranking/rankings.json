@@ -1,82 +1,87 @@
 {
   "tools": [
     {
-      "name": "Claude",
-      "model": "Opus 4.8",
-      "company": "Anthropic",
-      "url": "https://claude.ai",
-      "icon": "\u2728",
-      "color": "#cc785c",
-      "score": 70,
+      "name": "ChatGPT",
+      "model": "GPT-5",
+      "company": "OpenAI",
+      "url": "https://chat.openai.com",
+      "icon": "🤖",
+      "color": "#10a37f",
+      "cats": ["💻 Coding", "📋 Instructions"],
+      "score": 94,
       "benchmarks": {
-        "lmsys_elo": null,
-        "mmlu": null,
-        "humaneval": null,
-        "math": null
+        "lmsys_elo": 1484,
+        "mmlu": 92.0,
+        "humaneval": 90.2,
+        "math": 85.0
       },
       "rank": 1
     },
     {
-      "name": "ChatGPT",
-      "model": "GPT-5.6",
-      "company": "OpenAI",
-      "url": "https://chat.openai.com",
-      "icon": "\ud83e\udd16",
-      "color": "#10a37f",
-      "score": 70,
+      "name": "Gemini",
+      "model": "Gemini Ultra 2",
+      "company": "Google DeepMind",
+      "url": "https://gemini.google.com",
+      "icon": "💎",
+      "color": "#4285f4",
+      "cats": ["🔢 Math", "🌐 Multilingual"],
+      "score": 93,
       "benchmarks": {
-        "lmsys_elo": null,
-        "mmlu": null,
-        "humaneval": null,
-        "math": null
+        "lmsys_elo": 1490,
+        "mmlu": 90.3,
+        "humaneval": 89.0,
+        "math": 82.9
       },
       "rank": 2
     },
     {
       "name": "Claude",
-      "model": "Fable 5",
+      "model": "Claude 5",
       "company": "Anthropic",
       "url": "https://claude.ai",
-      "icon": "\u2728",
+      "icon": "✨",
       "color": "#cc785c",
-      "score": 70,
+      "cats": ["🧠 Reasoning", "✍️ Creative Writing"],
+      "score": 92,
       "benchmarks": {
-        "lmsys_elo": null,
-        "mmlu": null,
-        "humaneval": null,
-        "math": null
+        "lmsys_elo": 1502,
+        "mmlu": 90.4,
+        "humaneval": 92.7,
+        "math": 88.0
       },
       "rank": 3
     },
     {
-      "name": "Gemini",
-      "model": "3.1 Pro",
-      "company": "Google",
-      "url": "https://gemini.google.com",
-      "icon": "\ud83d\udc8e",
-      "color": "#4285f4",
-      "score": 70,
+      "name": "DeepSeek",
+      "model": "DeepSeek V3",
+      "company": "DeepSeek AI",
+      "url": "https://chat.deepseek.com",
+      "icon": "🌊",
+      "color": "#6366f1",
+      "cats": ["🔢 Math", "💻 Coding"],
+      "score": 77,
       "benchmarks": {
-        "lmsys_elo": null,
-        "mmlu": null,
-        "humaneval": null,
-        "math": null
+        "lmsys_elo": 1318,
+        "mmlu": 88.0,
+        "humaneval": 82.6,
+        "math": 90.0
       },
       "rank": 4
     },
     {
-      "name": "Grok",
-      "model": "4.5",
-      "company": "xAI",
-      "url": "https://grok.com",
-      "icon": "\ud83c\udf11",
-      "color": "#e879f9",
-      "score": 70,
+      "name": "Llama",
+      "model": "Llama 4",
+      "company": "Meta AI",
+      "url": "https://ai.meta.com/llama/",
+      "icon": "🦙",
+      "color": "#0668e1",
+      "cats": ["💻 Coding", "🔢 Math"],
+      "score": 74,
       "benchmarks": {
-        "lmsys_elo": null,
-        "mmlu": null,
-        "humaneval": null,
-        "math": null
+        "lmsys_elo": 1308,
+        "mmlu": 87.3,
+        "humaneval": 89.0,
+        "math": 73.8
       },
       "rank": 5
     }

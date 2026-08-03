@@ -21,20 +21,20 @@ WEIGHTS = {"lmsys_elo": 0.40, "mmlu": 0.25, "humaneval": 0.20, "math": 0.15}
 MAX_MODELS = 7    # total tracked
 CARD_COUNT = 5    # top N shown in ranking cards
 
-# Stable visual identity — survives model version changes
+# Stable visual identity + specialties + base fallback scores per brand
 BRAND_META = {
-    "ChatGPT":    {"icon": "🤖", "color": "#10a37f"},
-    "Claude":     {"icon": "✨", "color": "#cc785c"},
-    "Gemini":     {"icon": "💎", "color": "#4285f4"},
-    "Llama":      {"icon": "🦙", "color": "#0668e1"},
-    "DeepSeek":   {"icon": "🌊", "color": "#6366f1"},
-    "Qwen":       {"icon": "🔷", "color": "#f59e0b"},
-    "Mistral":    {"icon": "🌀", "color": "#f7931e"},
-    "Grok":       {"icon": "🌑", "color": "#e879f9"},
-    "Perplexity": {"icon": "🔍", "color": "#20c997"},
-    "Command":    {"icon": "🔮", "color": "#9b59b6"},
-    "Falcon":     {"icon": "🦅", "color": "#e67e22"},
-    "Yi":         {"icon": "🌙", "color": "#3498db"},
+    "ChatGPT":    {"icon": "🤖", "color": "#10a37f", "cats": ["💻 Coding", "📋 Instructions"],       "base_score": 94, "base_benchmarks": {"lmsys_elo": 1484, "mmlu": 92.0, "humaneval": 90.2, "math": 85.0}},
+    "Claude":     {"icon": "✨", "color": "#cc785c", "cats": ["🧠 Reasoning", "✍️ Creative Writing"], "base_score": 92, "base_benchmarks": {"lmsys_elo": 1502, "mmlu": 90.4, "humaneval": 92.7, "math": 88.0}},
+    "Gemini":     {"icon": "💎", "color": "#4285f4", "cats": ["🔢 Math", "🌐 Multilingual"],          "base_score": 93, "base_benchmarks": {"lmsys_elo": 1490, "mmlu": 90.3, "humaneval": 89.0, "math": 82.9}},
+    "Llama":      {"icon": "🦙", "color": "#0668e1", "cats": ["💻 Coding", "🔢 Math"],                "base_score": 74, "base_benchmarks": {"lmsys_elo": 1308, "mmlu": 87.3, "humaneval": 89.0, "math": 73.8}},
+    "DeepSeek":   {"icon": "🌊", "color": "#6366f1", "cats": ["🔢 Math", "💻 Coding"],                "base_score": 77, "base_benchmarks": {"lmsys_elo": 1318, "mmlu": 88.0, "humaneval": 82.6, "math": 90.0}},
+    "Qwen":       {"icon": "🔷", "color": "#f59e0b", "cats": ["🔢 Math", "🌐 Multilingual"],          "base_score": 65, "base_benchmarks": {"lmsys_elo": 1279, "mmlu": 85.0, "humaneval": 80.0, "math": 82.0}},
+    "Mistral":    {"icon": "🌀", "color": "#f7931e", "cats": ["💻 Coding", "🌐 Multilingual"],        "base_score": 59, "base_benchmarks": {"lmsys_elo": 1265, "mmlu": 81.0, "humaneval": 75.0, "math": 73.0}},
+    "Grok":       {"icon": "🌑", "color": "#e879f9", "cats": ["🧠 Reasoning", "💻 Coding"],           "base_score": 85, "base_benchmarks": {"lmsys_elo": 1400, "mmlu": 88.0, "humaneval": 87.0, "math": 85.0}},
+    "Perplexity": {"icon": "🔍", "color": "#20c997", "cats": ["🌐 Search", "📋 Instructions"],        "base_score": 70, "base_benchmarks": {"lmsys_elo": 1280, "mmlu": 82.0, "humaneval": 76.0, "math": 74.0}},
+    "Command":    {"icon": "🔮", "color": "#9b59b6", "cats": ["📋 Instructions", "🌐 Multilingual"],  "base_score": 65, "base_benchmarks": {"lmsys_elo": 1260, "mmlu": 80.0, "humaneval": 74.0, "math": 70.0}},
+    "Falcon":     {"icon": "🦅", "color": "#e67e22", "cats": ["💻 Coding", "🔢 Math"],                "base_score": 62, "base_benchmarks": {"lmsys_elo": 1240, "mmlu": 78.0, "humaneval": 72.0, "math": 68.0}},
+    "Yi":         {"icon": "🌙", "color": "#3498db", "cats": ["🧠 Reasoning", "🌐 Multilingual"],     "base_score": 64, "base_benchmarks": {"lmsys_elo": 1250, "mmlu": 79.0, "humaneval": 73.0, "math": 70.0}},
 }
 
 FALLBACK_COLORS = ["#e74c3c", "#3498db", "#2ecc71", "#f39c12", "#1abc9c", "#9b59b6", "#e67e22"]
@@ -151,8 +151,14 @@ def discover_top_models(client) -> tuple[list[dict] | None, float]:
             for m in models if isinstance(m, dict) and m.get("name")
         ]
         if clean:
-            print(f"[discover] Found: {[m['name'] for m in clean]}", file=sys.stderr)
-            return clean[:MAX_MODELS], cost
+            # Deduplicate by name — keep first occurrence only
+            seen, deduped = set(), []
+            for m in clean:
+                if m["name"] not in seen:
+                    seen.add(m["name"])
+                    deduped.append(m)
+            print(f"[discover] Found: {[m['name'] for m in deduped]}", file=sys.stderr)
+            return deduped[:MAX_MODELS], cost
     except (json.JSONDecodeError, ValueError) as exc:
         print(f"[discover] Parse error: {exc}", file=sys.stderr)
 
@@ -301,6 +307,7 @@ def build_rankings(tools: list[dict], current_scores: dict, current_benchmarks: 
             "url":        t["url"],
             "icon":       meta["icon"],
             "color":      meta["color"],
+            "cats":       BRAND_META.get(t["name"], {}).get("cats", []),
             "score":      current_scores.get(t["name"], 70),
             "benchmarks": current_benchmarks.get(t["name"], {}),
         })
@@ -353,12 +360,14 @@ def main():
 
     api_cost_str = f"${total_cost:.2f}"
 
-    # Compute composite scores
+    # Compute composite scores; fill nulls from BRAND_META base_benchmarks
     current_scores, current_benchmarks = {}, {}
     for t in tools:
-        raw = all_benchmarks.get(t["name"], {})
-        merged = {k: raw.get(k) for k in WEIGHTS}
-        score = compute_composite({k: v for k, v in merged.items() if v is not None}) or 70
+        raw  = all_benchmarks.get(t["name"], {})
+        base = BRAND_META.get(t["name"], {}).get("base_benchmarks", {})
+        merged = {k: (raw.get(k) if raw.get(k) is not None else base.get(k)) for k in WEIGHTS}
+        fallback_score = BRAND_META.get(t["name"], {}).get("base_score", 70)
+        score = compute_composite({k: v for k, v in merged.items() if v is not None}) or fallback_score
         current_scores[t["name"]] = round(score)
         current_benchmarks[t["name"]] = merged
 

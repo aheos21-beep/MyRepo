@@ -73,6 +73,10 @@ function buildRankCard(tool, topScores = {}, topCounts = {}) {
     return `<span class="bench-chip"${style ? ` style="${style}"` : ''}>${x.label}&nbsp;${x.val.toFixed(0)}%</span>`;
   }).join('');
 
+  const cChips = (tool.cats || []).map(c =>
+    `<span class="cat-chip">${esc(c)}</span>`
+  ).join('');
+
   card.innerHTML = `
     <div class="card-top">
       <div class="card-identity">
@@ -88,6 +92,7 @@ function buildRankCard(tool, topScores = {}, topCounts = {}) {
       </div>
     </div>
     <div class="bench-row">${bChips}</div>
+    ${cChips ? `<div class="cat-row">${cChips}</div>` : ''}
   `;
   return card;
 }
