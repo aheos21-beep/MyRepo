@@ -7,9 +7,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadAll() {
   try {
+    // Cache-bust the data files so a cached copy never masks a fresh refresh.
+    const v = Date.now();
     const [rankData, histData] = await Promise.all([
-      fetch('rankings.json').then(r => r.json()),
-      fetch('history.json').then(r => r.json()),
+      fetch(`rankings.json?v=${v}`).then(r => r.json()),
+      fetch(`history.json?v=${v}`).then(r => r.json()),
     ]);
     renderRankings(rankData);
     renderChart(histData);
@@ -102,7 +104,16 @@ function buildRankCard(tool, topScores = {}, topCounts = {}) {
 function renderChart(data) {
   const series = data.series || [];
   const canvas = document.getElementById('lineChart');
-  if (!canvas || typeof Chart === 'undefined') return;
+  if (!canvas) return;
+
+  // Never fail silently: a missing chart library used to leave a blank panel
+  // with no clue why. Say so on the page instead.
+  if (typeof Chart === 'undefined') {
+    canvas.parentElement.innerHTML =
+      '<div class="chart-error">Chart library failed to load.' +
+      '<br><small>Ranking data loaded fine — try a hard refresh.</small></div>';
+    return;
+  }
 
   const chart = new Chart(canvas.getContext('2d'), {
     type: 'line',

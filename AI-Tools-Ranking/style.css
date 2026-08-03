@@ -295,6 +295,19 @@ main {
 
 .chart-wrap { flex: 1; min-height: 0; position: relative; }
 
+.chart-error {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--muted);
+  gap: 4px;
+}
+.chart-error small { font-size: 0.7rem; opacity: 0.75; }
+
 .chart-legend {
   display: flex;
   flex-wrap: wrap;

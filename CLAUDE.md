@@ -20,7 +20,8 @@ All projects are hosted on **GitHub Pages** (static files only — no server-sid
 
 The only project with automation. Architecture:
 - `generate_data.py` — reads published Arena AI (LMSYS) leaderboard snapshots and writes `rankings.json` and `history.json`. Standard library only, no API key, no cost. Run locally with `python AI-Tools-Ranking/generate_data.py`.
-- `index.html` + `app.js` + `style.css` — static frontend that reads both JSON files directly via `fetch()`.
+- `index.html` + `app.js` + `style.css` — static frontend that reads both JSON files directly via `fetch()` (cache-busted with a `?v=` timestamp).
+- `vendor/chart.umd.js` — Chart.js 4.4.0, vendored rather than loaded from a CDN. Keeps the project self-contained and avoids a blocked or slow CDN silently leaving the chart blank. If Chart.js is somehow unavailable, `renderChart` writes a visible `.chart-error` message rather than returning quietly.
 - GitHub Actions (`.github/workflows/daily-refresh.yml`) runs `generate_data.py` daily at 9am UTC and commits the updated JSON. Can be triggered manually from the GitHub Actions tab. Daily is viable because the source publishes daily and the run costs nothing; the countdown in `app.js` assumes this cadence and reports hours, so update it if the cron changes.
 
 Data notes:
