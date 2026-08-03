@@ -17,7 +17,9 @@ best-scoring entry before ranking.
 
 Run locally with: python AI-Tools-Ranking/generate_data.py
 """
+import hashlib
 import json
+import re
 import sys
 import urllib.error
 import urllib.request
@@ -275,6 +277,38 @@ def build_history(today: datetime, latest_date: str, vendors: list[str]) -> dict
     }
 
 
+# ── Asset cache busting ────────────────────────────────────────────────────────
+
+VERSIONED_ASSETS = ("app.js", "style.css")
+
+
+def stamp_asset_versions() -> bool:
+    """
+    Rewrite index.html so app.js and style.css carry a content hash in their URL.
+
+    Browsers and the Pages CDN cache these aggressively. Without a changing URL a
+    stale app.js survives a deploy, and the page then behaves like an older build
+    while looking current — e.g. cards still rendering as links after linking was
+    removed. The hash changes only when the file changes, so daily runs that only
+    touch the JSON produce no diff here.
+    """
+    index = DOCS_DIR / "index.html"
+    html = original = index.read_text()
+
+    for asset in VERSIONED_ASSETS:
+        path = DOCS_DIR / asset
+        if not path.exists():
+            continue
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()[:8]
+        html = re.sub(rf'({re.escape(asset)})(\?v=[0-9a-f]+)?"',
+                      rf'\1?v={digest}"', html)
+
+    if html == original:
+        return False
+    index.write_text(html)
+    return True
+
+
 # ── Main ───────────────────────────────────────────────────────────────────────
 
 def main():
@@ -313,6 +347,10 @@ def main():
 
     (DOCS_DIR / "rankings.json").write_text(json.dumps(rankings, indent=2) + "\n")
     (DOCS_DIR / "history.json").write_text(json.dumps(history, indent=2) + "\n")
+
+    if stamp_asset_versions():
+        print("  → index.html asset versions updated (app.js / style.css changed)")
+
     print("Done.")
 
 
