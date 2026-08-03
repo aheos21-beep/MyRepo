@@ -1,518 +1,204 @@
 """
-Fetches AI model rankings via the Claude API and maintains history.json.
+Builds rankings.json from published Arena AI leaderboard data.
 
-Each phase is split into two calls:
-  research  — web search enabled, free-form prose output
-  extract   — no tools, structured output (json_schema) → guaranteed valid JSON
+Data source: daily JSON snapshots of the Arena AI (LMSYS Chatbot Arena)
+leaderboards, mirrored to GitHub by oolong-tea-2026/arena-ai-leaderboards.
+No API key, no cost, no model inference — every number here is a published
+Arena ELO rating that can be checked against the source.
 
-This split exists because structured outputs are incompatible with citations,
-which web search always produces. Doing both in one call is what previously
-caused silent failures: when the search came up empty the model replied with a
-prose apology, the JSON regex found nothing, and every score silently collapsed
-to a hardcoded default that was then committed over good data.
+This replaces an earlier approach that asked an LLM to search the web for
+benchmark scores. That was abandoned because the scores it returned could not
+be verified, and a plausible-but-wrong number was indistinguishable from a
+correct one.
 
-Rules this script now enforces:
-  - Never invent a benchmark number. Missing data carries forward the previous
-    run's real value, or the model is dropped.
-  - If a run produces no real data at all, exit non-zero so the Actions run goes
-    red and the existing good data is left untouched.
+Note: the text board is dominated by multiple variants from the same vendor
+(7 of the top 13 were Anthropic), so vendors are collapsed to their single
+best-scoring entry before ranking.
 
-Runs bi-monthly (1st and 15th) via GitHub Actions.
+Run locally with: python AI-Tools-Ranking/generate_data.py
 """
 import json
-import os
 import sys
+import urllib.error
+import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
-import anthropic
-
 DOCS_DIR = Path(__file__).parent
 
-# Both phases run on Haiku to keep the per-run cost low. Overridable if a run
-# comes back thin — the research call is the one that would benefit from a
-# stronger model, not the extraction call.
-RESEARCH_MODEL = os.getenv("RESEARCH_MODEL", "claude-haiku-4-5")
-EXTRACT_MODEL  = os.getenv("EXTRACT_MODEL",  "claude-haiku-4-5")
+REPO = "oolong-tea-2026/arena-ai-leaderboards"
+BASE = f"https://raw.githubusercontent.com/{REPO}/main/data"
+SOURCE_NAME = "Arena AI (LMSYS) leaderboards"
 
-# $ per 1M tokens (input, output)
-PRICING = {
-    "claude-fable-5":    (10.00, 50.00),
-    "claude-opus-4-8":   (5.00,  25.00),
-    "claude-opus-4-7":   (5.00,  25.00),
-    "claude-opus-4-6":   (5.00,  25.00),
-    "claude-sonnet-5":   (3.00,  15.00),
-    "claude-sonnet-4-6": (3.00,  15.00),
-    "claude-haiku-4-5":  (1.00,   5.00),
-}
-
-# Only these models support the dynamic-filtering web search tool.
-DYNAMIC_SEARCH_MODELS = {
-    "claude-fable-5", "claude-opus-4-8", "claude-opus-4-7",
-    "claude-opus-4-6", "claude-sonnet-5", "claude-sonnet-4-6",
-}
-
-ELO_MIN, ELO_MAX = 1100, 1500
-WEIGHTS = {"lmsys_elo": 0.40, "mmlu": 0.25, "humaneval": 0.20, "math": 0.15}
-MAX_MODELS = 7
 CARD_COUNT = 5
 
-# Stable brand identity — survives model version changes.
-BRAND_META = {
-    "ChatGPT":    {"icon": "🤖", "color": "#10a37f", "cats": ["💻 Coding", "📋 Instructions"]},
-    "Claude":     {"icon": "✨", "color": "#cc785c", "cats": ["🧠 Reasoning", "✍️ Creative Writing"]},
-    "Gemini":     {"icon": "💎", "color": "#4285f4", "cats": ["🔢 Math", "🌐 Multilingual"]},
-    "Llama":      {"icon": "🦙", "color": "#0668e1", "cats": ["💻 Coding", "🔢 Math"]},
-    "DeepSeek":   {"icon": "🌊", "color": "#6366f1", "cats": ["🔢 Math", "💻 Coding"]},
-    "Qwen":       {"icon": "🔷", "color": "#f59e0b", "cats": ["🔢 Math", "🌐 Multilingual"]},
-    "Mistral":    {"icon": "🌀", "color": "#f7931e", "cats": ["💻 Coding", "🌐 Multilingual"]},
-    "Grok":       {"icon": "🌑", "color": "#e879f9", "cats": ["🧠 Reasoning", "💻 Coding"]},
-    "Perplexity": {"icon": "🔍", "color": "#20c997", "cats": ["🌐 Search", "📋 Instructions"]},
-    "Command":    {"icon": "🔮", "color": "#9b59b6", "cats": ["📋 Instructions", "🌐 Multilingual"]},
-    "Falcon":     {"icon": "🦅", "color": "#e67e22", "cats": ["💻 Coding", "🔢 Math"]},
-    "Yi":         {"icon": "🌙", "color": "#3498db", "cats": ["🧠 Reasoning", "🌐 Multilingual"]},
+# Arena ELO is an unbounded rating; these fixed windows map each board onto a
+# 0-100 display scale. Ranges are chosen with headroom around the observed
+# spread so a new frontier model does not immediately peg the scale at 100.
+# Retune if the boards drift well outside these bounds.
+BOARDS = {
+    "text":     {"label": "Overall",  "lo": 1400, "hi": 1520, "required": True},
+    "code":     {"label": "Code",     "lo": 1400, "hi": 1720, "required": False},
+    "vision":   {"label": "Vision",   "lo": 1240, "hi": 1330, "required": False},
+    "document": {"label": "Document", "lo": 1380, "hi": 1530, "required": False},
 }
-FALLBACK_COLORS = ["#e74c3c", "#3498db", "#2ecc71", "#f39c12", "#1abc9c", "#9b59b6", "#e67e22"]
-FALLBACK_ICONS  = ["🤖", "🧠", "💡", "⚡", "🔮", "🌟", "💫"]
+RANK_BOARD = "text"
+CHIP_BOARDS = ["code", "vision", "document"]
 
-NULLABLE_NUMBER = {"anyOf": [{"type": "number"}, {"type": "null"}]}
-
-DISCOVERY_SCHEMA = {
-    "type": "object",
-    "properties": {
-        "models": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "name":        {"type": "string"},
-                    "model":       {"type": "string"},
-                    "company":     {"type": "string"},
-                    "url":         {"type": "string"},
-                    "arena_names": {"type": "array", "items": {"type": "string"}},
-                },
-                "required": ["name", "model", "company", "url", "arena_names"],
-                "additionalProperties": False,
-            },
-        }
-    },
-    "required": ["models"],
-    "additionalProperties": False,
+# Arena reports vendors; the site shows consumer-facing product brands.
+VENDOR_META = {
+    "Anthropic":     {"brand": "Claude",     "icon": "✨", "color": "#cc785c", "url": "https://claude.ai"},
+    "OpenAI":        {"brand": "ChatGPT",    "icon": "🤖", "color": "#10a37f", "url": "https://chat.openai.com"},
+    "Google":        {"brand": "Gemini",     "icon": "💎", "color": "#4285f4", "url": "https://gemini.google.com"},
+    "Meta":          {"brand": "Meta AI",    "icon": "🦙", "color": "#0668e1", "url": "https://ai.meta.com"},
+    "Moonshot":      {"brand": "Kimi",       "icon": "🌙", "color": "#7c3aed", "url": "https://kimi.moonshot.cn"},
+    "DeepSeek":      {"brand": "DeepSeek",   "icon": "🌊", "color": "#6366f1", "url": "https://chat.deepseek.com"},
+    "Alibaba":       {"brand": "Qwen",       "icon": "🔷", "color": "#f59e0b", "url": "https://qwen.ai"},
+    "Mistral":       {"brand": "Mistral",    "icon": "🌀", "color": "#f7931e", "url": "https://mistral.ai"},
+    "SpaceXAI":      {"brand": "Grok",       "icon": "🌑", "color": "#e879f9", "url": "https://grok.com"},
+    "xAI":           {"brand": "Grok",       "icon": "🌑", "color": "#e879f9", "url": "https://grok.com"},
+    "Baidu":         {"brand": "Ernie",      "icon": "🐻", "color": "#2932e1", "url": "https://ernie.baidu.com"},
+    "Perplexity AI": {"brand": "Perplexity", "icon": "🔍", "color": "#20c997", "url": "https://perplexity.ai"},
+    "Z.ai":          {"brand": "GLM",        "icon": "🔮", "color": "#9b59b6", "url": "https://z.ai"},
+    "MiniMax":       {"brand": "MiniMax",    "icon": "⚡", "color": "#ef4444", "url": "https://minimax.io"},
+    "Bytedance":     {"brand": "Doubao",     "icon": "🎵", "color": "#0ea5e9", "url": "https://doubao.com"},
+    "Tencent":       {"brand": "Hunyuan",    "icon": "🐧", "color": "#14b8a6", "url": "https://hunyuan.tencent.com"},
+    "Xiaomi":        {"brand": "MiMo",       "icon": "📱", "color": "#fb923c", "url": "https://xiaomi.com"},
+    "IBM":           {"brand": "Granite",    "icon": "🧱", "color": "#64748b", "url": "https://ibm.com/granite"},
 }
-
-BENCHMARK_SCHEMA = {
-    "type": "object",
-    "properties": {
-        "models": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "name":      {"type": "string"},
-                    "lmsys_elo": NULLABLE_NUMBER,
-                    "mmlu":      NULLABLE_NUMBER,
-                    "humaneval": NULLABLE_NUMBER,
-                    "math":      NULLABLE_NUMBER,
-                },
-                "required": ["name", "lmsys_elo", "mmlu", "humaneval", "math"],
-                "additionalProperties": False,
-            },
-        }
-    },
-    "required": ["models"],
-    "additionalProperties": False,
-}
-
-HISTORY_SEED = {
-    "months": ["Jun 25","Jul 25","Aug 25","Sep 25","Oct 25","Nov 25",
-               "Dec 25","Jan 26","Feb 26","Mar 26","Apr 26","May 26"],
-    "series": [
-        {"name": "ChatGPT",  "score": [71,71,71,72,73,75,77,83,84,85,85,86]},
-        {"name": "Claude",   "score": [68,68,69,70,71,71,72,73,78,81,82,83]},
-        {"name": "Llama",    "score": [61,61,62,63,64,65,66,68,69,70,72,73]},
-        {"name": "Gemini",   "score": [62,63,63,64,66,67,68,69,70,71,71,72]},
-        {"name": "DeepSeek", "score": [67,67,68,68,69,69,69,70,70,71,71,71]},
-        {"name": "Qwen",     "score": [61,61,62,62,63,63,64,64,64,65,65,65]},
-        {"name": "Mistral",  "score": [53,53,54,55,55,56,57,57,58,58,59,59]},
-    ],
-}
-
-# ── Cost tracking ──────────────────────────────────────────────────────────────
-
-class Cost:
-    def __init__(self):
-        self.total = 0.0
-
-    def add(self, model: str, response) -> float:
-        rate_in, rate_out = PRICING.get(model, (5.00, 25.00))
-        usage = response.usage
-        spend = (
-            getattr(usage, "input_tokens", 0)  * rate_in +
-            getattr(usage, "output_tokens", 0) * rate_out
-        ) / 1_000_000
-        self.total += spend
-        return spend
+FALLBACK_COLORS = ["#e74c3c", "#3498db", "#2ecc71", "#f39c12", "#1abc9c", "#9b59b6"]
 
 
-# ── API helpers ────────────────────────────────────────────────────────────────
+# ── Fetching ───────────────────────────────────────────────────────────────────
 
-def web_search_tool(model: str, max_uses: int) -> dict:
-    tool_type = ("web_search_20260209" if model in DYNAMIC_SEARCH_MODELS
-                 else "web_search_20250305")
-    return {"type": tool_type, "name": "web_search", "max_uses": max_uses}
-
-
-def research(client, cost: Cost, prompt: str, max_uses: int, label: str) -> str:
-    """Web-search call. Free-form output — prose is fine, it feeds the extractor."""
-    response = client.messages.create(
-        model=RESEARCH_MODEL,
-        max_tokens=8000,
-        tools=[web_search_tool(RESEARCH_MODEL, max_uses)],
-        messages=[{"role": "user", "content": prompt}],
-    )
-    spend = cost.add(RESEARCH_MODEL, response)
-    text = "".join(b.text for b in response.content
-                   if getattr(b, "type", None) == "text")
-    print(f"[{label}] research done — ${spend:.4f}, {len(text)} chars", file=sys.stderr)
-    if response.stop_reason == "max_tokens":
-        print(f"[{label}] WARNING: hit max_tokens, findings may be truncated", file=sys.stderr)
-    return text
-
-
-def extract(client, cost: Cost, text: str, schema: dict, instruction: str, label: str) -> dict:
-    """
-    No tools + json_schema → the response is guaranteed to parse.
-    A failed research pass yields nulls here rather than an unparseable apology.
-    """
-    response = client.messages.create(
-        model=EXTRACT_MODEL,
-        max_tokens=4000,
-        messages=[{
-            "role": "user",
-            "content": f"{instruction}\n\nResearch notes:\n---\n{text}\n---",
-        }],
-        output_config={"format": {"type": "json_schema", "schema": schema}},
-    )
-    spend = cost.add(EXTRACT_MODEL, response)
-    if response.stop_reason == "max_tokens":
-        raise RuntimeError(f"{label}: extraction truncated — raise max_tokens")
-    payload = next(b.text for b in response.content
-                   if getattr(b, "type", None) == "text")
-    print(f"[{label}] extract done — ${spend:.4f}", file=sys.stderr)
-    return json.loads(payload)
-
-
-# ── Phase 1: discover current frontier models ──────────────────────────────────
-
-def discover_models(client, cost: Cost) -> list[dict]:
-    today = datetime.now(timezone.utc).strftime("%B %Y")
-    notes = research(
-        client, cost, max_uses=6, label="discover",
-        prompt=(
-            f"It is {today}. Search the web and identify the top {MAX_MODELS} frontier "
-            "AI chat/language models that are currently ranked highest.\n\n"
-            "Check the LMSYS Chatbot Arena leaderboard (lmarena.ai) and recent benchmark coverage.\n\n"
-            "CRITICAL: only include a model if you can actually find published benchmark "
-            "results for it (Arena ELO, MMLU, HumanEval, or MATH). A brand-new release with "
-            "no published scores is useless here — in that case list the most recent version "
-            "of that family that DOES have published scores instead.\n\n"
-            "For each model report: the short brand name (ChatGPT, Claude, Gemini, Llama, "
-            "DeepSeek, Grok, Qwen, Mistral…), the specific version that has published scores, "
-            "the company, the product URL, and the identifiers it appears under on the Arena "
-            "leaderboard.\n\n"
-            "List at most one entry per brand — the strongest one."
-        ),
-    )
-
-    data = extract(
-        client, cost, notes, DISCOVERY_SCHEMA, label="discover",
-        instruction=(
-            f"From these research notes, list up to {MAX_MODELS} frontier AI models, "
-            "strongest first.\n"
-            "- name: short brand name only (e.g. 'Claude', not 'Claude Opus 5')\n"
-            "- model: the specific version that has published benchmark scores\n"
-            "- arena_names: LMSYS Arena identifiers mentioned, or an empty list\n"
-            "Include a brand at most once. Include only models actually named in the notes."
-        ),
-    )
-
-    seen, models = set(), []
-    for m in data.get("models", []):
-        name = (m.get("name") or "").strip()
-        if not name or name in seen:
-            continue
-        seen.add(name)
-        models.append({
-            "name":        name,
-            "model":       (m.get("model") or name).strip(),
-            "company":     (m.get("company") or "").strip(),
-            "url":         (m.get("url") or "").strip(),
-            "arena_names": m.get("arena_names") or [],
-        })
-
-    if not models:
-        raise RuntimeError("discovery returned no models")
-    print(f"[discover] {[m['name'] for m in models]}", file=sys.stderr)
-    return models[:MAX_MODELS]
-
-
-# ── Phase 2: fetch benchmark scores ────────────────────────────────────────────
-
-def fetch_benchmarks(client, cost: Cost, models: list[dict]) -> dict:
-    listing = "\n".join(
-        f"- {m['name']} ({m['model']})" +
-        (f" — Arena: {', '.join(m['arena_names'][:3])}" if m["arena_names"] else "")
-        for m in models
-    )
-    notes = research(
-        client, cost, max_uses=12, label="benchmarks",
-        prompt=(
-            "Search the web for published benchmark scores for these models:\n"
-            f"{listing}\n\n"
-            "For each, find whichever of these are published:\n"
-            "1. LMSYS Chatbot Arena ELO (lmarena.ai) — integer, roughly 1100-1500\n"
-            "2. MMLU accuracy %\n"
-            "3. HumanEval pass@1 %\n"
-            "4. MATH accuracy %\n\n"
-            "Report the number and where you found it. If a score is not published for a "
-            "model, say so explicitly for that model and benchmark — do not estimate, "
-            "interpolate, or carry a number over from a different model version. "
-            "Partial results are useful; report everything you did find."
-        ),
-    )
-
-    data = extract(
-        client, cost, notes, BENCHMARK_SCHEMA, label="benchmarks",
-        instruction=(
-            "Extract the benchmark scores stated in these research notes.\n"
-            "Include one entry for each of these models: "
-            f"{', '.join(m['name'] for m in models)}.\n"
-            "Use null for any score the notes do not explicitly state. "
-            "Never estimate or infer a value — null is the correct answer when the notes "
-            "do not give a number. Copy numbers exactly as written."
-        ),
-    )
-
-    scores = {}
-    for entry in data.get("models", []):
-        name = (entry.get("name") or "").strip()
-        if name:
-            scores[name] = {k: entry.get(k) for k in WEIGHTS}
-
-    found = sum(1 for b in scores.values() for v in b.values() if v is not None)
-    print(f"[benchmarks] {found} real datapoints across {len(scores)} models", file=sys.stderr)
-    return scores
-
-
-# ── Scoring ────────────────────────────────────────────────────────────────────
-
-def normalize_elo(elo: float) -> float:
-    return max(0.0, min(100.0, (elo - ELO_MIN) / (ELO_MAX - ELO_MIN) * 100.0))
-
-
-def compute_composite(benchmarks: dict) -> float | None:
-    """Weighted mean over whichever benchmarks are present; weight redistributes."""
-    total, weight_sum = 0.0, 0.0
-    for key, weight in WEIGHTS.items():
-        val = benchmarks.get(key)
-        if val is None:
-            continue
-        total += (normalize_elo(val) if key == "lmsys_elo" else float(val)) * weight
-        weight_sum += weight
-    return round(total / weight_sum, 1) if weight_sum else None
-
-
-def load_previous() -> dict:
-    """Previous run's real values, for carry-forward. Never invented."""
-    path = DOCS_DIR / "rankings.json"
-    if not path.exists():
-        return {}
+def fetch_json(url: str, required: bool = True) -> dict | None:
     try:
-        data = json.loads(path.read_text())
-    except Exception:
-        return {}
-    return {
-        t["name"]: {"benchmarks": t.get("benchmarks", {}), "score": t.get("score")}
-        for t in data.get("tools", [])
-        if t.get("name")
-    }
+        with urllib.request.urlopen(url, timeout=30) as resp:
+            return json.loads(resp.read().decode())
+    except urllib.error.HTTPError as exc:
+        if exc.code == 404 and not required:
+            return None
+        if required:
+            raise
+        print(f"[fetch] {url} -> HTTP {exc.code}", file=sys.stderr)
+        return None
+    except Exception as exc:
+        if required:
+            raise
+        print(f"[fetch] {url} -> {exc}", file=sys.stderr)
+        return None
 
 
-def resolve_scores(models: list[dict], fetched: dict, previous: dict) -> tuple[dict, dict, dict]:
-    """
-    Merge fetched values with carry-forward. Returns (scores, benchmarks, provenance).
-    A model with no fetched and no previous data is dropped entirely.
-    """
-    scores, benchmarks, provenance = {}, {}, {}
+def load_board(date: str, name: str, required: bool) -> list[dict]:
+    data = fetch_json(f"{BASE}/{date}/{name}.json", required=required)
+    return (data or {}).get("models", [])
 
-    for m in models:
-        name = m["name"]
-        fresh = fetched.get(name, {})
-        prior = previous.get(name, {}).get("benchmarks", {})
 
-        merged, carried, live = {}, 0, 0
-        for key in WEIGHTS:
-            if fresh.get(key) is not None:
-                merged[key] = fresh[key]
-                live += 1
-            elif prior.get(key) is not None:
-                merged[key] = prior[key]
-                carried += 1
-            else:
-                merged[key] = None
+# ── Shaping ────────────────────────────────────────────────────────────────────
 
-        score = compute_composite(merged)
-        if score is None:
-            print(f"[scores] dropping {name} — no data, current or previous", file=sys.stderr)
+def normalize(elo: float, lo: int, hi: int) -> float:
+    return round(max(0.0, min(100.0, (elo - lo) / (hi - lo) * 100.0)), 1)
+
+
+def best_per_vendor(rows: list[dict]) -> dict[str, dict]:
+    """Collapse a board to each vendor's single highest-scoring entry."""
+    best: dict[str, dict] = {}
+    for row in rows:
+        vendor, score = row.get("vendor"), row.get("score")
+        if not vendor or score is None:
             continue
-
-        scores[name] = round(score)
-        benchmarks[name] = merged
-        provenance[name] = {"live": live, "carried": carried}
-
-    return scores, benchmarks, provenance
+        if vendor not in best or score > best[vendor]["score"]:
+            best[vendor] = row
+    return best
 
 
-# ── History ────────────────────────────────────────────────────────────────────
-
-def load_or_seed_history() -> dict:
-    path = DOCS_DIR / "history.json"
-    if path.exists():
-        try:
-            return json.loads(path.read_text())
-        except Exception:
-            pass
+def meta_for(vendor: str, idx: int = 0) -> dict:
+    meta = VENDOR_META.get(vendor)
+    if meta:
+        return meta
     return {
-        "months": list(HISTORY_SEED["months"]),
-        "series": [
-            {"name": s["name"],
-             "color": BRAND_META.get(s["name"], {}).get("color", "#888"),
-             "score": list(s["score"])}
-            for s in HISTORY_SEED["series"]
-        ],
+        "brand": vendor,
+        "icon": "🤖",
+        "color": FALLBACK_COLORS[idx % len(FALLBACK_COLORS)],
+        "url": "",
     }
-
-
-def sync_history_meta(history: dict, scores: dict) -> None:
-    top = {n for n, _ in sorted(scores.items(), key=lambda kv: kv[1], reverse=True)[:CARD_COUNT]}
-    for series in history["series"]:
-        meta = BRAND_META.get(series["name"], {})
-        series["color"] = meta.get("color", series.get("color", "#888"))
-        series["in_cards"] = series["name"] in top
-
-
-def maybe_append_month(history: dict, scores: dict) -> dict:
-    label = datetime.now(timezone.utc).strftime("%b %y")
-    if label in history["months"]:
-        return history
-
-    if "real_from" not in history:
-        history["real_from"] = len(history["months"])
-
-    history["months"].append(label)
-    known = {s["name"] for s in history["series"]}
-
-    for series in history["series"]:
-        prev = series["score"][-1] if series["score"] else 70
-        series["score"].append(scores.get(series["name"], prev))
-
-    pad = len(history["months"]) - 1
-    for name, score in scores.items():
-        if name not in known:
-            history["series"].append({
-                "name":  name,
-                "color": BRAND_META.get(name, {}).get("color", "#888"),
-                "score": [score] * pad + [score],
-            })
-            print(f"[history] new model: {name}", file=sys.stderr)
-
-    print(f"[history] appended '{label}' — {len(history['months'])} months", file=sys.stderr)
-    return history
 
 
 # ── Rankings ───────────────────────────────────────────────────────────────────
 
-def build_rankings(models: list[dict], scores: dict, benchmarks: dict) -> dict:
-    ranked = []
-    for idx, m in enumerate(models):
-        name = m["name"]
-        if name not in scores:
-            continue
-        meta = BRAND_META.get(name, {})
-        ranked.append({
-            "name":       name,
-            "model":      m["model"],
-            "company":    m["company"],
-            "url":        m["url"],
-            "icon":       meta.get("icon",  FALLBACK_ICONS[idx % len(FALLBACK_ICONS)]),
-            "color":      meta.get("color", FALLBACK_COLORS[idx % len(FALLBACK_COLORS)]),
-            "cats":       meta.get("cats", []),
-            "score":      scores[name],
-            "benchmarks": benchmarks[name],
+def build_rankings(date: str) -> dict:
+    boards = {
+        name: best_per_vendor(load_board(date, name, cfg["required"]))
+        for name, cfg in BOARDS.items()
+    }
+
+    rank_board = boards[RANK_BOARD]
+    if not rank_board:
+        sys.exit(f"FAILED: '{RANK_BOARD}' board empty for {date} — files left untouched.")
+
+    ordered = sorted(rank_board.values(), key=lambda r: -r["score"])
+    top = ordered[:CARD_COUNT]
+
+    cfg = BOARDS[RANK_BOARD]
+    tools = []
+    for idx, row in enumerate(top):
+        vendor = row["vendor"]
+        meta = meta_for(vendor, idx)
+
+        chips, elo_raw = {}, {}
+        for name in CHIP_BOARDS:
+            entry = boards.get(name, {}).get(vendor)
+            if entry:
+                bc = BOARDS[name]
+                chips[name] = normalize(entry["score"], bc["lo"], bc["hi"])
+                elo_raw[name] = entry["score"]
+
+        tools.append({
+            "name":       meta["brand"],
+            "model":      row["model"],
+            "company":    vendor,
+            "url":        meta["url"],
+            "icon":       meta["icon"],
+            "color":      meta["color"],
+            "score":      round(normalize(row["score"], cfg["lo"], cfg["hi"])),
+            "arena_elo":  row["score"],
+            "arena_rank": row.get("rank"),
+            "votes":      row.get("votes"),
+            "benchmarks": chips,
+            "benchmark_elo": elo_raw,
+            "rank":       idx + 1,
         })
 
-    ranked.sort(key=lambda t: t["score"], reverse=True)
-    for i, t in enumerate(ranked):
-        t["rank"] = i + 1
-    return {"tools": ranked[:CARD_COUNT]}
+    rankings = {
+        "tools": tools,
+        "last_updated": datetime.now(timezone.utc).isoformat(),
+        "snapshot_date": date,
+        "source": SOURCE_NAME,
+        "source_url": f"https://github.com/{REPO}",
+        "api_cost": "Free",
+    }
+    return rankings
 
 
 # ── Main ───────────────────────────────────────────────────────────────────────
 
 def main():
-    if not os.getenv("ANTHROPIC_API_KEY"):
-        sys.exit("ANTHROPIC_API_KEY not set")
-
-    client = anthropic.Anthropic()
-    cost = Cost()
-
-    print(f"Research model:   {RESEARCH_MODEL}")
-    print(f"Extraction model: {EXTRACT_MODEL}")
-
-    print("Phase 1: discovering frontier models…")
-    models = discover_models(client, cost)
-    print(f"  → {[m['name'] + ' (' + m['model'] + ')' for m in models]}")
-
-    print("Phase 2: fetching benchmark scores…")
-    fetched = fetch_benchmarks(client, cost, models)
-
-    live_total = sum(1 for b in fetched.values() for v in b.values() if v is not None)
-    if live_total == 0:
-        # Refuse to overwrite good data with nothing. Turns the Actions run red.
-        sys.exit(
-            "FAILED: benchmark research produced zero real datapoints. "
-            "Existing rankings.json and history.json left untouched."
-        )
-
-    previous = load_previous()
-    scores, benchmarks, provenance = resolve_scores(models, fetched, previous)
-    if not scores:
-        sys.exit("FAILED: no model had usable data. Existing files left untouched.")
-
-    carried_total = sum(p["carried"] for p in provenance.values())
-    print(f"  → {live_total} live datapoints, {carried_total} carried forward")
-
-    print("Updating history…")
-    history = load_or_seed_history()
-    sync_history_meta(history, scores)
-    history = maybe_append_month(history, scores)
-    history["last_updated"] = datetime.now(timezone.utc).isoformat()
-    (DOCS_DIR / "history.json").write_text(json.dumps(history, indent=2))
-    print(f"  → {len(history['months'])} months in history")
+    print(f"Source: {SOURCE_NAME}")
+    print("Resolving latest snapshot…")
+    latest = fetch_json(f"{BASE}/latest.json")
+    date = latest.get("path") or latest.get("date")
+    if not date:
+        sys.exit("FAILED: latest.json had no usable date — files left untouched.")
+    print(f"  → {date}")
 
     print("Building rankings…")
-    rankings = build_rankings(models, scores, benchmarks)
-    rankings["last_updated"] = datetime.now(timezone.utc).isoformat()
-    rankings["api_cost"] = f"${cost.total:.2f}"
-    rankings["data_quality"] = {
-        "live_datapoints":    live_total,
-        "carried_datapoints": carried_total,
-        "models_ranked":      len(rankings["tools"]),
-    }
-    (DOCS_DIR / "rankings.json").write_text(json.dumps(rankings, indent=2))
+    rankings = build_rankings(date)
+    for t in rankings["tools"]:
+        chips = " ".join(f"{k}={v:.0f}" for k, v in t["benchmarks"].items())
+        print(f"  {t['rank']}. {t['name']:<11} {t['model']:<28} "
+              f"score {t['score']:>3}  elo {t['arena_elo']:.0f}  {chips}")
 
-    print(f"  → {[(t['name'], t['score']) for t in rankings['tools']]}")
-    print(f"Total cost: ${cost.total:.2f}")
+    (DOCS_DIR / "rankings.json").write_text(json.dumps(rankings, indent=2) + "\n")
     print("Done.")
 
 

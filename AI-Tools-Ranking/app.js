@@ -7,12 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadAll() {
   try {
-    const [rankData, histData] = await Promise.all([
-      fetch('rankings.json').then(r => r.json()),
-      fetch('history.json').then(r => r.json()),
-    ]);
+    const rankData = await fetch('rankings.json').then(r => r.json());
     renderRankings(rankData);
-    renderChart(histData);
     setLastUpdated(rankData.last_updated);
     setCost(rankData.api_cost);
   } catch (err) {
@@ -28,7 +24,7 @@ function renderRankings(data) {
   const tools = data.tools.slice(0, 5);
 
   // Find top score and count of ties for each benchmark category
-  const keys = ['mmlu', 'humaneval', 'math'];
+  const keys = ['code', 'vision', 'document'];
   const topScores = {}, topCounts = {};
   keys.forEach(k => {
     topScores[k] = Math.max(...tools.map(t => (t.benchmarks || {})[k] ?? 0));
@@ -54,12 +50,12 @@ function buildRankCard(tool, topScores = {}, topCounts = {}) {
   const rankClass = ['', 'gold', 'silver', 'bronze'][tool.rank] || 'plain';
   const rankEmoji = ['', '🥇', '🥈', '🥉'][tool.rank] || `#${tool.rank}`;
 
-  // Sort percentage benchmarks high → low, color the top scorer per category
+  // Sort category scores high → low, color the top scorer per category
   const b = tool.benchmarks || {};
   const pctBenchmarks = [
-    { label: 'Reasoning', val: b.mmlu,      key: 'mmlu' },
-    { label: 'Coding',    val: b.humaneval, key: 'humaneval' },
-    { label: 'Math',      val: b.math,      key: 'math' },
+    { label: 'Code',     val: b.code,     key: 'code' },
+    { label: 'Vision',   val: b.vision,   key: 'vision' },
+    { label: 'Document', val: b.document, key: 'document' },
   ].filter(x => x.val != null).sort((a, z) => z.val - a.val);
 
   const bChips = pctBenchmarks.map(x => {
@@ -70,12 +66,8 @@ function buildRankCard(tool, topScores = {}, topCounts = {}) {
         ? 'border-color:rgba(32,201,151,0.3);background:rgba(32,201,151,0.08);color:#6ee8c8;'
         : 'border-color:rgba(32,201,151,0.6);background:rgba(32,201,151,0.18);color:#20c997;'
       : '';
-    return `<span class="bench-chip"${style ? ` style="${style}"` : ''}>${x.label}&nbsp;${x.val.toFixed(0)}%</span>`;
+    return `<span class="bench-chip"${style ? ` style="${style}"` : ''}>${x.label}&nbsp;${x.val.toFixed(0)}</span>`;
   }).join('');
-
-  const cChips = (tool.cats || []).map(c =>
-    `<span class="cat-chip">${esc(c)}</span>`
-  ).join('');
 
   card.innerHTML = `
     <div class="card-top">
@@ -92,98 +84,8 @@ function buildRankCard(tool, topScores = {}, topCounts = {}) {
       </div>
     </div>
     <div class="bench-row">${bChips}</div>
-    ${cChips ? `<div class="cat-row">${cChips}</div>` : ''}
   `;
   return card;
-}
-
-// ── Chart ─────────────────────────────────────────────────────────────────────
-
-function renderChart(data) {
-  const series = data.series || [];
-  const ctx = document.getElementById('lineChart').getContext('2d');
-  const from = data.real_from ?? 0;
-  const months = data.months.slice(from);
-
-  const chart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: months,
-      datasets: series.map(s => ({
-        label: s.name,
-        data: s.score.slice(from),
-        borderColor: s.color,
-        backgroundColor: 'transparent',
-        borderWidth: s.in_cards ? 2.5 : 1.5,
-        pointBackgroundColor: s.color,
-        pointRadius: 3,
-        pointHoverRadius: 3,
-        tension: 0.3,
-      })),
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { mode: 'index', intersect: false },
-      plugins: {
-        legend: { display: false },
-        tooltip: { enabled: false },
-      },
-      scales: {
-        x: {
-          grid: { color: 'rgba(255,255,255,0.05)' },
-          ticks: { color: '#888ab0', font: { size: 11, family: 'Inter' } },
-          border: { color: 'rgba(255,255,255,0.08)' },
-        },
-        y: {
-          min: 45,
-          max: 95,
-          grid: { color: 'rgba(255,255,255,0.05)' },
-          ticks: {
-            color: '#888ab0',
-            font: { size: 11, family: 'Inter' },
-            callback: v => v,
-          },
-          border: { color: 'rgba(255,255,255,0.08)' },
-          title: {
-            display: true,
-            text: 'Composite Score (0–100)',
-            color: '#888ab0',
-            font: { size: 10, family: 'Inter' },
-          },
-        },
-      },
-    },
-  });
-
-  // Interactive legend: click to highlight one line, dim the rest
-  const legendEl = document.getElementById('chartLegend');
-  let activeIdx = null;
-
-  series.forEach((s, idx) => {
-    const item = document.createElement('div');
-    item.className = 'legend-item';
-    item.innerHTML = `<div class="legend-dot" style="background:${s.color}"></div>${esc(s.name)}`;
-
-    item.addEventListener('click', () => {
-      activeIdx = (activeIdx === idx) ? null : idx;
-
-      chart.data.datasets.forEach((ds, i) => {
-        const base = series[i].color;
-        const on = activeIdx === null || i === activeIdx;
-        ds.borderColor = on ? base : base + '28';
-        ds.pointBackgroundColor = on ? base : base + '28';
-        ds.borderWidth = on ? (series[i].in_cards ? 2.5 : 1.5) : 1;
-      });
-      chart.update('none');
-
-      legendEl.querySelectorAll('.legend-item').forEach((li, i) => {
-        li.style.opacity = (activeIdx === null || i === activeIdx) ? '1' : '0.3';
-      });
-    });
-
-    legendEl.appendChild(item);
-  });
 }
 
 // ── Countdown (next 1st or 15th at 9am UTC) ───────────────────────────────────

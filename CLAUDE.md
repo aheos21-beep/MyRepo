@@ -19,9 +19,15 @@ All projects are hosted on **GitHub Pages** (static files only — no server-sid
 ## AI-Tools-Ranking
 
 The only project with automation. Architecture:
-- `generate_data.py` — fetches RSS feeds and calculates rankings; writes `rankings.json` and `news.json` into its own folder. Run locally with `pip install aiohttp && python AI-Tools-Ranking/generate_data.py`.
-- `index.html` + `app.js` + `style.css` — static frontend that reads `rankings.json` and `news.json` directly via `fetch()`.
-- GitHub Actions (`.github/workflows/daily-refresh.yml`) runs `generate_data.py` at 6am and 6pm UTC and commits the updated JSON files. Can be triggered manually from the GitHub Actions tab.
+- `generate_data.py` — reads published Arena AI (LMSYS) leaderboard snapshots and writes `rankings.json`. Standard library only, no API key, no cost. Run locally with `python AI-Tools-Ranking/generate_data.py`.
+- `index.html` + `app.js` + `style.css` — static frontend that reads `rankings.json` directly via `fetch()`.
+- GitHub Actions (`.github/workflows/daily-refresh.yml`) runs `generate_data.py` on the 1st and 15th at 9am UTC and commits the updated JSON. Can be triggered manually from the GitHub Actions tab.
+
+Data notes:
+- Source is the `oolong-tea-2026/arena-ai-leaderboards` GitHub mirror, which publishes daily JSON snapshots of each Arena board. Every displayed number is a published Arena ELO and can be checked against that source.
+- Vendors are collapsed to their single best-scoring model before ranking — the raw text board is dominated by multiple variants from the same vendor.
+- Arena ELO is unbounded, so `BOARDS` in the script holds a fixed lo/hi window per board that maps ELO onto the 0-100 display scale. Retune those windows if the boards drift outside them.
+- Do not reintroduce LLM-sourced benchmark numbers here. An earlier version asked an LLM to search the web for MMLU/HumanEval/MATH scores; the values could not be verified, and a plausible-but-wrong number was indistinguishable from a correct one.
 
 ## Before starting any new project
 

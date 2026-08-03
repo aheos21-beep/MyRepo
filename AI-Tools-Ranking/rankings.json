@@ -1,91 +1,124 @@
 {
   "tools": [
     {
-      "name": "ChatGPT",
-      "model": "GPT-5",
-      "company": "OpenAI",
-      "url": "https://chat.openai.com",
-      "icon": "🤖",
-      "color": "#10a37f",
-      "cats": ["💻 Coding", "📋 Instructions"],
-      "score": 94,
+      "name": "Claude",
+      "model": "claude-fable-5",
+      "company": "Anthropic",
+      "url": "https://claude.ai",
+      "icon": "\u2728",
+      "color": "#cc785c",
+      "score": 91,
+      "arena_elo": 1509.0,
+      "arena_rank": 1,
+      "votes": 17799,
       "benchmarks": {
-        "lmsys_elo": 1484,
-        "mmlu": 92.0,
-        "humaneval": 90.2,
-        "math": 85.0
+        "code": 95.3,
+        "vision": 86.7,
+        "document": 93.3
+      },
+      "benchmark_elo": {
+        "code": 1705.0,
+        "vision": 1318.0,
+        "document": 1520.0
       },
       "rank": 1
     },
     {
-      "name": "Gemini",
-      "model": "Gemini Ultra 2",
-      "company": "Google DeepMind",
-      "url": "https://gemini.google.com",
-      "icon": "💎",
-      "color": "#4285f4",
-      "cats": ["🔢 Math", "🌐 Multilingual"],
-      "score": 93,
+      "name": "Meta AI",
+      "model": "muse-spark-1.1",
+      "company": "Meta",
+      "url": "https://ai.meta.com",
+      "icon": "\ud83e\udd99",
+      "color": "#0668e1",
+      "score": 75,
+      "arena_elo": 1490.0,
+      "arena_rank": 8,
+      "votes": 12086,
       "benchmarks": {
-        "lmsys_elo": 1490,
-        "mmlu": 90.3,
-        "humaneval": 89.0,
-        "math": 82.9
+        "code": 42.5,
+        "vision": 61.1,
+        "document": 61.3
+      },
+      "benchmark_elo": {
+        "code": 1536.0,
+        "vision": 1295.0,
+        "document": 1472.0
       },
       "rank": 2
     },
     {
-      "name": "Claude",
-      "model": "Claude 5",
-      "company": "Anthropic",
-      "url": "https://claude.ai",
-      "icon": "✨",
-      "color": "#cc785c",
-      "cats": ["🧠 Reasoning", "✍️ Creative Writing"],
-      "score": 92,
+      "name": "Gemini",
+      "model": "gemini-3-pro",
+      "company": "Google",
+      "url": "https://gemini.google.com",
+      "icon": "\ud83d\udc8e",
+      "color": "#4285f4",
+      "score": 72,
+      "arena_elo": 1486.0,
+      "arena_rank": 10,
+      "votes": 41241,
       "benchmarks": {
-        "lmsys_elo": 1502,
-        "mmlu": 90.4,
-        "humaneval": 92.7,
-        "math": 88.0
+        "code": 41.6,
+        "vision": 67.8,
+        "document": 56.7
+      },
+      "benchmark_elo": {
+        "code": 1533.0,
+        "vision": 1301.0,
+        "document": 1465.0
       },
       "rank": 3
     },
     {
-      "name": "DeepSeek",
-      "model": "DeepSeek V3",
-      "company": "DeepSeek AI",
-      "url": "https://chat.deepseek.com",
-      "icon": "🌊",
-      "color": "#6366f1",
-      "cats": ["🔢 Math", "💻 Coding"],
-      "score": 77,
+      "name": "Kimi",
+      "model": "kimi-k3-max",
+      "company": "Moonshot",
+      "url": "https://kimi.moonshot.cn",
+      "icon": "\ud83c\udf19",
+      "color": "#7c3aed",
+      "score": 71,
+      "arena_elo": 1485.0,
+      "arena_rank": 12,
+      "votes": 3556,
       "benchmarks": {
-        "lmsys_elo": 1318,
-        "mmlu": 88.0,
-        "humaneval": 82.6,
-        "math": 90.0
+        "code": 86.2,
+        "vision": 26.7,
+        "document": 47.3
+      },
+      "benchmark_elo": {
+        "code": 1676.0,
+        "vision": 1264.0,
+        "document": 1451.0
       },
       "rank": 4
     },
     {
-      "name": "Llama",
-      "model": "Llama 4",
-      "company": "Meta AI",
-      "url": "https://ai.meta.com/llama/",
-      "icon": "🦙",
-      "color": "#0668e1",
-      "cats": ["💻 Coding", "🔢 Math"],
-      "score": 74,
+      "name": "ChatGPT",
+      "model": "gpt-5.6-sol-xhigh",
+      "company": "OpenAI",
+      "url": "https://chat.openai.com",
+      "icon": "\ud83e\udd16",
+      "color": "#10a37f",
+      "score": 69,
+      "arena_elo": 1483.0,
+      "arena_rank": 14,
+      "votes": 10716,
       "benchmarks": {
-        "lmsys_elo": 1308,
-        "mmlu": 87.3,
-        "humaneval": 89.0,
-        "math": 73.8
+        "code": 68.8,
+        "vision": 52.2,
+        "document": 70.0
+      },
+      "benchmark_elo": {
+        "code": 1620.0,
+        "vision": 1287.0,
+        "document": 1485.0
       },
       "rank": 5
     }
   ],
-  "last_updated": "2026-08-03T04:07:42.041668+00:00",
-  "api_cost": "$0.08"
+  "last_updated": "2026-08-03T04:43:22.368994+00:00",
+  "snapshot_date": "2026-08-02",
+  "source": "Arena AI (LMSYS) leaderboards",
+  "source_url": "https://github.com/oolong-tea-2026/arena-ai-leaderboards",
+  "api_cost": "Free"
 }
