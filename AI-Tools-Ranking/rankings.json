@@ -19,6 +19,24 @@
       "rank": 1
     },
     {
+      "name": "Qwen",
+      "model": "qwen3.8-max",
+      "company": "Alibaba",
+      "url": "https://qwen.ai",
+      "icon": "\ud83d\udd37",
+      "color": "#f59e0b",
+      "score": 150,
+      "arena_elo": 1496.0,
+      "arena_rank": 5,
+      "votes": 3327,
+      "benchmarks": {
+        "code": 167,
+        "vision": 130,
+        "document": 144
+      },
+      "rank": 2
+    },
+    {
       "name": "Meta AI",
       "model": "muse-spark-1.1",
       "company": "Meta",
@@ -27,14 +45,14 @@
       "color": "#0668e1",
       "score": 149,
       "arena_elo": 1490.0,
-      "arena_rank": 8,
+      "arena_rank": 9,
       "votes": 12086,
       "benchmarks": {
         "code": 154,
-        "vision": 130,
+        "vision": 129,
         "document": 147
       },
-      "rank": 2
+      "rank": 3
     },
     {
       "name": "Gemini",
@@ -45,14 +63,14 @@
       "color": "#4285f4",
       "score": 149,
       "arena_elo": 1486.0,
-      "arena_rank": 10,
+      "arena_rank": 11,
       "votes": 41241,
       "benchmarks": {
         "code": 153,
-        "vision": 130,
+        "vision": 129,
         "document": 146
       },
-      "rank": 3
+      "rank": 4
     },
     {
       "name": "Kimi",
@@ -63,37 +81,18 @@
       "color": "#7c3aed",
       "score": 148,
       "arena_elo": 1485.0,
-      "arena_rank": 12,
+      "arena_rank": 13,
       "votes": 3556,
       "benchmarks": {
         "code": 168,
-        "vision": 126,
         "document": 145
-      },
-      "rank": 4
-    },
-    {
-      "name": "ChatGPT",
-      "model": "gpt-5.6-sol-xhigh",
-      "company": "OpenAI",
-      "url": "https://chat.openai.com",
-      "icon": "\ud83e\udd16",
-      "color": "#10a37f",
-      "score": 148,
-      "arena_elo": 1483.0,
-      "arena_rank": 14,
-      "votes": 10716,
-      "benchmarks": {
-        "code": 162,
-        "vision": 129,
-        "document": 148
       },
       "rank": 5
     }
   ],
-  "last_updated": "2026-08-03T05:02:18.925743+00:00",
-  "snapshot_date": "2026-08-02",
+  "last_updated": "2026-08-03T05:13:02.985392+00:00",
+  "snapshot_date": "2026-08-03",
   "source": "Arena AI (LMSYS) leaderboards",
   "source_url": "https://github.com/oolong-tea-2026/arena-ai-leaderboards",
-  "api_cost": "Auto"
+  "api_cost": "Fetch"
 }

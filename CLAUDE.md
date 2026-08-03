@@ -19,8 +19,8 @@ All projects are hosted on **GitHub Pages** (static files only — no server-sid
 ## AI-Tools-Ranking
 
 The only project with automation. Architecture:
-- `generate_data.py` — reads published Arena AI (LMSYS) leaderboard snapshots and writes `rankings.json`. Standard library only, no API key, no cost. Run locally with `python AI-Tools-Ranking/generate_data.py`.
-- `index.html` + `app.js` + `style.css` — static frontend that reads `rankings.json` directly via `fetch()`.
+- `generate_data.py` — reads published Arena AI (LMSYS) leaderboard snapshots and writes `rankings.json` and `history.json`. Standard library only, no API key, no cost. Run locally with `python AI-Tools-Ranking/generate_data.py`.
+- `index.html` + `app.js` + `style.css` — static frontend that reads both JSON files directly via `fetch()`.
 - GitHub Actions (`.github/workflows/daily-refresh.yml`) runs `generate_data.py` daily at 9am UTC and commits the updated JSON. Can be triggered manually from the GitHub Actions tab. Daily is viable because the source publishes daily and the run costs nothing; the countdown in `app.js` assumes this cadence and reports hours, so update it if the cron changes.
 
 Data notes:
@@ -28,6 +28,8 @@ Data notes:
 - Vendors are collapsed to their single best-scoring model before ranking — the raw text board is dominated by multiple variants from the same vendor.
 - Arena ELO is unbounded, so it is displayed at 1/10 scale (`SCALE_DIVISOR`), rounded to a whole number: 1509 → 151. Needs no retuning as boards drift.
 - Cards can therefore show the same figure for different models (1490, 1486 and 1485 all read 149). That is intentional. Ranking always sorts on the full-precision `arena_elo`, never the rounded display value — do not re-sort on `score` in the frontend.
+- `history.json` is rebuilt from dated snapshots on every run, so it is reproducible and self-healing. Months with no published snapshot are skipped; a model absent from a snapshot gets `null`, which the chart draws as a visible gap (`spanGaps: false`). Never backfill or interpolate these — an estimated point is indistinguishable from a real one once it is on the chart.
+- A vendor missing from `VENDOR_META` still ranks correctly but has no product URL. The frontend renders those cards as a `div.no-link` rather than an `<a href="">`, which would link to the page itself. The script logs a `[branding] WARNING` naming any such vendor — add it to `VENDOR_META` when it appears.
 - Do not reintroduce LLM-sourced benchmark numbers here. An earlier version asked an LLM to search the web for MMLU/HumanEval/MATH scores; the values could not be verified, and a plausible-but-wrong number was indistinguishable from a correct one.
 
 ## Before starting any new project

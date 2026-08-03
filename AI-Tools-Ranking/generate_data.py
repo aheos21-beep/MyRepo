@@ -74,6 +74,12 @@ VENDOR_META = {
 }
 FALLBACK_COLORS = ["#e74c3c", "#3498db", "#2ecc71", "#f39c12", "#1abc9c", "#9b59b6"]
 
+# The mirror's earliest published snapshot. History is built from real snapshots
+# only — months with no snapshot are skipped, and a model absent from a snapshot
+# gets null rather than an interpolated value. Nothing here is ever estimated.
+HISTORY_FIRST_SNAPSHOT = "2026-03-21"
+HISTORY_START = (2026, 3)
+
 
 # ── Fetching ───────────────────────────────────────────────────────────────────
 
@@ -120,6 +126,11 @@ def best_per_vendor(rows: list[dict]) -> dict[str, dict]:
 
 
 def meta_for(vendor: str, idx: int = 0) -> dict:
+    """
+    Falls back to the raw Arena vendor string for an unmapped vendor. The card
+    still renders and ranks correctly, but with no product URL — the frontend
+    renders those as non-clickable. Add the vendor to VENDOR_META to fix it.
+    """
     meta = VENDOR_META.get(vendor)
     if meta:
         return meta
@@ -133,7 +144,7 @@ def meta_for(vendor: str, idx: int = 0) -> dict:
 
 # ── Rankings ───────────────────────────────────────────────────────────────────
 
-def build_rankings(date: str) -> dict:
+def build_rankings(date: str) -> tuple[dict, list[str]]:
     boards = {
         name: best_per_vendor(load_board(date, name, cfg["required"]))
         for name, cfg in BOARDS.items()
@@ -172,15 +183,85 @@ def build_rankings(date: str) -> dict:
             "rank":       idx + 1,
         })
 
+    unmapped = [t["company"] for t in tools if t["company"] not in VENDOR_META]
+    if unmapped:
+        print(
+            f"[branding] WARNING: ranked vendor(s) missing from VENDOR_META: "
+            f"{', '.join(unmapped)} — showing the raw vendor name, a generic icon "
+            f"and no product link. Add them to VENDOR_META.",
+            file=sys.stderr,
+        )
+
     rankings = {
         "tools": tools,
         "last_updated": datetime.now(timezone.utc).isoformat(),
         "snapshot_date": date,
         "source": SOURCE_NAME,
         "source_url": f"https://github.com/{REPO}",
-        "api_cost": "Auto",
+        "api_cost": "Fetch",
     }
-    return rankings
+    return rankings, [t["company"] for t in tools]
+
+
+# ── History (rebuilt from real dated snapshots every run) ──────────────────────
+
+def history_dates(today: datetime) -> list[tuple[str, str]]:
+    """(snapshot_date, label) for the first of each month since the mirror began."""
+    out = [(HISTORY_FIRST_SNAPSHOT, "Mar 26")]
+    year, month = HISTORY_START
+    month += 1
+    while (year, month) <= (today.year, today.month):
+        out.append((f"{year:04d}-{month:02d}-01",
+                    datetime(year, month, 1).strftime("%b %y")))
+        month += 1
+        if month > 12:
+            year, month = year + 1, 1
+    return out
+
+
+def build_history(today: datetime, vendors: list[str]) -> dict:
+    """
+    Rebuilt from published snapshots on every run, so it is fully reproducible
+    and self-healing. Months without a snapshot are skipped entirely; a vendor
+    absent from a snapshot gets null, which the chart draws as a gap. No value
+    here is ever estimated or interpolated.
+    """
+    months: list[str] = []
+    series: dict[str, list] = {v: [] for v in vendors}
+
+    for date, label in history_dates(today):
+        rows = load_board(date, RANK_BOARD, required=False)
+        if not rows:
+            print(f"[history] no snapshot for {date} — month skipped", file=sys.stderr)
+            continue
+        best = best_per_vendor(rows)
+        months.append(label)
+        for vendor in vendors:
+            entry = best.get(vendor)
+            series[vendor].append(scaled(entry["score"]) if entry else None)
+
+    if not months:
+        sys.exit("FAILED: no historical snapshots resolved — files left untouched.")
+
+    for vendor in vendors:
+        gaps = sum(1 for v in series[vendor] if v is None)
+        if gaps:
+            print(f"[history] {vendor}: absent from {gaps}/{len(months)} snapshots "
+                  f"— drawn as gaps, not filled in", file=sys.stderr)
+
+    return {
+        "months": months,
+        "series": [
+            {
+                "name":  meta_for(vendor, idx)["brand"],
+                "color": meta_for(vendor, idx)["color"],
+                "score": series[vendor],
+            }
+            for idx, vendor in enumerate(vendors)
+        ],
+        "last_updated": datetime.now(timezone.utc).isoformat(),
+        "source": SOURCE_NAME,
+    }
 
 
 # ── Main ───────────────────────────────────────────────────────────────────────
@@ -195,13 +276,18 @@ def main():
     print(f"  → {date}")
 
     print("Building rankings…")
-    rankings = build_rankings(date)
+    rankings, vendors = build_rankings(date)
     for t in rankings["tools"]:
         chips = " ".join(f"{k}={v:.0f}" for k, v in t["benchmarks"].items())
         print(f"  {t['rank']}. {t['name']:<11} {t['model']:<28} "
               f"score {t['score']:>6}  elo {t['arena_elo']:.0f}  {chips}")
 
+    print("Rebuilding history from dated snapshots…")
+    history = build_history(datetime.now(timezone.utc), vendors)
+    print(f"  → {len(history['months'])} months: {', '.join(history['months'])}")
+
     (DOCS_DIR / "rankings.json").write_text(json.dumps(rankings, indent=2) + "\n")
+    (DOCS_DIR / "history.json").write_text(json.dumps(history, indent=2) + "\n")
     print("Done.")
 
 

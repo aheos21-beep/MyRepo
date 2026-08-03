@@ -1,0 +1,74 @@
+{
+  "months": [
+    "Mar 26",
+    "Apr 26",
+    "May 26",
+    "Jun 26",
+    "Jul 26",
+    "Aug 26"
+  ],
+  "series": [
+    {
+      "name": "Claude",
+      "color": "#cc785c",
+      "score": [
+        150,
+        150,
+        150,
+        150,
+        151,
+        151
+      ]
+    },
+    {
+      "name": "Qwen",
+      "color": "#f59e0b",
+      "score": [
+        146,
+        147,
+        146,
+        148,
+        148,
+        null
+      ]
+    },
+    {
+      "name": "Meta AI",
+      "color": "#0668e1",
+      "score": [
+        null,
+        null,
+        149,
+        149,
+        149,
+        149
+      ]
+    },
+    {
+      "name": "Gemini",
+      "color": "#4285f4",
+      "score": [
+        149,
+        149,
+        149,
+        149,
+        149,
+        149
+      ]
+    },
+    {
+      "name": "Kimi",
+      "color": "#7c3aed",
+      "score": [
+        145,
+        145,
+        146,
+        null,
+        null,
+        149
+      ]
+    }
+  ],
+  "last_updated": "2026-08-03T05:13:04.724901+00:00",
+  "source": "Arena AI (LMSYS) leaderboards"
+}

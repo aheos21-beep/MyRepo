@@ -7,8 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadAll() {
   try {
-    const rankData = await fetch('rankings.json').then(r => r.json());
+    const [rankData, histData] = await Promise.all([
+      fetch('rankings.json').then(r => r.json()),
+      fetch('history.json').then(r => r.json()),
+    ]);
     renderRankings(rankData);
+    renderChart(histData);
     setLastUpdated(rankData.last_updated);
     setCost(rankData.api_cost);
   } catch (err) {
@@ -40,11 +44,16 @@ function renderRankings(data) {
 }
 
 function buildRankCard(tool, topScores = {}, topCounts = {}) {
-  const card = document.createElement('a');
-  card.className = `rank-card rank-${tool.rank}`;
-  card.href = tool.url;
-  card.target = '_blank';
-  card.rel = 'noopener noreferrer';
+  // A vendor missing from VENDOR_META has no product URL. Render it as a plain
+  // div rather than an anchor with href="", which would "link" to this page.
+  const hasUrl = Boolean(tool.url);
+  const card = document.createElement(hasUrl ? 'a' : 'div');
+  card.className = `rank-card rank-${tool.rank}${hasUrl ? '' : ' no-link'}`;
+  if (hasUrl) {
+    card.href = tool.url;
+    card.target = '_blank';
+    card.rel = 'noopener noreferrer';
+  }
   card.style.setProperty('--tool-color', tool.color || '#667eea');
 
   const rankClass = ['', 'gold', 'silver', 'bronze'][tool.rank] || 'plain';
@@ -86,6 +95,90 @@ function buildRankCard(tool, topScores = {}, topCounts = {}) {
     <div class="bench-row">${bChips}</div>
   `;
   return card;
+}
+
+// ── Chart ─────────────────────────────────────────────────────────────────────
+
+function renderChart(data) {
+  const series = data.series || [];
+  const canvas = document.getElementById('lineChart');
+  if (!canvas || typeof Chart === 'undefined') return;
+
+  const chart = new Chart(canvas.getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: data.months,
+      datasets: series.map(s => ({
+        label: s.name,
+        data: s.score,
+        borderColor: s.color,
+        backgroundColor: 'transparent',
+        borderWidth: 2.5,
+        pointBackgroundColor: s.color,
+        pointRadius: 3,
+        pointHoverRadius: 3,
+        tension: 0.3,
+        // Null means the model was not on that snapshot's board. Leave the gap
+        // visible rather than drawing a line across data we do not have.
+        spanGaps: false,
+      })),
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: { legend: { display: false }, tooltip: { enabled: false } },
+      scales: {
+        x: {
+          grid: { color: 'rgba(255,255,255,0.05)' },
+          ticks: { color: '#888ab0', font: { size: 11, family: 'Inter' } },
+          border: { color: 'rgba(255,255,255,0.08)' },
+        },
+        y: {
+          // Auto-scaled: Arena ELO is unbounded and the top models sit in a
+          // narrow band, so a fixed window would either clip or flatten it.
+          grace: '8%',
+          grid: { color: 'rgba(255,255,255,0.05)' },
+          ticks: { color: '#888ab0', font: { size: 11, family: 'Inter' } },
+          border: { color: 'rgba(255,255,255,0.08)' },
+          title: {
+            display: true,
+            text: 'Arena ELO ÷ 10',
+            color: '#888ab0',
+            font: { size: 10, family: 'Inter' },
+          },
+        },
+      },
+    },
+  });
+
+  // Interactive legend: click to highlight one line, dim the rest
+  const legendEl = document.getElementById('chartLegend');
+  if (!legendEl) return;
+  let activeIdx = null;
+
+  series.forEach((s, idx) => {
+    const item = document.createElement('div');
+    item.className = 'legend-item';
+    item.innerHTML = `<div class="legend-dot" style="background:${s.color}"></div>${esc(s.name)}`;
+
+    item.addEventListener('click', () => {
+      activeIdx = (activeIdx === idx) ? null : idx;
+      chart.data.datasets.forEach((ds, i) => {
+        const base = series[i].color;
+        const on = activeIdx === null || i === activeIdx;
+        ds.borderColor = on ? base : base + '28';
+        ds.pointBackgroundColor = on ? base : base + '28';
+        ds.borderWidth = on ? 2.5 : 1;
+      });
+      chart.update('none');
+      legendEl.querySelectorAll('.legend-item').forEach((li, i) => {
+        li.style.opacity = (activeIdx === null || i === activeIdx) ? '1' : '0.3';
+      });
+    });
+
+    legendEl.appendChild(item);
+  });
 }
 
 // ── Countdown (next daily run at 9am UTC) ─────────────────────────────────────

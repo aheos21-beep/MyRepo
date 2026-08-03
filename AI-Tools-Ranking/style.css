@@ -112,15 +112,17 @@ main {
   overflow: hidden;
 }
 
-.single-col-layout {
+.two-col-layout {
   display: flex;
-  flex-direction: column;
   height: 100%;
-  min-height: 0;
-  max-width: 760px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 14px 16px 10px;
+  gap: 14px;
 }
+
+.col-left  { flex: 0 0 38%; display: flex; flex-direction: column; min-height: 0; }
+.col-right { flex: 1;       display: flex; flex-direction: column; min-height: 0; }
 
 .col-title {
   font-size: 0.95rem;
@@ -188,6 +190,10 @@ main {
 }
 
 .rank-card:hover { border-color: var(--border2); transform: translateY(-1px); }
+
+/* Vendor with no product URL — rendered as a div, so it must not look clickable */
+.rank-card.no-link { cursor: default; }
+.rank-card.no-link:hover { border-color: var(--border); transform: none; }
 .rank-card.rank-1 { border-color: rgba(255,215,0,0.28); }
 .rank-card.rank-2 { border-color: rgba(192,192,192,0.22); }
 .rank-card.rank-3 { border-color: rgba(205,127,50,0.22); }
@@ -250,6 +256,65 @@ main {
   white-space: nowrap;
 }
 
+
+/* ── Chart card ───────────────────────────────────────── */
+.chart-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.chart-header {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.chart-header h3 { font-size: 0.95rem; font-weight: 700; }
+.chart-header p  { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+
+.arena-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  background: rgba(32,201,151,0.12);
+  border: 1px solid rgba(32,201,151,0.3);
+  border-radius: 99px;
+  color: #20c997;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.chart-wrap { flex: 1; min-height: 0; position: relative; }
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  flex-shrink: 0;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--muted);
+  cursor: pointer;
+  transition: opacity 0.2s;
+  user-select: none;
+}
+
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
 /* ── Skeleton loader ──────────────────────────────────── */
 .skeleton-card {
   background: linear-gradient(90deg, var(--card) 25%, #1f1f3a 50%, var(--card) 75%);
@@ -287,7 +352,7 @@ main {
 @media (min-width: 640px) and (max-height: 840px) {
   :root { --header-h: 44px; --footer-h: 26px; }
 
-  .single-col-layout { padding: 10px 16px 8px; }
+  .two-col-layout { padding: 10px 16px 8px; gap: 12px; }
   .col-title      { font-size: 0.88rem; margin-bottom: 2px; }
   .rankings-grid  { gap: 7px; }
 
@@ -295,6 +360,8 @@ main {
 
   .tool-icon { width: 30px; height: 30px; font-size: 1.1rem; }
 
+  .chart-card  { padding: 12px 16px; gap: 10px; }
+  .chart-header h3 { font-size: 0.88rem; }
 }
 
 /* ── Mobile fallback (< 640px) ────────────────────────── */
@@ -314,6 +381,10 @@ main {
     padding: 14px;
   }
 
+  .col-left, .col-right { flex: none; }
+
   .rank-card { flex: none; }
+
+  .chart-card { min-height: 320px; }
 
 }

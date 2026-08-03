@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
 
@@ -27,19 +28,41 @@
   </header>
 
   <main>
-    <div class="single-col-layout">
-      <div class="col-title">🏆 Top 5 AI Models</div>
-      <div class="source-note">
-        <span class="source-dot"></span>
-        Live Arena AI (LMSYS) ELO ÷ 10 · Code, Vision &amp; Document scored on their own Arena boards
+    <div class="two-col-layout">
+
+      <!-- Left: Top 5 ranking cards -->
+      <div class="col-left">
+        <div class="col-title">🏆 Top 5 AI Models</div>
+        <div class="source-note">
+          <span class="source-dot"></span>
+          Live Arena AI (LMSYS) ELO ÷ 10 · Code, Vision &amp; Document scored on their own Arena boards
+        </div>
+        <div id="rankings-grid" class="rankings-grid">
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+        </div>
       </div>
-      <div id="rankings-grid" class="rankings-grid">
-        <div class="skeleton-card"></div>
-        <div class="skeleton-card"></div>
-        <div class="skeleton-card"></div>
-        <div class="skeleton-card"></div>
-        <div class="skeleton-card"></div>
+
+      <!-- Right: monthly ELO history, built only from published snapshots -->
+      <div class="col-right">
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <h3>📈 Arena ELO History</h3>
+              <p>Monthly published snapshots · gaps mean the model was not on that board · click a model to highlight</p>
+            </div>
+            <span class="arena-badge">🔬 Real Data</span>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="lineChart"></canvas>
+          </div>
+          <div class="chart-legend" id="chartLegend"></div>
+        </div>
       </div>
+
     </div>
   </main>
 
