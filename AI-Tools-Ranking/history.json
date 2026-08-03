@@ -71,7 +71,7 @@
       "model": "Llama 4",
       "company": "Meta AI",
       "color": "#0668e1",
-      "in_cards": true,
+      "in_cards": false,
       "score": [
         61,
         61,
@@ -187,5 +187,5 @@
       ]
     }
   ],
-  "last_updated": "2026-08-03T00:12:19.978859+00:00"
+  "last_updated": "2026-08-03T04:04:00.022298+00:00"
 }
