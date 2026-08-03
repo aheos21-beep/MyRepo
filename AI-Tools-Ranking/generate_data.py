@@ -247,6 +247,10 @@ def maybe_append_month(history: dict, current_scores: dict, tools: list[dict]) -
     if label in history["months"]:
         return history
 
+    # Mark the start of real data on the first automated append
+    if "real_from" not in history:
+        history["real_from"] = len(history["months"])
+
     history["months"].append(label)
     existing_names = {s["name"] for s in history["series"]}
 

@@ -97,14 +97,16 @@ function buildRankCard(tool, topScores = {}, topCounts = {}) {
 function renderChart(data) {
   const series = data.series || [];
   const ctx = document.getElementById('lineChart').getContext('2d');
+  const from = data.real_from ?? 0;
+  const months = data.months.slice(from);
 
   const chart = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: data.months,
+      labels: months,
       datasets: series.map(s => ({
         label: s.name,
-        data: s.score,
+        data: s.score.slice(from),
         borderColor: s.color,
         backgroundColor: 'transparent',
         borderWidth: s.in_cards ? 2.5 : 1.5,
