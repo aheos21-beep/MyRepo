@@ -1,5 +1,6 @@
 """
-Fetches multi-benchmark scores via Claude API web search and maintains history.json.
+Phase 1 — discovers the current top frontier AI models via web search.
+Phase 2 — fetches benchmark scores for those models.
 Composite score = 40% LMSYS ELO + 25% MMLU + 20% HumanEval + 15% MATH (all normalized 0-100).
 Runs bi-monthly (1st and 15th) via GitHub Actions.
 """
@@ -13,83 +14,43 @@ from pathlib import Path
 import anthropic
 
 DOCS_DIR = Path(__file__).parent
-
-# Upgrade by changing this env var in GitHub Actions (or locally).
 CLAUDE_MODEL = os.getenv("CLAUDE_MODEL", "claude-haiku-4-5")
-
-# Normalization range for LMSYS Arena ELO → 0-100
 ELO_MIN = 1100
 ELO_MAX = 1450
-
-# Composite weights (must sum to 1.0)
 WEIGHTS = {"lmsys_elo": 0.40, "mmlu": 0.25, "humaneval": 0.20, "math": 0.15}
+MAX_MODELS = 7    # total tracked
+CARD_COUNT = 5    # top N shown in ranking cards
 
-# ── Model definitions ──────────────────────────────────────────────────────────
+# Stable visual identity — survives model version changes
+BRAND_META = {
+    "ChatGPT":    {"icon": "🤖", "color": "#10a37f"},
+    "Claude":     {"icon": "✨", "color": "#cc785c"},
+    "Gemini":     {"icon": "💎", "color": "#4285f4"},
+    "Llama":      {"icon": "🦙", "color": "#0668e1"},
+    "DeepSeek":   {"icon": "🌊", "color": "#6366f1"},
+    "Qwen":       {"icon": "🔷", "color": "#f59e0b"},
+    "Mistral":    {"icon": "🌀", "color": "#f7931e"},
+    "Grok":       {"icon": "🌑", "color": "#e879f9"},
+    "Perplexity": {"icon": "🔍", "color": "#20c997"},
+    "Command":    {"icon": "🔮", "color": "#9b59b6"},
+    "Falcon":     {"icon": "🦅", "color": "#e67e22"},
+    "Yi":         {"icon": "🌙", "color": "#3498db"},
+}
 
-TOOLS = [
-    # in_cards=True → appears in ranking cards AND chart
-    {
-        "name": "ChatGPT", "model": "GPT-5", "company": "OpenAI",
-        "url": "https://chat.openai.com", "icon": "🤖", "color": "#10a37f",
-        "cats": ["💻 Coding", "📋 Instructions"], "in_cards": True,
-        "arena_names": ["gpt-4o", "gpt-5", "chatgpt-4o-latest"],
-        "base_score": 86,
-        "base_benchmarks": {"lmsys_elo": 1362, "mmlu": 90.0, "humaneval": 90.0, "math": 85.0},
-    },
-    {
-        "name": "Claude", "model": "Claude 4", "company": "Anthropic",
-        "url": "https://claude.ai", "icon": "✨", "color": "#cc785c",
-        "cats": ["🧠 Reasoning", "✍️ Creative Writing"], "in_cards": True,
-        "arena_names": ["claude-3-5-sonnet", "claude-4", "claude-opus-4"],
-        "base_score": 83,
-        "base_benchmarks": {"lmsys_elo": 1344, "mmlu": 89.0, "humaneval": 93.0, "math": 88.0},
-    },
-    {
-        "name": "Llama", "model": "Llama 4", "company": "Meta AI",
-        "url": "https://ai.meta.com/llama/", "icon": "🦙", "color": "#0668e1",
-        "cats": ["💻 Coding", "🔢 Math"], "in_cards": True,
-        "arena_names": ["llama-4", "meta-llama-3.1-405b", "llama-3.3-70b"],
-        "base_score": 73,
-        "base_benchmarks": {"lmsys_elo": 1308, "mmlu": 86.0, "humaneval": 88.0, "math": 80.0},
-    },
-    {
-        "name": "Gemini", "model": "Gemini Ultra 2", "company": "Google DeepMind",
-        "url": "https://gemini.google.com", "icon": "💎", "color": "#4285f4",
-        "cats": ["🔢 Math", "🌐 Multilingual"], "in_cards": True,
-        "arena_names": ["gemini-1-5-pro", "gemini-2-pro", "gemini-ultra"],
-        "base_score": 72,
-        "base_benchmarks": {"lmsys_elo": 1302, "mmlu": 87.0, "humaneval": 86.0, "math": 83.0},
-    },
-    {
-        "name": "DeepSeek", "model": "DeepSeek V3", "company": "DeepSeek AI",
-        "url": "https://chat.deepseek.com", "icon": "🌊", "color": "#6366f1",
-        "cats": ["🔢 Math", "💻 Coding"], "in_cards": True,
-        "arena_names": ["deepseek-v3", "deepseek-v2-5"],
-        "base_score": 71,
-        "base_benchmarks": {"lmsys_elo": 1293, "mmlu": 88.0, "humaneval": 85.0, "math": 90.0},
-    },
-    # in_cards=False → chart only
-    {
-        "name": "Qwen", "model": "Qwen 2.5 Max", "company": "Alibaba",
-        "url": "https://qwen.aliyun.com", "icon": "🔷", "color": "#f59e0b",
-        "cats": [], "in_cards": False,
-        "arena_names": ["qwen2-72b-instruct", "qwen-max", "qwen2.5-72b"],
-        "base_score": 65,
-        "base_benchmarks": {"lmsys_elo": 1279, "mmlu": 85.0, "humaneval": 80.0, "math": 82.0},
-    },
-    {
-        "name": "Mistral", "model": "Mistral Large 2", "company": "Mistral AI",
-        "url": "https://mistral.ai", "icon": "🌀", "color": "#f7931e",
-        "cats": [], "in_cards": False,
-        "arena_names": ["mistral-large-2407", "mistral-large-2"],
-        "base_score": 59,
-        "base_benchmarks": {"lmsys_elo": 1265, "mmlu": 81.0, "humaneval": 75.0, "math": 73.0},
-    },
+FALLBACK_COLORS = ["#e74c3c", "#3498db", "#2ecc71", "#f39c12", "#1abc9c", "#9b59b6", "#e67e22"]
+FALLBACK_ICONS  = ["🤖", "🧠", "💡", "⚡", "🔮", "🌟", "💫"]
+
+# Used only if Phase 1 discovery fails
+FALLBACK_TOOLS = [
+    {"name": "ChatGPT",  "model": "GPT-5",          "company": "OpenAI",      "url": "https://chat.openai.com",    "arena_names": ["gpt-5", "gpt-4o"]},
+    {"name": "Claude",   "model": "Claude 4",        "company": "Anthropic",   "url": "https://claude.ai",          "arena_names": ["claude-4", "claude-opus-4"]},
+    {"name": "Gemini",   "model": "Gemini Ultra 2",  "company": "Google",      "url": "https://gemini.google.com",  "arena_names": ["gemini-2-pro", "gemini-ultra"]},
+    {"name": "DeepSeek", "model": "DeepSeek V3",     "company": "DeepSeek AI", "url": "https://chat.deepseek.com",  "arena_names": ["deepseek-v3"]},
+    {"name": "Llama",    "model": "Llama 4",         "company": "Meta AI",     "url": "https://ai.meta.com/llama/", "arena_names": ["llama-4"]},
+    {"name": "Qwen",     "model": "Qwen 2.5 Max",    "company": "Alibaba",     "url": "https://qwen.aliyun.com",    "arena_names": ["qwen2.5-72b"]},
+    {"name": "Mistral",  "model": "Mistral Large 2", "company": "Mistral AI",  "url": "https://mistral.ai",         "arena_names": ["mistral-large-2"]},
 ]
 
-# Seeded 12-month history (Jun 2025 – May 2026).
-# Composite scores derived from benchmark trajectories aligned with known model releases:
-# GPT-5 Jan 26, Claude 4 Feb 26, Llama 4 Apr 26.
 HISTORY_SEED = {
     "months": ["Jun 25","Jul 25","Aug 25","Sep 25","Oct 25","Nov 25",
                "Dec 25","Jan 26","Feb 26","Mar 26","Apr 26","May 26"],
@@ -104,7 +65,7 @@ HISTORY_SEED = {
     ],
 }
 
-# ── Scoring ───────────────────────────────────────────────────────────────────
+# ── Helpers ────────────────────────────────────────────────────────────────────
 
 def normalize_elo(elo: float) -> float:
     return max(0.0, min(100.0, (elo - ELO_MIN) / (ELO_MAX - ELO_MIN) * 100.0))
@@ -123,41 +84,103 @@ def compute_composite(benchmarks: dict) -> float | None:
         return None
     return round(total / weight_sum, 1)
 
-# ── Claude API web search ──────────────────────────────────────────────────────
 
-def fetch_benchmarks_via_claude() -> tuple[dict | None, str]:
-    """
-    Ask Claude to search for LMSYS ELO, MMLU, HumanEval, and MATH scores for each model.
-    Returns ({model: benchmarks}, cost_string) or (None, "—") on failure.
-    """
-    api_key = os.getenv("ANTHROPIC_API_KEY")
-    if not api_key:
-        print("[claude] ANTHROPIC_API_KEY not set — skipping web search", file=sys.stderr)
-        return None, "—"
+def get_brand_meta(name: str, idx: int = 0) -> dict:
+    meta = BRAND_META.get(name, {})
+    return {
+        "icon":  meta.get("icon",  FALLBACK_ICONS[idx % len(FALLBACK_ICONS)]),
+        "color": meta.get("color", FALLBACK_COLORS[idx % len(FALLBACK_COLORS)]),
+    }
 
-    client = anthropic.Anthropic(api_key=api_key)
 
-    model_list = "\n".join(
-        f"- {t['name']} (search for: {', '.join(t['arena_names'][:2])})"
-        for t in TOOLS
-    )
+def _call_tokens_cost(response) -> float:
+    i = getattr(response.usage, "input_tokens", 0)
+    o = getattr(response.usage, "output_tokens", 0)
+    return (i * 1.00 + o * 5.00) / 1_000_000
+
+
+# ── Phase 1: Discover top models ───────────────────────────────────────────────
+
+def discover_top_models(client) -> tuple[list[dict] | None, float]:
+    now_str = datetime.now(timezone.utc).strftime("%B %Y")
     prompt = (
-        "Search the web for the latest AI benchmark scores. Find scores for these models:\n"
+        f"Search the web for the current top frontier AI chat/language models as of {now_str}.\n"
+        "Check the LMSYS Chatbot Arena leaderboard (lmarena.ai) and recent AI benchmark news.\n\n"
+        f"Return ONLY valid JSON — a list of exactly {MAX_MODELS} models ordered best to worst:\n"
+        '[{"name":"ChatGPT","model":"GPT-5","company":"OpenAI","url":"https://chat.openai.com","arena_names":["gpt-5","gpt-4o"]}]\n\n'
+        "Rules:\n"
+        "- name: short stable brand name only (ChatGPT, Claude, Gemini, Llama, DeepSeek, Grok, Qwen, Mistral …)\n"
+        "- model: specific current version being benchmarked (GPT-5, Claude 5, Gemini Ultra 2 …)\n"
+        "- company: company name\n"
+        "- url: main product URL\n"
+        "- arena_names: 1-3 LMSYS Arena identifiers for this model (null if not listed)\n"
+        "- Only include production models with known public benchmark scores"
+    )
+
+    try:
+        response = client.messages.create(
+            model=CLAUDE_MODEL,
+            max_tokens=1024,
+            tools=[{"type": "web_search_20250305", "name": "web_search", "max_uses": 3}],
+            messages=[{"role": "user", "content": prompt}],
+        )
+    except Exception as exc:
+        print(f"[discover] API call failed: {exc}", file=sys.stderr)
+        return None, 0.0
+
+    cost = _call_tokens_cost(response)
+    raw_text = "".join(
+        b.text for b in response.content if hasattr(b, "type") and b.type == "text"
+    )
+
+    match = re.search(r"\[[\s\S]+\]", raw_text)
+    if not match:
+        print(f"[discover] No JSON array in response: {raw_text[:300]}", file=sys.stderr)
+        return None, cost
+
+    try:
+        models = json.loads(match.group())
+        clean = [
+            {
+                "name":        str(m.get("name", "")),
+                "model":       str(m.get("model", m.get("name", ""))),
+                "company":     str(m.get("company", "")),
+                "url":         str(m.get("url", "")),
+                "arena_names": m.get("arena_names") or [],
+            }
+            for m in models if isinstance(m, dict) and m.get("name")
+        ]
+        if clean:
+            print(f"[discover] Found: {[m['name'] for m in clean]}", file=sys.stderr)
+            return clean[:MAX_MODELS], cost
+    except (json.JSONDecodeError, ValueError) as exc:
+        print(f"[discover] Parse error: {exc}", file=sys.stderr)
+
+    return None, cost
+
+
+# ── Phase 2: Fetch benchmark scores ───────────────────────────────────────────
+
+def fetch_benchmarks_via_claude(client, tools: list[dict]) -> tuple[dict | None, float]:
+    model_list = "\n".join(
+        f"- {t['name']} (search for: {', '.join((t.get('arena_names') or [t['name']])[:2])})"
+        for t in tools
+    )
+    example = "{" + ",".join(
+        f'"{t["name"]}":{{"lmsys_elo":1300,"mmlu":85.0,"humaneval":80.0,"math":75.0}}'
+        for t in tools[:3]
+    ) + ",...}"
+
+    prompt = (
+        "Search the web for the latest AI benchmark scores for these models:\n"
         f"{model_list}\n\n"
         "For each model find:\n"
-        "1. LMSYS Chatbot Arena ELO score (from lmarena.ai) — integer around 1100-1450\n"
+        "1. LMSYS Chatbot Arena ELO (from lmarena.ai) — integer around 1100-1500\n"
         "2. MMLU accuracy % (0-100)\n"
         "3. HumanEval pass@1 % (0-100)\n"
         "4. MATH accuracy % (0-100)\n\n"
-        "Return ONLY valid JSON, no markdown fences:\n"
-        '{"ChatGPT":{"lmsys_elo":1362,"mmlu":90.0,"humaneval":90.0,"math":85.0},'
-        '"Claude":{"lmsys_elo":1344,"mmlu":89.0,"humaneval":93.0,"math":88.0},'
-        '"Llama":{"lmsys_elo":1308,"mmlu":86.0,"humaneval":88.0,"math":80.0},'
-        '"Gemini":{"lmsys_elo":1302,"mmlu":87.0,"humaneval":86.0,"math":83.0},'
-        '"DeepSeek":{"lmsys_elo":1293,"mmlu":88.0,"humaneval":85.0,"math":90.0},'
-        '"Qwen":{"lmsys_elo":1279,"mmlu":85.0,"humaneval":80.0,"math":82.0},'
-        '"Mistral":{"lmsys_elo":1265,"mmlu":81.0,"humaneval":75.0,"math":73.0}}\n\n'
-        "Use null for any value you cannot find. Keep model name keys exactly as shown."
+        f"Return ONLY valid JSON, no markdown fences:\n{example}\n\n"
+        "Use null for any value you cannot find. Keep name keys exactly as shown."
     )
 
     try:
@@ -168,50 +191,39 @@ def fetch_benchmarks_via_claude() -> tuple[dict | None, str]:
             messages=[{"role": "user", "content": prompt}],
         )
     except Exception as exc:
-        print(f"[claude] API call failed: {exc}", file=sys.stderr)
-        return None, "—"
+        print(f"[benchmarks] API call failed: {exc}", file=sys.stderr)
+        return None, 0.0
 
-    # Haiku 4.5 pricing: $1.00/1M input, $5.00/1M output
-    input_tokens  = getattr(response.usage, "input_tokens", 0)
-    output_tokens = getattr(response.usage, "output_tokens", 0)
-    cost = (input_tokens * 1.00 + output_tokens * 5.00) / 1_000_000
-    cost_str = f"${cost:.2f}"
-
+    cost = _call_tokens_cost(response)
     raw_text = "".join(
-        block.text for block in response.content
-        if hasattr(block, "type") and block.type == "text"
+        b.text for b in response.content if hasattr(b, "type") and b.type == "text"
     )
 
     if not raw_text.strip():
-        print("[claude] No text in response", file=sys.stderr)
-        return None, cost_str
+        print("[benchmarks] Empty response", file=sys.stderr)
+        return None, cost
 
-    json_match = re.search(r"\{[\s\S]+\}", raw_text)
-    if not json_match:
-        print(f"[claude] No JSON found: {raw_text[:300]}", file=sys.stderr)
-        return None, cost_str
+    match = re.search(r"\{[\s\S]+\}", raw_text)
+    if not match:
+        print(f"[benchmarks] No JSON object: {raw_text[:300]}", file=sys.stderr)
+        return None, cost
 
     try:
-        data = json.loads(json_match.group())
-        # Validate structure: must be {ModelName: {benchmark: value}}
-        clean = {}
-        for name, benchmarks in data.items():
-            if not isinstance(benchmarks, dict):
-                continue
-            clean[name] = {
-                k: (float(v) if v is not None else None)
-                for k, v in benchmarks.items()
-                if k in WEIGHTS
-            }
+        data = json.loads(match.group())
+        clean = {
+            name: {k: (float(v) if v is not None else None) for k, v in bm.items() if k in WEIGHTS}
+            for name, bm in data.items() if isinstance(bm, dict)
+        }
         if clean:
-            print(f"[claude] Got benchmark data for: {list(clean.keys())}", file=sys.stderr)
-            return clean, cost_str
+            print(f"[benchmarks] Got data for: {list(clean.keys())}", file=sys.stderr)
+            return clean, cost
     except (json.JSONDecodeError, ValueError) as exc:
-        print(f"[claude] Parse error: {exc} — raw: {raw_text[:300]}", file=sys.stderr)
+        print(f"[benchmarks] Parse error: {exc}", file=sys.stderr)
 
-    return None, cost_str
+    return None, cost
 
-# ── History management ─────────────────────────────────────────────────────────
+
+# ── History ────────────────────────────────────────────────────────────────────
 
 def load_or_seed_history() -> dict:
     path = DOCS_DIR / "history.json"
@@ -220,94 +232,148 @@ def load_or_seed_history() -> dict:
             return json.loads(path.read_text())
         except Exception:
             pass
-    tool_meta = {t["name"]: t for t in TOOLS}
     return {
         "months": list(HISTORY_SEED["months"]),
         "series": [
-            {
-                "name": s["name"],
-                "model": tool_meta[s["name"]]["model"],
-                "company": tool_meta[s["name"]]["company"],
-                "color": tool_meta[s["name"]]["color"],
-                "in_cards": tool_meta[s["name"]]["in_cards"],
-                "score": list(s["score"]),
-            }
+            {"name": s["name"], "color": BRAND_META.get(s["name"], {}).get("color", "#888"), "score": list(s["score"])}
             for s in HISTORY_SEED["series"]
         ],
     }
 
 
-def maybe_append_month(history: dict, current_scores: dict) -> dict:
+def maybe_append_month(history: dict, current_scores: dict, tools: list[dict]) -> dict:
     now = datetime.now(timezone.utc)
     label = now.strftime("%b %y")
     if label in history["months"]:
         return history
+
     history["months"].append(label)
+    existing_names = {s["name"] for s in history["series"]}
+
     for series in history["series"]:
-        tool = next((t for t in TOOLS if t["name"] == series["name"]), None)
-        prev = series["score"][-1] if series["score"] else (tool["base_score"] if tool else 70)
+        prev = series["score"][-1] if series["score"] else 70
         series["score"].append(current_scores.get(series["name"], prev))
+
+    # Add newly discovered models not yet in history
+    pad = len(history["months"]) - 1
+    for t in tools:
+        if t["name"] not in existing_names:
+            meta = get_brand_meta(t["name"])
+            score = current_scores.get(t["name"], 70)
+            history["series"].append({
+                "name":  t["name"],
+                "color": meta["color"],
+                "score": [score] * pad + [score],
+            })
+            print(f"[history] New model added: {t['name']}", file=sys.stderr)
+
     print(f"[history] Added '{label}' — {len(history['months'])} months total", file=sys.stderr)
     return history
 
-# ── Rankings ──────────────────────────────────────────────────────────────────
 
-def build_rankings(current_scores: dict, current_benchmarks: dict) -> dict:
+def sync_history_meta(history: dict, tools: list[dict], current_scores: dict) -> None:
+    """Keep color and in_cards up to date in history series."""
+    tool_lookup = {t["name"]: t for t in tools}
+    top_names = {
+        name for name, _ in
+        sorted(current_scores.items(), key=lambda x: x[1], reverse=True)[:CARD_COUNT]
+    }
+    for series in history["series"]:
+        meta = get_brand_meta(series["name"])
+        series["color"]    = tool_lookup.get(series["name"], {}).get("color", meta["color"]) or meta["color"]
+        series["in_cards"] = series["name"] in top_names
+
+
+# ── Rankings ───────────────────────────────────────────────────────────────────
+
+def build_rankings(tools: list[dict], current_scores: dict, current_benchmarks: dict) -> dict:
     ranked = []
-    for t in TOOLS:
-        if not t["in_cards"]:
-            continue
+    for idx, t in enumerate(tools):
+        meta = get_brand_meta(t["name"], idx)
         ranked.append({
-            "name": t["name"], "model": t["model"], "company": t["company"],
-            "url": t["url"], "icon": t["icon"], "color": t["color"],
-            "cats": t["cats"],
-            "score": current_scores.get(t["name"], t["base_score"]),
-            "benchmarks": current_benchmarks.get(t["name"], t["base_benchmarks"]),
+            "name":       t["name"],
+            "model":      t["model"],
+            "company":    t["company"],
+            "url":        t["url"],
+            "icon":       meta["icon"],
+            "color":      meta["color"],
+            "score":      current_scores.get(t["name"], 70),
+            "benchmarks": current_benchmarks.get(t["name"], {}),
         })
+
     ranked.sort(key=lambda x: x["score"], reverse=True)
     for i, t in enumerate(ranked):
         t["rank"] = i + 1
-    return {"tools": ranked, "last_updated": datetime.now(timezone.utc).isoformat()}
 
-# ── Main ──────────────────────────────────────────────────────────────────────
+    return {
+        "tools": ranked[:CARD_COUNT],
+        "last_updated": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+# ── Main ───────────────────────────────────────────────────────────────────────
 
 def main():
     DOCS_DIR.mkdir(parents=True, exist_ok=True)
 
-    print(f"Using model: {CLAUDE_MODEL}")
-    print("Fetching benchmark scores via Claude web search…")
-    all_benchmarks, api_cost = fetch_benchmarks_via_claude()
+    api_key = os.getenv("ANTHROPIC_API_KEY")
+    if not api_key:
+        print("[main] ANTHROPIC_API_KEY not set", file=sys.stderr)
+        sys.exit(1)
 
-    if all_benchmarks:
-        print(f"  → Live data for {len(all_benchmarks)} models — cost {api_cost}")
+    client = anthropic.Anthropic(api_key=api_key)
+    total_cost = 0.0
+
+    print(f"Using model: {CLAUDE_MODEL}")
+
+    # Phase 1
+    print("Phase 1: Discovering top frontier models…")
+    discovered, cost1 = discover_top_models(client)
+    total_cost += cost1
+    if discovered:
+        tools = discovered
+        print(f"  → {len(tools)} models discovered — phase cost ${cost1:.4f}")
     else:
-        print("  → Web search unavailable — using seeded base values", file=sys.stderr)
+        tools = FALLBACK_TOOLS
+        print("  → Discovery failed — using fallback list", file=sys.stderr)
+
+    # Phase 2
+    print("Phase 2: Fetching benchmark scores…")
+    all_benchmarks, cost2 = fetch_benchmarks_via_claude(client, tools)
+    total_cost += cost2
+    if all_benchmarks:
+        print(f"  → Scores for {len(all_benchmarks)} models — phase cost ${cost2:.4f}")
+    else:
+        print("  → Benchmark fetch failed — defaulting scores to 70", file=sys.stderr)
         all_benchmarks = {}
 
-    # Compute composite scores; fall back to base_score if benchmarks are missing
-    current_scores = {}
-    current_benchmarks = {}
-    for t in TOOLS:
-        benchmarks = all_benchmarks.get(t["name"], t["base_benchmarks"])
-        # Fill any null values from base_benchmarks
-        merged = {k: (benchmarks.get(k) or t["base_benchmarks"].get(k)) for k in WEIGHTS}
-        score = compute_composite(merged) or t["base_score"]
+    api_cost_str = f"${total_cost:.2f}"
+
+    # Compute composite scores
+    current_scores, current_benchmarks = {}, {}
+    for t in tools:
+        raw = all_benchmarks.get(t["name"], {})
+        merged = {k: raw.get(k) for k in WEIGHTS}
+        score = compute_composite({k: v for k, v in merged.items() if v is not None}) or 70
         current_scores[t["name"]] = round(score)
         current_benchmarks[t["name"]] = merged
 
+    # History
     print("Updating history…")
     history = load_or_seed_history()
-    history = maybe_append_month(history, current_scores)
+    sync_history_meta(history, tools, current_scores)
+    history = maybe_append_month(history, current_scores, tools)
     history["last_updated"] = datetime.now(timezone.utc).isoformat()
     (DOCS_DIR / "history.json").write_text(json.dumps(history, indent=2))
     print(f"  → {len(history['months'])} months in history")
 
+    # Rankings
     print("Building rankings…")
-    rankings = build_rankings(current_scores, current_benchmarks)
-    rankings["api_cost"] = api_cost
+    rankings = build_rankings(tools, current_scores, current_benchmarks)
+    rankings["api_cost"] = api_cost_str
     (DOCS_DIR / "rankings.json").write_text(json.dumps(rankings, indent=2))
     print(f"  → {[(t['name'], t['score']) for t in rankings['tools']]}")
-
+    print(f"Total cost: {api_cost_str}")
     print("Done.")
 
 
