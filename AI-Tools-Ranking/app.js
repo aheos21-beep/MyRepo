@@ -88,28 +88,26 @@ function buildRankCard(tool, topScores = {}, topCounts = {}) {
   return card;
 }
 
-// ── Countdown (next 1st or 15th at 9am UTC) ───────────────────────────────────
+// ── Countdown (next daily run at 9am UTC) ─────────────────────────────────────
 
 function nextRefreshTime() {
   const now = new Date();
-  const candidates = [];
-  for (let offset = 0; offset <= 1; offset++) {
-    const base = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + offset, 1));
-    for (const day of [1, 15]) {
-      const t = new Date(Date.UTC(base.getUTCFullYear(), base.getUTCMonth(), day, 9, 0, 0));
-      if (t > now) candidates.push(t);
-    }
-  }
-  return candidates.reduce((a, b) => a < b ? a : b);
+  const t = new Date(Date.UTC(
+    now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 9, 0, 0
+  ));
+  if (t <= now) t.setUTCDate(t.getUTCDate() + 1);
+  return t;
 }
 
 function startCountdown() {
   const el = document.getElementById('countdown');
   const tick = () => {
+    // Always under 24h now, so report hours/minutes rather than days.
     const diff = nextRefreshTime() - Date.now();
-    if (diff <= 0) { el.textContent = 'today'; return; }
-    const d = Math.floor(diff / 86_400_000);
-    el.textContent = d === 1 ? '1 day' : `${d} days`;
+    if (diff <= 0) { el.textContent = 'now'; return; }
+    const h = Math.floor(diff / 3_600_000);
+    const m = Math.floor((diff % 3_600_000) / 60_000);
+    el.textContent = h >= 1 ? `${h}h ${m}m` : `${m}m`;
   };
   tick();
   setInterval(tick, 60_000);

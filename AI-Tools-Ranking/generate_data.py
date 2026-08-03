@@ -178,7 +178,7 @@ def build_rankings(date: str) -> dict:
         "snapshot_date": date,
         "source": SOURCE_NAME,
         "source_url": f"https://github.com/{REPO}",
-        "api_cost": "Free",
+        "api_cost": "Auto",
     }
     return rankings
 

@@ -21,7 +21,7 @@ All projects are hosted on **GitHub Pages** (static files only — no server-sid
 The only project with automation. Architecture:
 - `generate_data.py` — reads published Arena AI (LMSYS) leaderboard snapshots and writes `rankings.json`. Standard library only, no API key, no cost. Run locally with `python AI-Tools-Ranking/generate_data.py`.
 - `index.html` + `app.js` + `style.css` — static frontend that reads `rankings.json` directly via `fetch()`.
-- GitHub Actions (`.github/workflows/daily-refresh.yml`) runs `generate_data.py` on the 1st and 15th at 9am UTC and commits the updated JSON. Can be triggered manually from the GitHub Actions tab.
+- GitHub Actions (`.github/workflows/daily-refresh.yml`) runs `generate_data.py` daily at 9am UTC and commits the updated JSON. Can be triggered manually from the GitHub Actions tab. Daily is viable because the source publishes daily and the run costs nothing; the countdown in `app.js` assumes this cadence and reports hours, so update it if the cron changes.
 
 Data notes:
 - Source is the `oolong-tea-2026/arena-ai-leaderboards` GitHub mirror, which publishes daily JSON snapshots of each Arena board. Every displayed number is a published Arena ELO and can be checked against that source.

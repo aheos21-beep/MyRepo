@@ -1,9 +1,9 @@
-name: Bi-Monthly AI Ranking Refresh
+name: Daily AI Ranking Refresh
 
 on:
   schedule:
-    - cron: '0 9 1,15 * *'   # 9am UTC on the 1st and 15th of each month
-  workflow_dispatch:           # allow manual trigger from GitHub Actions tab
+    - cron: '0 9 * * *'   # 9am UTC daily — the Arena source publishes daily
+  workflow_dispatch:        # allow manual trigger from GitHub Actions tab
 
 permissions:
   contents: write
