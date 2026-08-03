@@ -208,21 +208,29 @@ def build_rankings(date: str) -> tuple[dict, list[str]]:
 
 # ── History (rebuilt from real dated snapshots every run) ──────────────────────
 
-def history_dates(today: datetime) -> list[tuple[str, str]]:
-    """(snapshot_date, label) for the first of each month since the mirror began."""
+def history_dates(today: datetime, latest_date: str) -> list[tuple[str, str]]:
+    """
+    (snapshot_date, label) for the first of each month since the mirror began.
+
+    The current month uses `latest_date` — the same snapshot the cards are built
+    from — rather than the 1st. Otherwise the chart's final point and the card
+    scores come from different days and visibly disagree: a model that joined
+    the board mid-month would show on a card but be missing from the chart.
+    """
     out = [(HISTORY_FIRST_SNAPSHOT, "Mar 26")]
     year, month = HISTORY_START
     month += 1
     while (year, month) <= (today.year, today.month):
-        out.append((f"{year:04d}-{month:02d}-01",
-                    datetime(year, month, 1).strftime("%b %y")))
+        current = (year, month) == (today.year, today.month)
+        date = latest_date if current else f"{year:04d}-{month:02d}-01"
+        out.append((date, datetime(year, month, 1).strftime("%b %y")))
         month += 1
         if month > 12:
             year, month = year + 1, 1
     return out
 
 
-def build_history(today: datetime, vendors: list[str]) -> dict:
+def build_history(today: datetime, latest_date: str, vendors: list[str]) -> dict:
     """
     Rebuilt from published snapshots on every run, so it is fully reproducible
     and self-healing. Months without a snapshot are skipped entirely; a vendor
@@ -232,7 +240,7 @@ def build_history(today: datetime, vendors: list[str]) -> dict:
     months: list[str] = []
     series: dict[str, list] = {v: [] for v in vendors}
 
-    for date, label in history_dates(today):
+    for date, label in history_dates(today, latest_date):
         rows = load_board(date, RANK_BOARD, required=False)
         if not rows:
             print(f"[history] no snapshot for {date} — month skipped", file=sys.stderr)
@@ -286,8 +294,22 @@ def main():
               f"score {t['score']:>6}  elo {t['arena_elo']:.0f}  {chips}")
 
     print("Rebuilding history from dated snapshots…")
-    history = build_history(datetime.now(timezone.utc), vendors)
+    history = build_history(datetime.now(timezone.utc), date, vendors)
     print(f"  → {len(history['months'])} months: {', '.join(history['months'])}")
+
+    # The chart's final point and the cards are built from the same snapshot, so
+    # they must agree. They previously did not — the chart ended on the 1st of
+    # the month while the cards used the latest day — which read as a bug on the
+    # page. Fail loudly rather than ship a chart that contradicts the cards.
+    tail = {s["name"]: s["score"][-1] for s in history["series"]}
+    for t in rankings["tools"]:
+        if tail.get(t["name"]) != t["score"]:
+            sys.exit(
+                f"FAILED: chart/card mismatch for {t['name']} — chart shows "
+                f"{tail.get(t['name'])}, card shows {t['score']}. "
+                f"Files left untouched."
+            )
+    print("  → final chart point matches all card scores")
 
     (DOCS_DIR / "rankings.json").write_text(json.dumps(rankings, indent=2) + "\n")
     (DOCS_DIR / "history.json").write_text(json.dumps(history, indent=2) + "\n")
