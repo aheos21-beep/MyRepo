@@ -43,7 +43,7 @@ FALLBACK_ICONS  = ["🤖", "🧠", "💡", "⚡", "🔮", "🌟", "💫"]
 # Used only if Phase 1 discovery fails
 FALLBACK_TOOLS = [
     {"name": "ChatGPT",  "model": "GPT-5",          "company": "OpenAI",      "url": "https://chat.openai.com",    "arena_names": ["gpt-5", "gpt-4o"]},
-    {"name": "Claude",   "model": "Claude 4",        "company": "Anthropic",   "url": "https://claude.ai",          "arena_names": ["claude-4", "claude-opus-4"]},
+    {"name": "Claude",   "model": "Claude 5",        "company": "Anthropic",   "url": "https://claude.ai",          "arena_names": ["claude-sonnet-5", "claude-opus-5", "claude-fable-5"]},
     {"name": "Gemini",   "model": "Gemini Ultra 2",  "company": "Google",      "url": "https://gemini.google.com",  "arena_names": ["gemini-2-pro", "gemini-ultra"]},
     {"name": "DeepSeek", "model": "DeepSeek V3",     "company": "DeepSeek AI", "url": "https://chat.deepseek.com",  "arena_names": ["deepseek-v3"]},
     {"name": "Llama",    "model": "Llama 4",         "company": "Meta AI",     "url": "https://ai.meta.com/llama/", "arena_names": ["llama-4"]},
