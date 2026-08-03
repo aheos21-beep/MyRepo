@@ -32,15 +32,21 @@ SOURCE_NAME = "Arena AI (LMSYS) leaderboards"
 
 CARD_COUNT = 5
 
-# Arena ELO is an unbounded rating; these fixed windows map each board onto a
-# 0-100 display scale. Ranges are chosen with headroom around the observed
-# spread so a new frontier model does not immediately peg the scale at 100.
-# Retune if the boards drift well outside these bounds.
+# Arena ELO is an unbounded rating, so it is displayed at 1/10 scale rather than
+# squeezed into an arbitrary 0-100 window: 1509 -> 151. Nothing needs retuning as
+# the boards drift.
+#
+# The displayed value is rounded to a whole number, so models a few ELO points
+# apart can show the same figure (1490, 1486 and 1485 all read 149). That is
+# intentional. Ranking always uses the full-precision ELO in `arena_elo`, never
+# the rounded display value, so the order stays correct even when it looks tied.
+SCALE_DIVISOR = 10
+
 BOARDS = {
-    "text":     {"label": "Overall",  "lo": 1400, "hi": 1520, "required": True},
-    "code":     {"label": "Code",     "lo": 1400, "hi": 1720, "required": False},
-    "vision":   {"label": "Vision",   "lo": 1240, "hi": 1330, "required": False},
-    "document": {"label": "Document", "lo": 1380, "hi": 1530, "required": False},
+    "text":     {"label": "Overall",  "required": True},
+    "code":     {"label": "Code",     "required": False},
+    "vision":   {"label": "Vision",   "required": False},
+    "document": {"label": "Document", "required": False},
 }
 RANK_BOARD = "text"
 CHIP_BOARDS = ["code", "vision", "document"]
@@ -96,8 +102,9 @@ def load_board(date: str, name: str, required: bool) -> list[dict]:
 
 # ── Shaping ────────────────────────────────────────────────────────────────────
 
-def normalize(elo: float, lo: int, hi: int) -> float:
-    return round(max(0.0, min(100.0, (elo - lo) / (hi - lo) * 100.0)), 1)
+def scaled(elo: float) -> int:
+    """Arena ELO at 1/10 scale, rounded for display: 1509 -> 151."""
+    return round(elo / SCALE_DIVISOR)
 
 
 def best_per_vendor(rows: list[dict]) -> dict[str, dict]:
@@ -139,19 +146,16 @@ def build_rankings(date: str) -> dict:
     ordered = sorted(rank_board.values(), key=lambda r: -r["score"])
     top = ordered[:CARD_COUNT]
 
-    cfg = BOARDS[RANK_BOARD]
     tools = []
     for idx, row in enumerate(top):
         vendor = row["vendor"]
         meta = meta_for(vendor, idx)
 
-        chips, elo_raw = {}, {}
-        for name in CHIP_BOARDS:
-            entry = boards.get(name, {}).get(vendor)
-            if entry:
-                bc = BOARDS[name]
-                chips[name] = normalize(entry["score"], bc["lo"], bc["hi"])
-                elo_raw[name] = entry["score"]
+        chips = {
+            name: scaled(entry["score"])
+            for name in CHIP_BOARDS
+            if (entry := boards.get(name, {}).get(vendor))
+        }
 
         tools.append({
             "name":       meta["brand"],
@@ -160,12 +164,11 @@ def build_rankings(date: str) -> dict:
             "url":        meta["url"],
             "icon":       meta["icon"],
             "color":      meta["color"],
-            "score":      round(normalize(row["score"], cfg["lo"], cfg["hi"])),
+            "score":      scaled(row["score"]),
             "arena_elo":  row["score"],
             "arena_rank": row.get("rank"),
             "votes":      row.get("votes"),
             "benchmarks": chips,
-            "benchmark_elo": elo_raw,
             "rank":       idx + 1,
         })
 
@@ -196,7 +199,7 @@ def main():
     for t in rankings["tools"]:
         chips = " ".join(f"{k}={v:.0f}" for k, v in t["benchmarks"].items())
         print(f"  {t['rank']}. {t['name']:<11} {t['model']:<28} "
-              f"score {t['score']:>3}  elo {t['arena_elo']:.0f}  {chips}")
+              f"score {t['score']:>6}  elo {t['arena_elo']:.0f}  {chips}")
 
     (DOCS_DIR / "rankings.json").write_text(json.dumps(rankings, indent=2) + "\n")
     print("Done.")

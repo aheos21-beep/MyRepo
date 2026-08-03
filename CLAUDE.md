@@ -26,7 +26,8 @@ The only project with automation. Architecture:
 Data notes:
 - Source is the `oolong-tea-2026/arena-ai-leaderboards` GitHub mirror, which publishes daily JSON snapshots of each Arena board. Every displayed number is a published Arena ELO and can be checked against that source.
 - Vendors are collapsed to their single best-scoring model before ranking — the raw text board is dominated by multiple variants from the same vendor.
-- Arena ELO is unbounded, so `BOARDS` in the script holds a fixed lo/hi window per board that maps ELO onto the 0-100 display scale. Retune those windows if the boards drift outside them.
+- Arena ELO is unbounded, so it is displayed at 1/10 scale (`SCALE_DIVISOR`), rounded to a whole number: 1509 → 151. Needs no retuning as boards drift.
+- Cards can therefore show the same figure for different models (1490, 1486 and 1485 all read 149). That is intentional. Ranking always sorts on the full-precision `arena_elo`, never the rounded display value — do not re-sort on `score` in the frontend.
 - Do not reintroduce LLM-sourced benchmark numbers here. An earlier version asked an LLM to search the web for MMLU/HumanEval/MATH scores; the values could not be verified, and a plausible-but-wrong number was indistinguishable from a correct one.
 
 ## Before starting any new project

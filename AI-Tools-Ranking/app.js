@@ -79,7 +79,7 @@ function buildRankCard(tool, topScores = {}, topCounts = {}) {
         </div>
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
-        <div class="score-badge" style="color:${tool.color}">${tool.score}<span class="score-denom">/100</span></div>
+        <div class="score-badge" style="color:${tool.color}">${tool.score}</div>
         <div class="rank-badge ${rankClass}">${rankEmoji}</div>
       </div>
     </div>

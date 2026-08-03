@@ -7,19 +7,14 @@
       "url": "https://claude.ai",
       "icon": "\u2728",
       "color": "#cc785c",
-      "score": 91,
+      "score": 151,
       "arena_elo": 1509.0,
       "arena_rank": 1,
       "votes": 17799,
       "benchmarks": {
-        "code": 95.3,
-        "vision": 86.7,
-        "document": 93.3
-      },
-      "benchmark_elo": {
-        "code": 1705.0,
-        "vision": 1318.0,
-        "document": 1520.0
+        "code": 170,
+        "vision": 132,
+        "document": 152
       },
       "rank": 1
     },
@@ -30,19 +25,14 @@
       "url": "https://ai.meta.com",
       "icon": "\ud83e\udd99",
       "color": "#0668e1",
-      "score": 75,
+      "score": 149,
       "arena_elo": 1490.0,
       "arena_rank": 8,
       "votes": 12086,
       "benchmarks": {
-        "code": 42.5,
-        "vision": 61.1,
-        "document": 61.3
-      },
-      "benchmark_elo": {
-        "code": 1536.0,
-        "vision": 1295.0,
-        "document": 1472.0
+        "code": 154,
+        "vision": 130,
+        "document": 147
       },
       "rank": 2
     },
@@ -53,19 +43,14 @@
       "url": "https://gemini.google.com",
       "icon": "\ud83d\udc8e",
       "color": "#4285f4",
-      "score": 72,
+      "score": 149,
       "arena_elo": 1486.0,
       "arena_rank": 10,
       "votes": 41241,
       "benchmarks": {
-        "code": 41.6,
-        "vision": 67.8,
-        "document": 56.7
-      },
-      "benchmark_elo": {
-        "code": 1533.0,
-        "vision": 1301.0,
-        "document": 1465.0
+        "code": 153,
+        "vision": 130,
+        "document": 146
       },
       "rank": 3
     },
@@ -76,19 +61,14 @@
       "url": "https://kimi.moonshot.cn",
       "icon": "\ud83c\udf19",
       "color": "#7c3aed",
-      "score": 71,
+      "score": 148,
       "arena_elo": 1485.0,
       "arena_rank": 12,
       "votes": 3556,
       "benchmarks": {
-        "code": 86.2,
-        "vision": 26.7,
-        "document": 47.3
-      },
-      "benchmark_elo": {
-        "code": 1676.0,
-        "vision": 1264.0,
-        "document": 1451.0
+        "code": 168,
+        "vision": 126,
+        "document": 145
       },
       "rank": 4
     },
@@ -99,24 +79,19 @@
       "url": "https://chat.openai.com",
       "icon": "\ud83e\udd16",
       "color": "#10a37f",
-      "score": 69,
+      "score": 148,
       "arena_elo": 1483.0,
       "arena_rank": 14,
       "votes": 10716,
       "benchmarks": {
-        "code": 68.8,
-        "vision": 52.2,
-        "document": 70.0
-      },
-      "benchmark_elo": {
-        "code": 1620.0,
-        "vision": 1287.0,
-        "document": 1485.0
+        "code": 162,
+        "vision": 129,
+        "document": 148
       },
       "rank": 5
     }
   ],
-  "last_updated": "2026-08-03T04:43:22.368994+00:00",
+  "last_updated": "2026-08-03T04:53:33.444757+00:00",
   "snapshot_date": "2026-08-02",
   "source": "Arena AI (LMSYS) leaderboards",
   "source_url": "https://github.com/oolong-tea-2026/arena-ai-leaderboards",
