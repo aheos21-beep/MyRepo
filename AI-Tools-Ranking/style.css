@@ -172,10 +172,7 @@ main {
   gap: 9px;
   position: relative;
   overflow: hidden;
-  text-decoration: none;
   color: inherit;
-  transition: border-color 0.2s, transform 0.15s;
-  cursor: pointer;
   flex: 1;
   min-height: 0;
 }
@@ -189,11 +186,6 @@ main {
   pointer-events: none;
 }
 
-.rank-card:hover { border-color: var(--border2); transform: translateY(-1px); }
-
-/* Vendor with no product URL — rendered as a div, so it must not look clickable */
-.rank-card.no-link { cursor: default; }
-.rank-card.no-link:hover { border-color: var(--border); transform: none; }
 .rank-card.rank-1 { border-color: rgba(255,215,0,0.28); }
 .rank-card.rank-2 { border-color: rgba(192,192,192,0.22); }
 .rank-card.rank-3 { border-color: rgba(205,127,50,0.22); }

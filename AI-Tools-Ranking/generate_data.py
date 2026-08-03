@@ -128,8 +128,11 @@ def best_per_vendor(rows: list[dict]) -> dict[str, dict]:
 def meta_for(vendor: str, idx: int = 0) -> dict:
     """
     Falls back to the raw Arena vendor string for an unmapped vendor. The card
-    still renders and ranks correctly, but with no product URL — the frontend
-    renders those as non-clickable. Add the vendor to VENDOR_META to fix it.
+    still renders and ranks correctly, but shows the bare vendor name and a
+    generic icon. Add the vendor to VENDOR_META to give it proper branding.
+
+    `url` is still emitted but unused — cards are not links. It is kept so the
+    linking behaviour can be restored without reshaping VENDOR_META.
     """
     meta = VENDOR_META.get(vendor)
     if meta:
@@ -187,8 +190,8 @@ def build_rankings(date: str) -> tuple[dict, list[str]]:
     if unmapped:
         print(
             f"[branding] WARNING: ranked vendor(s) missing from VENDOR_META: "
-            f"{', '.join(unmapped)} — showing the raw vendor name, a generic icon "
-            f"and no product link. Add them to VENDOR_META.",
+            f"{', '.join(unmapped)} — showing the raw vendor name and a generic "
+            f"icon. Add them to VENDOR_META.",
             file=sys.stderr,
         )
 

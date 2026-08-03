@@ -46,16 +46,10 @@ function renderRankings(data) {
 }
 
 function buildRankCard(tool, topScores = {}, topCounts = {}) {
-  // A vendor missing from VENDOR_META has no product URL. Render it as a plain
-  // div rather than an anchor with href="", which would "link" to this page.
-  const hasUrl = Boolean(tool.url);
-  const card = document.createElement(hasUrl ? 'a' : 'div');
-  card.className = `rank-card rank-${tool.rank}${hasUrl ? '' : ' no-link'}`;
-  if (hasUrl) {
-    card.href = tool.url;
-    card.target = '_blank';
-    card.rel = 'noopener noreferrer';
-  }
+  // Cards are informational only — no outbound links, so a plain div with no
+  // click or hover affordance.
+  const card = document.createElement('div');
+  card.className = `rank-card rank-${tool.rank}`;
   card.style.setProperty('--tool-color', tool.color || '#667eea');
 
   const rankClass = ['', 'gold', 'silver', 'bronze'][tool.rank] || 'plain';
