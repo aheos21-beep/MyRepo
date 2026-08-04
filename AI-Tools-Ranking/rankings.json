@@ -85,13 +85,14 @@
       "votes": 3556,
       "benchmarks": {
         "code": 168,
+        "vision": 126,
         "document": 145
       },
       "rank": 5
     }
   ],
-  "last_updated": "2026-08-03T19:42:35.758701+00:00",
-  "snapshot_date": "2026-08-03",
+  "last_updated": "2026-08-04T11:20:41.459101+00:00",
+  "snapshot_date": "2026-08-04",
   "source": "Arena AI (LMSYS) leaderboards",
   "source_url": "https://github.com/oolong-tea-2026/arena-ai-leaderboards",
   "api_cost": "Fetch"
