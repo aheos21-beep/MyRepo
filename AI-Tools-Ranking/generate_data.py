@@ -76,6 +76,28 @@ VENDOR_META = {
 }
 FALLBACK_COLORS = ["#e74c3c", "#3498db", "#2ecc71", "#f39c12", "#1abc9c", "#9b59b6"]
 
+
+def _build_vendor_aliases() -> dict[str, str]:
+    """
+    The Arena mirror doesn't always spell a vendor the same way across boards
+    or across days (VENDOR_META's own "SpaceXAI"/"xAI" duplicate entries are
+    evidence of this, not a fluke). Any VENDOR_META keys that share the same
+    brand/icon/color are the same company under different spellings — map
+    every such key to one canonical key (the first one seen) so that vendor
+    strings from *any* board resolve to a single identity everywhere they're
+    used, not just when rendering the card.
+    """
+    seen: dict[tuple, str] = {}
+    aliases: dict[str, str] = {}
+    for key, meta in VENDOR_META.items():
+        identity = (meta["brand"], meta["icon"], meta["color"])
+        canonical = seen.setdefault(identity, key)
+        aliases[key] = canonical
+    return aliases
+
+
+VENDOR_ALIASES = _build_vendor_aliases()
+
 # The mirror's earliest published snapshot. History is built from real snapshots
 # only — months with no snapshot are skipped, and a model absent from a snapshot
 # gets null rather than an interpolated value. Nothing here is ever estimated.
@@ -116,12 +138,19 @@ def scaled(elo: float) -> int:
 
 
 def best_per_vendor(rows: list[dict]) -> dict[str, dict]:
-    """Collapse a board to each vendor's single highest-scoring entry."""
+    """
+    Collapse a board to each vendor's single highest-scoring entry, keyed by
+    canonical vendor (VENDOR_ALIASES) rather than the raw Arena string. This
+    is the one place every board's vendor identity gets resolved, so a
+    spelling difference between e.g. the text board and the code board can
+    never cause a later lookup between them to miss.
+    """
     best: dict[str, dict] = {}
     for row in rows:
         vendor, score = row.get("vendor"), row.get("score")
         if not vendor or score is None:
             continue
+        vendor = VENDOR_ALIASES.get(vendor, vendor)
         if vendor not in best or score > best[vendor]["score"]:
             best[vendor] = row
     return best
@@ -159,12 +188,15 @@ def build_rankings(date: str) -> tuple[dict, list[str]]:
     if not rank_board:
         sys.exit(f"FAILED: '{RANK_BOARD}' board empty for {date} — files left untouched.")
 
-    ordered = sorted(rank_board.values(), key=lambda r: -r["score"])
+    # Sort by (canonical vendor, row) pairs — not just the row — so the
+    # canonical identity from best_per_vendor survives into every downstream
+    # lookup instead of being lost to the row's own (possibly differently
+    # spelled) "vendor" field.
+    ordered = sorted(rank_board.items(), key=lambda item: -item[1]["score"])
     top = ordered[:CARD_COUNT]
 
     tools = []
-    for idx, row in enumerate(top):
-        vendor = row["vendor"]
+    for idx, (vendor, row) in enumerate(top):
         meta = meta_for(vendor, idx)
 
         chips = {
@@ -199,6 +231,11 @@ def build_rankings(date: str) -> tuple[dict, list[str]]:
 
     rankings = {
         "tools": tools,
+        # Single source of truth for the frontend's category chips and card
+        # count — app.js reads these instead of hardcoding its own copies of
+        # CHIP_BOARDS/CARD_COUNT, so the two sides can't silently drift.
+        "categories": [{"key": name, "label": BOARDS[name]["label"]} for name in CHIP_BOARDS],
+        "card_count": CARD_COUNT,
         "last_updated": datetime.now(timezone.utc).isoformat(),
         "snapshot_date": date,
         "source": SOURCE_NAME,
@@ -219,8 +256,17 @@ def history_dates(today: datetime, latest_date: str) -> list[tuple[str, str]]:
     scores come from different days and visibly disagree: a model that joined
     the board mid-month would show on a card but be missing from the chart.
     """
-    out = [(HISTORY_FIRST_SNAPSHOT, "Mar 26")]
-    year, month = HISTORY_START
+    seed_year, seed_month = HISTORY_START
+    seed_label = datetime(seed_year, seed_month, 1).strftime("%b %y")
+    # Same rule as every later month: if "today" is still inside the seed
+    # month, use the latest snapshot instead of the fixed first-ever date, so
+    # the chart/card assertion below can't fail just because a run happens to
+    # land in that first month.
+    seed_is_current = (seed_year, seed_month) == (today.year, today.month)
+    seed_date = latest_date if seed_is_current else HISTORY_FIRST_SNAPSHOT
+    out = [(seed_date, seed_label)]
+
+    year, month = seed_year, seed_month
     month += 1
     while (year, month) <= (today.year, today.month):
         current = (year, month) == (today.year, today.month)

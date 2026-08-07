@@ -90,7 +90,22 @@
       "rank": 5
     }
   ],
-  "last_updated": "2026-08-07T09:56:39.169724+00:00",
+  "categories": [
+    {
+      "key": "code",
+      "label": "Code"
+    },
+    {
+      "key": "vision",
+      "label": "Vision"
+    },
+    {
+      "key": "document",
+      "label": "Document"
+    }
+  ],
+  "card_count": 5,
+  "last_updated": "2026-08-07T14:55:22.291214+00:00",
   "snapshot_date": "2026-08-07",
   "source": "Arena AI (LMSYS) leaderboards",
   "source_url": "https://github.com/oolong-tea-2026/arena-ai-leaderboards",

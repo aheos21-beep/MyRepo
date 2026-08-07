@@ -53,11 +53,6 @@ html, body {
 
 .logo { display: flex; align-items: center; gap: 10px; }
 
-.logo-icon {
-  font-size: 1.5rem;
-  filter: drop-shadow(0 0 10px #667eea88);
-}
-
 .logo h1 {
   font-size: 1.1rem;
   font-weight: 800;
@@ -67,10 +62,6 @@ html, body {
   background-clip: text;
   white-space: nowrap;
 }
-
-.tagline { font-size: 0.7rem; color: var(--muted); margin-top: 1px; }
-
-.refresh-label { font-size: 0.75rem; color: var(--muted); flex-shrink: 0; }
 
 .info-badge {
   background: rgba(14,14,28,0.88);
@@ -379,7 +370,7 @@ main {
     height: auto;
   }
 
-  .single-col-layout {
+  .two-col-layout {
     flex-direction: column;
     height: auto;
     overflow: visible;

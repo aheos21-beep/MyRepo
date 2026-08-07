@@ -27,25 +27,29 @@ async function loadAll() {
 function renderRankings(data) {
   const grid = document.getElementById('rankings-grid');
   grid.innerHTML = '';
-  const tools = data.tools.slice(0, 5);
+  // categories/card_count come from rankings.json (generate_data.py's
+  // CHIP_BOARDS/CARD_COUNT) instead of being duplicated here, so the two
+  // sides can't silently drift apart.
+  const categories = data.categories || [];
+  const cardCount = data.card_count || 5;
+  const tools = data.tools.slice(0, cardCount);
 
   // Find top score and count of ties for each benchmark category
-  const keys = ['code', 'vision', 'document'];
   const topScores = {}, topCounts = {};
-  keys.forEach(k => {
-    topScores[k] = Math.max(...tools.map(t => (t.benchmarks || {})[k] ?? 0));
-    topCounts[k] = tools.filter(t => ((t.benchmarks || {})[k] ?? 0) === topScores[k]).length;
+  categories.forEach(({ key }) => {
+    topScores[key] = Math.max(...tools.map(t => (t.benchmarks || {})[key] ?? 0));
+    topCounts[key] = tools.filter(t => ((t.benchmarks || {})[key] ?? 0) === topScores[key]).length;
   });
 
   tools.forEach((tool, idx) => {
-    const card = buildRankCard(tool, topScores, topCounts);
+    const card = buildRankCard(tool, categories, topScores, topCounts);
     card.style.animationDelay = `${idx * 60}ms`;
     card.style.animation = 'fadeUp 0.45s ease both';
     grid.appendChild(card);
   });
 }
 
-function buildRankCard(tool, topScores = {}, topCounts = {}) {
+function buildRankCard(tool, categories = [], topScores = {}, topCounts = {}) {
   // Cards are informational only — no outbound links, so a plain div with no
   // click or hover affordance.
   const card = document.createElement('div');
@@ -57,11 +61,10 @@ function buildRankCard(tool, topScores = {}, topCounts = {}) {
 
   // Sort category scores high → low, color the top scorer per category
   const b = tool.benchmarks || {};
-  const pctBenchmarks = [
-    { label: 'Code',     val: b.code,     key: 'code' },
-    { label: 'Vision',   val: b.vision,   key: 'vision' },
-    { label: 'Document', val: b.document, key: 'document' },
-  ].filter(x => x.val != null).sort((a, z) => z.val - a.val);
+  const pctBenchmarks = categories
+    .map(({ key, label }) => ({ label, val: b[key], key }))
+    .filter(x => x.val != null)
+    .sort((a, z) => z.val - a.val);
 
   const bChips = pctBenchmarks.map(x => {
     const isTop = x.val === topScores[x.key];
@@ -238,8 +241,6 @@ function esc(str) {
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
-
-function pad(n) { return String(n).padStart(2, '0'); }
 
 const style = document.createElement('style');
 style.textContent = `
