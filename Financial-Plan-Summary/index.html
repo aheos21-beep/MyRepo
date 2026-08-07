@@ -1156,6 +1156,40 @@ const App = {
     document.execCommand('removeFormat', false, null);
   },
 
+  // Builds a flat list of publish items (section headers + topics) shared by
+  // the on-screen/print view and the Word export, so both stay in sync.
+  // Assumptions is folded into Financial Management (no separate heading)
+  // whenever Financial Management also has content, and the first
+  // Assumptions topic is relabeled "Assumptions" to mark where it begins.
+  buildPublishItems() {
+    const items = [];
+    let isFirstH1 = true;
+    const fmHasContent = State.getOrderedKeys('financial-management').length > 0;
+
+    SECTIONS.forEach(section => {
+      const edits = State.getSectionEdits(section.id);
+      const keys = State.getOrderedKeys(section.id);
+      if (keys.length === 0) return;
+
+      const mergeIntoPrevious = section.id === 'assumptions' && fmHasContent;
+      if (!mergeIntoPrevious) {
+        items.push({ type: 'section', label: section.label, isFirst: isFirstH1 });
+        isFirstH1 = false;
+      }
+
+      let isFirstMergedTopic = true;
+      keys.forEach(key => {
+        const e = edits[key];
+        if (!e) return;
+        const title = (mergeIntoPrevious && isFirstMergedTopic) ? 'Assumptions' : e.title;
+        isFirstMergedTopic = false;
+        items.push({ type: 'topic', title, content: e.content });
+      });
+    });
+
+    return items;
+  },
+
   showPublish() {
     State.view = 'publish';
     State.activeSection = null;
@@ -1173,24 +1207,17 @@ const App = {
 
     // Build document HTML using saved order
     let docHTML = '';
-    let isFirstH1 = true;
-    SECTIONS.forEach(section => {
-      const edits = State.getSectionEdits(section.id);
-      const keys = State.getOrderedKeys(section.id);
-      if (keys.length === 0) return;
-
-      docHTML += `<div class="doc-h1${isFirstH1 ? ' doc-h1-first' : ''}">${section.label}</div>`;
-      isFirstH1 = false;
-      keys.forEach(key => {
-        const e = edits[key];
-        if (!e) return;
-        const dashLine = '-'.repeat(dashCountForTitle(e.title));
-        const bodyText = isHtmlContent(e.content) ? (() => { const d = document.createElement('div'); d.innerHTML = e.content; return d.innerText; })() : e.content;
-        docHTML += `<div class="doc-h2">${escHtml(e.title)}</div>`;
-        docHTML += `<div class="doc-h2-line">${dashLine}</div>`;
-        docHTML += `<div class="doc-body">${escHtml(bodyText)}</div>`;
-        docHTML += `<div class="doc-spacer">&nbsp;</div>`;
-      });
+    App.buildPublishItems().forEach(item => {
+      if (item.type === 'section') {
+        docHTML += `<div class="doc-h1${item.isFirst ? ' doc-h1-first' : ''}">${item.label}</div>`;
+        return;
+      }
+      const dashLine = '-'.repeat(dashCountForTitle(item.title));
+      const bodyText = isHtmlContent(item.content) ? (() => { const d = document.createElement('div'); d.innerHTML = item.content; return d.innerText; })() : item.content;
+      docHTML += `<div class="doc-h2">${escHtml(item.title)}</div>`;
+      docHTML += `<div class="doc-h2-line">${dashLine}</div>`;
+      docHTML += `<div class="doc-body">${escHtml(bodyText)}</div>`;
+      docHTML += `<div class="doc-spacer">&nbsp;</div>`;
     });
 
     const today = new Date().toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -1250,35 +1277,27 @@ const App = {
       children: [new TextRun({ text: `Prepared: ${today}`, size: 22, color: '6B7280' })]
     }));
 
-    let isFirstSection = true;
-    SECTIONS.forEach(section => {
-      const edits = State.getSectionEdits(section.id);
-      const keys = State.getOrderedKeys(section.id);
-      if (keys.length === 0) return;
+    App.buildPublishItems().forEach(item => {
+      if (item.type === 'section') {
+        children.push(new Paragraph({
+          pageBreakBefore: !item.isFirst,
+          spacing: { before: item.isFirst ? 0 : 480, after: 240 },
+          border: { bottom: { color: 'C9A84C', space: 4, style: BorderStyle.SINGLE, size: 12 } },
+          children: [new TextRun({ text: item.label.toUpperCase(), bold: true, size: 28, color: '1A2744' })]
+        }));
+        return;
+      }
+      const bodyText = isHtmlContent(item.content) ? (() => { const d = document.createElement('div'); d.innerHTML = item.content; return d.innerText; })() : item.content;
 
       children.push(new Paragraph({
-        pageBreakBefore: !isFirstSection,
-        spacing: { before: isFirstSection ? 0 : 480, after: 240 },
-        border: { bottom: { color: 'C9A84C', space: 4, style: BorderStyle.SINGLE, size: 12 } },
-        children: [new TextRun({ text: section.label.toUpperCase(), bold: true, size: 28, color: '1A2744' })]
+        spacing: { before: 280, after: 60 },
+        children: [new TextRun({ text: item.title, bold: true, size: 24, color: '243560', underline: { type: UnderlineType.DASH, color: '6B7280' } })]
       }));
-      isFirstSection = false;
-
-      keys.forEach(key => {
-        const e = edits[key];
-        if (!e) return;
-        const bodyText = isHtmlContent(e.content) ? (() => { const d = document.createElement('div'); d.innerHTML = e.content; return d.innerText; })() : e.content;
-
+      bodyText.split('\n').forEach(line => {
         children.push(new Paragraph({
-          spacing: { before: 280, after: 60 },
-          children: [new TextRun({ text: e.title, bold: true, size: 24, color: '243560', underline: { type: UnderlineType.DASH, color: '6B7280' } })]
+          spacing: { after: 0 },
+          children: [new TextRun({ text: line, size: 22, color: '1E2535' })]
         }));
-        bodyText.split('\n').forEach(line => {
-          children.push(new Paragraph({
-            spacing: { after: 0 },
-            children: [new TextRun({ text: line, size: 22, color: '1E2535' })]
-          }));
-        });
       });
     });
 
