@@ -5,15 +5,16 @@ description: Lists every Claude Code skill you have, both your personal skills o
 
 # List Skills
 
-Runs `scripts/list_skills.py` and relays its output. The script is stdlib-only
-Python (no dependencies, no auth) that:
+Runs `scripts/list_skills.py` and formats its output into a compact table.
+The script is stdlib-only Python (no dependencies, no auth) that:
 
 1. Scans `~/.claude/skills/` for personal skills.
 2. Lists every public repo on the `aheos21-beep` GitHub account via the
    unauthenticated REST API, and checks each one for a `.claude/skills/`
    folder.
-3. For every skill found in either place, reads its `SKILL.md` frontmatter
-   to report the `name` and `description`.
+3. Merges everything found into one deduplicated JSON object on stdout —
+   one entry per unique skill name, with its full description, whether it's
+   in `~/.claude/skills`, and which repo(s) (if any) it's in.
 
 Run it with:
 
@@ -26,11 +27,32 @@ rather than hardcoding a path, since the same skill exists at both
 `~/.claude/skills/list-skills` and `MyRepo/.claude/skills/list-skills`, per
 the dual-save convention documented in `MyRepo/CLAUDE.md`.)
 
-Relay the script's own output directly — it's already formatted as a clean
-report. Don't re-summarize or restructure it; the one thing worth adding on
-top is flagging anything actionable, like a skill that exists in a GitHub
-repo but not in `~/.claude/skills` (out of sync per the dual-save
-convention), or vice versa.
+## Formatting the output
+
+The script deliberately leaves each skill's full `description` un-shortened
+— condensing a paragraph into a genuine 3-4 word summary needs real
+judgment (what is this skill actually *for*, in a handful of words), not
+string-slicing, so that's your job when relaying the result, not the
+script's.
+
+Present one row per skill as a markdown table:
+
+| Skill | Description | Personal | Repo(s) |
+|---|---|---|---|
+| project-audit | audits & repairs a project | ✅ | MyRepo |
+
+- **Description**: your own 3-4 word paraphrase of what the skill *does*,
+  read from its full `description` field — not a truncation of it.
+- **Personal**: ✅ if `personal` is true, otherwise blank.
+- **Repo(s)**: comma-separated `repos` list, or blank if empty.
+
+After the table, include the script's `coverage_note` and
+`public_repos_checked` count so coverage limits stay visible every time —
+never let the compact format imply completeness it doesn't have.
+
+Flag anything actionable below the table: a skill with `personal: true` but
+an empty `repos` list (or vice versa) is out of sync per the dual-save
+convention and worth calling out by name.
 
 **Coverage limits worth surfacing to the user if they seem to expect more:**
 - Private repos are never checked — this deliberately uses the

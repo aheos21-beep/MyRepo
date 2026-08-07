@@ -102,33 +102,47 @@ def local_skills() -> list[tuple[str, str | None]]:
 
 
 def main():
-    print(f"=== Personal skills (~/.claude/skills) ===")
-    local = local_skills()
-    if not local:
-        print("  (none)")
-    for name, desc in local:
-        print(f"  - {name}: {desc or '(no description found)'}")
+    """
+    Emits one JSON object to stdout: a deduplicated, merged view of every
+    skill found across ~/.claude/skills and every public repo's
+    .claude/skills/. Deliberately does NOT try to shorten each skill's
+    description itself — turning a paragraph into a genuine 3-4 word summary
+    needs real judgment, which belongs to whoever's reading this output
+    (a human, or the agent relaying it), not a string-slicing heuristic here.
+    """
+    local = dict(local_skills())  # name -> full description
 
-    print(f"\n=== Public GitHub repos for {GITHUB_USER} with Claude Code skills ===")
     repos = list_public_repos(GITHUB_USER)
-    any_found = False
+    repo_names_by_skill: dict[str, list[str]] = {}
+    descriptions = dict(local)
+
     for repo in sorted(repos, key=lambda r: r["name"].lower()):
-        name = repo["name"]
-        skills = repo_skill_dirs(GITHUB_USER, name)
-        if not skills:
-            continue
-        any_found = True
-        print(f"\n  {name} ({repo['html_url']})")
-        for skill in skills:
-            desc = fetch_description(GITHUB_USER, name, skill)
-            print(f"    - {skill}: {desc or '(no description found)'}")
+        repo_name = repo["name"]
+        for skill in repo_skill_dirs(GITHUB_USER, repo_name):
+            repo_names_by_skill.setdefault(skill, []).append(repo_name)
+            if skill not in descriptions:
+                desc = fetch_description(GITHUB_USER, repo_name, skill)
+                if desc:
+                    descriptions[skill] = desc
 
-    if not any_found:
-        print("  (no public repos with a .claude/skills/ folder found)")
-
-    print(f"\n[list-skills] Checked {len(repos)} public repo(s) for {GITHUB_USER}. "
-          f"Private repos are not included — this uses the unauthenticated GitHub "
-          f"API, which cannot see them.")
+    all_names = sorted(set(descriptions) | set(repo_names_by_skill))
+    result = {
+        "skills": [
+            {
+                "name": name,
+                "description": descriptions.get(name, "(no description found)"),
+                "personal": name in local,
+                "repos": repo_names_by_skill.get(name, []),
+            }
+            for name in all_names
+        ],
+        "public_repos_checked": len(repos),
+        "coverage_note": (
+            "Private repos are not included — this uses the unauthenticated "
+            "GitHub API, which cannot see them."
+        ),
+    }
+    print(json.dumps(result, indent=2))
 
 
 if __name__ == "__main__":
