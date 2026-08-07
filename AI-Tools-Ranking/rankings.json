@@ -8,11 +8,11 @@
       "icon": "\u2728",
       "color": "#cc785c",
       "score": 151,
-      "arena_elo": 1509.0,
+      "arena_elo": 1507.0,
       "arena_rank": 1,
-      "votes": 17799,
+      "votes": 19390,
       "benchmarks": {
-        "code": 170,
+        "code": 169,
         "vision": 132,
         "document": 152
       },
@@ -26,9 +26,9 @@
       "icon": "\ud83d\udd37",
       "color": "#f59e0b",
       "score": 150,
-      "arena_elo": 1496.0,
+      "arena_elo": 1497.0,
       "arena_rank": 5,
-      "votes": 3327,
+      "votes": 4662,
       "benchmarks": {
         "code": 167,
         "vision": 130,
@@ -38,15 +38,15 @@
     },
     {
       "name": "Meta AI",
-      "model": "muse-spark-1.1",
+      "model": "muse-spark",
       "company": "Meta",
       "url": "https://ai.meta.com",
       "icon": "\ud83e\udd99",
       "color": "#0668e1",
       "score": 149,
-      "arena_elo": 1490.0,
+      "arena_elo": 1488.0,
       "arena_rank": 9,
-      "votes": 12086,
+      "votes": 13476,
       "benchmarks": {
         "code": 154,
         "vision": 129,
@@ -56,18 +56,18 @@
     },
     {
       "name": "Gemini",
-      "model": "gemini-3-pro",
+      "model": "gemini-3.1-pro-preview",
       "company": "Google",
       "url": "https://gemini.google.com",
       "icon": "\ud83d\udc8e",
       "color": "#4285f4",
       "score": 149,
-      "arena_elo": 1486.0,
+      "arena_elo": 1487.0,
       "arena_rank": 11,
-      "votes": 41241,
+      "votes": 91328,
       "benchmarks": {
-        "code": 153,
-        "vision": 129,
+        "code": 154,
+        "vision": 130,
         "document": 146
       },
       "rank": 4
@@ -82,7 +82,7 @@
       "score": 148,
       "arena_elo": 1485.0,
       "arena_rank": 13,
-      "votes": 3556,
+      "votes": 9861,
       "benchmarks": {
         "code": 168,
         "document": 145
@@ -90,8 +90,8 @@
       "rank": 5
     }
   ],
-  "last_updated": "2026-08-06T11:17:21.364735+00:00",
-  "snapshot_date": "2026-08-06",
+  "last_updated": "2026-08-07T09:56:39.169724+00:00",
+  "snapshot_date": "2026-08-07",
   "source": "Arena AI (LMSYS) leaderboards",
   "source_url": "https://github.com/oolong-tea-2026/arena-ai-leaderboards",
   "api_cost": "Fetch"
