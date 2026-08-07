@@ -44,19 +44,6 @@
     letter-spacing: 0.02em;
     color: var(--gold-light);
   }
-  .btn-publish {
-    background: var(--gold);
-    color: var(--navy);
-    border: none;
-    border-radius: 6px;
-    padding: 8px 20px;
-    font-size: 0.875rem;
-    font-weight: 700;
-    cursor: pointer;
-    letter-spacing: 0.03em;
-    transition: background 0.15s;
-  }
-  .btn-publish:hover { background: var(--gold-light); }
   .nav-publish { color: var(--gold) !important; font-weight: 700 !important; margin-left: auto; }
   .nav-publish:hover { color: var(--gold-light) !important; }
   .nav-publish.active { color: var(--gold-light) !important; border-bottom-color: var(--gold) !important; }
@@ -105,26 +92,6 @@
   }
   .home-welcome h2 { font-size: 1.6rem; color: var(--navy); margin-bottom: 12px; }
   .home-welcome p { color: var(--text-muted); max-width: 480px; margin: 0 auto 28px; line-height: 1.6; }
-  .section-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 14px;
-    max-width: 700px;
-    margin: 0 auto;
-  }
-  .section-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 20px 16px;
-    text-align: center;
-    cursor: pointer;
-    transition: box-shadow 0.15s, transform 0.15s, border-color 0.15s;
-  }
-  .section-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); transform: translateY(-2px); border-color: var(--gold); }
-  .section-card .icon { font-size: 1.8rem; margin-bottom: 8px; }
-  .section-card span { font-size: 0.82rem; font-weight: 600; color: var(--navy); }
-  .section-card .saved-count { display: block; font-size: 0.72rem; color: var(--text-muted); margin-top: 4px; }
 
   /* SECTION VIEW */
   .section-header { margin-bottom: 20px; }
@@ -151,7 +118,6 @@
   .btn-success { background: var(--success); color: white; }
   .btn-success:hover { background: #15803d; }
   .btn-danger { background: var(--danger); color: white; }
-  .btn-sm { padding: 5px 12px; font-size: 0.78rem; }
 
   .subheading-list { display: flex; flex-direction: column; gap: 8px; }
   .sub-item {
@@ -196,7 +162,6 @@
     background: var(--bg);
     border-bottom: 1px solid var(--border);
   }
-  .edit-block-header h3 { font-size: 0.9rem; font-weight: 600; color: var(--navy); flex: 1; }
   .edit-block-header input {
     border: none;
     background: transparent;
@@ -718,16 +683,6 @@ const State = {
     return this.edited[sectionId] || {};
   },
 
-  setEdit(sectionId, originalTitle, title, content) {
-    if (!this.edited[sectionId]) this.edited[sectionId] = {};
-    this.edited[sectionId][originalTitle] = { title, content };
-    this.save();
-  },
-
-  getEdit(sectionId, originalTitle) {
-    return this.edited[sectionId]?.[originalTitle] || null;
-  },
-
   // Replace entire section's edits and order in one atomic save
   setSectionEdits(sectionId, itemsArray) {
     this.edited[sectionId] = {};
@@ -1159,8 +1114,7 @@ const App = {
     this.renderNav();
     this.renderHome();
     showToast('Reset complete. Ready to start a new plan.');
-  },
-
+  }
 };
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
