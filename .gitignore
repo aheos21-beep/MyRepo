@@ -1,5 +1,7 @@
 .claude/*
 !.claude/skills/
+!.claude/hooks/
+!.claude/settings.json
 ai-tools-ranking/
 __pycache__/
 *.pyc

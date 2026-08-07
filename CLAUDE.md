@@ -16,6 +16,10 @@ If a script is specific to one project, place it inside that project's folder (s
 
 All projects are hosted on **GitHub Pages** (static files only — no server-side code). Dynamic data is produced by **GitHub Actions**, which runs scripts in the background, commits the output back to the repo, and Pages serves the resulting static files.
 
+## Staying in sync
+
+Because GitHub Actions commits directly to `main` across several independent projects on their own schedules, a local checkout can go stale fast — hours, not weeks. A `.claude/hooks/session-start.sh` hook runs `git fetch` automatically at the start of every session and surfaces a warning if local has drifted from its remote tracking branch; it never touches the working tree itself. If it warns, `git pull` before editing or auditing anything based on current file contents — working from a stale checkout risks redoing work that's already been done differently upstream.
+
 ## AI-Tools-Ranking
 
 The only project with automation. Architecture:
