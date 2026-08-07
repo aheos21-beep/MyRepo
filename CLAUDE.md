@@ -20,6 +20,21 @@ All projects are hosted on **GitHub Pages** (static files only — no server-sid
 
 Because GitHub Actions commits directly to `main` across several independent projects on their own schedules, a local checkout can go stale fast — hours, not weeks. A `.claude/hooks/session-start.sh` hook runs `git fetch` automatically at the start of every session and surfaces a warning if local has drifted from its remote tracking branch; it never touches the working tree itself. If it warns, `git pull` before editing or auditing anything based on current file contents — working from a stale checkout risks redoing work that's already been done differently upstream.
 
+## Claude Code skills
+
+Personal skills have two homes, kept in sync by habit rather than automation —
+no sync hook, no separate repo:
+- `~/.claude/skills/` — personal, this Mac only. Makes a skill available in
+  any local Claude Code session, on any project, immediately.
+- `MyRepo/.claude/skills/` — committed here so cloud and mobile Claude Code
+  sessions (which clone this repo into a fresh sandbox with no access to
+  `~/.claude/skills`) can use it too.
+
+Whenever a new personal skill is created, save it to `~/.claude/skills/`
+*and* copy the same folder into `MyRepo/.claude/skills/`, then commit and
+push. Both copies should stay identical — if one is edited later, mirror the
+change into the other by hand.
+
 ## AI-Tools-Ranking
 
 The only project with automation. Architecture:
