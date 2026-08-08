@@ -22,18 +22,37 @@ Because GitHub Actions commits directly to `main` across several independent pro
 
 ## Claude Code skills
 
-Personal skills have two homes, kept in sync by habit rather than automation —
-no sync hook, no separate repo:
-- `~/.claude/skills/` — personal, this Mac only. Makes a skill available in
-  any local Claude Code session, on any project, immediately.
-- `MyRepo/.claude/skills/` — committed here so cloud and mobile Claude Code
-  sessions (which clone this repo into a fresh sandbox with no access to
-  `~/.claude/skills`) can use it too.
+Two separate skill systems exist here, and only one of them needs anything
+committed to this repo:
 
-Whenever a new personal skill is created, save it to `~/.claude/skills/`
-*and* copy the same folder into `MyRepo/.claude/skills/`, then commit and
-push. Both copies should stay identical — if one is edited later, mirror the
-change into the other by hand.
+- **claude.ai account skills** — created/saved via the skill-creator "save"
+  flow and tracked in `~/.claude/skills/manifest.json` with
+  `"source": "custom"` (e.g. `llm-council`, `who-to-hire`,
+  `cibc-fact-finder`). These sync automatically into *every* Claude Code
+  session — local Mac, cloud, or mobile sandbox — regardless of which repo
+  (if any) is open. **Do not mirror these into `MyRepo/.claude/skills/`** —
+  a copy there is never read by anything and just adds stale clutter.
+  `cibc-fact-finder`, `llm-council`, and `session-start-hook` were removed
+  from this repo for exactly that reason (see commit `c52711b`); rely on
+  the automatic account sync instead of re-adding them.
+- **Project-scoped Claude Code skills** — plain `SKILL.md` folders authored
+  directly on disk, never registered as an account skill (e.g.
+  `project-audit`). These are only visible to a session that has the
+  containing folder checked out, so they still need the manual mirror:
+  - `~/.claude/skills/` — available to any local Claude Code session on
+    this Mac immediately.
+  - `MyRepo/.claude/skills/` — committed here so cloud and mobile sessions
+    (which clone this repo into a fresh sandbox with no access to
+    `~/.claude/skills`) get them too.
+
+  Whenever you create one of *these*, save it to `~/.claude/skills/` *and*
+  copy the same folder into `MyRepo/.claude/skills/`, then commit and push.
+  Both copies should stay identical — if one is edited later, mirror the
+  change into the other by hand.
+
+If you're unsure which kind a skill is, check
+`~/.claude/skills/manifest.json`: an entry with `"source": "custom"` is an
+account skill and doesn't belong in the repo.
 
 ## AI-Tools-Ranking
 
