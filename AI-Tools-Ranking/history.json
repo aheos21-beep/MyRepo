@@ -21,6 +21,18 @@
       ]
     },
     {
+      "name": "Meta AI",
+      "color": "#0668e1",
+      "score": [
+        null,
+        null,
+        149,
+        149,
+        149,
+        150
+      ]
+    },
+    {
       "name": "Qwen",
       "color": "#f59e0b",
       "score": [
@@ -30,18 +42,6 @@
         148,
         148,
         150
-      ]
-    },
-    {
-      "name": "Meta AI",
-      "color": "#0668e1",
-      "score": [
-        null,
-        null,
-        149,
-        149,
-        149,
-        149
       ]
     },
     {
@@ -69,6 +69,6 @@
       ]
     }
   ],
-  "last_updated": "2026-08-07T14:55:23.061918+00:00",
+  "last_updated": "2026-08-08T09:32:17.340824+00:00",
   "source": "Arena AI (LMSYS) leaderboards"
 }

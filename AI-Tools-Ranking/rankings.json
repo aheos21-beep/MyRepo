@@ -19,6 +19,24 @@
       "rank": 1
     },
     {
+      "name": "Meta AI",
+      "model": "muse-spark-1.2 (xHigh)",
+      "company": "Meta",
+      "url": "https://ai.meta.com",
+      "icon": "\ud83e\udd99",
+      "color": "#0668e1",
+      "score": 150,
+      "arena_elo": 1498.0,
+      "arena_rank": 4,
+      "votes": 2057,
+      "benchmarks": {
+        "code": 154,
+        "vision": 129,
+        "document": 147
+      },
+      "rank": 2
+    },
+    {
       "name": "Qwen",
       "model": "qwen3.8-max",
       "company": "Alibaba",
@@ -27,30 +45,12 @@
       "color": "#f59e0b",
       "score": 150,
       "arena_elo": 1497.0,
-      "arena_rank": 5,
+      "arena_rank": 6,
       "votes": 4662,
       "benchmarks": {
         "code": 167,
         "vision": 130,
         "document": 144
-      },
-      "rank": 2
-    },
-    {
-      "name": "Meta AI",
-      "model": "muse-spark",
-      "company": "Meta",
-      "url": "https://ai.meta.com",
-      "icon": "\ud83e\udd99",
-      "color": "#0668e1",
-      "score": 149,
-      "arena_elo": 1488.0,
-      "arena_rank": 9,
-      "votes": 13476,
-      "benchmarks": {
-        "code": 154,
-        "vision": 129,
-        "document": 147
       },
       "rank": 3
     },
@@ -63,7 +63,7 @@
       "color": "#4285f4",
       "score": 149,
       "arena_elo": 1487.0,
-      "arena_rank": 11,
+      "arena_rank": 12,
       "votes": 91328,
       "benchmarks": {
         "code": 154,
@@ -81,10 +81,11 @@
       "color": "#7c3aed",
       "score": 148,
       "arena_elo": 1485.0,
-      "arena_rank": 13,
+      "arena_rank": 14,
       "votes": 9861,
       "benchmarks": {
         "code": 168,
+        "vision": 126,
         "document": 145
       },
       "rank": 5
@@ -105,8 +106,8 @@
     }
   ],
   "card_count": 5,
-  "last_updated": "2026-08-07T14:55:22.291214+00:00",
-  "snapshot_date": "2026-08-07",
+  "last_updated": "2026-08-08T09:32:16.331006+00:00",
+  "snapshot_date": "2026-08-08",
   "source": "Arena AI (LMSYS) leaderboards",
   "source_url": "https://github.com/oolong-tea-2026/arena-ai-leaderboards",
   "api_cost": "Fetch"
