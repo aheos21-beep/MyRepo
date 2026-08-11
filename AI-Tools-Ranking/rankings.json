@@ -8,9 +8,9 @@
       "icon": "\u2728",
       "color": "#cc785c",
       "score": 151,
-      "arena_elo": 1507.0,
+      "arena_elo": 1506.0,
       "arena_rank": 1,
-      "votes": 19390,
+      "votes": 20982,
       "benchmarks": {
         "code": 169,
         "vision": 132,
@@ -26,9 +26,9 @@
       "icon": "\ud83e\udd99",
       "color": "#0668e1",
       "score": 150,
-      "arena_elo": 1498.0,
+      "arena_elo": 1499.0,
       "arena_rank": 4,
-      "votes": 2057,
+      "votes": 3278,
       "benchmarks": {
         "code": 154,
         "vision": 129,
@@ -43,16 +43,33 @@
       "url": "https://qwen.ai",
       "icon": "\ud83d\udd37",
       "color": "#f59e0b",
-      "score": 150,
-      "arena_elo": 1497.0,
-      "arena_rank": 6,
-      "votes": 4662,
+      "score": 149,
+      "arena_elo": 1491.0,
+      "arena_rank": 9,
+      "votes": 6404,
       "benchmarks": {
         "code": 167,
         "vision": 130,
         "document": 144
       },
       "rank": 3
+    },
+    {
+      "name": "Kimi",
+      "model": "kimi-k3-max",
+      "company": "Moonshot",
+      "url": "https://kimi.moonshot.cn",
+      "icon": "\ud83c\udf19",
+      "color": "#7c3aed",
+      "score": 149,
+      "arena_elo": 1487.0,
+      "arena_rank": 12,
+      "votes": 11438,
+      "benchmarks": {
+        "code": 167,
+        "document": 145
+      },
+      "rank": 4
     },
     {
       "name": "Gemini",
@@ -62,31 +79,13 @@
       "icon": "\ud83d\udc8e",
       "color": "#4285f4",
       "score": 149,
-      "arena_elo": 1487.0,
-      "arena_rank": 12,
-      "votes": 91328,
+      "arena_elo": 1486.0,
+      "arena_rank": 13,
+      "votes": 94409,
       "benchmarks": {
         "code": 154,
         "vision": 130,
         "document": 146
-      },
-      "rank": 4
-    },
-    {
-      "name": "Kimi",
-      "model": "kimi-k3-max",
-      "company": "Moonshot",
-      "url": "https://kimi.moonshot.cn",
-      "icon": "\ud83c\udf19",
-      "color": "#7c3aed",
-      "score": 148,
-      "arena_elo": 1485.0,
-      "arena_rank": 14,
-      "votes": 9861,
-      "benchmarks": {
-        "code": 168,
-        "vision": 126,
-        "document": 145
       },
       "rank": 5
     }
@@ -106,8 +105,8 @@
     }
   ],
   "card_count": 5,
-  "last_updated": "2026-08-10T10:12:34.561975+00:00",
-  "snapshot_date": "2026-08-10",
+  "last_updated": "2026-08-11T09:55:54.602352+00:00",
+  "snapshot_date": "2026-08-11",
   "source": "Arena AI (LMSYS) leaderboards",
   "source_url": "https://github.com/oolong-tea-2026/arena-ai-leaderboards",
   "api_cost": "Fetch"
