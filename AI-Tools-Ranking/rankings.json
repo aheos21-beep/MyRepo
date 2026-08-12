@@ -10,7 +10,7 @@
       "score": 151,
       "arena_elo": 1506.0,
       "arena_rank": 1,
-      "votes": 20982,
+      "votes": 21242,
       "benchmarks": {
         "code": 169,
         "vision": 132,
@@ -26,9 +26,9 @@
       "icon": "\ud83e\udd99",
       "color": "#0668e1",
       "score": 150,
-      "arena_elo": 1499.0,
+      "arena_elo": 1498.0,
       "arena_rank": 4,
-      "votes": 3278,
+      "votes": 3275,
       "benchmarks": {
         "code": 154,
         "vision": 129,
@@ -44,9 +44,9 @@
       "icon": "\ud83d\udd37",
       "color": "#f59e0b",
       "score": 149,
-      "arena_elo": 1491.0,
+      "arena_elo": 1490.0,
       "arena_rank": 9,
-      "votes": 6404,
+      "votes": 6717,
       "benchmarks": {
         "code": 167,
         "vision": 130,
@@ -64,7 +64,7 @@
       "score": 149,
       "arena_elo": 1487.0,
       "arena_rank": 12,
-      "votes": 11438,
+      "votes": 11706,
       "benchmarks": {
         "code": 167,
         "document": 145
@@ -81,7 +81,7 @@
       "score": 149,
       "arena_elo": 1486.0,
       "arena_rank": 13,
-      "votes": 94409,
+      "votes": 94728,
       "benchmarks": {
         "code": 154,
         "vision": 130,
@@ -105,8 +105,8 @@
     }
   ],
   "card_count": 5,
-  "last_updated": "2026-08-11T09:55:54.602352+00:00",
-  "snapshot_date": "2026-08-11",
+  "last_updated": "2026-08-12T09:57:12.015635+00:00",
+  "snapshot_date": "2026-08-12",
   "source": "Arena AI (LMSYS) leaderboards",
   "source_url": "https://github.com/oolong-tea-2026/arena-ai-leaderboards",
   "api_cost": "Fetch"
