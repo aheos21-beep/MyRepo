@@ -45,18 +45,6 @@
       ]
     },
     {
-      "name": "Kimi",
-      "color": "#7c3aed",
-      "score": [
-        145,
-        145,
-        146,
-        null,
-        null,
-        149
-      ]
-    },
-    {
       "name": "Gemini",
       "color": "#4285f4",
       "score": [
@@ -67,8 +55,20 @@
         149,
         149
       ]
+    },
+    {
+      "name": "Kimi",
+      "color": "#7c3aed",
+      "score": [
+        145,
+        145,
+        146,
+        null,
+        null,
+        149
+      ]
     }
   ],
-  "last_updated": "2026-08-14T09:55:27.524193+00:00",
+  "last_updated": "2026-08-15T09:20:37.070525+00:00",
   "source": "Arena AI (LMSYS) leaderboards"
 }
