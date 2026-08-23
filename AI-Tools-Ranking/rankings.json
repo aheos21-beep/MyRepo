@@ -105,8 +105,8 @@
     }
   ],
   "card_count": 5,
-  "last_updated": "2026-08-22T09:21:30.685902+00:00",
-  "snapshot_date": "2026-08-22",
+  "last_updated": "2026-08-23T09:22:38.137119+00:00",
+  "snapshot_date": "2026-08-23",
   "source": "Arena AI (LMSYS) leaderboards",
   "source_url": "https://github.com/oolong-tea-2026/arena-ai-leaderboards",
   "api_cost": "Fetch"
