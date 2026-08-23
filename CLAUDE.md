@@ -10,7 +10,7 @@ Two shared folders exist at repo root and should stay there:
 - `.github/workflows/` — GitHub Actions automation. GitHub only executes workflows found here.
 - `.scripts/` — repo-level utilities that are not specific to any single project (e.g. `push.sh`).
 
-If a script is specific to one project, place it inside that project's folder (see `AI-Tools-Ranking/generate_data.py`).
+If a script is specific to one project, place it inside that project's folder (see `Stock-Screener/fetch_data.py`).
 
 ## Hosting model
 
@@ -53,26 +53,6 @@ committed to this repo:
 If you're unsure which kind a skill is, check
 `~/.claude/skills/manifest.json`: an entry with `"source": "custom"` is an
 account skill and doesn't belong in the repo.
-
-## AI-Tools-Ranking
-
-The only project with automation. Architecture:
-- `generate_data.py` — reads published Arena AI (LMSYS) leaderboard snapshots and writes `rankings.json` and `history.json`. Standard library only, no API key, no cost. Run locally with `python AI-Tools-Ranking/generate_data.py`.
-- `index.html` + `app.js` + `style.css` — static frontend that reads both JSON files directly via `fetch()` (cache-busted with a `?v=` timestamp).
-- `vendor/chart.umd.js` — Chart.js 4.4.0, vendored rather than loaded from a CDN. Keeps the project self-contained and avoids a blocked or slow CDN silently leaving the chart blank. If Chart.js is somehow unavailable, `renderChart` writes a visible `.chart-error` message rather than returning quietly.
-- GitHub Actions (`.github/workflows/daily-refresh.yml`) runs `generate_data.py` daily at 9am UTC and commits the updated JSON. Can be triggered manually from the GitHub Actions tab. Daily is viable because the source publishes daily and the run costs nothing; the countdown in `app.js` assumes this cadence and reports hours, so update it if the cron changes.
-
-Data notes:
-- Source is the `oolong-tea-2026/arena-ai-leaderboards` GitHub mirror, which publishes daily JSON snapshots of each Arena board. Every displayed number is a published Arena ELO and can be checked against that source.
-- Vendors are collapsed to their single best-scoring model before ranking — the raw text board is dominated by multiple variants from the same vendor.
-- Arena ELO is unbounded, so it is displayed at 1/10 scale (`SCALE_DIVISOR`), rounded to a whole number: 1509 → 151. Needs no retuning as boards drift.
-- Cards can therefore show the same figure for different models (1490, 1486 and 1485 all read 149). That is intentional. Ranking always sorts on the full-precision `arena_elo`, never the rounded display value — do not re-sort on `score` in the frontend.
-- `history.json` is rebuilt from dated snapshots on every run rather than appended to, so it is reproducible and self-healing. Months with no published snapshot are skipped; a model absent from a snapshot gets `null`, which the chart draws as a visible gap (`spanGaps: false`). Never backfill or interpolate these — an estimated point is indistinguishable from a real one once it is on the chart.
-- The current month uses the latest snapshot (the same one the cards are built from) rather than the 1st, so the chart's final point always equals the card scores. `main()` asserts this and exits non-zero on mismatch. An earlier version ended the chart on the 1st while the cards used the latest day, which made the page look wrong even though both numbers were correct.
-- `generate_data.py` stamps a content hash onto the `app.js` and `style.css` URLs in `index.html` (`app.js?v=<sha8>`). Without this a cached `app.js` survives a deploy and the page behaves like an older build while looking current — this caused cards to keep opening links after linking was removed. The hash changes only when the file changes, so daily runs produce no diff. The workflow therefore commits `index.html` as well as the JSON.
-- Ranking cards are informational only — plain `div`s with no links and no hover affordance. `url` is still emitted in `rankings.json` but unused, kept so linking can be restored without reshaping `VENDOR_META`.
-- A vendor missing from `VENDOR_META` still ranks correctly but shows the bare Arena vendor name and a generic icon. The script logs a `[branding] WARNING` naming any such vendor — add it to `VENDOR_META` when it appears.
-- Do not reintroduce LLM-sourced benchmark numbers here. An earlier version asked an LLM to search the web for MMLU/HumanEval/MATH scores; the values could not be verified, and a plausible-but-wrong number was indistinguishable from a correct one.
 
 ## Before starting any new project
 

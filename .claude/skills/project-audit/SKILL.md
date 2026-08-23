@@ -45,7 +45,7 @@ This skill always audits exactly one project folder — never the whole repo.
 Multiple unrelated projects live side by side in this monorepo, and mixing
 their findings together produces a confused, unusable report.
 
-- If the user named a folder (e.g. `/project-audit AI-Tools-Ranking`), use it.
+- If the user named a folder (e.g. `/project-audit Stock-Screener`), use it.
 - If they didn't, list the project folders in the repo root (skip `.github`,
   `.scripts`, `.claude`, and any other dot-folder) and ask which one to audit.
   Don't guess from conversation context — a wrong guess wastes the whole run.
