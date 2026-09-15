@@ -39,6 +39,26 @@
         "cad-fin": 14,
         "oil": 15
       }
+    },
+    {
+      "date": "2026-09-15",
+      "ranks": {
+        "us-tech": 1,
+        "cad-util": 2,
+        "cad-reit": 3,
+        "natgas": 4,
+        "us-div": 5,
+        "intl-div": 6,
+        "nickel": 7,
+        "hisa": 8,
+        "cad-re": 9,
+        "cad-fin": 10,
+        "cad-energy": 11,
+        "aluminium": 12,
+        "potash": 13,
+        "copper": 14,
+        "oil": 15
+      }
     }
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-15",
+  "updated": "2026-09-15",
   "horizon": "1-year",
   "assets": [
     {
@@ -8,12 +8,12 @@
       "cat": "Cash",
       "color": "#3fb950",
       "publisher": "Bank of Canada",
-      "r": 2.4,
+      "r": 2.5,
       "adj": 0.0,
-      "why": "1-year Government of Canada treasury bill yield is 2.38% as of 2026-08-12 (Bank of Canada Valet API). For cash the prevailing rate is the one-year return.",
-      "published": "2026-08-12",
-      "basis": "2.38%",
-      "nextUpdate": "2026-09-15",
+      "why": "1-year Government of Canada treasury bill yield is 2.45% as of 2026-09-09 (Bank of Canada Valet API). For cash the prevailing rate is the one-year return.",
+      "published": "2026-09-09",
+      "basis": "2.45%",
+      "nextUpdate": "2026-10-15",
       "posChange": "down"
     },
     {
@@ -22,16 +22,16 @@
       "cat": "Equity",
       "color": "#79c0ff",
       "publisher": "Analyst consensus via DVY",
-      "r": 0.9,
-      "rRaw": 10.0,
+      "r": 4.2,
+      "rRaw": 14.0,
       "adj": 0.094,
-      "why": "Weighted analyst consensus across 99 of 99 DVY holdings (100% of fund weight): mean target plus income yield. Middle 80% of fund weight spans -10.5% to 10.2%. Analyst targets discounted 9.4% for known sell-side optimism, so this is comparable with the non-analyst rows; unadjusted it is +10.0%. 10 outlier(s) clipped.",
-      "published": "2026-08-13",
-      "basis": "99 holdings",
-      "lo": -10.5,
-      "hi": 10.2,
-      "nextUpdate": "2026-09-15",
-      "posChange": "down"
+      "why": "Weighted analyst consensus across 98 of 98 DVY holdings (100% of fund weight): mean target plus income yield. Middle 80% of fund weight spans -8.6% to 15.4%. Analyst targets discounted 9.4% for known sell-side optimism, so this is comparable with the non-analyst rows; unadjusted it is +14.0%. 9 outlier(s) clipped.",
+      "published": "2026-09-11",
+      "basis": "98 holdings",
+      "lo": -8.6,
+      "hi": 15.4,
+      "nextUpdate": "2026-10-15",
+      "posChange": "up"
     },
     {
       "id": "intl-div",
@@ -39,15 +39,15 @@
       "cat": "Equity",
       "color": "#a5d6ff",
       "publisher": "Analyst consensus via IDV",
-      "r": 2.6,
-      "rRaw": 12.0,
+      "r": 4.1,
+      "rRaw": 13.8,
       "adj": 0.094,
-      "why": "Weighted analyst consensus across 70 of 99 IDV holdings (73% of fund weight): mean target plus income yield. Middle 80% of fund weight spans -10.7% to 20.8%. Analyst targets discounted 9.4% for known sell-side optimism, so this is comparable with the non-analyst rows; unadjusted it is +12.0%. 9 outlier(s) clipped.",
-      "published": "2026-08-13",
-      "basis": "70 holdings",
-      "lo": -10.7,
-      "hi": 20.8,
-      "nextUpdate": "2026-09-15",
+      "why": "Weighted analyst consensus across 72 of 100 IDV holdings (77% of fund weight): mean target plus income yield. Middle 80% of fund weight spans -9.0% to 20.0%. Analyst targets discounted 9.4% for known sell-side optimism, so this is comparable with the non-analyst rows; unadjusted it is +13.8%. 9 outlier(s) clipped.",
+      "published": "2026-09-11",
+      "basis": "72 holdings",
+      "lo": -9.0,
+      "hi": 20.0,
+      "nextUpdate": "2026-10-15",
       "posChange": "same"
     },
     {
@@ -56,16 +56,16 @@
       "cat": "Equity",
       "color": "#d2a8ff",
       "publisher": "Analyst consensus via XRE",
-      "r": 8.7,
-      "rRaw": 18.5,
+      "r": 13.7,
+      "rRaw": 23.9,
       "adj": 0.094,
-      "why": "Weighted analyst consensus across 10 of 10 XRE.TO holdings (100% of fund weight): mean target plus income yield. Middle 80% of fund weight spans 1.2% to 17.8%. Analyst targets discounted 9.4% for known sell-side optimism, so this is comparable with the non-analyst rows; unadjusted it is +18.5%.",
-      "published": "2026-08-15",
+      "why": "Weighted analyst consensus across 10 of 10 XRE.TO holdings (100% of fund weight): mean target plus income yield. Middle 80% of fund weight spans 2.8% to 20.5%. Analyst targets discounted 9.4% for known sell-side optimism, so this is comparable with the non-analyst rows; unadjusted it is +23.9%.",
+      "published": "2026-09-15",
       "basis": "10 holdings",
-      "lo": 1.2,
-      "hi": 17.8,
-      "nextUpdate": "2026-09-15",
-      "posChange": "down"
+      "lo": 2.8,
+      "hi": 20.5,
+      "nextUpdate": "2026-10-15",
+      "posChange": "same"
     },
     {
       "id": "us-tech",
@@ -73,15 +73,15 @@
       "cat": "Equity",
       "color": "#a371f7",
       "publisher": "Analyst consensus via XLK",
-      "r": 23.4,
-      "rRaw": 33.9,
+      "r": 29.6,
+      "rRaw": 40.7,
       "adj": 0.094,
-      "why": "Weighted analyst consensus across 10 of 10 XLK holdings (100% of fund weight): mean target plus income yield. Middle 80% of fund weight spans 9.0% to 37.9%. Analyst targets discounted 9.4% for known sell-side optimism, so this is comparable with the non-analyst rows; unadjusted it is +33.9%.",
-      "published": "2026-08-15",
+      "why": "Weighted analyst consensus across 10 of 10 XLK holdings (100% of fund weight): mean target plus income yield. Middle 80% of fund weight spans 4.8% to 57.4%. Analyst targets discounted 9.4% for known sell-side optimism, so this is comparable with the non-analyst rows; unadjusted it is +40.7%.",
+      "published": "2026-09-15",
       "basis": "10 holdings",
-      "lo": 9.0,
-      "hi": 37.9,
-      "nextUpdate": "2026-09-15",
+      "lo": 4.8,
+      "hi": 57.4,
+      "nextUpdate": "2026-10-15",
       "posChange": "same"
     },
     {
@@ -90,16 +90,16 @@
       "cat": "Equity",
       "color": "#ffa657",
       "publisher": "Analyst consensus via XEG",
-      "r": 2.8,
-      "rRaw": 12.2,
+      "r": -0.7,
+      "rRaw": 8.4,
       "adj": 0.094,
-      "why": "Weighted analyst consensus across 10 of 10 XEG.TO holdings (100% of fund weight): mean target plus income yield. Middle 80% of fund weight spans -6.8% to 9.9%. Analyst targets discounted 9.4% for known sell-side optimism, so this is comparable with the non-analyst rows; unadjusted it is +12.2%.",
-      "published": "2026-08-15",
+      "why": "Weighted analyst consensus across 10 of 10 XEG.TO holdings (100% of fund weight): mean target plus income yield. Middle 80% of fund weight spans -9.1% to 3.2%. Analyst targets discounted 9.4% for known sell-side optimism, so this is comparable with the non-analyst rows; unadjusted it is +8.4%.",
+      "published": "2026-09-15",
       "basis": "10 holdings",
-      "lo": -6.8,
-      "hi": 9.9,
-      "nextUpdate": "2026-09-15",
-      "posChange": "up"
+      "lo": -9.1,
+      "hi": 3.2,
+      "nextUpdate": "2026-10-15",
+      "posChange": "down"
     },
     {
       "id": "cad-fin",
@@ -107,16 +107,16 @@
       "cat": "Equity",
       "color": "#7ee787",
       "publisher": "Analyst consensus via XFN",
-      "r": -8.8,
-      "rRaw": -0.6,
+      "r": 0.5,
+      "rRaw": 9.6,
       "adj": 0.094,
-      "why": "Weighted analyst consensus across 10 of 10 XFN.TO holdings (100% of fund weight): mean target plus income yield. Middle 80% of fund weight spans -15.0% to -2.3%. Analyst targets discounted 9.4% for known sell-side optimism, so this is comparable with the non-analyst rows; unadjusted it is -0.6%.",
-      "published": "2026-08-15",
+      "why": "Weighted analyst consensus across 10 of 10 XFN.TO holdings (100% of fund weight): mean target plus income yield. Middle 80% of fund weight spans -5.0% to 1.7%. Analyst targets discounted 9.4% for known sell-side optimism, so this is comparable with the non-analyst rows; unadjusted it is +9.6%.",
+      "published": "2026-09-15",
       "basis": "10 holdings",
-      "lo": -15.0,
-      "hi": -2.3,
-      "nextUpdate": "2026-09-15",
-      "posChange": "down"
+      "lo": -5.0,
+      "hi": 1.7,
+      "nextUpdate": "2026-10-15",
+      "posChange": "up"
     },
     {
       "id": "cad-util",
@@ -124,16 +124,16 @@
       "cat": "Equity",
       "color": "#56d364",
       "publisher": "Analyst consensus via ZUT",
-      "r": 2.3,
-      "rRaw": 11.6,
+      "r": 13.8,
+      "rRaw": 24.1,
       "adj": 0.094,
-      "why": "Weighted analyst consensus across 10 of 10 ZUT.TO holdings (100% of fund weight): mean target plus income yield. Middle 80% of fund weight spans -6.8% to 10.0%. Analyst targets discounted 9.4% for known sell-side optimism, so this is comparable with the non-analyst rows; unadjusted it is +11.6%.",
-      "published": "2026-08-15",
-      "basis": "10 holdings",
-      "lo": -6.8,
-      "hi": 10.0,
-      "nextUpdate": "2026-09-15",
-      "posChange": "down"
+      "why": "Weighted analyst consensus across 9 of 10 ZUT.TO holdings (88% of fund weight): mean target plus income yield. Middle 80% of fund weight spans 4.1% to 34.5%. Analyst targets discounted 9.4% for known sell-side optimism, so this is comparable with the non-analyst rows; unadjusted it is +24.1%.",
+      "published": "2026-09-15",
+      "basis": "9 holdings",
+      "lo": 4.1,
+      "hi": 34.5,
+      "nextUpdate": "2026-10-15",
+      "posChange": "up"
     },
     {
       "id": "oil",
@@ -141,12 +141,12 @@
       "cat": "Commodity",
       "color": "#f0883e",
       "publisher": "EIA Short-Term Energy Outlook",
-      "r": -22.0,
+      "r": -27.3,
       "adj": 0.0,
-      "why": "EIA Short-Term Energy Outlook projects West Texas Intermediate Crude Oil Price at 64.00 dollars per barrel in 2027-08, against 82.00 in 2026-08.",
-      "published": "2026-08",
-      "basis": "82.00 dollars per barrel",
-      "nextUpdate": "2026-09-15",
+      "why": "EIA Short-Term Energy Outlook projects West Texas Intermediate Crude Oil Price at 64.00 dollars per barrel in 2027-09, against 88.00 in 2026-09.",
+      "published": "2026-09",
+      "basis": "88.00 dollars per barrel",
+      "nextUpdate": "2026-10-15",
       "posChange": "same"
     },
     {
@@ -155,13 +155,13 @@
       "cat": "Commodity",
       "color": "#ffa198",
       "publisher": "EIA Short-Term Energy Outlook",
-      "r": 12.5,
+      "r": 12.9,
       "adj": 0.0,
-      "why": "EIA Short-Term Energy Outlook projects Natural Gas Henry Hub Spot Price ($/mmBtu) at 3.22 dollars per million Btu in 2027-08, against 2.86 in 2026-08.",
-      "published": "2026-08",
-      "basis": "2.86 dollars per million Btu",
-      "nextUpdate": "2026-09-15",
-      "posChange": "up"
+      "why": "EIA Short-Term Energy Outlook projects Natural Gas Henry Hub Spot Price ($/mmBtu) at 3.24 dollars per million Btu in 2027-09, against 2.87 in 2026-09.",
+      "published": "2026-09",
+      "basis": "2.87 dollars per million Btu",
+      "nextUpdate": "2026-10-15",
+      "posChange": "down"
     },
     {
       "id": "cad-re",
@@ -189,7 +189,7 @@
       "published": "2026-04",
       "basis": "390 USD/tonne",
       "nextUpdate": "2026-11-01",
-      "posChange": "same"
+      "posChange": "down"
     },
     {
       "id": "copper",
@@ -203,7 +203,7 @@
       "published": "2026-04",
       "basis": "12,000 USD/tonne",
       "nextUpdate": "2026-11-01",
-      "posChange": "up"
+      "posChange": "down"
     },
     {
       "id": "nickel",
@@ -217,7 +217,7 @@
       "published": "2026-04",
       "basis": "17,000 USD/tonne",
       "nextUpdate": "2026-11-01",
-      "posChange": "same"
+      "posChange": "down"
     },
     {
       "id": "aluminium",
@@ -231,7 +231,7 @@
       "published": "2026-04",
       "basis": "3,200 USD/tonne",
       "nextUpdate": "2026-11-01",
-      "posChange": "same"
+      "posChange": "down"
     }
   ],
   "sources": [],
