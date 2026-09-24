@@ -21,6 +21,7 @@
  * the widget always shows the list whose id is WIDGET_LIST_ID.
  */
 
+const VERSION = "0.3";
 const WIDGET_LIST_ID = "today";
 const APP_LIST_ID = "today"; // the one list the app edits for now
 const DATA_DIR = "ClearTodo";
@@ -222,7 +223,7 @@ async function runApp(data) {
 
 function appHTML(data, listId, bridge) {
   const boot = JSON.stringify({ data, listId, bridge }).replace(/</g, "\\u003c");
-  return APP_TEMPLATE.replace("__BOOT__", () => boot);
+  return APP_TEMPLATE.replace("__BOOT__", () => boot).replace("__VERSION__", VERSION);
 }
 
 const APP_TEMPLATE = `<!doctype html>
@@ -243,6 +244,7 @@ const APP_TEMPLATE = `<!doctype html>
   #hdr { flex: 0 0 auto; display: flex; align-items: baseline; justify-content: space-between; padding: 14px 18px 10px; }
   #hdr h1 { margin: 0; font-size: 30px; font-weight: 800; letter-spacing: -0.6px; }
   #count { color: #8e8e93; font-size: 15px; font-weight: 600; }
+  #ver { position: fixed; right: 8px; bottom: calc(6px + env(safe-area-inset-bottom)); color: #3a3a3c; font-size: 11px; }
   #scroller { flex: 1 1 auto; position: relative; overflow: hidden; display: flex; flex-direction: column; perspective: 700px; }
   #list, #tail { will-change: transform; }
   #list { position: relative; flex: 0 0 auto; }
@@ -287,6 +289,7 @@ const APP_TEMPLATE = `<!doctype html>
 <body>
 <div id="app">
   <header id="hdr"><h1 id="title">Today</h1><span id="count"></span></header>
+  <div id="ver">v__VERSION__</div>
   <div id="scroller">
     <div id="pull"></div>
     <div id="list"></div>
@@ -477,12 +480,10 @@ const APP_TEMPLATE = `<!doctype html>
     else if (r.top < s.top) scroller.scrollTop -= s.top - r.top;
   }
   if (window.visualViewport) {
+    // Only ever shrink the bottom edge, and only while editing, so the page can't be pushed off-screen.
     var fitViewport = function () {
-      // Ignore the zero-size viewport reported while the view is still opening.
-      if (visualViewport.height < 100) return;
-      app.style.top = visualViewport.offsetTop + "px";
-      app.style.height = visualViewport.height + "px";
-      app.style.bottom = "auto";
+      var kb = window.innerHeight - visualViewport.height - visualViewport.offsetTop;
+      app.style.bottom = (editingId !== null && kb > 0) ? kb + "px" : "";
       if (editingId !== null && els[editingId]) revealRow(els[editingId]);
     };
     visualViewport.addEventListener("resize", fitViewport);
