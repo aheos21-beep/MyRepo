@@ -222,9 +222,7 @@ async function runApp(data) {
 
 function appHTML(data, listId, bridge) {
   const boot = JSON.stringify({ data, listId, bridge }).replace(/</g, "\\u003c");
-  return APP_TEMPLATE
-    .replace("__BOOT__", () => boot)
-    .replace("__HEAT__", () => heatColor.toString());
+  return APP_TEMPLATE.replace("__BOOT__", () => boot);
 }
 
 const APP_TEMPLATE = `<!doctype html>
@@ -288,7 +286,7 @@ const APP_TEMPLATE = `<!doctype html>
 </head>
 <body>
 <div id="app">
-  <header id="hdr"><h1 id="title"></h1><span id="count"></span></header>
+  <header id="hdr"><h1 id="title">Today</h1><span id="count"></span></header>
   <div id="scroller">
     <div id="pull"></div>
     <div id="list"></div>
@@ -296,10 +294,33 @@ const APP_TEMPLATE = `<!doctype html>
   </div>
 </div>
 <script>
+  // Show any script error on screen instead of leaving a blank page.
+  window.onerror = function (msg, src, line) {
+    var d = document.createElement("div");
+    d.style.cssText = "position:fixed;left:12px;right:12px;bottom:40px;z-index:99;padding:12px;border-radius:10px;" +
+      "background:#3a0d0d;color:#ffb4ab;font:13px/1.4 -apple-system,sans-serif;-webkit-user-select:text;user-select:text";
+    d.textContent = "Error: " + msg + (line ? " (line " + line + ")" : "");
+    document.body.appendChild(d);
+  };
+</script>
+<script>
 (function () {
   var BOOT = __BOOT__;
-  var heatColor = __HEAT__;
   var ROW = 62, SWIPE = 70, LONG_PRESS = 420, SLOP = 8;
+
+  // Same formula as heatColor() in the Scriptable part of this file — keep the two in sync.
+  function heatColor(i, n) {
+    var t = Math.min(1, i / Math.max(n - 1, 6));
+    var h = (354 + 52 * t) % 360;
+    var s = 0.86, l = 0.47 + 0.06 * t;
+    var a = s * Math.min(l, 1 - l);
+    function f(k0) {
+      var k = (k0 + h / 30) % 12;
+      var c = l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1));
+      return ("0" + Math.round(c * 255).toString(16)).slice(-2);
+    }
+    return "#" + f(0) + f(8) + f(4);
+  }
 
   var state = BOOT.data;
   if (!BOOT.bridge) {
@@ -457,6 +478,8 @@ const APP_TEMPLATE = `<!doctype html>
   }
   if (window.visualViewport) {
     var fitViewport = function () {
+      // Ignore the zero-size viewport reported while the view is still opening.
+      if (visualViewport.height < 100) return;
       app.style.top = visualViewport.offsetTop + "px";
       app.style.height = visualViewport.height + "px";
       app.style.bottom = "auto";
@@ -680,13 +703,24 @@ const APP_TEMPLATE = `<!doctype html>
 
 // ---------- entry point ----------
 
-const data = await loadData();
-if (config.runsInWidget) {
-  Script.setWidget(buildWidget(data, config.widgetFamily));
-} else if (PREVIEW_WIDGET) {
-  const w = buildWidget(data, PREVIEW_WIDGET);
-  await w["present" + PREVIEW_WIDGET[0].toUpperCase() + PREVIEW_WIDGET.slice(1)]();
-} else {
-  await runApp(data);
+try {
+  const data = await loadData();
+  if (config.runsInWidget) {
+    Script.setWidget(buildWidget(data, config.widgetFamily));
+  } else if (PREVIEW_WIDGET) {
+    const w = buildWidget(data, PREVIEW_WIDGET);
+    await w["present" + PREVIEW_WIDGET[0].toUpperCase() + PREVIEW_WIDGET.slice(1)]();
+  } else {
+    await runApp(data);
+  }
+} catch (e) {
+  console.error(e);
+  if (!config.runsInWidget) {
+    const a = new Alert();
+    a.title = "Clear Todo error";
+    a.message = String(e && e.stack ? e + "\n" + e.stack : e);
+    a.addAction("OK");
+    await a.presentAlert();
+  }
 }
 Script.complete();
