@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-15",
+  "updated": "2026-10-15",
   "horizon": "1-year",
   "assets": [
     {
@@ -8,13 +8,13 @@
       "cat": "Cash",
       "color": "#3fb950",
       "publisher": "Bank of Canada",
-      "r": 2.5,
+      "r": 2.6,
       "adj": 0.0,
-      "why": "1-year Government of Canada treasury bill yield is 2.45% as of 2026-09-09 (Bank of Canada Valet API). For cash the prevailing rate is the one-year return.",
-      "published": "2026-09-09",
-      "basis": "2.45%",
-      "nextUpdate": "2026-10-15",
-      "posChange": "down"
+      "why": "1-year Government of Canada treasury bill yield is 2.57% as of 2026-10-07 (Bank of Canada Valet API). For cash the prevailing rate is the one-year return.",
+      "published": "2026-10-07",
+      "basis": "2.57%",
+      "nextUpdate": "2026-11-15",
+      "posChange": "same"
     },
     {
       "id": "us-div",
@@ -22,15 +22,15 @@
       "cat": "Equity",
       "color": "#79c0ff",
       "publisher": "Analyst consensus via DVY",
-      "r": 4.2,
-      "rRaw": 14.0,
+      "r": 6.5,
+      "rRaw": 16.5,
       "adj": 0.094,
-      "why": "Weighted analyst consensus across 98 of 98 DVY holdings (100% of fund weight): mean target plus income yield. Middle 80% of fund weight spans -8.6% to 15.4%. Analyst targets discounted 9.4% for known sell-side optimism, so this is comparable with the non-analyst rows; unadjusted it is +14.0%. 9 outlier(s) clipped.",
-      "published": "2026-09-11",
+      "why": "Weighted analyst consensus across 98 of 98 DVY holdings (100% of fund weight): mean target plus income yield. Middle 80% of fund weight spans -6.4% to 20.1%. Analyst targets discounted 9.4% for known sell-side optimism, so this is comparable with the non-analyst rows; unadjusted it is +16.5%. 8 outlier(s) clipped.",
+      "published": "2026-10-13",
       "basis": "98 holdings",
-      "lo": -8.6,
-      "hi": 15.4,
-      "nextUpdate": "2026-10-15",
+      "lo": -6.4,
+      "hi": 20.1,
+      "nextUpdate": "2026-11-15",
       "posChange": "up"
     },
     {
@@ -39,16 +39,16 @@
       "cat": "Equity",
       "color": "#a5d6ff",
       "publisher": "Analyst consensus via IDV",
-      "r": 4.1,
-      "rRaw": 13.8,
+      "r": 6.4,
+      "rRaw": 16.3,
       "adj": 0.094,
-      "why": "Weighted analyst consensus across 72 of 100 IDV holdings (77% of fund weight): mean target plus income yield. Middle 80% of fund weight spans -9.0% to 20.0%. Analyst targets discounted 9.4% for known sell-side optimism, so this is comparable with the non-analyst rows; unadjusted it is +13.8%. 9 outlier(s) clipped.",
-      "published": "2026-09-11",
+      "why": "Weighted analyst consensus across 72 of 100 IDV holdings (77% of fund weight): mean target plus income yield. Middle 80% of fund weight spans -7.6% to 22.1%. Analyst targets discounted 9.4% for known sell-side optimism, so this is comparable with the non-analyst rows; unadjusted it is +16.3%. 8 outlier(s) clipped.",
+      "published": "2026-10-13",
       "basis": "72 holdings",
-      "lo": -9.0,
-      "hi": 20.0,
-      "nextUpdate": "2026-10-15",
-      "posChange": "same"
+      "lo": -7.6,
+      "hi": 22.1,
+      "nextUpdate": "2026-11-15",
+      "posChange": "up"
     },
     {
       "id": "cad-reit",
@@ -56,16 +56,16 @@
       "cat": "Equity",
       "color": "#d2a8ff",
       "publisher": "Analyst consensus via XRE",
-      "r": 13.7,
-      "rRaw": 23.9,
+      "r": 14.0,
+      "rRaw": 24.3,
       "adj": 0.094,
-      "why": "Weighted analyst consensus across 10 of 10 XRE.TO holdings (100% of fund weight): mean target plus income yield. Middle 80% of fund weight spans 2.8% to 20.5%. Analyst targets discounted 9.4% for known sell-side optimism, so this is comparable with the non-analyst rows; unadjusted it is +23.9%.",
-      "published": "2026-09-15",
+      "why": "Weighted analyst consensus across 10 of 10 XRE.TO holdings (100% of fund weight): mean target plus income yield. Middle 80% of fund weight spans 0.8% to 24.2%. Analyst targets discounted 9.4% for known sell-side optimism, so this is comparable with the non-analyst rows; unadjusted it is +24.3%.",
+      "published": "2026-10-15",
       "basis": "10 holdings",
-      "lo": 2.8,
-      "hi": 20.5,
-      "nextUpdate": "2026-10-15",
-      "posChange": "same"
+      "lo": 0.8,
+      "hi": 24.2,
+      "nextUpdate": "2026-11-15",
+      "posChange": "up"
     },
     {
       "id": "us-tech",
@@ -73,15 +73,15 @@
       "cat": "Equity",
       "color": "#a371f7",
       "publisher": "Analyst consensus via XLK",
-      "r": 29.6,
-      "rRaw": 40.7,
+      "r": 25.9,
+      "rRaw": 36.6,
       "adj": 0.094,
-      "why": "Weighted analyst consensus across 10 of 10 XLK holdings (100% of fund weight): mean target plus income yield. Middle 80% of fund weight spans 4.8% to 57.4%. Analyst targets discounted 9.4% for known sell-side optimism, so this is comparable with the non-analyst rows; unadjusted it is +40.7%.",
-      "published": "2026-09-15",
+      "why": "Weighted analyst consensus across 10 of 10 XLK holdings (100% of fund weight): mean target plus income yield. Middle 80% of fund weight spans 1.9% to 54.3%. Analyst targets discounted 9.4% for known sell-side optimism, so this is comparable with the non-analyst rows; unadjusted it is +36.6%.",
+      "published": "2026-10-15",
       "basis": "10 holdings",
-      "lo": 4.8,
-      "hi": 57.4,
-      "nextUpdate": "2026-10-15",
+      "lo": 1.9,
+      "hi": 54.3,
+      "nextUpdate": "2026-11-15",
       "posChange": "same"
     },
     {
@@ -90,16 +90,16 @@
       "cat": "Equity",
       "color": "#ffa657",
       "publisher": "Analyst consensus via XEG",
-      "r": -0.7,
-      "rRaw": 8.4,
+      "r": -3.4,
+      "rRaw": 5.5,
       "adj": 0.094,
-      "why": "Weighted analyst consensus across 10 of 10 XEG.TO holdings (100% of fund weight): mean target plus income yield. Middle 80% of fund weight spans -9.1% to 3.2%. Analyst targets discounted 9.4% for known sell-side optimism, so this is comparable with the non-analyst rows; unadjusted it is +8.4%.",
-      "published": "2026-09-15",
+      "why": "Weighted analyst consensus across 10 of 10 XEG.TO holdings (100% of fund weight): mean target plus income yield. Middle 80% of fund weight spans -5.9% to 2.6%. Analyst targets discounted 9.4% for known sell-side optimism, so this is comparable with the non-analyst rows; unadjusted it is +5.5%.",
+      "published": "2026-10-15",
       "basis": "10 holdings",
-      "lo": -9.1,
-      "hi": 3.2,
-      "nextUpdate": "2026-10-15",
-      "posChange": "down"
+      "lo": -5.9,
+      "hi": 2.6,
+      "nextUpdate": "2026-11-15",
+      "posChange": "same"
     },
     {
       "id": "cad-fin",
@@ -107,15 +107,15 @@
       "cat": "Equity",
       "color": "#7ee787",
       "publisher": "Analyst consensus via XFN",
-      "r": 0.5,
-      "rRaw": 9.6,
+      "r": 2.8,
+      "rRaw": 12.1,
       "adj": 0.094,
-      "why": "Weighted analyst consensus across 10 of 10 XFN.TO holdings (100% of fund weight): mean target plus income yield. Middle 80% of fund weight spans -5.0% to 1.7%. Analyst targets discounted 9.4% for known sell-side optimism, so this is comparable with the non-analyst rows; unadjusted it is +9.6%.",
-      "published": "2026-09-15",
+      "why": "Weighted analyst consensus across 10 of 10 XFN.TO holdings (100% of fund weight): mean target plus income yield. Middle 80% of fund weight spans -4.2% to 4.6%. Analyst targets discounted 9.4% for known sell-side optimism, so this is comparable with the non-analyst rows; unadjusted it is +12.1%.",
+      "published": "2026-10-15",
       "basis": "10 holdings",
-      "lo": -5.0,
-      "hi": 1.7,
-      "nextUpdate": "2026-10-15",
+      "lo": -4.2,
+      "hi": 4.6,
+      "nextUpdate": "2026-11-15",
       "posChange": "up"
     },
     {
@@ -124,16 +124,16 @@
       "cat": "Equity",
       "color": "#56d364",
       "publisher": "Analyst consensus via ZUT",
-      "r": 13.8,
-      "rRaw": 24.1,
+      "r": 9.9,
+      "rRaw": 19.9,
       "adj": 0.094,
-      "why": "Weighted analyst consensus across 9 of 10 ZUT.TO holdings (88% of fund weight): mean target plus income yield. Middle 80% of fund weight spans 4.1% to 34.5%. Analyst targets discounted 9.4% for known sell-side optimism, so this is comparable with the non-analyst rows; unadjusted it is +24.1%.",
-      "published": "2026-09-15",
-      "basis": "9 holdings",
-      "lo": 4.1,
-      "hi": 34.5,
-      "nextUpdate": "2026-10-15",
-      "posChange": "up"
+      "why": "Weighted analyst consensus across 10 of 10 ZUT.TO holdings (100% of fund weight): mean target plus income yield. Middle 80% of fund weight spans -0.1% to 17.4%. Analyst targets discounted 9.4% for known sell-side optimism, so this is comparable with the non-analyst rows; unadjusted it is +19.9%.",
+      "published": "2026-10-15",
+      "basis": "10 holdings",
+      "lo": -0.1,
+      "hi": 17.4,
+      "nextUpdate": "2026-11-15",
+      "posChange": "down"
     },
     {
       "id": "oil",
@@ -141,12 +141,12 @@
       "cat": "Commodity",
       "color": "#f0883e",
       "publisher": "EIA Short-Term Energy Outlook",
-      "r": -27.3,
+      "r": -28.0,
       "adj": 0.0,
-      "why": "EIA Short-Term Energy Outlook projects West Texas Intermediate Crude Oil Price at 64.00 dollars per barrel in 2027-09, against 88.00 in 2026-09.",
-      "published": "2026-09",
-      "basis": "88.00 dollars per barrel",
-      "nextUpdate": "2026-10-15",
+      "why": "EIA Short-Term Energy Outlook projects West Texas Intermediate Crude Oil Price at 72.00 dollars per barrel in 2027-10, against 100.00 in 2026-10.",
+      "published": "2026-10",
+      "basis": "100.00 dollars per barrel",
+      "nextUpdate": "2026-11-15",
       "posChange": "same"
     },
     {
@@ -155,12 +155,12 @@
       "cat": "Commodity",
       "color": "#ffa198",
       "publisher": "EIA Short-Term Energy Outlook",
-      "r": 12.9,
+      "r": -0.3,
       "adj": 0.0,
-      "why": "EIA Short-Term Energy Outlook projects Natural Gas Henry Hub Spot Price ($/mmBtu) at 3.24 dollars per million Btu in 2027-09, against 2.87 in 2026-09.",
-      "published": "2026-09",
-      "basis": "2.87 dollars per million Btu",
-      "nextUpdate": "2026-10-15",
+      "why": "EIA Short-Term Energy Outlook projects Natural Gas Henry Hub Spot Price ($/mmBtu) at 3.14 dollars per million Btu in 2027-10, against 3.15 in 2026-10.",
+      "published": "2026-10",
+      "basis": "3.15 dollars per million Btu",
+      "nextUpdate": "2026-11-15",
       "posChange": "down"
     },
     {
@@ -171,7 +171,7 @@
       "publisher": "CREA",
       "r": 1.1,
       "adj": 0.0,
-      "why": "Canadian Real Estate Association (CREA) (2026-07-15): 694,164 CAD one year out vs 686,710 CAD now. National average home price forecast; 2026 forecast vs 2027 forecast from CREA July 15, 2026 quarterly update",
+      "why": "Canadian Real Estate Association (CREA) (2026-07-15): 694,164 CAD one year out vs 686,710 CAD now. CREA Quarterly Housing Market Forecast, July 2026 edition. National average home price 2026 actual and 2027 forecast.",
       "published": "2026-07-15",
       "basis": "686,710 CAD",
       "nextUpdate": "2026-10-15",
@@ -189,7 +189,7 @@
       "published": "2026-04",
       "basis": "390 USD/tonne",
       "nextUpdate": "2026-11-01",
-      "posChange": "down"
+      "posChange": "same"
     },
     {
       "id": "copper",
@@ -203,7 +203,7 @@
       "published": "2026-04",
       "basis": "12,000 USD/tonne",
       "nextUpdate": "2026-11-01",
-      "posChange": "down"
+      "posChange": "same"
     },
     {
       "id": "nickel",
@@ -217,7 +217,7 @@
       "published": "2026-04",
       "basis": "17,000 USD/tonne",
       "nextUpdate": "2026-11-01",
-      "posChange": "down"
+      "posChange": "up"
     },
     {
       "id": "aluminium",
@@ -231,10 +231,71 @@
       "published": "2026-04",
       "basis": "3,200 USD/tonne",
       "nextUpdate": "2026-11-01",
-      "posChange": "down"
+      "posChange": "same"
     }
   ],
-  "sources": [],
-  "lastRunCostUsd": 0.0,
+  "sources": [
+    {
+      "title": "CREA Revises Resale Housing Market Forecast",
+      "url": "https://www.crea.ca/housing-market-stats/canadian-housing-market-stats/quarterly-forecasts/",
+      "assetId": "cad-re",
+      "assetName": "CREA quarterly housing market forecast"
+    },
+    {
+      "title": "CREA",
+      "url": "https://www.crea.ca/media-hub/news/crea-downgrades-resale-housing-market-forecast-amid-tariff-uncertainty-and-economic-uncertainty/",
+      "assetId": "cad-re",
+      "assetName": "CREA quarterly housing market forecast"
+    },
+    {
+      "title": "CREA lowers home sales forecast for 2026 amid 'shaky' economic start to year - Business in Vancouver",
+      "url": "https://www.biv.com/news/crea-lowers-home-sales-forecast-for-2026-amid-shaky-economic-start-to-year-12149757",
+      "assetId": "cad-re",
+      "assetName": "CREA quarterly housing market forecast"
+    },
+    {
+      "title": "CREA Revises 2026 Housing Market Forecast - Coverings",
+      "url": "https://coveringscanada.ca/crea-revises-2026-housing-market-forecast/",
+      "assetId": "cad-re",
+      "assetName": "CREA quarterly housing market forecast"
+    },
+    {
+      "title": "Canada Housing Market Statistics 2026",
+      "url": "https://www.viewhomes.ca/blog/canada-housing-and-real-estate-market-statistics/",
+      "assetId": "cad-re",
+      "assetName": "CREA quarterly housing market forecast"
+    },
+    {
+      "title": "Canada Housing Market Forecast 2026–2027: CREA Outlook and What It Means for Ottawa Buyers and Sellers - The Molly & Claude Team",
+      "url": "https://www.claudejobin.com/canada-housing-market-forecast-2026-2027-crea-outlook-and-what-it-means-for-ottawa-buyers-and-sellers/",
+      "assetId": "cad-re",
+      "assetName": "CREA quarterly housing market forecast"
+    },
+    {
+      "title": "CREA lowers home sales forecast for 2026 amid 'shaky' economic start to year",
+      "url": "https://www.advisor.ca/economy/economic-indicators/crea-lowers-home-sales-forecast-for-2026-amid-shaky-economic-start-to-year/",
+      "assetId": "cad-re",
+      "assetName": "CREA quarterly housing market forecast"
+    },
+    {
+      "title": "Here’s what the CREA now estimates the average Canadian home will sell for",
+      "url": "https://www.bnnbloomberg.ca/business/real-estate/2026/04/16/crea-lowers-home-sales-forecast-for-2026-amid-shaky-economic-start-to-year/",
+      "assetId": "cad-re",
+      "assetName": "CREA quarterly housing market forecast"
+    },
+    {
+      "title": "Why CREA Lowered Its 2026 Housing Forecast",
+      "url": "https://pegasuslending.com/blog/why-crea-lowered-2026-housing-forecast/",
+      "assetId": "cad-re",
+      "assetName": "CREA quarterly housing market forecast"
+    },
+    {
+      "title": "CREA Café",
+      "url": "https://www.crea.ca/cafe/crea-revises-resale-housing-market-forecast/",
+      "assetId": "cad-re",
+      "assetName": "CREA quarterly housing market forecast"
+    }
+  ],
+  "lastRunCostUsd": 0.03,
   "staleAssetIds": []
 }
