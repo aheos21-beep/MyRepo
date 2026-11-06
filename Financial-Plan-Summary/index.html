@@ -82,6 +82,84 @@
     vertical-align: middle;
   }
 
+  /* PLAN PICKER — shows only the name of the plan you're working on; click
+     to open a dropdown to switch, rename, add (up to 3) or see the cap. */
+  .version-strip {
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .version-strip .label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-muted); flex-shrink: 0; }
+
+  .plan-picker { position: relative; }
+  .picker-trigger {
+    display: flex; align-items: center; gap: 8px; max-width: 280px;
+    background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px;
+    padding: 7px 10px 7px 14px; font-size: 0.9rem; font-weight: 700; color: var(--navy);
+    font-family: inherit; cursor: pointer; transition: border-color 0.15s, background 0.15s;
+  }
+  .picker-trigger:hover { border-color: var(--gold); }
+  .picker-trigger.open { border-color: var(--gold); background: #fffaf0; }
+  .picker-trigger .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
+  .picker-trigger .p-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .picker-trigger .chevron { color: var(--text-muted); font-size: 0.7rem; margin-left: auto; flex-shrink: 0; transition: transform 0.15s; }
+  .picker-trigger.open .chevron { transform: rotate(180deg); }
+
+  .picker-menu {
+    position: absolute; top: calc(100% + 6px); left: 0; z-index: 20;
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(20,30,60,0.16);
+    width: max(260px, 100%); padding: 6px;
+  }
+  .picker-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 10px; border-radius: 7px; cursor: pointer;
+    font-size: 0.86rem; font-weight: 500; color: var(--text);
+  }
+  .picker-row:hover { background: var(--bg); }
+  .picker-row.active { background: #fffaf0; color: var(--navy); font-weight: 700; }
+  .picker-row .check { width: 16px; flex-shrink: 0; color: var(--gold); font-weight: 700; text-align: center; }
+  .picker-row .p-row-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .picker-row .rename-btn {
+    border: none; background: none; cursor: pointer; color: var(--text-muted);
+    font-size: 0.78rem; line-height: 1; padding: 5px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .picker-row .rename-btn:hover { background: rgba(0,0,0,0.08); color: var(--navy); }
+  .picker-row.renaming { background: var(--bg); cursor: default; }
+  .picker-row input.rename-field {
+    flex: 1; min-width: 0; border: none; background: transparent; font: inherit; font-weight: 700;
+    color: var(--navy); outline: none; border-bottom: 1.5px solid var(--accent); padding: 2px 0;
+  }
+
+  .picker-divider { height: 1px; background: var(--border); margin: 6px 2px; }
+
+  .btn-add-version {
+    display: flex; align-items: center; gap: 6px; width: 100%;
+    background: none; border: none; border-radius: 7px; font-family: inherit;
+    padding: 9px 10px; font-size: 0.86rem; font-weight: 600; color: var(--accent);
+    cursor: pointer; text-align: left;
+  }
+  .btn-add-version:hover { background: #eff6ff; }
+  .new-version-row { display: flex; align-items: center; gap: 6px; padding: 4px 4px 4px 6px; }
+  .new-version-row input {
+    flex: 1; min-width: 0; border: none; background: var(--bg); border-radius: 6px;
+    padding: 7px 9px; font: inherit; font-weight: 600; color: var(--navy);
+    outline: 1.5px solid transparent;
+  }
+  .new-version-row input:focus { outline-color: var(--accent); }
+  .new-version-row input::placeholder { color: #93a4bd; font-weight: 500; }
+  .icon-btn { border: none; cursor: pointer; border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; }
+  .icon-btn.go { background: var(--accent); color: white; }
+  .icon-btn.go:hover { background: #1d4ed8; }
+  .icon-btn.cancel { background: none; color: var(--text-muted); }
+  .icon-btn.cancel:hover { background: rgba(0,0,0,0.06); }
+
+  .picker-cap-note { padding: 8px 10px 4px; font-size: 0.76rem; color: var(--text-muted); }
+
   /* MAIN */
   main { max-width: 900px; margin: 0 auto; padding: 28px 20px; }
 
@@ -359,6 +437,7 @@
   <div class="header-top">
     <h1>Financial Plan Summary</h1>
   </div>
+  <div class="version-strip" id="planStrip"></div>
   <nav id="mainNav"></nav>
 </header>
 
@@ -646,24 +725,93 @@ const SECTIONS = [
 const State = {
   view: 'home',          // 'home' | 'subheadings' | 'edit' | 'publish'
   activeSection: null,
-  edited: {},            // { sectionId: { key: { title, content } } } — session edits
-  editedOrder: {},       // { sectionId: [key, ...] } — saved order for session edits
+  plans: [],             // [{ id, name, edited, editedOrder }] — up to MAX_PLANS saved plans
+  activePlanId: null,
   selectedItems: {},
+  MAX_PLANS: 3,
+  _planIdCounter: 0,
+
+  // Date.now() alone can collide when two plans are added in the same
+  // millisecond; the counter guarantees uniqueness regardless of timing.
+  nextPlanId() {
+    this._planIdCounter += 1;
+    return 'plan-' + Date.now() + '-' + this._planIdCounter;
+  },
 
   load() {
     try {
-      const saved = localStorage.getItem('fps_edited');
-      if (saved) this.edited = JSON.parse(saved);
+      const saved = localStorage.getItem('fps_plans');
+      if (saved) this.plans = JSON.parse(saved);
     } catch(e) {}
+
+    if (!Array.isArray(this.plans) || this.plans.length === 0) {
+      // First-ever load, or an older single-plan version of this app:
+      // migrate any existing session edits into one named plan.
+      let edited = {}, editedOrder = {};
+      try {
+        const e = localStorage.getItem('fps_edited');
+        if (e) edited = JSON.parse(e);
+      } catch(e) {}
+      try {
+        const o = localStorage.getItem('fps_order');
+        if (o) editedOrder = JSON.parse(o);
+      } catch(e) {}
+      this.plans = [{ id: this.nextPlanId(), name: 'My Plan', edited, editedOrder }];
+      localStorage.removeItem('fps_edited');
+      localStorage.removeItem('fps_order');
+    }
+
     try {
-      const saved = localStorage.getItem('fps_order');
-      if (saved) this.editedOrder = JSON.parse(saved);
+      const activeId = localStorage.getItem('fps_active_plan');
+      if (activeId && this.plans.some(p => p.id === activeId)) this.activePlanId = activeId;
     } catch(e) {}
+    if (!this.activePlanId) this.activePlanId = this.plans[0].id;
+
+    this.save();
   },
 
   save() {
-    localStorage.setItem('fps_edited', JSON.stringify(this.edited));
-    localStorage.setItem('fps_order', JSON.stringify(this.editedOrder));
+    localStorage.setItem('fps_plans', JSON.stringify(this.plans));
+    localStorage.setItem('fps_active_plan', this.activePlanId);
+  },
+
+  activePlan() {
+    return this.plans.find(p => p.id === this.activePlanId) || null;
+  },
+
+  addPlan(name) {
+    if (this.plans.length >= this.MAX_PLANS) return null;
+    const plan = { id: this.nextPlanId(), name, edited: {}, editedOrder: {} };
+    this.plans.push(plan);
+    this.activePlanId = plan.id;
+    this.save();
+    return plan;
+  },
+
+  renamePlan(id, name) {
+    const plan = this.plans.find(p => p.id === id);
+    if (plan && name) plan.name = name;
+    this.save();
+  },
+
+  switchPlan(id) {
+    if (!this.plans.some(p => p.id === id)) return;
+    this.activePlanId = id;
+    this.save();
+  },
+
+  // Erases a plan's saved content. Frees up its slot entirely unless it's
+  // the only plan left, in which case it's cleared but kept (there must
+  // always be at least one plan to edit into).
+  erasePlan(id) {
+    if (this.plans.length <= 1) {
+      const plan = this.plans.find(p => p.id === id);
+      if (plan) { plan.edited = {}; plan.editedOrder = {}; }
+    } else {
+      this.plans = this.plans.filter(p => p.id !== id);
+      if (this.activePlanId === id) this.activePlanId = this.plans[0].id;
+    }
+    this.save();
   },
 
   // Ordered keys for a section, straight from the hardcoded template content
@@ -680,37 +828,46 @@ const State = {
   },
 
   getSectionEdits(sectionId) {
-    return this.edited[sectionId] || {};
+    const plan = this.activePlan();
+    return (plan && plan.edited[sectionId]) || {};
   },
 
-  // Replace entire section's edits and order in one atomic save
+  // Replace entire section's edits and order in one atomic save, on the active plan
   setSectionEdits(sectionId, itemsArray) {
-    this.edited[sectionId] = {};
+    const plan = this.activePlan();
+    if (!plan) return;
+    plan.edited[sectionId] = {};
     itemsArray.forEach(item => {
-      this.edited[sectionId][item.key] = { title: item.title, content: item.content };
+      plan.edited[sectionId][item.key] = { title: item.title, content: item.content };
     });
-    this.editedOrder[sectionId] = itemsArray.map(i => i.key);
+    plan.editedOrder[sectionId] = itemsArray.map(i => i.key);
     this.save();
   },
 
   hasEdits(sectionId) {
-    if (this.editedOrder[sectionId]?.length > 0) return true;
-    const edits = this.edited[sectionId];
+    const plan = this.activePlan();
+    if (!plan) return false;
+    if (plan.editedOrder[sectionId]?.length > 0) return true;
+    const edits = plan.edited[sectionId];
     return !!(edits && Object.keys(edits).length > 0);
   },
 
   totalEdited() {
+    const plan = this.activePlan();
+    if (!plan) return 0;
     let total = 0;
     SECTIONS.forEach(s => {
-      total += this.editedOrder[s.id]?.length ?? Object.keys(this.edited[s.id] || {}).length;
+      total += plan.editedOrder[s.id]?.length ?? Object.keys(plan.edited[s.id] || {}).length;
     });
     return total;
   },
 
-  // Returns ordered keys for a section (for publish)
+  // Returns ordered keys for a section (for publish), from the active plan
   getOrderedKeys(sectionId) {
-    if (this.editedOrder[sectionId]?.length > 0) return this.editedOrder[sectionId];
-    return this.getBaseOrder(sectionId).filter(key => this.edited[sectionId]?.[key]);
+    const plan = this.activePlan();
+    if (!plan) return [];
+    if (plan.editedOrder[sectionId]?.length > 0) return plan.editedOrder[sectionId];
+    return this.getBaseOrder(sectionId).filter(key => plan.edited[sectionId]?.[key]);
   },
 
   getSelectedForSection(sectionId) {
@@ -719,27 +876,154 @@ const State = {
 
   setSelected(sectionId, titles) {
     this.selectedItems[sectionId] = new Set(titles);
-  },
-
-  // Clears all session edits, back to a blank slate
-  resetEdits() {
-    this.edited = {};
-    this.editedOrder = {};
-    this.selectedItems = {};
-    localStorage.removeItem('fps_edited');
-    localStorage.removeItem('fps_order');
   }
 };
 
 // ─── APP ─────────────────────────────────────────────────────────────────────
 const App = {
+  _planUI: { open: false, adding: false, renamingId: null },
+
   init() {
     State.load();
     this.renderNav();
     this.renderHome();
+    // Close the plan picker on any click outside it (the trigger/menu stop
+    // propagation on their own clicks, so only outside clicks reach here).
+    document.addEventListener('click', () => {
+      if (!App._planUI.open) return;
+      App._planUI = { open: false, adding: false, renamingId: null };
+      App.renderNav();
+    });
+  },
+
+  // ── PLAN PICKER ────────────────────────────────────────────────────────────
+  renderPlanStrip() {
+    const el = document.getElementById('planStrip');
+    if (!el) return;
+    const plan = State.activePlan();
+    const ui = App._planUI;
+    const triggerName = plan ? plan.name : 'No plan saved';
+
+    let menuHtml = '';
+    if (ui.open) {
+      const rows = State.plans.map(p => {
+        if (ui.renamingId === p.id) {
+          return `<div class="picker-row renaming">
+            <span class="check"></span>
+            <input class="rename-field" id="planRenameInput" value="${escHtml(p.name)}" maxlength="24">
+            <button class="icon-btn go" onclick="event.stopPropagation(); App.confirmRenamePlan('${p.id}')" title="Save name">✓</button>
+            <button class="icon-btn cancel" onclick="event.stopPropagation(); App.cancelRenamePlan()" title="Cancel">✕</button>
+          </div>`;
+        }
+        const isActive = p.id === State.activePlanId;
+        return `<div class="picker-row ${isActive ? 'active' : ''}" onclick="App.selectPlan('${p.id}')">
+          <span class="check">${isActive ? '✓' : ''}</span>
+          <span class="p-row-name">${escHtml(p.name)}</span>
+          <button class="rename-btn" onclick="event.stopPropagation(); App.startRenamePlan('${p.id}')" title="Rename">✎</button>
+        </div>`;
+      }).join('');
+
+      let addHtml;
+      if (ui.adding) {
+        addHtml = `<div class="new-version-row">
+          <input id="planAddInput" placeholder="Name this plan…" maxlength="24">
+          <button class="icon-btn go" onclick="event.stopPropagation(); App.confirmAddPlan()" title="Save plan">✓</button>
+          <button class="icon-btn cancel" onclick="event.stopPropagation(); App.cancelAddPlan()" title="Cancel">✕</button>
+        </div>`;
+      } else if (State.plans.length < State.MAX_PLANS) {
+        addHtml = `<button class="btn-add-version" onclick="event.stopPropagation(); App.startAddPlan()">＋ New Plan</button>`;
+      } else {
+        addHtml = `<div class="picker-cap-note">3 of 3 saved — erase one to add another</div>`;
+      }
+
+      menuHtml = `<div class="picker-menu" onclick="event.stopPropagation()">
+        ${rows}${rows ? '<div class="picker-divider"></div>' : ''}${addHtml}
+      </div>`;
+    }
+
+    el.innerHTML = `
+      <span class="label">Plan</span>
+      <div class="plan-picker">
+        <button class="picker-trigger ${ui.open ? 'open' : ''}" onclick="event.stopPropagation(); App.togglePlanDropdown()">
+          <span class="dot"></span>
+          <span class="p-name">${escHtml(triggerName)}</span>
+          <span class="chevron">▾</span>
+        </button>
+        ${menuHtml}
+      </div>`;
+
+    if (ui.renamingId) {
+      const input = document.getElementById('planRenameInput');
+      input.focus();
+      input.select();
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter') App.confirmRenamePlan(ui.renamingId);
+        if (e.key === 'Escape') App.cancelRenamePlan();
+      });
+    }
+    if (ui.adding) {
+      const input = document.getElementById('planAddInput');
+      input.focus();
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter') App.confirmAddPlan();
+        if (e.key === 'Escape') App.cancelAddPlan();
+      });
+    }
+  },
+
+  togglePlanDropdown() {
+    App._planUI.open = !App._planUI.open;
+    if (!App._planUI.open) { App._planUI.adding = false; App._planUI.renamingId = null; }
+    this.renderNav();
+  },
+
+  selectPlan(id) {
+    State.switchPlan(id);
+    State.selectedItems = {};
+    App._planUI = { open: false, adding: false, renamingId: null };
+    this.renderHome();
+  },
+
+  startAddPlan() {
+    if (State.plans.length >= State.MAX_PLANS) return;
+    App._planUI.open = true;
+    App._planUI.adding = true;
+    App._planUI.renamingId = null;
+    this.renderNav();
+  },
+  cancelAddPlan() {
+    App._planUI.adding = false;
+    this.renderNav();
+  },
+  confirmAddPlan() {
+    const input = document.getElementById('planAddInput');
+    const name = (input.value || '').trim();
+    if (!name) { input.focus(); return; }
+    State.addPlan(name);
+    State.selectedItems = {};
+    App._planUI = { open: false, adding: false, renamingId: null };
+    this.renderHome();
+  },
+
+  startRenamePlan(id) {
+    App._planUI.renamingId = id;
+    App._planUI.adding = false;
+    this.renderNav();
+  },
+  cancelRenamePlan() {
+    App._planUI.renamingId = null;
+    this.renderNav();
+  },
+  confirmRenamePlan(id) {
+    const input = document.getElementById('planRenameInput');
+    const name = (input.value || '').trim();
+    if (name) State.renamePlan(id, name);
+    App._planUI.renamingId = null;
+    this.renderNav();
   },
 
   renderNav() {
+    this.renderPlanStrip();
     const nav = document.getElementById('mainNav');
     const nonSectionViews = ['home', 'publish'];
     const sectionBtns = SECTIONS.map(s => {
@@ -977,9 +1261,11 @@ const App = {
     const totalEdited = State.totalEdited();
 
     if (totalEdited === 0) {
+      const planName = State.activePlan()?.name || 'this plan';
       main.innerHTML = `<div class="empty-state">
         <div class="big">📄</div>
         <p>No content saved yet. Select a section from the menu above, choose topics, edit, and save.</p>
+        ${State.plans.length > 1 ? `<button class="btn-ghost" onclick="App.resetAll()">🔄 Remove "${escHtml(planName)}"</button>` : ''}
       </div>`;
       return;
     }
@@ -1000,13 +1286,14 @@ const App = {
     });
 
     const today = new Date().toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' });
+    const planName = State.activePlan()?.name || 'this plan';
 
     main.innerHTML = `
       <div class="publish-actions">
         <button class="back-link" onclick="App.renderHome()">← Back to Home</button>
         <button class="btn btn-secondary" onclick="App.goBackToEdit()">✏️ Back to Editing</button>
         <button class="btn btn-primary" onclick="App.downloadWord()">📄 Download Word</button>
-        <button class="btn btn-danger" onclick="App.resetAll()">🔄 Reset &amp; Start Over</button>
+        <button class="btn btn-danger" onclick="App.resetAll()">🔄 Reset "${escHtml(planName)}" &amp; Start Over</button>
       </div>
       <div class="final-doc" id="finalDoc">
         <div class="doc-title">Financial Plan Summary</div>
@@ -1109,11 +1396,16 @@ const App = {
 
   // ── RESET ──────────────────────────────────────────────────────────────────
   resetAll() {
-    if (!confirm('This will clear all your current edits and return to the start.\n\nContinue?')) return;
-    State.resetEdits();
+    const plan = State.activePlan();
+    const name = plan ? plan.name : 'this plan';
+    const freesSlot = State.plans.length > 1;
+    const msg = `This clears every saved topic in "${name}"${freesSlot ? ' and frees up this plan slot' : ''}. ${freesSlot ? 'Your other saved plans are untouched. ' : ''}This can't be undone.\n\nContinue?`;
+    if (!confirm(msg)) return;
+    if (plan) State.erasePlan(plan.id);
+    State.selectedItems = {};
     this.renderNav();
     this.renderHome();
-    showToast('Reset complete. Ready to start a new plan.');
+    showToast(`"${name}" reset. Ready to start fresh.`);
   }
 };
 
