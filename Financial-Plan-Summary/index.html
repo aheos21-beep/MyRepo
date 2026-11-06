@@ -34,7 +34,8 @@
   .header-top {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
     padding: 12px 24px;
     border-bottom: 1px solid rgba(255,255,255,0.08);
   }
@@ -82,23 +83,13 @@
     vertical-align: middle;
   }
 
-  /* PLAN PICKER — shows only the name of the plan you're working on; click
-     to open a dropdown to switch, rename, add (up to 3) or see the cap. */
-  .version-strip {
-    background: var(--card-bg);
-    border-bottom: 1px solid var(--border);
-    padding: 10px 24px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .version-strip .label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-muted); flex-shrink: 0; }
-
+  /* PLAN PICKER — sits beside the header title; click to open a dropdown
+     to switch, rename, add (up to 3) or see the cap. */
   .plan-picker { position: relative; }
   .picker-trigger {
-    display: flex; align-items: center; gap: 8px; max-width: 280px;
-    background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px;
-    padding: 7px 10px 7px 14px; font-size: 0.9rem; font-weight: 700; color: var(--navy);
+    display: flex; align-items: center; gap: 7px; max-width: 220px;
+    background: var(--bg); border: 1.5px solid var(--border); border-radius: 7px;
+    padding: 5px 9px 5px 12px; font-size: 0.8rem; font-weight: 700; color: var(--navy);
     font-family: inherit; cursor: pointer; transition: border-color 0.15s, background 0.15s;
   }
   .picker-trigger:hover { border-color: var(--gold); }
@@ -436,8 +427,8 @@
 <header>
   <div class="header-top">
     <h1>Financial Plan Summary</h1>
+    <div id="planStrip"></div>
   </div>
-  <div class="version-strip" id="planStrip"></div>
   <nav id="mainNav"></nav>
 </header>
 
@@ -942,7 +933,6 @@ const App = {
     }
 
     el.innerHTML = `
-      <span class="label">Plan</span>
       <div class="plan-picker">
         <button class="picker-trigger ${ui.open ? 'open' : ''}" onclick="event.stopPropagation(); App.togglePlanDropdown()">
           <span class="dot"></span>
